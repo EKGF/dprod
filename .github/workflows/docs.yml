@@ -14,10 +14,10 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      -
+#      -
 #        name: Install some tools
 #        run: sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
-      -
+#      -
 #        name: Set up Homebrew
 #        id: set-up-homebrew
 #        uses: Homebrew/actions/setup-homebrew@master
