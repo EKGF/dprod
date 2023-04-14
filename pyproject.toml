@@ -35,6 +35,7 @@ mkdocs-kroki-plugin = "*"
 mdx-spanner = "*"
 #markdown-emdash = "*"
 smartypants = "*"
+ekglib = {git = "https://github.com/EKGF/ekglib.git"}
 
 [build-system]
 requires = ["poetry-core"]

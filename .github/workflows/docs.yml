@@ -12,20 +12,20 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       -
-        name: Install some tools
-        run: sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
+#        name: Install some tools
+#        run: sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev
       -
-        name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+#        name: Set up Homebrew
+#        id: set-up-homebrew
+#        uses: Homebrew/actions/setup-homebrew@master
       -
         name: Install Python
         uses: actions/setup-python@v4.3.0
         with:
-          python-version: '3.11.0'
+          python-version: '3.10.8'
       -
         name: Set up Git repository
         uses: actions/checkout@v3
@@ -43,7 +43,7 @@ jobs:
         env:
           PAT_MKDOCS_INSIDERS: ${{ secrets.PAT_MKDOCS_INSIDERS }}
         run: |
-          echo "/home/linuxbrew/.linuxbrew/bin/brew" >> $GITHUB_PATH
+          # echo "/home/linuxbrew/.linuxbrew/bin/brew" >> $GITHUB_PATH
           make --environment-overrides docs-install-github-actions
       -
         name: Build Site

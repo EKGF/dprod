@@ -3,30 +3,27 @@ VIRTUAL_ENV := ./.venv
 LANG := en
 
 ifeq ($(OS),Windows_NT)
-    YOUR_OS := Windows
-    INSTALL_TARGET := install-windows
-    SYSTEM_PYTHON := python3
+	YOUR_OS := Windows
+	INSTALL_TARGET := install-windows
+	SYSTEM_PYTHON := python3
 else
-    YOUR_OS := $(shell sh -c 'uname 2>/dev/null || echo Unknown')
+	YOUR_OS := $(shell sh -c 'uname 2>/dev/null || echo Unknown')
 ifeq ($(YOUR_OS), Linux)
-    INSTALL_TARGET := install-linux
+	INSTALL_TARGET := install-linux
 ifneq ($(wildcard /home/runner/.*),) # this means we're running in Github Actions
-	MKDOCS := mkdocs
 	PIP := pip
 	SYSTEM_PYTHON := python3
 else
-	MKDOCS := $(shell asdf where python)/bin/mkdocs
 	PIP := $(shell asdf where python)/bin/python -m pip
 	SYSTEM_PYTHON := $(shell asdf where python)/bin/python3
 endif
 endif
 ifeq ($(YOUR_OS), Darwin)
-    INSTALL_TARGET := install-macos
-	MKDOCS := $(shell asdf where python)/bin/mkdocs
+	INSTALL_TARGET := install-macos
 	PIP := $(shell asdf where python)/bin/python -m pip
-    ifneq (,$(wildcard /usr/local/bin/python3))
-    	SYSTEM_PYTHON := /usr/local/bin/python3
-    else
+	ifneq (,$(wildcard /usr/local/bin/python3))
+		SYSTEM_PYTHON := /usr/local/bin/python3
+	else
 		SYSTEM_PYTHON := $(shell asdf where python)/bin/python3
 	endif
 endif
@@ -38,7 +35,7 @@ VENV_PYTHON := $(VIRTUAL_ENV)/bin/python3
 VENV_PIP    := $(VIRTUAL_ENV)/bin/pip3
 VENV_PIPENV := $(VIRTUAL_ENV)/bin/pipenv
 
-PIPENV_DEFAULT_PYTHON_VERSION := 3.10
+PIPENV_DEFAULT_PYTHON_VERSION := 3.11
 PIPENV_VENV_IN_PROJECT := 1
 
 CURRENT_BRANCH := $(shell git branch --show-current)
@@ -151,7 +148,7 @@ endif
 docs-install-standard-python-packages: python-venv
 	@echo "Install standard python packages via pip:"
 	$(VENV_PIP) install --upgrade pip setuptools
-	$(VENV_PIP) install poetry
+	$(VENV_PIP) install poetry pipenv
 	$(VENV_POETRY) config virtualenvs.in-project true --local
 	$(VENV_POETRY) config experimental.system-git-client true --local
 
@@ -159,22 +156,27 @@ docs-install-standard-python-packages: python-venv
 docs-install-special-python-packages: docs-install-ekglib docs-install-mkdocs-insider-version-packages
 
 .PHONY: docs-install-ekglib
-docs-install-ekglib:
+docs-install-ekglib: $(VENV_POETRY)
 	@echo "Install ekglib via poetry:"
-	$(VENV_POETRY) add -vvv "git+https://github.com/EKGF/ekglib.git"
+	$(VENV_POETRY) add "git+https://github.com/EKGF/ekglib.git"
 
 .PHONY: docs-install-mkdocs-insider-version-packages
-docs-install-mkdocs-insider-version-packages:
+docs-install-mkdocs-insider-version-packages: $(VENV_PIPENV) $(VENV_POETRY)
 ifeq ($(PAT_MKDOCS_INSIDERS),)
 	@echo "Install standard mkdocs python package via poetry:"
 	$(VENV_POETRY) add mkdocs-material
 else
 	@echo "Install special insiders version of mkdocs python package via poetry:"
 	$(VENV_POETRY) remove mkdocs-material || true
-	$(VENV_POETRY) add "git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git#egg=mkdocs-material"
+	$(VENV_PIPENV) run pixp install git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git
+#	$(VENV_POETRY) add "git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git"
 endif
 
+$(VENV_PIPENV): docs-install-python-packages
+	if [ -f $(VENV_PIPENV) ] ; then echo $(VENV_PIPENV) exists ; exit 0 ; else echo $(VENV_PIPENV) does not exist ; exit 1 ; fi
+
 $(VENV_MKDOCS): docs-install-python-packages
+	if [ -f $(VENV_MKDOCS) ] ; then echo $(VENV_MKDOCS) exists ; exit 0 ; else echo $(VENV_MKDOCS) does not exist ; exit 1 ; fi
 
 .PHONY: python-venv
 python-venv:
