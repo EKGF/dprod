@@ -10,13 +10,13 @@ else
 	YOUR_OS := $(shell sh -c 'uname 2>/dev/null || echo Unknown')
 ifeq ($(YOUR_OS), Linux)
 	INSTALL_TARGET := install-linux
-ifneq ($(wildcard /home/runner/.*),) # this means we're running in Github Actions
-	PIP := pip
-	SYSTEM_PYTHON := python3
-else
-	PIP := $(shell asdf where python)/bin/python -m pip
-	SYSTEM_PYTHON := $(shell asdf where python)/bin/python3
-endif
+	ifneq ($(wildcard /home/runner/.*),) # this means we're running in Github Actions
+		PIP := pip
+		SYSTEM_PYTHON := python3
+	else
+		PIP := $(shell asdf where python)/bin/python -m pip
+		SYSTEM_PYTHON := $(shell asdf where python)/bin/python3
+	endif
 endif
 ifeq ($(YOUR_OS), Darwin)
 	INSTALL_TARGET := install-macos
@@ -168,7 +168,7 @@ ifeq ($(PAT_MKDOCS_INSIDERS),)
 else
 	@echo "Install special insiders version of mkdocs python package via poetry:"
 	$(VENV_POETRY) remove mkdocs-material || true
-	$(VENV_PIPENV) run pixp install git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git
+	$(VENV_PIPENV) run pip install git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git
 #	$(VENV_POETRY) add "git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git"
 endif
 
