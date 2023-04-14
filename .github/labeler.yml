@@ -1,0 +1,24 @@
+mkdocs-infra:
+  - Makefile
+  - mkdocs.yml
+  - docs-overrides/
+  - docs/assets/
+  - docs/stylesheets/
+  - docs/main.py
+  - '*/**/CNAME'
+  - .tool-versions
+  - README.md
+
+github-actions:
+  - .github/
+
+infra:
+  - etc/*
+  - .github/*
+  - .*
+  - /**/**.sh
+  - /**/*.md
+
+diagram:
+  - /**/*.puml
+

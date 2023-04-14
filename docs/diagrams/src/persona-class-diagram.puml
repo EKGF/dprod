@@ -1,0 +1,27 @@
+@startuml
+
+!include ../include/themes/light.puml
+
+class Concept {
+    - type : ConceptType
+}
+class Concept [[http://plantuml.com{Optional tooltip} This label is printed]]
+class UseCase {
+    - vocabulary: Vocabulary
+    - stories: Story[]
+}
+UseCase --> UseCase : requires
+Vocabulary "*" --> "*" Concept
+Vocabulary "*" --> "*" Term
+Story --> "*" Concept : input
+Story --> "*" Concept : output
+Term --> "1..*" Concept
+Concept ---right-> OntologyAxiom
+Vocabulary <--> Concept
+UseCase --> "1..*" Story
+Persona --up-|> Concept
+Concept --> Concept : broader
+Concept --> Term : preferred
+UseCase --> "1" Vocabulary : use case vocabulary
+Persona "1" -right-o "0..*" Story
+@enduml

@@ -1,0 +1,16 @@
+title: Objectives
+nav:
+  - Composable Business: composable-business.md
+  - Requirements Captured: know-what-the-business-wants.md
+  - Knowledge Captured: capture-knowledge.md
+  - Gaps Bridged: bridge-the-gap.md
+  - Expectations Managed: manage-expectations.md
+  - Did not boil the ocean: avoid-boiling-the-ocean.md
+  - Disruption Avoided: avoid-disruption.md
+  - Quality Increased: increase-quality.md
+  - Aligned with Strategy: align-with-business-strategy.md
+  - Delivered: strategic-usecases.md
+  - Modularity Managed: modularity.md
+  - Interoperability Achieved: interoperability.md
+  - Reuse Enabled: enable-reuse.md
+  - ...

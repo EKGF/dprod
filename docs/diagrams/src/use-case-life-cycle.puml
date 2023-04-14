@@ -1,0 +1,44 @@
+@startuml
+
+!include ../include/themes/light.puml
+
+[*] -> Identified
+
+Identified -> Defined
+
+Defined -> Proposed
+
+Proposed -down-> [*]: Rejected
+
+Proposed -> Planned
+
+Planned -> InProgress
+
+InProgress -> Delivered
+
+Delivered -> Deployed
+
+Deployed -> Defined: new version
+
+Deployed -> Deprecated
+
+Deprecated -> Decommissioned
+
+Decommissioned -> [*]
+
+Identified: - name and description
+Identified: - added to use case tree
+
+Defined: - outcomes
+Defined: - personas
+Defined: - concepts
+Defined: - stories
+Defined: - dependencies
+
+Proposed: - chart phase
+
+Planned: - on roadmap
+
+InProgress: - build phase
+
+@enduml

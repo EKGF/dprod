@@ -1,0 +1,28 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+attrs = "==22.1.0"
+babel = "==2.10.3"
+beautifulsoup4 = "==4.11.1"
+binaryio = "==1.0.0"
+boto3 = "==1.24.70"
+boto3-stubs = "==1.24.70"
+botocore = "==1.27.70"
+botocore-stubs = "==1.27.89"
+bracex = "==2.3.post1"
+certifi = "==2022.9.24"
+charset-normalizer = "==2.1.1"
+click = "==8.1.3"
+csscompressor = "==0.9.5"
+cssselect = "==1.1.0"
+data-science-types = "==0.2.23"
+distlib = "==0.3.6"
+editorconfig = "==0.12.3"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10.8"

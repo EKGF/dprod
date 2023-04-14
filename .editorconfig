@@ -1,0 +1,52 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+# Minified JavaScript files shouldn't be changed
+
+[*.sparql]
+indent_size = 4
+
+# Makefiles always use tabs for indentation
+
+# Batch files use tabs for indentation
+
+[{.eslintrc,.babelrc,jest.config,.stylelintrc,*.json,*.jsb3,*.jsb2,*.bowerrc}]
+indent_style=space
+indent_size=2
+
+# Minified JavaScript files shouldn't be changed
+[**.min.js]
+indent_style = ignore
+insert_final_newline = ignore
+
+[{*.yml,*.yaml}]
+indent_style=space
+indent_size=2
+
+[*.md]
+max_line_length = off
+trim_trailing_whitespace = false
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
+
+# Batch files use tabs for indentation
+[*.bat]
+indent_style = tab
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+[*.xml]
+indent_style = tab
+indent_size = 2
+tab_width = 8
+

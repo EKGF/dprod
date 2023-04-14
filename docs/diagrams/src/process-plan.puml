@@ -1,0 +1,45 @@
+@startuml
+
+!include ../include/themes/light.puml
+
+hide empty description
+
+state Plan {
+
+    [*] -right-> Envision
+
+    Envision -right-> Discover
+    Discover -right-> Assess
+    Assess -right-> Chart
+    
+    Chart --right-> [*]
+    
+    [*] -down-> Train
+    Train --up-> Envision
+    Train --up-> Discover
+    Train --up-> Assess
+  
+    Envision: - a shared strategy
+    Envision: - see also [[ /process/plan/envision/ "Envision" ]]
+    
+    Discover: - strategic use cases
+    Discover: - initial use case tree
+    Discover: - business knowledge
+    Discover: - priorities & outcomes
+    Discover: - see also [[ /process/plan/discover/ "Discover" ]]
+
+    Assess: - current state
+    Assess: - required next state
+    Assess: - maturity (buss/org/data/tech)
+    Assess: - see also [[ /process/plan/assess/ "Assess" ]]
+
+    Chart: - viable roadmap
+    Chart: - business case
+    Chart: - stakeholder agreement
+    Chart: - mandate
+    Chart: - see also [[ /process/plan/chart/ "Chart" ]]
+    
+    Train: - see also [[ /process/plan/train/ "Train" ]]
+}
+
+@enduml

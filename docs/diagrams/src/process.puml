@@ -1,0 +1,79 @@
+@startuml
+
+!include ../include/themes/light.puml
+
+state Plan {
+
+    [*] -down-> Envision
+
+    Envision -down-> Discover
+    Discover -down-> Assess
+    Assess -down-> Chart
+
+    Envision: - a shared strategy
+    Envision: - EKG envisioning
+    Envision: - EKG as a business enabler
+    
+    Discover: - strategic use cases
+    Discover: - initial use case tree
+    Discover: - business knowledge
+    Discover: - priorities & outcomes
+
+    Assess: - current state
+    Assess: - required next state
+    Assess: - maturity (buss/org/data/tech)
+    Assess: - scalability assessment
+
+    Chart: - viable roadmap
+    Chart: - business case
+    Chart: - stakeholder agreement
+    Chart: - mandate
+}
+
+state Build {
+    Chart -> Allocate: handover to\ndelivery manager
+
+    Allocate -up-> Implement
+
+    Implement -up-> Test
+    Test -up-> Verify
+    Verify -up-> Deliver
+    ' Verify -> Plan
+
+    Allocate: - budget & team
+    
+    Implement: - detail the use case
+    
+    Test: - add test scenarios
+    Test: - full coverage
+    
+    Verify: - verify with business
+    
+    Deliver: - continuously improve
+    Deliver: - deliver small increments
+    Deliver: - frequently
+}
+
+state Run {
+    Deliver -right-> Deploy
+    Deploy -down-> Operate
+    Operate -down-> Measure
+    Measure -down-> Optimize
+
+    Deploy: - as "Infrastructure as Code"
+    Deploy: - "continuous deployment"
+    Deploy: - fully automated
+
+    Measure: - performance
+    Measure: - availability
+    Measure: - vulnerability
+    Measure: - business outcome(s)
+
+    Optimize: - structural feedback loop
+    Optimize: - continuously improve
+    Optimize: - continuously update\n   use case tree
+}
+
+Optimize --up--> Plan
+
+@enduml

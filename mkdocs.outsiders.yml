@@ -1,0 +1,25 @@
+INHERIT: mkdocs.yml
+plugins:
+  - search
+  - mermaid2:
+      arguments:
+        # test if its __palette_1 (dark) or __palette_2 (light)
+        # for mkdocs-material >=8.0.0
+        theme: |
+          ^(JSON.parse(__md_get("__palette").index == 1)) ? 'dark' : 'light'
+        securityLevel: 'loose'
+extra_javascript:
+  - https://unpkg.com/mermaid/dist/mermaid.min.js
+  - javascript/refresh_on_toggle_dark_light.js
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      options:
+        custom_icons:
+          - docs-overrides/.icons

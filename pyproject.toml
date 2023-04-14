@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "data-product"
+version = "1.0.0"
+description = ""
+authors = ["Jacobus Geluk <jacobus.geluk@ekgf.org>"]
+readme = "README.md"
+license = "GPL-3.0-only"
+homepage = "https://data-product.ekgf.org"
+repository = "https://github.com/EKGF/data-product"
+packages = [
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+wheel = "*"
+setuptools = "*"
+plantuml-markdown = "*"
+mkdocs-build-plantuml-plugin = "*"
+mdutils = "*"
+option = "*"
+mkdocs = "^1.4"
+mkdocs-awesome-pages-plugin = "*"
+mkdocs-exclude = "*"
+mkdocs-exclude-search = "*"
+mkdocs-gen-files = "*"
+mkdocs-git-revision-date-localized-plugin = "*"
+mkdocs-graphviz = "*"
+mkdocs-include-markdown-plugin = "*"
+mkdocs-localsearch = "*"
+mkdocs-macros-plugin = "*"
+mkdocs-mermaid2-plugin = "*"
+mkdocs-minify-plugin = "*"
+mkdocs-redirects = "*"
+mkdocs-kroki-plugin = "*"
+mdx-spanner = "*"
+#markdown-emdash = "*"
+smartypants = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+

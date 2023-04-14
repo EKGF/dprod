@@ -1,0 +1,14 @@
+INHERIT: mkdocs.yml
+theme:
+  custom_dir: docs-overrides/
+plugins:
+  - search
+  - social
+  - tags
+markdown_extensions:
+  - pymdownx.superfences:
+      # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
