@@ -12,13 +12,8 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-wheel = "*"
-setuptools = "*"
-plantuml-markdown = "*"
 mkdocs-build-plantuml-plugin = "*"
 mdutils = "*"
-option = "*"
-mkdocs = "^1.4"
 mkdocs-awesome-pages-plugin = "*"
 mkdocs-exclude = "*"
 mkdocs-exclude-search = "*"
@@ -33,11 +28,19 @@ mkdocs-minify-plugin = "*"
 mkdocs-redirects = "*"
 mkdocs-kroki-plugin = "*"
 mdx-spanner = "*"
-#markdown-emdash = "*"
+markdown-emdash = "*"
 smartypants = "*"
+pillow = "*"
+cairosvg = "*"
 ekglib = {git = "https://github.com/EKGF/ekglib.git"}
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
+[project]
+name = "data-product"
+version = "1.0.0"
+description = ""
+authors = [
+  {name = "Jacobus Geluk", email = "jacobus.geluk@ekgf.org"},
+]
+dependencies = []
+requires-python = ">=3.10"
+license = {text = "MIT"}

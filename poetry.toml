@@ -1,5 +1,9 @@
 [experimental]
 system-git-client = true
+new-installer = true
 
 [virtualenvs]
 in-project = true
+
+[installer]
+modern-installation = true

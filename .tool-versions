@@ -1,3 +1,4 @@
 python 3.10.8
-nodejs 17.4.0
+nodejs 18.6.0
 java openjdk-18
+poetry 1.4.2

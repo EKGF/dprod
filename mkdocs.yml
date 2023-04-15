@@ -173,6 +173,9 @@ plugins:
 #      #
 
 markdown_extensions:
+  - footnotes
+  - attr_list
+  - md_in_html
   - toc:
       permalink: true
   - meta
@@ -180,11 +183,9 @@ markdown_extensions:
   - def_list
   - abbr
   - admonition
-# - mdx_emdash
-  - attr_list
+# - mdx_emdash (causes too many warnings)
   - footnotes
   - tables
-  - md_in_html
   - mkdocs_graphviz
   - pymdownx.caret
   - pymdownx.mark
