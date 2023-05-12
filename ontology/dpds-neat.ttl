@@ -1,0 +1,1324 @@
+@prefix dpds: <http://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/#>
+	a owl:Ontology ;
+	rdfs:comment "The namespace for the Data Product Descriptor Specification." ;
+	owl:versionInfo "1.0.0" ;
+	.
+
+dpds:ApplicationComponent
+	a owl:Class ;
+	rdfs:subClassOf dpds:Entity ;
+	rdfs:label "Application Component"@en ;
+	rdfs:comment "The Application Component describes an internal application component used by the data product to provide services through its ports."@en ;
+	owl:equivalentClass
+		[
+			a owl:Class ;
+			owl:intersectionOf (
+				dpds:Entity
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:platform ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:applicationType ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:buildInfo ;
+					owl:someValuesFrom dpds:BuildInfo ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:deployInfo ;
+					owl:someValuesFrom dpds:DeployInfo ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:consumesFrom ;
+					owl:someValuesFrom [
+						a owl:Class ;
+						owl:unionOf (
+							xsd:string
+							dpds:ExternalResource
+						) ;
+					] ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:providesTo ;
+					owl:someValuesFrom [
+						a owl:Class ;
+						owl:unionOf (
+							xsd:string
+							dpds:ExternalResource
+						) ;
+					] ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:dependsOn ;
+					owl:someValuesFrom xsd:string ;
+				]
+			) ;
+		] ,
+		[
+			a owl:Class ;
+			owl:intersectionOf (
+				dpds:Entity
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:platform ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:applicationType ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:buildInfo ;
+					owl:someValuesFrom dpds:BuildInfo ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:deployInfo ;
+					owl:someValuesFrom dpds:DeployInfo ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:consumesFrom ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:providesTo ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:dependsOn ;
+					owl:someValuesFrom xsd:string ;
+				]
+			) ;
+		]
+		;
+	.
+
+dpds:ApplicationComponentOrReference
+	a owl:Class ;
+	rdfs:label "Application Component or Reference" ;
+	rdfs:comment "The Application Component or Reference is used as a reference to an Application Component or an Application Component itself." ;
+	.
+
+dpds:BuildInfo
+	a owl:Class ;
+	rdfs:subClassOf [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Entity
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:service ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						xsd:string
+						dpds:ExternalResource
+					) ;
+				] ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:template ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						dpds:ObjectOrReferenceOrExternalResource
+					) ;
+				] ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:configurations ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						dpds:ObjectOrReferenceOrExternalResource
+					) ;
+				] ;
+			]
+		) ;
+	] ;
+	rdfs:label "Build Info"@en ;
+	rdfs:comment "The Build Info Object contains all the information required to build an Application Component."@en ;
+	owl:equivalentClass [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Object
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:service ;
+				owl:someValuesFrom xsd:anyURI ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:template ;
+				owl:someValuesFrom dpds:ObjectOrReferenceOrExternalResource ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:configurations ;
+				owl:someValuesFrom dpds:ObjectOrReferenceOrExternalResource ;
+			]
+		) ;
+	] ;
+	.
+
+dpds:ComponentsObject
+	a owl:Class ;
+	rdfs:subClassOf
+		dpds:ObjectOrReferenceOrExternalResourceObject ,
+		owl:Thing
+		;
+	rdfs:label "Components Object" ;
+	rdfs:comment
+		"The Components Object holds a set of reusable objects for different aspects of the DPDS." ,
+		"https://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/#componentsObject"
+		;
+	owl:hasKey (
+		dpds:hasInputPorts
+		dpds:hasOutputPorts
+		dpds:hasDiscoveryPorts
+		dpds:hasObservabilityPorts
+		dpds:hasControlPorts
+		dpds:hasApplicationComponents
+		dpds:hasInfrastructuralComponents
+	) ;
+	.
+
+dpds:ContactPointObject
+	a owl:Class ;
+	rdfs:label "Contact Point Object" ;
+	rdfs:comment "The Contact Point Object describes a data product's contact point." ;
+	.
+
+dpds:ContractsObject
+	a owl:Class ;
+	rdfs:label "Contracts Object" ;
+	rdfs:comment "The Contracts Object describes the data product's contracts declared over a given port." ;
+	.
+
+dpds:ControlPortObject
+	a owl:Class ;
+	rdfs:label "Control Port Object" ;
+	rdfs:comment "The Control Port Component describes a control port of a data product." ;
+	.
+
+dpds:DataProductDescriptorDocument
+	rdfs:subClassOf dpds:EntityObject ;
+	rdfs:label "Data Product Descriptor Document" ;
+	rdfs:comment "A Data Product Descriptor Document is an instance of the Data Product Descriptor Specification, providing a description of a specific data product." ;
+	.
+
+dpds:DataProductDescriptorSpecification
+	rdfs:subClassOf dpds:EntityObject ;
+	rdfs:label "Data Product Descriptor Specification" ;
+	rdfs:comment "The Data Product Descriptor Specification defines the requirements for describing a Data Product Descriptor, a standard way to describe data products in a way that is easy to discover and use." ;
+	.
+
+dpds:DeployInfo
+	a owl:Class ;
+	rdfs:subClassOf [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Entity
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:service ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						xsd:string
+						dpds:ExternalResource
+					) ;
+				] ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:template ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						dpds:ObjectOrReferenceOrExternalResource
+					) ;
+				] ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:configurations ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						dpds:ObjectOrReferenceOrExternalResource
+					) ;
+				] ;
+			]
+		) ;
+	] ;
+	rdfs:label "Deploy Info"@en ;
+	rdfs:comment "The Deploy Info Object contains all the information required to deploy an Application Component."@en ;
+	owl:equivalentClass [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Object
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:service ;
+				owl:someValuesFrom xsd:anyURI ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:template ;
+				owl:someValuesFrom dpds:ObjectOrReferenceOrExternalResource ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:configurations ;
+				owl:someValuesFrom dpds:ObjectOrReferenceOrExternalResource ;
+			]
+		) ;
+	] ;
+	.
+
+dpds:DiscoveryPortObject
+	a owl:Class ;
+	rdfs:label "Discovery Port Object" ;
+	rdfs:comment "The Discovery Port Component describes a discovery port of a data product." ;
+	.
+
+dpds:EntityObject
+	a owl:Class ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:label "Entity" ;
+	rdfs:comment "" ;
+	owl:equivalentClass [
+		a owl:Class ;
+		owl:intersectionOf (
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:hasFullyQualifiedName ;
+				owl:maxCardinality "1"^^xsd:integer ;
+				owl:minCardinality "1"^^xsd:integer ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:hasName ;
+				owl:maxCardinality "1"^^xsd:integer ;
+				owl:minCardinality "1"^^xsd:integer ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:hasVersion ;
+				owl:maxCardinality "1"^^xsd:integer ;
+				owl:minCardinality "1"^^xsd:integer ;
+			]
+		) ;
+	] ;
+	owl:hasKey (
+		dpds:hasFullyQualifiedName
+		dpds:hasName
+		dpds:hasVersion
+	) ;
+	.
+
+dpds:ExpectationsObject
+	a owl:Class ;
+	rdfs:label "Expectations Object" ;
+	rdfs:comment "The Expectations Object describes the data product's expectations declared over a given port." ;
+	.
+
+dpds:ExternalResource
+	a owl:Class ;
+	rdfs:subClassOf
+		dpds:Entity ,
+		dpds:Object
+		;
+	rdfs:label "External Resource"@en ;
+	owl:equivalentClass [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Object
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:service ;
+				owl:someValuesFrom xsd:anyURI ;
+			]
+		) ;
+	] ;
+	.
+
+dpds:ExternalResourceObject
+	a owl:Class ;
+	rdfs:subClassOf
+		dpds:ObjectOrReferenceOrExternalResourceObject ,
+		owl:Thing
+		;
+	rdfs:label "External Resource Object" ;
+	rdfs:comment
+		"The External Resource Object allows referencing an external resource like a documentation page or a standard definition." ,
+		"https://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/#externalResourceObject"
+		;
+	owl:hasKey (
+		dpds:hasHref
+	) ;
+	.
+
+dpds:InfoObject
+	a owl:Class ;
+	rdfs:label "Info Object" ;
+	rdfs:comment "The Info Object provides metadata about the data product. The metadata can be used by the platform or by cosumers if needed." ;
+	.
+
+dpds:InfrastructuralComponent
+	a owl:Class ;
+	rdfs:subClassOf dpds:Entity ;
+	rdfs:label "Infrastructural Component"@en ;
+	rdfs:comment "The Infrastructural Component describes an internal infrastructural component used by the data product to run its applications and store its data."@en ;
+	owl:equivalentClass
+		[
+			a owl:Class ;
+			owl:intersectionOf (
+				dpds:Entity
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:platform ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:infrastructureType ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:provisionInfo ;
+					owl:someValuesFrom dpds:ProvisionInfo ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:dependsOn ;
+					owl:someValuesFrom xsd:string ;
+				]
+			) ;
+		] ,
+		[
+			a owl:Class ;
+			owl:intersectionOf (
+				dpds:Entity
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:platform ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:infrastructureType ;
+					owl:someValuesFrom xsd:string ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:provisionInfo ;
+					owl:someValuesFrom dpds:ProvisionInfo ;
+				]
+				[
+					a owl:Restriction ;
+					owl:onProperty dpds:dependsOn ;
+					owl:someValuesFrom xsd:string ;
+				]
+			) ;
+		]
+		;
+	.
+
+dpds:InputPortObject
+	a owl:Class ;
+	rdfs:label "Input Port Object" ;
+	rdfs:comment "The Input Port Component describes an input port of a data product." ;
+	.
+
+dpds:InterfaceComponentsObject
+	a owl:Class ;
+	rdfs:label "Interface Components Object" ;
+	rdfs:comment "The Interface Components Object it's a collection of all interface entities exposed by a data product." ;
+	.
+
+dpds:InternalComponentsObject
+	a owl:Class ;
+	rdfs:label "Internal Components Object" ;
+	rdfs:comment "The Internal Components Object it's a collection of all internal entities that compose a data product." ;
+	.
+
+dpds:Object
+	a owl:Class ;
+	rdfs:subClassOf dpds:Entity ;
+	rdfs:label "Object"@en ;
+	.
+
+dpds:ObjectOrReferenceOrExternalResource
+	a owl:Class ;
+	rdfs:label
+		"Object or Reference or External Resource"@en ,
+		"Object or Reference or ExternalResource"@en
+		;
+	owl:unionOf
+		(
+			dpds:Object
+			dpds:Reference
+			dpds:ExternalResource
+		) ,
+		(
+			dpds:Object
+			dpds:Reference
+			dpds:ExternalResource
+		)
+		;
+	.
+
+dpds:ObjectOrReferenceOrExternalResourceObject
+	a owl:Class ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:label "Object Or Reference Or External Resource" ;
+	rdfs:comment "" ;
+	.
+
+dpds:ObservabilityPortObject
+	a owl:Class ;
+	rdfs:label "Observability Port Object" ;
+	rdfs:comment "The Observability Port Component describes an observability port of a data product." ;
+	.
+
+dpds:OutputPortObject
+	a owl:Class ;
+	rdfs:label "Output Port Object" ;
+	rdfs:comment "The Output Port Component describes an output port of a data product." ;
+	.
+
+dpds:OwnerObject
+	a owl:Class ;
+	rdfs:label "Owner Object" ;
+	rdfs:comment "The Owner Object describes the data product's owner." ;
+	.
+
+dpds:PortObject
+	a owl:Class ;
+	rdfs:label "Port Object" ;
+	rdfs:comment "The Port Object describes a port of a data product." ;
+	.
+
+dpds:PromisesObject
+	a owl:Class ;
+	rdfs:label "Promises Object" ;
+	rdfs:comment "The Promises Object describes the data product's promises declared over a given port." ;
+	.
+
+dpds:ProvisionInfo
+	a owl:Class ;
+	rdfs:subClassOf [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Entity
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:service ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						xsd:string
+						dpds:ExternalResource
+					) ;
+				] ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:template ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						dpds:ObjectOrReferenceOrExternalResource
+					) ;
+				] ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:configurations ;
+				owl:someValuesFrom [
+					a owl:Class ;
+					owl:unionOf (
+						dpds:ObjectOrReferenceOrExternalResource
+					) ;
+				] ;
+			]
+		) ;
+	] ;
+	rdfs:label "Provision Info"@en ;
+	rdfs:comment "The Provision Info Object contains all the information required to provision an Infrastructural Component."@en ;
+	owl:equivalentClass [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Object
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:service ;
+				owl:someValuesFrom xsd:anyURI ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:template ;
+				owl:someValuesFrom dpds:ObjectOrReferenceOrExternalResource ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:configurations ;
+				owl:someValuesFrom dpds:ObjectOrReferenceOrExternalResource ;
+			]
+		) ;
+	] ;
+	.
+
+dpds:Reference
+	a owl:Class ;
+	rdfs:subClassOf dpds:Entity ;
+	rdfs:label "Reference"@en ;
+	.
+
+dpds:ReferenceObject
+	a owl:Class ;
+	rdfs:subClassOf
+		dpds:ObjectOrReferenceOrExternalResourceObject ,
+		owl:Thing
+		;
+	rdfs:label "Reference Object" ;
+	rdfs:comment
+		"The Reference Object allows referencing other components in the Data Product Descriptor Document, internally and externally." ,
+		"https://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/#referenceObject"
+		;
+	owl:hasKey (
+		dpds:hasRef
+	) ;
+	.
+
+dpds:SpecificationExtensionPointObject
+	a owl:Class ;
+	rdfs:subClassOf
+		dpds:ObjectOrReferenceOrExternalResourceObject ,
+		owl:Thing
+		;
+	rdfs:label "Specification Extension Point" ;
+	rdfs:comment
+		"A Specification Extension Point marks specific part of the Data Product Descriptor Specification that are left open to extensions or further evolution of the standard." ,
+		"https://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/#specificationExtensionPoint"
+		;
+	owl:hasKey (
+		[
+			dpds:hasDescription dpds:hasExternalDocs ;
+		]
+	) ;
+	.
+
+dpds:StandardDefinitionObject
+	a owl:Class ;
+	rdfs:label "Standard Definition Object" ;
+	rdfs:comment "The Standard Definition Object formally describes an object (ex. API object, provision template object, ecc ...) of interest following a given standard specification." ;
+	.
+
+dpds:StringOrExternalResourceObject
+	a owl:Class ;
+	rdfs:subClassOf owl:Thing ;
+	rdfs:label "String Or External Resource" ;
+	rdfs:comment "" ;
+	.
+
+dpds:api
+	a owl:ObjectProperty ;
+	rdfs:label "api" ;
+	rdfs:comment "The standard definition of the API object used in the Promises Object." ;
+	rdfs:domain dpds:PromisesObject ;
+	rdfs:range dpds:StandardDefinitionObject ;
+	.
+
+dpds:applicationComponents
+	a owl:ObjectProperty ;
+	rdfs:label "applicationComponents" ;
+	rdfs:comment "The array of application components used in the Internal Components Object." ;
+	rdfs:domain dpds:InternalComponentsObject ;
+	rdfs:range [
+		a owl:Class ;
+		owl:unionOf (
+			dpds:ApplicationComponentOrReference
+			dpds:Reference
+		) ;
+	] ;
+	.
+
+dpds:applicationType
+	a owl:DatatypeProperty ;
+	rdfs:label "application type"@en ;
+	rdfs:comment "The applicationType property describes the type of application associated with the component."@en ;
+	rdfs:domain dpds:ApplicationComponent ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:audience
+	a owl:ObjectProperty ;
+	rdfs:label "audience" ;
+	rdfs:comment "The specification extension point used in the Expectations Object." ;
+	rdfs:domain dpds:ExpectationsObject ;
+	rdfs:range dpds:SpecificationExtensionPoint ;
+	.
+
+dpds:billingPolicy
+	a owl:ObjectProperty ;
+	rdfs:label "billingPolicy" ;
+	rdfs:comment "The specification extension point used in the Contracts Object." ;
+	rdfs:domain dpds:ContractsObject ;
+	rdfs:range dpds:SpecificationExtensionPoint ;
+	.
+
+dpds:buildInfo
+	a owl:ObjectProperty ;
+	rdfs:label "build info"@en ;
+	rdfs:comment "The buildInfo property contains all the information required to build an Application Component."@en ;
+	rdfs:domain dpds:ApplicationComponent ;
+	rdfs:range dpds:BuildInfo ;
+	.
+
+dpds:configurations
+	a owl:ObjectProperty ;
+	rdfs:label "configurations"@en ;
+	rdfs:comment "The configurations property contains the configurations for the component."@en ;
+	rdfs:domain dpds:Object ;
+	rdfs:range dpds:ObjectOrReferenceOrExternalResource ;
+	.
+
+dpds:consumesFrom
+	a owl:ObjectProperty ;
+	rdfs:label "consumes from"@en ;
+	rdfs:comment "The consumesFrom property specifies the data sources that the component interacts with."@en ;
+	rdfs:domain dpds:ApplicationComponent ;
+	rdfs:range
+		[
+			a owl:Class ;
+			owl:unionOf (
+				xsd:string
+				dpds:ExternalResource
+			) ;
+		] ,
+		[
+			a owl:Class ;
+			owl:unionOf (
+				xsd:string
+				dpds:ExternalResource
+			) ;
+		]
+		;
+	.
+
+dpds:definition
+	a owl:ObjectProperty ;
+	rdfs:label "definition" ;
+	rdfs:comment "The object or reference or external resource used in the Standard Definition Object." ;
+	rdfs:domain dpds:StandardDefinitionObject ;
+	rdfs:range [
+		a owl:Class ;
+		owl:unionOf (
+			dpds:ObjectOrReferenceOrExternalResource
+			dpds:ExternalResource
+		) ;
+	] ;
+	.
+
+dpds:dependsOn
+	a
+		owl:DatatypeProperty 
+#		owl:ObjectProperty
+		;
+	rdfs:subPropertyOf dpds:hasParameter ;
+	rdfs:label "depends on"@en ;
+	rdfs:comment
+		"Indicates the list of dependencies of an application or infrastructural component."@en ,
+		"The dependsOn property lists the components that this component depends on."@en
+		;
+	rdfs:domain
+		[
+			a owl:Class ;
+			owl:unionOf (
+				dpds:ApplicationComponent
+				dpds:InfrastructuralComponent
+			) ;
+		] ,
+		[
+			owl:unionOf (
+				dpds:ApplicationComponent
+				dpds:InfrastructuralComponent
+			) ;
+		]
+		;
+	rdfs:range xsd:string ;
+	.
+
+dpds:deployInfo
+	a owl:ObjectProperty ;
+	rdfs:label "deploy info"@en ;
+	rdfs:comment "The deployInfo property contains all the information required to deploy an Application Component."@en ;
+	rdfs:domain dpds:ApplicationComponent ;
+	rdfs:range dpds:DeployInfo ;
+	.
+
+dpds:deprecationPolicy
+	a owl:ObjectProperty ;
+	rdfs:label "deprecationPolicy" ;
+	rdfs:comment "The standard definition of the specification extension point used in the Promises Object." ;
+	rdfs:domain dpds:PromisesObject ;
+	rdfs:range dpds:StandardDefinitionObject ;
+	.
+
+dpds:description
+	a owl:DatatypeProperty ;
+	rdfs:label "description" ;
+	rdfs:comment "The description of the Standard Definition Object." ;
+	rdfs:domain dpds:StandardDefinitionObject ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:externalDocs
+	a owl:ObjectProperty ;
+	rdfs:label "externalDocs" ;
+	rdfs:comment "The external resource used in the Standard Definition Object." ;
+	rdfs:domain dpds:StandardDefinitionObject ;
+	rdfs:range dpds:ExternalResource ;
+	.
+
+dpds:hasApplicationComponents
+	a owl:ObjectProperty ;
+	rdfs:label
+		"application components" ,
+		"has application components"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ComponentsObject ;
+	rdfs:range dpds:ApplicationComponentOrReference ;
+	.
+
+dpds:hasComponentGroup
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"component group" ,
+		"has component group"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+#	owl:onDatatype xsd:string ;
+#	owl:withRestrictions (
+#		[
+#			xsd:pattern "^\\S.{0,127}$" ;
+#		]
+#	) ;
+	.
+
+dpds:hasContactPoint
+	a owl:ObjectProperty ;
+	rdfs:label "has contact point" ;
+	rdfs:comment "Relates a data product to its contact points." ;
+	rdfs:domain dpds:InfoObject ;
+	rdfs:range dpds:ContactPointObject ;
+	.
+
+dpds:hasControlPorts
+	a owl:ObjectProperty ;
+	rdfs:label
+		"control ports" ,
+		"has control ports"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ComponentsObject ;
+	rdfs:range dpds:ControlPortOrReference ;
+	.
+
+dpds:hasDescription
+	a owl:ObjectProperty ;
+	rdfs:label
+		"description" ,
+		"has description"
+		;
+	rdfs:comment "" ;
+	rdfs:domain
+		dpds:ExternalResourceObject ,
+		dpds:ReferenceObject ,
+		dpds:SpecificationExtensionPointObject
+		;
+	rdfs:range xsd:string ;
+	.
+
+dpds:hasDiscoveryPorts
+	a owl:ObjectProperty ;
+	rdfs:label
+		"discovery ports" ,
+		"has discovery ports"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ComponentsObject ;
+	rdfs:range dpds:DiscoveryPortOrReference ;
+	.
+
+dpds:hasDisplayName
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"display name" ,
+		"has display name"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:hasEntityType
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"entity type" ,
+		"has entity type"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+#	owl:onDatatype xsd:string ;
+#	owl:withRestrictions (
+#		[
+#			xsd:pattern "^[a-zA-Z0-9]*$" ;
+#		]
+#	) ;
+	.
+
+dpds:hasFullyQualifiedName
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"fully qualified name" ,
+		"has fully qualified name"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+#	owl:onDatatype xsd:string ;
+#	owl:withRestrictions (
+#		[
+#			xsd:pattern "^(?!\\d)[\\w-]+(\\.[\\w-]+)*$" ;
+#		]
+#	) ;
+	.
+
+dpds:hasHref
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"has href" ,
+		"href"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ExternalResourceObject ;
+	rdfs:range xsd:anyURI ;
+	.
+
+dpds:hasId
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"has id" ,
+		"id"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+#	owl:onDatatype xsd:string ;
+#	owl:withRestrictions (
+#		[
+#			xsd:pattern "[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}" ;
+#		]
+#	) ;
+	.
+
+dpds:hasInfrastructuralComponents
+	a owl:ObjectProperty ;
+	rdfs:label
+		"has infrastructural components" ,
+		"infrastructural components"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ComponentsObject ;
+	rdfs:range dpds:InfrastructuralComponentOrReference ;
+	.
+
+dpds:hasInputPort
+	a owl:ObjectProperty ;
+	rdfs:label "has input port" ;
+	rdfs:comment "Relates an interface component to its input ports." ;
+	.
+
+dpds:hasInputPorts
+	a owl:ObjectProperty ;
+	rdfs:label
+		"has input ports" ,
+		"input ports"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ComponentsObject ;
+	rdfs:range dpds:InputPortOrReference ;
+	.
+
+dpds:hasInterfaceComponent
+	a owl:ObjectProperty ;
+	rdfs:label "has interface component" ;
+	rdfs:comment "Relates a data product to its interface components." ;
+	rdfs:domain dpds:InfoObject ;
+	rdfs:range dpds:InterfaceComponentsObject ;
+	.
+
+dpds:hasMediaType
+	a owl:ObjectProperty ;
+	rdfs:label
+		"has media type" ,
+		"media type"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ExternalResourceObject ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:hasName
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"has name" ,
+		"name"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+#	owl:onDatatype xsd:string ;
+#	owl:withRestrictions (
+#		[
+#			xsd:pattern "^\\S.{0,127}$" ;
+#		]
+#	) ;
+	.
+
+dpds:hasObservabilityPorts
+	a owl:ObjectProperty ;
+	rdfs:label
+		"has observability ports" ,
+		"observability ports"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ComponentsObject ;
+	rdfs:range dpds:ObservabilityPortOrReference ;
+	.
+
+dpds:hasOutputPorts
+	a owl:ObjectProperty ;
+	rdfs:label
+		"has output ports" ,
+		"output ports"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ComponentsObject ;
+	rdfs:range dpds:OutputPortOrReference ;
+	.
+
+dpds:hasOwner
+	a owl:ObjectProperty ;
+	rdfs:label "has owner" ;
+	rdfs:comment "Relates a data product to its owner." ;
+	rdfs:domain dpds:InfoObject ;
+	rdfs:range dpds:OwnerObject ;
+	.
+
+dpds:hasRef
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"has reference" ,
+		"reference"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:ReferenceObject ;
+	rdfs:range xsd:anyURI ;
+	.
+
+dpds:hasTags
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"has tags" ,
+		"tags"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+#	owl:onDatatype xsd:string ;
+	.
+
+dpds:hasVersion
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"has version" ,
+		"version"
+		;
+	rdfs:comment "" ;
+	rdfs:domain dpds:EntityObject ;
+	rdfs:range xsd:string ;
+#	owl:onDatatype xsd:string ;
+#	owl:withRestrictions (
+#		[
+#			xsd:pattern "^\\d+\\.\\d+\\.\\d+$" ;
+#		]
+#	) ;
+	.
+
+dpds:infrastructuralComponent
+	a owl:Class ;
+	rdfs:subClassOf dpds:Entity ;
+	rdfs:label "Infrastructural Component"@en ;
+	rdfs:comment "The Infrastructural Component describes an internal infrastructural component used by the data product to run its applications and store its data."@en ;
+	owl:equivalentClass [
+		a owl:Class ;
+		owl:intersectionOf (
+			dpds:Entity
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:platform ;
+				owl:someValuesFrom xsd:string ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:infrastructureType ;
+				owl:someValuesFrom xsd:string ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:provisionInfo ;
+				owl:someValuesFrom dpds:ProvisionInfo ;
+			]
+			[
+				a owl:Restriction ;
+				owl:onProperty dpds:dependsOn ;
+				owl:someValuesFrom xsd:string ;
+			]
+		) ;
+	] ;
+	.
+
+dpds:infrastructuralComponentOrReference
+	a owl:Class ;
+	rdfs:label "Infrastructural Component or Reference"@en ;
+	owl:unionOf (
+		dpds:Reference
+		dpds:InfrastructuralComponent
+	) ;
+	.
+
+dpds:infrastructuralComponents
+	a owl:ObjectProperty ;
+	rdfs:label "infrastructuralComponents" ;
+	rdfs:comment "The array of infrastructural components used in the Internal Components Object." ;
+	rdfs:domain dpds:InternalComponentsObject ;
+	rdfs:range [
+		a owl:Class ;
+		owl:unionOf (
+			dpds:InfrastructuralComponentOrReference
+			dpds:Reference
+		) ;
+	] ;
+	.
+
+dpds:infrastructureType
+	a owl:DatatypeProperty ;
+	rdfs:label "infrastructure type"@en ;
+	rdfs:comment "The infrastructureType property describes the type of infrastructure associated with the component."@en ;
+	rdfs:domain dpds:InfrastructuralComponent ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:objectOrReferenceOrExternalResource
+	a owl:Class ;
+	rdfs:label "object or Reference or ExternalResource"@en ;
+	owl:unionOf (
+		dpds:Object
+		dpds:Reference
+		dpds:ExternalResource
+	) ;
+	.
+
+dpds:platform
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"platform"@en ,
+		"platform"
+		;
+	rdfs:comment
+		"The platform on which the data product's promises are declared." ,
+		"The platform property describes the platform associated with the component."@en
+		;
+	rdfs:domain
+		dpds:Entity ,
+		dpds:PromisesObject
+		;
+	rdfs:range xsd:string ;
+	.
+
+dpds:providesTo
+	a owl:ObjectProperty ;
+	rdfs:label "provides to"@en ;
+	rdfs:comment "The providesTo property specifies the data consumers that the component interacts with."@en ;
+	rdfs:domain dpds:ApplicationComponent ;
+	rdfs:range
+		[
+			a owl:Class ;
+			owl:unionOf (
+				xsd:string
+				dpds:ExternalResource
+			) ;
+		] ,
+		[
+			a owl:Class ;
+			owl:unionOf (
+				xsd:string
+				dpds:ExternalResource
+			) ;
+		]
+		;
+	.
+
+dpds:provisionInfo
+	a owl:ObjectProperty ;
+	rdfs:label "provision info"@en ;
+	rdfs:comment "The provisionInfo property contains all the information required to provision an Infrastructural Component."@en ;
+	rdfs:domain dpds:InfrastructuralComponent ;
+	rdfs:range dpds:ProvisionInfo ;
+	.
+
+dpds:service
+	a owl:DatatypeProperty ;
+	rdfs:label "service"@en ;
+	rdfs:comment "The service property describes the name of the service."@en ;
+	rdfs:domain dpds:Object ;
+	rdfs:range [
+		a owl:Class ;
+		owl:unionOf (
+			xsd:string
+			dpds:ExternalResource
+		) ;
+	] ;
+	.
+
+dpds:servicesType
+	a owl:DatatypeProperty ;
+	rdfs:label "servicesType" ;
+	rdfs:comment "The type of services provided by the data product's promises." ;
+	rdfs:domain dpds:PromisesObject ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:sla
+	a owl:ObjectProperty ;
+	rdfs:label "sla" ;
+	rdfs:comment "The specification extension point used in the Contracts Object." ;
+	rdfs:domain dpds:ContractsObject ;
+	rdfs:range dpds:SpecificationExtensionPoint ;
+	.
+
+dpds:slo
+	a owl:ObjectProperty ;
+	rdfs:label "slo" ;
+	rdfs:comment "The standard definition of the specification extension point used in the Promises Object." ;
+	rdfs:domain dpds:PromisesObject ;
+	rdfs:range dpds:StandardDefinitionObject ;
+	.
+
+dpds:specification
+	a owl:DatatypeProperty ;
+	rdfs:label "specification" ;
+	rdfs:comment "The specification of the Standard Definition Object." ;
+	rdfs:domain dpds:StandardDefinitionObject ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:stringOrExternalResource
+	a owl:Class ;
+	rdfs:label
+		"String or External Resource"@en ,
+		"string or ExternalResource"@en
+		;
+	owl:unionOf
+		(
+			xsd:string
+			dpds:ExternalResource
+		) ,
+		(
+			xsd:string
+			dpds:ExternalResource
+		)
+		;
+	.
+
+dpds:template
+	a owl:ObjectProperty ;
+	rdfs:label "template"@en ;
+	rdfs:comment "The template property contains the template for the component."@en ;
+	rdfs:domain dpds:Object ;
+	rdfs:range dpds:ObjectOrReferenceOrExternalResource ;
+	.
+
+dpds:termsAndConditions
+	a owl:ObjectProperty ;
+	rdfs:label "termsAndConditions" ;
+	rdfs:comment "The specification extension point used in the Contracts Object." ;
+	rdfs:domain dpds:ContractsObject ;
+	rdfs:range dpds:SpecificationExtensionPoint ;
+	.
+
+dpds:usage
+	a owl:ObjectProperty ;
+	rdfs:label "usage" ;
+	rdfs:comment "The specification extension point used in the Expectations Object." ;
+	rdfs:domain dpds:ExpectationsObject ;
+	rdfs:range dpds:SpecificationExtensionPoint ;
+	.
+
+dpds:version
+	a owl:DatatypeProperty ;
+	rdfs:label "version" ;
+	rdfs:comment "The version of the Standard Definition Object." ;
+	rdfs:domain dpds:StandardDefinitionObject ;
+	rdfs:range xsd:string ;
+	.
+
+dpds:x
+	a owl:DatatypeProperty ;
+	rdfs:label
+		"x"@en ,
+		"x"
+		;
+	rdfs:comment
+		"Any property that starts with 'x-' is considered an extension property."@en ,
+		"The x- property used in the Promises Object."
+		;
+	rdfs:domain
+		dpds:Entity ,
+		dpds:PromisesObject
+		;
+	rdfs:range xsd:boolean ;
+	.
+
