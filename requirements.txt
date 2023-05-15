@@ -67,7 +67,7 @@ pipenv==2023.3.20
 platformdirs==3.2.0
 pyasn1==0.4.8
 Pygments==2.15.0
-pymdown-extensions==9.11
+pymdown-extensions==10.0
 pyparsing==3.0.9
 pyquery==2.0.0
 python-dateutil==2.8.2
