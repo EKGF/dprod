@@ -85,6 +85,8 @@ NOTE: The schema of exposed data is part of the the API description. The way of 
 ## Data Catalog Vocabulary (DCAT)
 DCAT is an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. In DCAT a **catalog** is a **dataset** in which each individual item is a metadata record describing some **resource**.
 
+![data product descriptor components](./dcat-v2.png)
+
 A **resource** in DCAT is something that can be cataloged. DCAT defines two main types of catalogable resources: **dataset** and **data service**. Since a catalog is  a dataset, catalogs can also be cataloged. This modification introduced in version 2 of DCAT facilitates the consumption and aggregation of metadata from multiple catalogs. It also makes it possible to have a decentralized approach to publishing data catalogs and makes federated search for datasets across catalogs in multiple sites possible using the same query mechanism and structure.
 
 A **dataset** in DCAT is defined as a "collection of data, published or curated by a single agent, and available for access or download in one or more serializations or formats". A dataset is a conceptual entity, and can be represented by one or more **distributions** that serialize the dataset for transfer. Distributions of a dataset can be provided via **data services**.
@@ -107,7 +109,7 @@ In DPDS there is not the concept of dataset and distribution. Both concepts can 
 
 In DPDS a data product descriptor is not a data product but a version of e data product. One data product can have multiple versions. The concept of resource versioning is missing in DCAT-2. It will be added in DCAT-3.
 
-[image]
+![data product descriptor components](./dcat-dpds-mappings.png)
 
 ## DPDS and DCAT integration ideas
 
