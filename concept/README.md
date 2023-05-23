@@ -44,10 +44,10 @@ For the time being, the activities of the working group are focused on the publi
 
 General info can be used to provide a high level descriptiono of the data product. Common properties of this configuration block are:
 
-	- `fullyQualifiedName` (**string:fqn**): This is the unique universal identifier of the data product.  It MUST be a URN of the form `urn:dpds:{mesh-namespace}:dataproducts:{product-name}:{product-major-version}`. It's RECOMMENDED to use as `mesh-namespace` your company's domain name in reverse dot notation (ex. `com.company-xyz`) in order to ensure that the `fullyQualifiedName` is a unique universal idetifier as REQUIRED.
-	- `version` (**string:version**): this is the <a href="https://semver.org/spec/v2.0.0.html" target="_blank">semantic version number</a> of the data product (not to be confused with the `dataProductDescriptor` version above).
-	- `domain` (**string**): This is the domain to which the data product belongs.
-	- `owner` ([Owner Object](../resources/specifications/last.md#owner-object)): This is a collection of information related to the data product's owner. The only mandatory field is the `id` of the owner, usually his or her corporate mail address.
+- `fullyQualifiedName` (**string:fqn**): This is the unique universal identifier of the data product.  It MUST be a URN of the form `urn:dpds:{mesh-namespace}:dataproducts:{product-name}:{product-major-version}`. It's RECOMMENDED to use as `mesh-namespace` your company's domain name in reverse dot notation (ex. `com.company-xyz`) in order to ensure that the `fullyQualifiedName` is a unique universal idetifier as REQUIRED.
+- `version` (**string:version**): this is the <a href="https://semver.org/spec/v2.0.0.html" target="_blank">semantic version number</a> of the data product (not to be confused with the `dataProductDescriptor` version above).
+- `domain` (**string**): This is the domain to which the data product belongs.
+- `owner` ([Owner Object](https://dpds.opendatamesh.org/resources/specifications/last.md#owner-object)): This is a collection of information related to the data product's owner. The only mandatory field is the `id` of the owner, usually his or her corporate mail address.
   
 NOTE: General info does not contains en explicit definition of the dataset served by the data product. *TODO*
 
@@ -57,9 +57,9 @@ All ports, regardless of their type, are described using the following fields:
 
 - `fullyQualifiedName` (**string:fqn**): The unique universal identifier of the port. It MUST be a URN of the form `urn:dpds:{mesh-namespace}:dataproducts:{product-name}:{product-major-version}:{port-type}:{port-name}`
 - `version`: (**string:version**): This is the <a href="https://semver.org/spec/v2.0.0.html" target="_blank">semantic version number</a> of the data product's port. Every time the *major version* of port changes also the *major version* of the product MUST be incremented.
-- `promises` ([Promises Object](../resources/specifications/last.md#promises-object)): These are the data product's [promises](../concepts/data-contract.md) declared over the port.  Through promises the data product declares the intent of the port. Promises are not a guarantee of the outcome but the data product will behave accordingly to them to realize its intent. The more a data product keeps its promises over time and the more trustworthy it is. Thus, the more trustworthy a data product is the more potential consumers are likely to use it. Trust is based on the verification of how good a data product was in the past in keeping its promises. This verification should be automated by the underlying platform and synthesized in a trust score shared with all potential consumers. Examples of promises are descriptions of services' API, SLO, deprecation policy, etc.
-- `expectations` ([Expectations Object](../resources/specifications/last.md#expectations-object)): These are the data product's [expectations](../concepts/data-contract.md) declared over the port. Through expectations the data product declares how it wants the port to be used by its consumers. Expectations are the inverse of promises. They are a way to explicitly state what promises the data product would like consumers to make regarding how they will use the port. Examples of expectations are intended usage, intended audience, etc.
-- `contracts` ([Contracts Object](../resources/specifications/last.md#contracts-object)): These are the data product's [contracts](../concepts/data-contract.md) declared over the port. Through contracts the data product declares promises and expectations that must be respected both by itself and its consumers respectively. A contract is an explicit agreement between the data product and its consumers. It is used to group all the promises and expectations that if not respected can generate penalties like monetary sanctions or interruption of service. Examples of contracts are terms of conditions, SLA, billing policy, etc.
+- `promises` ([Promises Object](https://dpds.opendatamesh.org/resources/specifications/last.md#promises-object)): These are the data product's [promises](../concepts/data-contract.md) declared over the port.  Through promises the data product declares the intent of the port. Promises are not a guarantee of the outcome but the data product will behave accordingly to them to realize its intent. The more a data product keeps its promises over time and the more trustworthy it is. Thus, the more trustworthy a data product is the more potential consumers are likely to use it. Trust is based on the verification of how good a data product was in the past in keeping its promises. This verification should be automated by the underlying platform and synthesized in a trust score shared with all potential consumers. Examples of promises are descriptions of services' API, SLO, deprecation policy, etc.
+- `expectations` ([Expectations Object](https://dpds.opendatamesh.org/resources/specifications/last.md#expectations-object)): These are the data product's [expectations](https://dpds.opendatamesh.org/concepts/data-contract.md) declared over the port. Through expectations the data product declares how it wants the port to be used by its consumers. Expectations are the inverse of promises. They are a way to explicitly state what promises the data product would like consumers to make regarding how they will use the port. Examples of expectations are intended usage, intended audience, etc.
+- `contracts` ([Contracts Object](https://dpds.opendatamesh.org/resources/specifications/last.md#contracts-object)): These are the data product's [contracts](https://dpds.opendatamesh.org/concepts/data-contract.md) declared over the port. Through contracts the data product declares promises and expectations that must be respected both by itself and its consumers respectively. A contract is an explicit agreement between the data product and its consumers. It is used to group all the promises and expectations that if not respected can generate penalties like monetary sanctions or interruption of service. Examples of contracts are terms of conditions, SLA, billing policy, etc.
 
 A data product can have multiple ports of the same type, for example it is possible to have multiple output ports and/or inpunt ports.
 
@@ -68,21 +68,30 @@ The API of a port is part of its promises. The promises configuration block comp
 
 - `platform` (**string**): This is the target technological platform in which the services associated with the given port operate. Examples: `onprem:milan-1`, `aws:eu-south-1`, `aws:eu-south-1:redshift`.
 - `servicesType` (**string**): This is the type of service associated with the given port. Examples: `soap-services`, `rest-services`, `odata-services`,`streaming-services`, `datastore-services`.
-- `api` ([Standard Definition Object](../resources/specifications/last.md#standardDefinitionObject)): this is the formal description of services API. A good API standard specification should describe how to define the following elements of the service interface: addressable endpoints, available authentication methods and schema of data object exchanged.
+- `api` ([Standard Definition Object](https://dpds.opendatamesh.org/resources/specifications/last.md#standardDefinitionObject)): this is the formal description of services API. A good API standard specification should describe how to define the following elements of the service interface: addressable endpoints, available authentication methods and schema of data object exchanged.
 	- `specification` (**string**): This is the name of the specification used to define the service API. It is RECOMMENDED to use [Open API Specification](https://github.com/OAI/OpenAPI-Specification) for restful services, [Async API Specification](https://github.com/asyncapi/spec) for streaming services and *DataStore API Specification* for data store connection-based services. Other specifications MAY be used as required.
 	- `version` (**string**): This is the version of the specification used to define the service API.
-	- `definition` (**Object**): This is the definition of the service API built using the specification reported in the fields above
-- `depreceationPolicy` ([Specification Extension Point](../resources/specifications/last.md#specificationExtensionPoint)): This is the deprecation policy adopted for the given set of services. A policy description and a pointer to external documentation can be provided. Moreover, other fields with **"x-" prefix** can be added to provide further informations as needed (ex. `x-deprecation-period`).
+	- `definition` (**Object**): This is the definition of the service API built using the specification reported in the fields above. Define how to describe the API is out of the scope of DPDS.
+- `depreceationPolicy` ([Specification Extension Point](https://dpds.opendatamesh.org/resources/specifications/last.md#specificationExtensionPoint)): This is the deprecation policy adopted for the given set of services. A policy description and a pointer to external documentation can be provided. Moreover, other fields with **"x-" prefix** can be added to provide further informations as needed (ex. `x-deprecation-period`).
 	- `description` (**string**): This is a general description of the deprecation policy.
-	- `externalDocs` ([External Resource Object](../resources/specifications/last.md#externalResourceObject)): This is a pointer to external documentation that describe in more detail the deprecation policy.
-- `slo`: ([Specification Extension Point](../resources/specifications/last.md#specificationExtensionPoint)): These are the _service_ level objectives (SLO)* supported by the given set of services. An SLO description and a pointer to external documentation can be provided. Moreover, other fields with **"x-" prefix** can be added to provide further information as needed (ex. `x-availability`, `x-responsetime`, etc...).
+	- `externalDocs` ([External Resource Object](https://dpds.opendatamesh.org/resources/specifications/last.md#externalResourceObject)): This is a pointer to external documentation that describe in more detail the deprecation policy.
+- `slo`: ([Specification Extension Point](https://dpds.opendatamesh.org/resources/specifications/last.md#specificationExtensionPoint)): These are the _service_ level objectives (SLO)* supported by the given set of services. An SLO description and a pointer to external documentation can be provided. Moreover, other fields with **"x-" prefix** can be added to provide further information as needed (ex. `x-availability`, `x-responsetime`, etc...).
 	- `description` (**string**): This is a general description of the supported SLO
-	- `externalDocs` ([External Resource Object](../resources/specifications/last.md#externalResourceObject)): This is a pointer to external documentation that describes in more detail the supported SLO.
+	- `externalDocs` ([External Resource Object](https://dpds.opendatamesh.org/resources/specifications/last.md#externalResourceObject)): This is a pointer to external documentation that describes in more detail the supported SLO.
 
-NOTE: about schema *TODO*
+NOTE: The schema of exposed data is part of the the API description. The way of defining schema is so dependant by the API Specification Standard used. Popular standards like OpenAPI and AsyncAPI let user free to define the schema selecting the modality that best fit the format used to expose data (ex. avro schema for avro format, json schema for json, ecc ...)
+
 
 ## Data Catalog Vocabulary (DCAT)
+DCAT is an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. In DCAT a **catalog** is a **dataset** in which each individual item is a metadata record describing some **resource**.
 
+A **resource** in DCAT is something that can be cataloged. DCAT defines two main types of catalogable resources: **dataset** and **data service*. Since a catalog is  a dataset, catalogs can also be cataloged. This modification introduced in version 2 of DCAT facilitates the consumption and aggregation of metadata from multiple catalogs. It also makes it possible to have a decentralized approach to publishing data catalogs and makes federated search for datasets across catalogs in multiple sites possible using the same query mechanism and structure.
+
+A **dataset** in DCAT is defined as a "collection of data, published or curated by a single agent, and available for access or download in one or more serializations or formats". A dataset is a conceptual entity, and can be represented by one or more **distributions** that serialize the dataset for transfer. Distributions of a dataset can be provided via **data services**.
+
+A **data service** in DCAT is a collection of operations or API which provides access to data. An interactive user-interface is often available to provide convenient access to API operations, but its description is outside the scope of DCAT.
+
+NOTE: The *distribution* does not contains the definition of the schema of exposed data. Schema anyway is usually a part of the API definition (see *data service*). The same consideartions made for DPDS apply here.
 
 ## DPDS and DCAT mapping
 
@@ -93,5 +102,15 @@ Possibili mapping tra concetti:
 **Data Product = Dataset**
 
 **Data Product = Catalog**
+
+
+
+A DCAT profile is a specification for a data catalog that adds additional constraints to DCAT. A data catalog that conforms to the profile also conforms to DCAT. Additional constraints in a profile MAY include:
+
+Cardinality constraints, including a minimum set of required metadata fields
+Sub-classes and sub-properties of the standard DCAT classes and properties
+Classes and properties for additional metadata fields not covered in DCAT vocabulary specification
+Controlled vocabularies or URI sets as acceptable values for properties
+Requirements for specific access mechanisms (RDF syntaxes, protocols) to the catalog's RDF description
 
 
