@@ -1,0 +1,110 @@
+version: '3'
+
+includes:
+  track: ./track/Taskfile.yml
+  preparation: ./preparation/Taskfile.yml
+  preprocessing: ./preprocessing/Taskfile.yml
+  synchronization: ./synchronization/Taskfile.yml
+  validation: ./validation/Taskfile.yml
+  inference: ./inference/Taskfile.yml
+  shape-generation: ./shape_generation/Taskfile.yml
+  version: ./version/Taskfile.yml
+  artifacts: ./artifacts/Taskfile.yml
+  delivery: ./delivery/Taskfile.yml
+
+vars:
+  DOCKER: true
+  DOCKER_PWD: /data
+  SHELL_PWD:
+    sh: pwd
+  PWD:
+    sh: if [ -z "{{.DOCKER}}" ]; then echo {{.SHELL_PWD}}; else echo {{.DOCKER_PWD}}; fi
+
+  DOCKER_DIRS: "-v {{.SHELL_PWD}}:{{.DOCKER_PWD}} --workdir {{.DOCKER_PWD}}"
+  DOCKER_PARAMS: "--rm"
+
+tasks:
+
+  ci:
+    desc: Perform Continous Integration tasks
+    cmds:
+      - task: preparation
+      - task: preprocessing
+      - task: synchronization
+      - task: validation
+      - task: inference
+      - task: shape-generation
+      - task: version
+      - task: track:push
+
+  cd:
+    desc: Perform Continous Delivery tasks
+    cmds:
+      - task: artifacts
+      - task: delivery
+
+  noop:
+    - echo "noop"
+
+  preparation:
+    deps:
+      - task: preparation:cmemc_env_overwrite
+        vars: { CONFIG_KEYS: 'OAUTH_CLIENT_ID OAUTH_CLIENT_SECRET' }
+
+  preprocessing:
+    deps:
+      - task: preprocessing:sync_turtle_nt
+        vars: { DEFAULT_GRAPH_IRI: '{{.ONTOLOGY_IRI}}', FILE: '{{.ONTOLOGY_FILE}}' }
+
+  synchronization:
+    deps:
+      - task: synchronization:get_ontology
+        vars: { GRAPH_IRI: '{{.ONTOLOGY_GRAPH_IRI}}', FILE: '{{.ONTOLOGY_FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+      - task: synchronization:get_shape
+        vars: { GRAPH_IRI: '{{.SHAPE_GRAPH_IRI}}', FILE: '{{.SHAPE_FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+        status:
+          - '[ ${SHAPE} = "False" ]'
+    cmds:
+      - task: track:commit
+        vars: { MSG_ADD: 'downloaded ontology and shapes from cmem' }
+      - task: synchronization:execute_queries
+        vars: { DEFAULT_GRAPH_IRI: '{{.ONTOLOGY_IRI}}', FILE: '{{.ONTOLOGY_FILE}}', QUERY_FILES: './resources/queries/*', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+        # TODO: add extract classes and properties
+      - task: track:commit
+        vars: { MSG_ADD: 'extracted ontology from cmem integration graph' }
+
+  validation:
+    deps:
+      - task: validation:rdfunit-auto
+        vars: { INSTANCEFILE: '{{.ONTOLOGY_FILE}}', SCHEMAFILE: '{{.ONTOLOGY_FILE}}' }
+      - task: validation:rdfunit-manual
+        vars: { SCHEMAFILE: '{{.ONTOLOGY_FILE}}' }
+
+  inference:
+    deps:
+      - task: noop
+
+  shape-generation:
+    cmds:
+      - task: shape-generation:from-ontology
+      - task: shape-generation:merge
+      - task: track:commit
+        vars: { MSG_ADD: 'extracted shapes from ontology' }
+
+  version:
+    deps:
+      - task: noop
+
+  artifacts:
+    deps:
+      - task: artifacts:documentation:ontology
+        vars: { BASE_IRI: '{{.ONTOLOGY_IRI}}', FILE: '{{.ONTOLOGY_FILE}}' }
+
+  delivery:
+    deps:
+      - task: delivery:deploy_ontology_to_cmem
+        vars: { FILE: '{{.ONTOLOGY_FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+      - task: delivery:deploy_shapes_to_cmem
+        vars: { GRAPH_IRI: '{{.SHAPE_IRI}}', FILE: '{{.SHAPE_FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+        status:
+          - '[ ${SHAPE} = "False" ]'

@@ -1,0 +1,49 @@
+version: '3'
+
+vars:
+  SHELL_MANUALFILES: "{{.SHELL_PWD}}/resources/tests"
+  DOCKER_MANUALFILES: "/resources/tests"
+  MANUALFILES:
+    sh: 'echo {{.SHELL_MANUALFILES}}/*.ttl | sed -e "s: :,:g" | sed -e "s:{{.SHELL_MANUALFILES}}:{{.DOCKER_MANUALFILES}}:g"'
+
+  JAVA_MAX_MEM: "4G"
+  RDFUNIT_IMAGE: docker.io/aksw/rdfunit
+  RDFUNIT_PARAMS_DEFAULT: '-e GIT_VERSION={{.GIT_VERSION}} -e ONTOLOGY_URI="{{.ONTOLOGY_IRI}}" -e JAVA_MAX_MEM={{.JAVA_MAX_MEM}} -v {{.SHELL_MANUALFILES}}:{{.DOCKER_MANUALFILES}}'
+  RDFUNIT_PARAMS:
+    sh: if [ -z "{{.RDFUNIT_PARAMS}}" ]; then echo "{{.RDFUNIT_PARAMS_DEFAULT}}"; else echo "{{.RDFUNIT_PARAMS}}"; fi
+  RDFUNIT_CMD: docker run --rm {{.RDFUNIT_PARAMS}} {{.DOCKER_DIRS}} {{.RDFUNIT_IMAGE}} rdfunit
+
+
+tasks:
+
+  rdfunit-auto:
+    desc: Run RDFUnit Auto validation
+    cmds:
+      - task: prepare
+      - "{{.RDFUNIT_CMD}} -M -v -d ./{{.INSTANCEFILE}}.ttl -s ./{{.SCHEMAFILE}}.ttl -o junitxml -C -f ./_run/rdfunit_auto/"
+      - "{{.RDFUNIT_CMD}} -M -v -d ./{{.INSTANCEFILE}}.ttl -s ./{{.SCHEMAFILE}}.ttl -o html -C -f ./_run/rdfunit_auto/"
+      - task: move-artifacts
+        vars: { RUN_TYPE: 'auto' }
+
+  rdfunit-manual:
+    desc: Run RDFUnit Manual validation
+    cmds:
+      - task: prepare
+      - "{{.RDFUNIT_CMD}} -A -v -d ./{{.SCHEMAFILE}}.ttl -s {{.MANUALFILES}} -o junitxml -C -f ./_run/rdfunit_manual/"
+      - "{{.RDFUNIT_CMD}} -A -v -d ./{{.SCHEMAFILE}}.ttl -s {{.MANUALFILES}} -o html -C -f ./_run/rdfunit_manual/"
+      - task: move-artifacts
+        vars: { RUN_TYPE: 'manual' }
+
+  move-artifacts:
+    desc: Move resulting artifacts to the artifacts directory
+    cmds:
+      - mkdir -p artifacts
+      - cp ./_run/rdfunit_auto/results/.*.xml artifacts/validation-rdfunit-{{.RUN_TYPE}}-results.xml || echo "no xml files to copy"
+      - cp ./_run/rdfunit_auto/results/.*.html artifacts/validation-rdfunit-{{.RUN_TYPE}}-results.html || echo "no html files to copy"
+      - cp ./_run/rdfunit_manual/results/.*.xml artifacts/validation-rdfunit-{{.RUN_TYPE}}-results.xml || echo "no xml files to copy"
+      - cp ./_run/rdfunit_manual/results/.*.html artifacts/validation-rdfunit-{{.RUN_TYPE}}-results.html || echo "no html files to copy"
+
+  prepare:
+    desc: Prepare build directories
+    cmds:
+      - mkdir -p ./_run/rdfunit_auto ./_run/rdfunit_manual

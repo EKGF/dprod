@@ -1,0 +1,28 @@
+version: '3'
+
+includes:
+  pipeline: ./tasks/Taskfile.yml
+
+output: prefixed
+
+dotenv: ['.env','.copier-answers.env']
+
+tasks:
+
+  ci:
+    - task: pipeline:ci
+
+  cd:
+    - task: pipeline:cd
+
+  update:
+    cmds:
+      - copier update
+    interactive: true
+
+  clean:
+    - rm -r _run _tmp || true
+
+  dist-clean:
+    - task: clean
+    - rm -r artifacts || true

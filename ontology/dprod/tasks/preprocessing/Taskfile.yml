@@ -1,0 +1,24 @@
+version: '3'
+
+includes:
+  helper: ../helper/Taskfile.yml
+
+tasks:
+
+  sync_turtle_nt:
+    desc:
+    cmds:
+      - task: helper:sync_turtle_nt
+        vars: { FILE: '{{.FILE}}', DEFAULT_GRAPH_IRI: '{{.DEFAULT_GRAPH_IRI}}' }
+
+  normalize_turtle_shapes:
+    desc: Overwrite the shapes.ttl with the current content of shapes.nt
+    cmds:
+      - task: helper:sync_nt_turtle
+        vars: { FILE: '{{.SHAPEFILE}}', DEFAULT_GRAPH_IRI: '{{.SHAPE_IRI}}' }
+
+  normalize_turtle_ontology:
+    desc: Overwrite the ontology.ttl with the current content of ontology.nt
+    cmds:
+      - task: helper:sync_nt_turtle
+        vars: { FILE: '{{.SCHEMAFILE}}', DEFAULT_GRAPH_IRI: '{{.ONTOLOGY_IRI}}' }

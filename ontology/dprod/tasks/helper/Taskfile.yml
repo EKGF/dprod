@@ -1,0 +1,49 @@
+version: '3'
+
+vars:
+  CMEMC_IMAGE: docker-registry.eccenca.com/eccenca-cmemc
+  CMEMC_PARAMS_DEFAULT: "-v {{.SHELL_PWD}}/{{.CMEMC_CONFIG}}:/cmemc.ini"
+  CMEMC_PARAMS:
+    sh: if [ -z "{{.CMEMC_PARAMS}}" ]; then echo "{{.CMEMC_PARAMS_DEFAULT}}"; else echo "{{.CMEMC_PARAMS}}"; fi
+  CMEMC_CMD: docker run --rm {{.CMEMC_PARAMS}} {{.DOCKER_DIRS}} {{.CMEMC_IMAGE}}
+
+  RAPTOR_IMAGE: docker.io/pheyvaer/raptor
+  RAPTOR_PARAMS_DEFAULT: ""
+  RAPTOR_PARAMS:
+    sh: if [ -z "{{.RAPTOR_PARAMS}}" ]; then echo "{{.RAPTOR_PARAMS_DEFAULT}}"; else echo "{{.RAPTOR_PARAMS}}"; fi
+  RAPTOR_CMD: docker run --rm {{.RAPTOR_PARAMS}} {{.DOCKER_DIRS}} {{.RAPTOR_IMAGE}}
+
+tasks:
+
+  sync_nt_turtle:
+    cmds:
+      - cp {{.FILE}}.nt {{.FILE}}.ttl
+      - task: normalize_turtle
+        vars: { FILE: '{{.FILE}}', DEFAULT_GRAPH_IRI: '{{.DEFAULT_GRAPH_IRI}}' }
+
+  sync_turtle_nt:
+    cmds:
+      - "{{.RAPTOR_CMD}} -i turtle -o ntriples --input-uri {{.DEFAULT_GRAPH_IRI}} {{.FILE}}.ttl > {{.FILE}}.nt"
+      - LC_ALL=C sort -u -o {{.FILE}}.nt {{.FILE}}.nt
+
+  normalize_turtle:
+    cmds:
+      - mkdir -p _tmp
+      - cat prefixes.ttl {{.FILE}}.ttl > _tmp/{{.FILE}}.ttl
+      - "{{.RAPTOR_CMD}} -i turtle -o turtle --input-uri {{.DEFAULT_GRAPH_IRI}} _tmp/{{.FILE}}.ttl > {{.FILE}}.ttl"
+      - defer: rm _tmp/{{.FILE}}.ttl
+
+  normalize_nt:
+    cmds:
+      - mkdir -p _tmp
+      - "{{.RAPTOR_CMD}} -i turtle -o ntriples --input-uri {{.DEFAULT_GRAPH_IRI}} {{.FILE}}.nt > _tmp/{{.FILE}}.nt"
+      - LC_ALL=C sort -u -o {{.FILE}}.nt _tmp/{{.FILE}}.nt
+      - defer: rm _tmp/{{.FILE}}.nt
+
+  cmemc:upload_graph:
+    cmds:
+      - "{{.CMEMC_CMD}} -c {{.CMEMC_CONFIG_ID}} --config-file /cmemc.ini graph import --replace {{.FILE}}.nt {{.GRAPH_IRI}}"
+
+  cmemc:upload_vocabulary:
+    cmds:
+      - "{{.CMEMC_CMD}} -c {{.CMEMC_CONFIG_ID}} --config-file /cmemc.ini vocabulary import --replace {{.FILE}}.nt"

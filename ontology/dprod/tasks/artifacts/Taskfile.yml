@@ -1,0 +1,28 @@
+version: '3'
+
+vars:
+  JOD_IMAGE: ghcr.io/eccenca/jod:main
+
+tasks:
+  documentation:ontology:
+    vars:
+      DOCUMENTATION_FILE:
+        sh: "BASE_IRI={{.BASE_IRI}}; BASE_NAME=${BASE_IRI##*/}; echo ${BASE_NAME:-index}.html"
+    cmds:
+      - mkdir -p _run/artifacts_documentation_ontology
+      - cp {{.FILE}}.ttl _run/artifacts_documentation_ontology/ontology.ttl
+      - task: jod:build
+        vars:
+          BASE_URL:
+            sh: "BASE_IRI={{.BASE_IRI}}; echo ${BASE_IRI%/*}/"
+          DOCKER_DIRS: '-v {{.SHELL_PWD}}/_run/artifacts_documentation_ontology:{{.DOCKER_PWD}}'
+      - mkdir -p artifacts
+      - cp _run/artifacts_documentation_ontology/_site/{{.DOCUMENTATION_FILE}} artifacts/ontology-documentation.html
+
+  documentation:shapes:
+    cmds:
+      - echo "Shape Documentation not yet implemented"
+
+  jod:build:
+    cmds:
+      - docker run --rm -e JOD_URL={{.BASE_URL}} -e JOD_RESTRICTION_URL=True {{.DOCKER_DIRS}} {{.JOD_IMAGE}}

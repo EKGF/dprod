@@ -1,0 +1,9 @@
+version: '3'
+
+tasks:
+
+  cmemc_env_overwrite:
+    cmds:
+      - python ./resources/tools/cmemc_env_overwrite.py {{.CMEMC_CONFIG}} {{.CMEMC_CONFIG_ID}} {{.CONFIG_KEYS}}
+    status:
+      - '[ ! ${CMEMC_ENV_OVERWRITE} ]'
