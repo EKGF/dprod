@@ -9,6 +9,7 @@ Aside from general information, a data product is composed of external interface
 
 Note: In data mesh a data product is not just a dataset or collection of datasets. It can be seen as a microservice whose primary objective is to provide access to data rather than business functions.
 
+![data product](./dpds-product.png)
 
 ### Data Product's Interface Components
 External consumers interact with a data product through its public interfaces. These interfaces are grouped by functional role in entities named ports. Each port exposes a service or set of correlated services. These are the five types of ports usially exposed by a data product:
@@ -34,11 +35,11 @@ These components are not visible to its consumers. They are used by the underlyi
 
 It's the document that serves as an entry to all the information about a data product, including its fully qualified name, owner, domain, version, interface components and internal components. It is used to share a complete view of the data product between consumers and the underlying DataOps Platform throughout its lifecycle. The objective of DPDS is to provide a standard to define the structure and content of this document.
 
-[Immagine]
+![data product descriptor](./dpds-components.svg)
 
 For the time being, the activities of the working group are focused on the publicly visible part of the data product (general info and interfaces). Therefore, we will not delve further into the structure and content of the sections of the DPDS that describe the internal components.
 
-[Immagine]
+![data product descriptor components](./dpds-structure.png)
 
 ### DPDS General Info
 
@@ -114,6 +115,3 @@ In DPDS a data product descriptor is not a data product but a version of e data 
 We can consider to define A DCAT profile to add to the basic specification the concepts that are important to rapresent a semantic data product and that are now missing (ex. data product). A DCAT profile is a specification for a data catalog that adds additional concepts and constraints to DCAT. 
 
 Once the new profile will be in place a data product defined using DPDS will be easly transpilled into a product defined in DCAT. Transplling can be performed by each data product through one of its discoverability ports. The actual implementation of the transpilling procedure can be delegated by the data product to a sidecar library. The undelying platform can finally use the DCAT definition exposed by the discoverability port of each known product to build a shared catalog of all resources that compose the mesh (data marketplace).
-
-
-
