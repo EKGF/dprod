@@ -3,7 +3,7 @@
 ## Data mesh concepts
 
 ### Data Product
-It's the smallest unit that can be independently deployed and managed in a data architecture (i.e. architectural quantum). It is composed of all the structural components that it requires to do its function: the metadata, the data, the code, the policies that govern the data and its dependencies on infrastructure. Each data product has a clear identifier, a version number and an owner.
+It's the smallest unit that can be independently deployed and managed in a data architecture (i.e. [architectural quantum](https://martinfowler.com/articles/data-mesh-principles.html#LogicalArchitecturedataProductTheArchitecturalQuantum)). It is composed of all the structural components that it requires to do its function: the metadata, the data, the code, the policies that govern the data and its dependencies on infrastructure. Each data product has a clear identifier, a version number and an owner.
 
 Aside from general information, a data product is composed of external interfaces (i.e. interface components) and internal resources (i.e. internal components). Interface components are public and are used by external agents to access services exposed by the data product. Internal components are private and are used by the underlying DataOps Platform to deploy and operate the data product.
 
@@ -40,6 +40,8 @@ It's the document that serves as an entry to all the information about a data pr
 For the time being, the activities of the working group are focused on the publicly visible part of the data product (general info and interfaces). Therefore, we will not delve further into the structure and content of the sections of the DPDS that describe the internal components.
 
 ![data product descriptor components](./dpds-structure.png)
+
+DPDS is available [here](https://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/). A full example of a data product described using DPDS is available [here](https://dpds.opendatamesh.org/quickstart/).
 
 ### DPDS General Info
 
@@ -83,17 +85,17 @@ NOTE: The schema of exposed data is part of the the API description. The way of 
 
 
 ## Data Catalog Vocabulary (DCAT)
-DCAT is an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. In DCAT a **catalog** is a **dataset** in which each individual item is a metadata record describing some **resource**.
+DCAT is an RDF vocabulary designed to facilitate interoperability between data catalogs published on the Web. In DCAT a `catalog` is a `dataset` in which each individual item is a metadata record describing some `resource`.
 
 ![data product descriptor components](./dcat-v2.png)
 
-A **resource** in DCAT is something that can be cataloged. DCAT defines two main types of catalogable resources: **dataset** and **data service**. Since a catalog is  a dataset, catalogs can also be cataloged. This modification introduced in version 2 of DCAT facilitates the consumption and aggregation of metadata from multiple catalogs. It also makes it possible to have a decentralized approach to publishing data catalogs and makes federated search for datasets across catalogs in multiple sites possible using the same query mechanism and structure.
+A `resource` in DCAT is something that can be cataloged. DCAT defines two main types of catalogable resources: `dataset` and `data service`. Since a catalog is  a dataset, catalogs can also be cataloged. This modification introduced in version 2 of DCAT facilitates the consumption and aggregation of metadata from multiple catalogs. It also makes it possible to have a decentralized approach to publishing data catalogs and makes federated search for datasets across catalogs in multiple sites possible using the same query mechanism and structure.
 
-A **dataset** in DCAT is defined as a "collection of data, published or curated by a single agent, and available for access or download in one or more serializations or formats". A dataset is a conceptual entity, and can be represented by one or more **distributions** that serialize the dataset for transfer. Distributions of a dataset can be provided via **data services**.
+A `dataset` in DCAT is defined as a "collection of data, published or curated by a single agent, and available for access or download in one or more serializations or formats". A dataset is a conceptual entity, and can be represented by one or more `distributions` that serialize the dataset for transfer. Distributions of a dataset can be provided via `data services`.
 
-A **data service** in DCAT is a collection of operations or API which provides access to data. An interactive user-interface is often available to provide convenient access to API operations, but its description is outside the scope of DCAT.
+A `data service` in DCAT is a collection of operations or API which provides access to data. An interactive user-interface is often available to provide convenient access to API operations, but its description is outside the scope of DCAT.
 
-NOTE: The *distribution* does not contains the definition of the schema of exposed data. Schema anyway is usually a part of the API definition (see *data service*). The same consideartions made for DPDS apply here.
+NOTE: The `distribution` does not contains the definition of the schema of exposed data. Schema anyway is usually a part of the API definition (see `data service`). The same consideartions made for DPDS apply here.
 
 ## DPDS and DCAT mappings
 
@@ -103,7 +105,7 @@ DCAT lacks the concept of data product. However, the concept of data product can
 - **Data Product => Dataset:** A data product can be seen as a specific type of dataset. However, this association is limiting because in the data mesh approach, a data product is a richer entity than just the exposed data. Additionally, a data product may expose multiple datasets.
 - **Data Product => Catalog:** A data product can be seen as a catalog that exposes the resources it is composed of. Initially, its datasets and data services, and in the future, even its internal components (infrastructure and applications). This is certainly the preferable option.
 
-The DCAt concept of **data service** naturally maps to the DPDS concept of **ports**
+The DCAT concept of **data service** naturally maps to the DPDS concept of **ports**
 
 In DPDS there is not the concept of dataset and distribution. Both concepts can be inferred from output ports definition. In future versions of the specification an explicit definition of datasets exposed by a data product can be addedd to the `general info` configuration block. 
 
@@ -111,8 +113,12 @@ In DPDS a data product descriptor is not a data product but a version of e data 
 
 ![data product descriptor components](./dcat-dpds-mappings.png)
 
-## DPDS and DCAT integration ideas
+## DPDS and DCAT integration ideas (tobe discusses...)
 
-We can consider to define A DCAT profile to add to the basic specification the concepts that are important to rapresent a semantic data product and that are now missing (ex. data product). A DCAT profile is a specification for a data catalog that adds additional concepts and constraints to DCAT. 
+We can consider to define A *DCAT profile* to add to the basic specification the concepts that are important to rapresent a semantic data product and that are now missing (ex. `data product`). A DCAT profile is a specification for a data catalog that adds additional concepts and constraints to DCAT. 
 
-Once the new profile will be in place a data product defined using DPDS will be easly transpilled into a product defined in DCAT. Transplling can be performed by each data product through one of its discoverability ports. The actual implementation of the transpilling procedure can be delegated by the data product to a sidecar library. The undelying platform can finally use the DCAT definition exposed by the discoverability port of each known product to build a shared catalog of all resources that compose the mesh (data marketplace).
+Once the new profile will be in place a data product defined using DPDS will be easly transpilled into a product defined in DCAT. Transplling can be performed by each data product through one of its `discoverability ports`. The implementation of the transpilling procedure can be delegated by the data product to a sidecar library. Subsequently, the underlying platform can utilize the DCAT definition exposed by the discoverability port of each known product to construct a shared catalog encompassing all the resources that constitute the data mesh.
+
+While this approach is valuable, it does not fully constitute a genuine data marketplace. In fact, potential consumers primarily search for business concepts rather than specifically looking for data products, APIs, or schemas. Their initial focus is on identifying the desired business concepts, and only afterwards do they seek data products that expose those concepts. At this stage, consumers can choose which product(s) they want to consume based on their preferences for APIs, exposed schemas, and declared SLO/SLA (Service Level Objectives/Agreements). Currently, DPDS lacks a concept similar to a dataset, and the dataset concept in DCAT is somewhat limited. It merely represents a resource with a small set of additional properties that describe the scope of the exposed data. I believe that a semantic data product should expand upon this concept to provide a semantic description of the exposed data, linking the physical schema with the corporate ontology or semantic graph. The overall idea is to distribute data generation and processing across data products to enhance scalability while centralizing semantic modeling to ensure order and interoperability.
+
+
