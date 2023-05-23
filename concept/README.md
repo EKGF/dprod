@@ -93,24 +93,27 @@ A **data service** in DCAT is a collection of operations or API which provides a
 
 NOTE: The *distribution* does not contains the definition of the schema of exposed data. Schema anyway is usually a part of the API definition (see *data service*). The same consideartions made for DPDS apply here.
 
-## DPDS and DCAT mapping
+## DPDS and DCAT mappings
 
-Possibili mapping tra concetti:
+DCAT lacks the concept of data product. However, the concept of data product can be associated with existing concepts in DCAT. In particular, the following are the possible mappings:
 
-**Data Product = Resource**
+- **Data Product => Resource** A data product can be seen as a specific type of catalogable resource, just like a dataset and a data service.
+- **Data Product => Dataset:** A data product can be seen as a specific type of dataset. However, this association is limiting because in the data mesh approach, a data product is a richer entity than just the exposed data. Additionally, a data product may expose multiple datasets.
+**Data Product => Catalog:** A data product can be seen as a catalog that exposes the resources it is composed of. Initially, its datasets and data services, and in the future, even its internal components (infrastructure and applications). This is certainly the preferable option.
 
-**Data Product = Dataset**
+The DCAt concept of **data service** naturally maps to the DPDS concept of **ports**
 
-**Data Product = Catalog**
+In DPDS there is not the concept of dataset and distribution. Both concepts can be inferred from output ports definition. In future versions of the specification an explicit definition of datasets exposed by a data product can be addedd to the `general info` configuration block. It's not urgent at the moment because a dataset in DCAT is a conceptual definition quite anemic. Basically it is just a resource with some more extra properties that describe the scope of data contained in the dataset itself.
 
+In DPDS a data product descriptor is not a data product but a version of e data product. One data product can have multiple versions. The concept of versioning is missing in DCAT-2. It will be added in DCAT-3.
 
+[image]
 
-A DCAT profile is a specification for a data catalog that adds additional constraints to DCAT. A data catalog that conforms to the profile also conforms to DCAT. Additional constraints in a profile MAY include:
+## DPDS and DCAT integration ideas
 
-Cardinality constraints, including a minimum set of required metadata fields
-Sub-classes and sub-properties of the standard DCAT classes and properties
-Classes and properties for additional metadata fields not covered in DCAT vocabulary specification
-Controlled vocabularies or URI sets as acceptable values for properties
-Requirements for specific access mechanisms (RDF syntaxes, protocols) to the catalog's RDF description
+We can consider to define A DCAT profile to add to the basic specification the concepts that are important to rapresent a semantic data product and that are now missing (ex. data product). A DCAT profile is a specification for a data catalog that adds additional concepts and constraints to DCAT. 
+
+Once the new profile will be in place a data product defined using DPDS will be easly transpilled into a product defined in DCAT. Transplling can be performed by each data product through one of its discoverability ports. The actual implementation of the transpilling procedure can be delegated by the data product to a sidecar library. The undelying platform can finally use the DCAT definition exposed by the discoverability port of each known product to build a shared catalog of all resources that compose the mesh (data marketplace).
+
 
 
