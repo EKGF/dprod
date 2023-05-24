@@ -1,0 +1,19 @@
+version: '3'
+
+includes:
+  helper: ../helper/Taskfile.yml
+
+tasks:
+  deploy_ontology_to_cmem:
+    desc: Upload the ontology file to the CMEM graph
+    cmds:
+      - task: helper:cmemc:upload_vocabulary
+        vars: { FILE: '{{.FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+
+  deploy_shapes_to_cmem:
+    desc: Upload the shapes file to the CMEM graph
+    cmds:
+      - task: helper:cmemc:upload_graph
+        vars: { GRAPH_IRI: '{{.SHAPE_GRAPH_IRI}}', FILE: '{{.FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+    status:
+      - '[ ${SHAPE} = "False" ]'

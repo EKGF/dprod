@@ -1,0 +1,53 @@
+version: '3'
+
+includes:
+  helper: ../helper/Taskfile.yml
+
+vars:
+  CMEMC_IMAGE: docker-registry.eccenca.com/eccenca-cmemc
+  CMEMC_DOCKER_PARAMS_DEFAULT: "-v {{.SHELL_PWD}}/{{.CMEMC_CONFIG}}:/cmemc.ini"
+  CMEMC_DOCKER_PARAMS:
+    sh: if [ -z "{{.CMEMC_DOCKER_PARAMS}}" ]; then echo "{{.CMEMC_DOCKER_PARAMS_DEFAULT}}"; else echo "{{.CMEMC_DOCKER_PARAMS}}"; fi
+  CMEMC_CMD: docker run --rm {{.CMEMC_DOCKER_PARAMS}} {{.DOCKER_DIRS}} {{.CMEMC_IMAGE}}
+
+tasks:
+
+  get_ontology:
+    desc: Download the ontology graph from the cmem instance and write it into the repositories ontology graph file
+    cmds:
+      - task: get_graph
+        vars: { GRAPH_IRI: '{{.GRAPH_IRI}}', FILE: '{{.FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+
+  get_shape:
+    desc: Download the shape graph from the cmem instance and write it into the repositories shape graph file
+    cmds:
+      - task: get_graph
+        vars: { GRAPH_IRI: '{{.GRAPH_IRI}}', FILE: '{{.FILE}}', CMEMC_CONFIG_ID: '{{.CMEMC_CONFIG_ID}}' }
+    status:
+      - '[ ${SHAPE} = "False" ]'
+
+  get_graph:
+    desc: Download a graph from the cmem instance and write it into the repositories graph
+    cmds:
+      - "{{.CMEMC_CMD}} -c {{.CMEMC_CONFIG_ID}} --config-file /cmemc.ini graph export {{.GRAPH_IRI}} > {{.FILE}}.nt"
+      - task: helper:normalize_nt
+        vars: { FILE: '{{.FILE}}', DEFAULT_GRAPH_IRI: '{{.GRAPH_IRI}}' }
+      - defer: if test -s {{.FILE}}.nt; then echo ""; else git restore {{.FILE}}.nt; fi
+      - task: helper:sync_nt_turtle
+        vars: { FILE: '{{.FILE}}', DEFAULT_GRAPH_IRI: '{{.GRAPH_IRI}}' }
+    status:
+      - '! {{.CMEMC_CMD}} -c {{.CMEMC_CONFIG_ID}} --config-file /cmemc.ini graph list --id-only | grep -q {{.GRAPH_IRI}}'
+
+  execute_queries:
+    desc: Execute a construct query on a cmem instance, append the data to the repositories graph
+    cmds:
+      - |
+        shopt -s nullglob
+        for query_file in {{.QUERY_FILES}}
+        do
+          {{.CMEMC_CMD}} -c {{.CMEMC_CONFIG_ID}} --config-file /cmemc.ini query execute {{.QUERY_FILES}} >> {{.FILE}}.nt
+        done
+      - task: helper:normalize_nt
+        vars: { FILE: '{{.FILE}}', DEFAULT_GRAPH_IRI: '{{.DEFAULT_GRAPH_IRI}}' }
+      - task: helper:sync_nt_turtle
+        vars: { FILE: '{{.FILE}}', DEFAULT_GRAPH_IRI: '{{.DEFAULT_GRAPH_IRI}}' }

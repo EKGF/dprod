@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+
+  commit:
+    desc: Commit changes to the ontology repository
+    cmds:
+      - task: add-ontology
+      - task: add-shape
+      - cmd: 'git -c user.name="{{.GIT_USER_NAME}}" -c user.email="{{.GIT_USER_EMAIL}}" commit -m "Bot update ontology and shapes: {{.MSG_ADD}}"'
+        ignore_error: true
+
+  add-ontology:
+    cmds:
+      - git add {{.ONTOLOGY_FILE}}.ttl {{.ONTOLOGY_FILE}}.nt
+
+  add-shape:
+    cmds:
+      - git add {{.SHAPE_FILE}}.ttl {{.SHAPE_FILE}}.nt
+    status:
+      - '[ ${SHAPE} = "False" ]'
+
+  push:
+    desc: Push the ontology repository to its remote
+    cmds:
+      - git push
+    status:
+      - '[ ${GIT_PUSH} = "False" ]'

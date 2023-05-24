@@ -1,0 +1,131 @@
+# baseURI: https://w3id.org/dprod//
+# imports: http://purl.org/dc/terms/
+# imports: http://www.w3.org/2004/02/skos/core
+# imports: http://www.w3.org/ns/prov-o#
+# imports: http://www.w3.org/ns/dcat
+# prefix: dprod
+
+@prefix dprod: <https://w3id.org/dprod/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dctype: <http://purl.org/dc/dcmitype/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdo: <http://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/dprod/>
+  a owl:Ontology ;
+  dct:contributor [
+      a foaf:Person ;
+      sdo:affiliation [
+          foaf:homepage <https://eccenca.com> ;
+          foaf:name "eccenca GmbH" ;
+        ] ;
+      foaf:name "Marcel Fröhlich" ;
+    ] ;
+  dct:contributor [
+      sdo:affiliation [
+          foaf:homepage <https://brox.de> ;
+          foaf:name "Brox IT-Solutions GmbH"
+      ] ;
+      foaf:name "Matthias Jurisch" ;
+    ] ;
+  dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dct:modified "2023-05-16"^^xsd:date ;
+  rdfs:comment "DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors."@en ;
+  rdfs:label "The data product vocabulary"@en ;
+  owl:imports dct: ;
+  owl:imports <http://www.w3.org/2004/02/skos/core> ;
+  owl:imports <http://www.w3.org/ns/prov-o#> ;
+  owl:imports <http://www.w3.org/ns/dcat#> ;
+  owl:versionInfo "Initial version of the dprod vocabulary"@en ;
+  foaf:maker [
+      foaf:homepage <http://www.ekgf.org/> ;
+      foaf:name "Enterprise Knowledge Graph Foundation" ;
+    ] ;
+.
+
+dprod:DataProduct
+  a rdfs:Class ;
+  a owl:Class ;
+  rdfs:comment "A description of a data product as defined by the data mesh method"@en ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "Data Product"@en ;
+  rdfs:subClassOf dcat:Resource ;
+  skos:definition "A collection of metadata about a data product (e.g., ports and components.)"@en ;
+  skos:scopeNote "A data product is typically represented as a single instance of this class."@en ;
+.
+
+dprod:Port
+  a rdfs:Class ;
+  a owl:Class ;
+  rdfs:comment "A description of a port (e.g., input port, output port) of a data product"@en ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "Port"@en ;
+  rdfs:subClassOf dcat:DataService ;
+  skos:definition "A collection of metadata about a port (e.g., input port or output port.)"@en ;
+.
+
+dprod:fullyQualifiedName
+  a rdf:Property ;
+  a owl:DatatypeProperty ;
+  rdfs:domain dcat:Resource ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "fully qualified name"@en ;
+  rdfs:range xsd:string ;
+  rdfs:comment "The fully qualified name of a resource."@en ;
+.
+
+dprod:domain
+  a rdf:Property ;
+  a owl:DatatypeProperty ;
+  rdfs:domain dcat:Resource ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "domain"@en ;
+  rdfs:range xsd:string ;
+  rdfs:comment "The domain to which the data product belongs to."@en ;
+.
+
+dprod:outputPort
+  a rdf:Property ;
+  a owl:ObjectProperty ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "output port"@en ;
+  rdfs:range dprod:Port ;
+  rdfs:comment "An output port or a data product"@en ;
+.
+
+dprod:promise
+  a rdf:Property ;
+  a owl:ObjectProperty ;
+  rdfs:domain dprod:Port ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "promise"@en ;
+  rdfs:comment "A promise of a port"@en ;
+.
+
+dprod:expectation
+  a rdf:Property ;
+  a owl:ObjectProperty ;
+  rdfs:domain dprod:Port ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "expectation"@en ;
+  rdfs:comment "An expectation for a port"@en ;
+.
+
+dprod:contract
+  a rdf:Property ;
+  a owl:ObjectProperty ;
+  rdfs:domain dprod:Port ;
+  rdfs:isDefinedBy <https://w3id.org/dprod/> ;
+  rdfs:label "contract"@en ;
+  rdfs:comment "A contract for a port"@en ;
+.
+

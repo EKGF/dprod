@@ -1,0 +1,47 @@
+version: '3'
+
+includes:
+  helper: ../helper/Taskfile.yml
+
+vars:
+  GRAMO_IMAGE: docker-registry.eccenca.com/eccenca-gramophon:1.0.0-rc.4
+  GRAMO_DOCKER:
+
+tasks:
+
+  from-ontology:
+    desc: Generate the shapes from the ontology
+    cmds:
+      - mkdir -p _run/artifacts_shape_generation_from_ontology
+      - cp {{.SHELL_PWD}}/{{.ONTOLOGY_FILE}}.ttl _run/artifacts_shape_generation_from_ontology/ontology.ttl
+      - cp {{.SHELL_PWD}}/prefixes.ttl _run/artifacts_shape_generation_from_ontology/prefixes.ttl
+      - task: gramo:extractor
+        vars:
+          DOCKER_DIRS: '-v {{.SHELL_PWD}}/_run/artifacts_shape_generation_from_ontology:{{.DOCKER_PWD}}'
+      - mkdir -p artifacts
+      - cp _run/artifacts_shape_generation_from_ontology/{{.SHAPE_FILE}}_extracted_ontology.ttl artifacts/{{.SHAPE_FILE}}_extracted_ontology.ttl
+    status:
+      - '[ ${SHAPE} = "False" ]'
+
+  merge:
+    desc: Merge two shape graphs into a new shape graph
+    cmds:
+      - mkdir -p _run/artifacts_shape_generation_merge
+      - cp {{.SHELL_PWD}}/{{.SHAPE_FILE}}.ttl _run/artifacts_shape_generation_merge/shapes.ttl
+      - cp artifacts/{{.SHAPE_FILE}}_extracted_ontology.ttl _run/artifacts_shape_generation_merge/shapes_extracted_ontology.ttl
+      - task: gramo:reshaper
+        vars:
+          DOCKER_DIRS: '-v {{.SHELL_PWD}}/_run/artifacts_shape_generation_merge:{{.DOCKER_PWD}}'
+      - cp _run/artifacts_shape_generation_merge/shapes_merged.ttl {{.SHAPE_FILE}}.ttl
+      - task: helper:normalize_turtle
+        vars: { FILE: '{{.SHAPE_FILE}}', DEFAULT_GRAPH_IRI: '{{.SHAPE_GRAPH_IRI}}' }
+      - task: helper:sync_turtle_nt
+        vars: { FILE: '{{.SHAPE_FILE}}', DEFAULT_GRAPH_IRI: '{{.SHAPE_GRAPH_IRI}}' }
+    status:
+      - '[ ${SHAPE} = "False" ]'
+
+  gramo:extractor:
+    - docker run {{.DOCKER_PARAMS}} {{.DOCKER_DIRS}} {{.GRAMO_IMAGE}} extractor --ontology --graph {{.DOCKER_PWD}}/ontology.ttl --shape {{.DOCKER_PWD}}/{{.SHAPE_FILE}}_extracted_ontology.ttl --namespace {{.SHAPE_BASE_PREFIX}} --prefixes {{.DOCKER_PWD}}/prefixes.ttl
+
+  gramo:reshaper:
+    - docker run {{.DOCKER_PARAMS}} {{.DOCKER_DIRS}} {{.GRAMO_IMAGE}} reshaper --mode merge --shape {{.PWD}}/shapes.ttl --other_shape {{.PWD}}/shapes_extracted_ontology.ttl --target {{.PWD}}/shapes_merged.ttl

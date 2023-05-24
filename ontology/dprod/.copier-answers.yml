@@ -1,0 +1,25 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+# Did you notice that NEVER EDIT MANUALLY part? [It is important](https://copier.readthedocs.io/en/stable/updating/#never-change-the-answers-file-manually).
+_commit: 0.2.0
+_src_path: gh:eccenca/ontology-pipeline-template
+cmemc_config_id: local
+git_push: false
+git_user_email: ontology-pipeline@bot.eccenca.com
+git_user_name: Ontology Pipeline Bot
+github_managed: false
+gitlab_managed: false
+instances: false
+instances_file: instances.ttl
+instances_file_exists: false
+instances_graph_iri: http://data.example.org
+ontology_file: dprod.ttl
+ontology_graph_iri: https://w3id.org/dprod/
+ontology_iri: https://w3id.org/dprod/
+ontology_prefix: 'dprod:'
+project_name: dprod
+shape: true
+shape_base_iri: https://w3id.org/dprod/shapes
+shape_base_prefix: 'dprod-sh:'
+shape_file: dprod-sh.ttl
+shape_graph_iri: https://w3id.org/dprod/shapes
+
