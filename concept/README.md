@@ -113,7 +113,7 @@ In DPDS a data product descriptor is not a data product but a version of e data 
 
 ![data product descriptor components](./dcat-dpds-mappings.png)
 
-## DPDS and DCAT integration ideas (tobe discusses...)
+## DPDS and DCAT integration ideas (tobe discussed...)
 
 We can consider to define A *DCAT profile* to add to the basic specification the concepts that are important to rapresent a semantic data product and that are now missing (ex. `data product`). A DCAT profile is a specification for a data catalog that adds additional concepts and constraints to DCAT. 
 
