@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html><head>
+<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.16.4/css/theme.default.css" >
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.16.4/jquery.tablesorter.min.js"></script>
+<script type="text/javascript"> $(function() {$("#myTable").tablesorter();});</script><title>RDFUnit validation results</title></head><body>
+<h2>TestExecution: urn:uuid:4869c607-cc63-4af7-8236-4c94760eb2d1</h2>
+<dl class="dl-horizontal">
+<dt>Dataset</dt><dd> ./dprod.ttl</dd>
+<dt>Test execution started</dt><dd> 2023-05-23T08:48:50.625Z</dd>
+<dt>-ended</dt><dd> 2023-05-23T08:48:50.9Z</dd>
+<dt>Total test cases</dt><dd> 14</dd>
+<dt>Succeeded</dt><dd> 12</dd>
+<dt>Failed</dt><dd> 2</dd>
+<dt>Timeout / Error </dt><dd> T:0 / E: 0</dd>
+<dt>Violation instances</dt><dd> 2</dd>
+</dl>
+<h3>Results</h3>
+<table id="myTable" class="tablesorter tablesorter-default table" summary="Detailed results"><thead>
+<tr><th>Status</th><th>Level</th><th>Test Case</th><th>Errors</th><th>Prevalence</th></tr>
+</thead><tbody>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:ontologies-owl-versionInfo">All ontologies should have owl:versionInfo</span></td><td>0</td><td>1</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:ontologies-self-definition">An ontology should not be defined by itself but rather define its included individuals only</span></td><td>0</td><td>1</td></tr>
+<tr class="danger"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusFail">Fail</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:ontologies-vann-preferredNamespacePrefix">All ontologies should have vann:preferredNamespacePrefix</span></td><td>1</td><td>1</td></tr>
+<tr class="danger"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusFail">Fail</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:ontologies-vann-preferredNamespaceUri">All ontologies should have vann:preferredNamespaceUri matching their URI</span></td><td>1</td><td>1</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:ontology-resources-correct-uris-isDefinedBy-type">All resources defined by an ontology should start with the ontology URI and have rdfs:isDefinedBy and rdf:type</span></td><td>0</td><td>31</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:resources-comments-different-between-languages">All defined resources should have different rdfs:comment in different languages</span></td><td>0</td><td>5</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:resources-have-distinct-comments">Two defined resources should not have the same rdfs:comment</span></td><td>0</td><td>5</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:resources-have-distinct-labels">Two defined resources should not have the same rdfs:label</span></td><td>0</td><td>5</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:resources-have-labels-and-comments">All defined resources should have at least one rdfs:label and an rdfs:comment</span></td><td>0</td><td>9</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:resources-label-not-equals-comment">All defined resources should have rdfs:label different from rdfs:comment</span></td><td>0</td><td>5</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:resources-no-placeholder-literals">All defined resources must not have literals with todo, foo, bar, lorem or ipsum in it</span></td><td>0</td><td>5</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:skos-concepts-are-topconcept-or-have-broader">All skos:Concepts should have a skos:broader statement OR be skos:topConceptOf [a skos:ConceptScheme]</span></td><td>0</td><td>-1</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:skos-concepts-have-inscheme-definition-comment-preflabel">All skos:Concepts should be skos:inScheme [a skos:ConceptScheme], have a skos:definition or rdfs:comment and have a skos:prefLabel</span></td><td>0</td><td>-1</td></tr>
+<tr class="success"><td><a href="http://rdfunit.aksw.org/ns/core#ResultStatusSuccess">Success</a></td><td><a href="http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#ERROR">ERROR</a></td><td><span title="rutt:skos-conceptschemes-have-english-definition-and-preflabel">All skos:ConceptSchemes should have a skos:definition or rdfs:comment and skos:prefLabel</span></td><td>0</td><td>-1</td></tr>
+</tbody></table>
+</body>
+</html>
