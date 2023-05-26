@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+    
+    <title>The data product vocabulary</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+  </head>
+  <body>
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid">
+  <div class="row">
+      <nav class="col-sm-3 col-md-2 col-lg-3 col-xl-3 d-none d-sm-block bg-light"
+style="position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: auto;">
+    <form class="bd-search d-flex align-items-center">
+        <input
+          type="search"
+          class="form-control ds-input"
+          id="search-input"
+          placeholder="Search..."
+          autocomplete="off"
+          spellcheck="false"
+          role="combobox"
+          dir="auto"
+          onkeyup="searchInList()"
+          />
+    </form>
+
+    <ul class="nav nav-pills flex-column" id="search-list">
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-3fd577e914168fcd735ac6f9f4518430">
+                    Data Product
+                </a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-cff5e0c835fe52b5af0b3e2f356d5d64">
+                    Port
+                </a>
+            </li>
+        
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-aac2e6805701fcb98713a4b874420bf2">
+                    output port
+                </a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-5d8646950d547635fdfed15645b3367a">
+                    promise
+                </a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-13851b49ce65c8ab97d19fd3f817d1dc">
+                    expectation
+                </a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-b7e23ed19ca21a66081fce7811c063b3">
+                    contract
+                </a>
+            </li>
+        
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-151b8c269d8a4f85e919be0d4f630519">
+                    fully qualified name
+                </a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link" href="#id-abf8102a2e563f744245a507e8adfdfb">
+                    domain
+                </a>
+            </li>
+        
+    </ul>
+    <script type="text/javascript">
+    function searchInList() {
+      // Declare variables
+      var input, filter, ul, li, a, i, txtValue;
+      input = document.getElementById('search-input');
+      filter = input.value.toUpperCase();
+      ul = document.getElementById("search-list");
+      li = ul.getElementsByTagName('li');
+
+      // Loop through all list items, and hide those who don't match the search query
+      for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("a")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          li[i].style.display = "";
+        } else {
+          li[i].style.display = "none";
+        }
+      }
+    }
+    </script>
+</nav>
+
+
+      <main role="main" class="container col-sm-9 col-md-10 col-lg-8 col-xl-7">
+      <div class="jumbotron">
+  
+  
+  <h1 class="display-3">The data product vocabulary</h1>
+  <p class="lead subtitle"></p>
+  <p class="lead">DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors.</p>
+  <hr class="my-4">
+  <p>
+    <dl><dt>Version</dt>
+        <dd>Initial version of the dprod vocabulary</dd><dt>Modified</dt>
+        <dd>2023-05-16</dd></dl>
+  </p>
+  <hr class="my-4">
+  <p>
+  
+    <a class="btn btn-primary btn-lg" href="#classes" role="button">
+        Classes
+        <span class="badge badge-light">4</span>
+    </a>
+  
+  
+    <a class="btn btn-primary btn-lg" href="#rdfProperties" role="button">
+        RDF Properties
+        <span class="badge badge-light">0</span>
+    </a>
+  
+  
+    <a class="btn btn-primary btn-lg" href="#objectProperties" role="button">
+        Object Properties
+        <span class="badge badge-light">4</span>
+    </a>
+  <a class="btn btn-primary btn-lg" href="#datatypeProperties" role="button">
+        Datatype Properties
+        <span class="badge badge-light">2</span>
+    </a></p>
+</div>
+
+
+      <h2 id="classes">Overview</h2>
+      <h2 id="classes">Classes</h2>
+      
+          <p><div
+    class="card"
+    id="id-3fd577e914168fcd735ac6f9f4518430"
+    >
+    <div class="card-header">
+        <h4 class="card-title">Data Product</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/DataProduct</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-3fd577e914168fcd735ac6f9f4518430-nav"
+            role="tablist">
+            <a
+                href="#id-3fd577e914168fcd735ac6f9f4518430-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-3fd577e914168fcd735ac6f9f4518430-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-3fd577e914168fcd735ac6f9f4518430-relations"
+                id="id-3fd577e914168fcd735ac6f9f4518430-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-3fd577e914168fcd735ac6f9f4518430-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-3fd577e914168fcd735ac6f9f4518430-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            A description of a data product as defined by the data mesh method
+            </p>
+            <dl><dt>scope</dt>
+                <dd>A data product is typically represented as a single instance of this class.</dd><dt>definition</dt>
+                <dd>A collection of metadata about a data product (e.g., ports and components.)</dd></dl>
+        </div>
+        <div
+            id="id-3fd577e914168fcd735ac6f9f4518430-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-3fd577e914168fcd735ac6f9f4518430-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has super-classes</dt><dd><a
+    href="#id-1d0770434caf34ee3aebad793117868a"
+    >Resource</a>
+</dd><dt>is in domain of</dt><dd><a
+    href="#id-aac2e6805701fcb98713a4b874420bf2"
+    >output port</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+          <p><div
+    class="card"
+    id="id-cff5e0c835fe52b5af0b3e2f356d5d64"
+    >
+    <div class="card-header">
+        <h4 class="card-title">Port</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/Port</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-cff5e0c835fe52b5af0b3e2f356d5d64-nav"
+            role="tablist">
+            <a
+                href="#id-cff5e0c835fe52b5af0b3e2f356d5d64-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-cff5e0c835fe52b5af0b3e2f356d5d64-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-cff5e0c835fe52b5af0b3e2f356d5d64-relations"
+                id="id-cff5e0c835fe52b5af0b3e2f356d5d64-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-cff5e0c835fe52b5af0b3e2f356d5d64-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-cff5e0c835fe52b5af0b3e2f356d5d64-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            A description of a port (e.g., input port, output port) of a data product
+            </p>
+            <dl><dt>definition</dt>
+                <dd>A collection of metadata about a port (e.g., input port or output port.)</dd></dl>
+        </div>
+        <div
+            id="id-cff5e0c835fe52b5af0b3e2f356d5d64-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-cff5e0c835fe52b5af0b3e2f356d5d64-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has super-classes</dt><dd><a
+    href="#id-1300e4b50895c3a8edf990bfeb6b200c"
+    >DataService</a>
+</dd><dt>is in domain of</dt><dd><a
+    href="#id-5d8646950d547635fdfed15645b3367a"
+    >promise</a>
+</dd><dd><a
+    href="#id-13851b49ce65c8ab97d19fd3f817d1dc"
+    >expectation</a>
+</dd><dd><a
+    href="#id-b7e23ed19ca21a66081fce7811c063b3"
+    >contract</a>
+</dd><dt>is in range of</dt><dd><a
+    href="#id-aac2e6805701fcb98713a4b874420bf2"
+    >output port</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+
+      <h2 id="rdfProperties">RDF Properties</h2>
+      
+
+      <h2 id="objectProperties">Object Properties</h2>
+      
+          <p><div
+    class="card"
+    id="id-aac2e6805701fcb98713a4b874420bf2"
+    >
+    <div class="card-header">
+        <h4 class="card-title">output port</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/outputPort</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-aac2e6805701fcb98713a4b874420bf2-nav"
+            role="tablist">
+            <a
+                href="#id-aac2e6805701fcb98713a4b874420bf2-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-aac2e6805701fcb98713a4b874420bf2-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-aac2e6805701fcb98713a4b874420bf2-relations"
+                id="id-aac2e6805701fcb98713a4b874420bf2-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-aac2e6805701fcb98713a4b874420bf2-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-aac2e6805701fcb98713a4b874420bf2-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            An output port or a data product
+            </p>
+            <dl></dl>
+        </div>
+        <div
+            id="id-aac2e6805701fcb98713a4b874420bf2-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-aac2e6805701fcb98713a4b874420bf2-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has domain</dt><dd><a
+    href="#id-3fd577e914168fcd735ac6f9f4518430"
+    >Data Product</a>
+</dd><dt>has range</dt><dd><a
+    href="#id-cff5e0c835fe52b5af0b3e2f356d5d64"
+    >Port</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+          <p><div
+    class="card"
+    id="id-5d8646950d547635fdfed15645b3367a"
+    >
+    <div class="card-header">
+        <h4 class="card-title">promise</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/promise</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-5d8646950d547635fdfed15645b3367a-nav"
+            role="tablist">
+            <a
+                href="#id-5d8646950d547635fdfed15645b3367a-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-5d8646950d547635fdfed15645b3367a-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-5d8646950d547635fdfed15645b3367a-relations"
+                id="id-5d8646950d547635fdfed15645b3367a-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-5d8646950d547635fdfed15645b3367a-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-5d8646950d547635fdfed15645b3367a-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            A promise of a port
+            </p>
+            <dl></dl>
+        </div>
+        <div
+            id="id-5d8646950d547635fdfed15645b3367a-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-5d8646950d547635fdfed15645b3367a-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has domain</dt><dd><a
+    href="#id-cff5e0c835fe52b5af0b3e2f356d5d64"
+    >Port</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+          <p><div
+    class="card"
+    id="id-13851b49ce65c8ab97d19fd3f817d1dc"
+    >
+    <div class="card-header">
+        <h4 class="card-title">expectation</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/expectation</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-13851b49ce65c8ab97d19fd3f817d1dc-nav"
+            role="tablist">
+            <a
+                href="#id-13851b49ce65c8ab97d19fd3f817d1dc-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-13851b49ce65c8ab97d19fd3f817d1dc-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-13851b49ce65c8ab97d19fd3f817d1dc-relations"
+                id="id-13851b49ce65c8ab97d19fd3f817d1dc-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-13851b49ce65c8ab97d19fd3f817d1dc-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-13851b49ce65c8ab97d19fd3f817d1dc-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            An expectation for a port
+            </p>
+            <dl></dl>
+        </div>
+        <div
+            id="id-13851b49ce65c8ab97d19fd3f817d1dc-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-13851b49ce65c8ab97d19fd3f817d1dc-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has domain</dt><dd><a
+    href="#id-cff5e0c835fe52b5af0b3e2f356d5d64"
+    >Port</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+          <p><div
+    class="card"
+    id="id-b7e23ed19ca21a66081fce7811c063b3"
+    >
+    <div class="card-header">
+        <h4 class="card-title">contract</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/contract</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-b7e23ed19ca21a66081fce7811c063b3-nav"
+            role="tablist">
+            <a
+                href="#id-b7e23ed19ca21a66081fce7811c063b3-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-b7e23ed19ca21a66081fce7811c063b3-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-b7e23ed19ca21a66081fce7811c063b3-relations"
+                id="id-b7e23ed19ca21a66081fce7811c063b3-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-b7e23ed19ca21a66081fce7811c063b3-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-b7e23ed19ca21a66081fce7811c063b3-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            A contract for a port
+            </p>
+            <dl></dl>
+        </div>
+        <div
+            id="id-b7e23ed19ca21a66081fce7811c063b3-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-b7e23ed19ca21a66081fce7811c063b3-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has domain</dt><dd><a
+    href="#id-cff5e0c835fe52b5af0b3e2f356d5d64"
+    >Port</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+
+      <h2 id="datatypeProperties">Datatype Properties</h2>
+      
+          <p><div
+    class="card"
+    id="id-151b8c269d8a4f85e919be0d4f630519"
+    >
+    <div class="card-header">
+        <h4 class="card-title">fully qualified name</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/fullyQualifiedName</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-151b8c269d8a4f85e919be0d4f630519-nav"
+            role="tablist">
+            <a
+                href="#id-151b8c269d8a4f85e919be0d4f630519-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-151b8c269d8a4f85e919be0d4f630519-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-151b8c269d8a4f85e919be0d4f630519-relations"
+                id="id-151b8c269d8a4f85e919be0d4f630519-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-151b8c269d8a4f85e919be0d4f630519-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-151b8c269d8a4f85e919be0d4f630519-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            The fully qualified name of a resource.
+            </p>
+            <dl></dl>
+        </div>
+        <div
+            id="id-151b8c269d8a4f85e919be0d4f630519-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-151b8c269d8a4f85e919be0d4f630519-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has domain</dt><dd><a
+    href="#id-1d0770434caf34ee3aebad793117868a"
+    >Resource</a>
+</dd><dt>has range</dt><dd><a
+    href="#id-4e598fd1b2c9ef9bd360334e0ef7610a"
+    >string</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+          <p><div
+    class="card"
+    id="id-abf8102a2e563f744245a507e8adfdfb"
+    >
+    <div class="card-header">
+        <h4 class="card-title">domain</h4>
+        <p><small class="text-muted">https://w3id.org/dprod/domain</small></p>
+        <nav
+            class="nav nav-tabs card-header-tabs"
+            id="id-abf8102a2e563f744245a507e8adfdfb-nav"
+            role="tablist">
+            <a
+                href="#id-abf8102a2e563f744245a507e8adfdfb-description"
+                class="nav-item nav-link active"
+                aria-selected="true"
+                data-bs-toggle="tab"
+                role="tab">Description</a>
+            <a
+                href="#id-abf8102a2e563f744245a507e8adfdfb-annotations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Annotations</a>
+            <a
+                href="#id-abf8102a2e563f744245a507e8adfdfb-relations"
+                id="id-abf8102a2e563f744245a507e8adfdfb-tab-relations"
+                class="nav-item nav-link"
+                aria-selected="false"
+                data-bs-toggle="tab"
+                role="tab">Relations</a>
+        </nav>
+    </div>
+    <div
+        id="id-abf8102a2e563f744245a507e8adfdfb-tab-content"
+        class="tab-content card-body">
+        <div
+            id="id-abf8102a2e563f744245a507e8adfdfb-description"
+            class="card-text tab-pane fade show active"
+            role="tabpanel">
+            <p>
+            The domain to which the data product belongs to.
+            </p>
+            <dl></dl>
+        </div>
+        <div
+            id="id-abf8102a2e563f744245a507e8adfdfb-annotations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl></dl>
+        </div>
+        <div
+            id="id-abf8102a2e563f744245a507e8adfdfb-relations"
+            class="card-text tab-pane fade"
+            role="tabpanel">
+            <dl><dt>has domain</dt><dd><a
+    href="#id-1d0770434caf34ee3aebad793117868a"
+    >Resource</a>
+</dd><dt>has range</dt><dd><a
+    href="#id-4e598fd1b2c9ef9bd360334e0ef7610a"
+    >string</a>
+</dd><dt>is defined by</dt>
+                <dd>https://w3id.org/dprod/</dd></dl>
+        </div>
+    </div>
+    <div class="card-footer"></div>
+</div>
+</p>
+      
+
+      </main>
+
+      
+  </div>
+</div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  </body>
+</html>

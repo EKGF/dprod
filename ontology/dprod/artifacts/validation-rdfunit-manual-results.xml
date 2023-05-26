@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2" timestamp="2023-05-23T09:02:32.747Z" time="00:00:00" tests="14" failures="2" errors="0" package="./dprod.ttl" >
+	<testcase name="rutt:ontologies-owl-versionInfo" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:ontologies-self-definition" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:ontologies-vann-preferredNamespacePrefix" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+		<failure message="All ontologies should have vann:preferredNamespacePrefix" type="ERROR"/>
+		<system-out>Errors:1 Prevalence:1</system-out>
+	</testcase>
+	<testcase name="rutt:ontologies-vann-preferredNamespaceUri" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+		<failure message="All ontologies should have vann:preferredNamespaceUri matching their URI" type="ERROR"/>
+		<system-out>Errors:1 Prevalence:1</system-out>
+	</testcase>
+	<testcase name="rutt:ontology-resources-correct-uris-isDefinedBy-type" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:resources-comments-different-between-languages" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:resources-have-distinct-comments" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:resources-have-distinct-labels" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:resources-have-labels-and-comments" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:resources-label-not-equals-comment" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:resources-no-placeholder-literals" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:skos-concepts-are-topconcept-or-have-broader" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:skos-concepts-have-inscheme-definition-comment-preflabel" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+	<testcase name="rutt:skos-conceptschemes-have-english-definition-and-preflabel" classname="urn:uuid:50b5515f-3bcc-4257-bbd0-c9261b7107c2">
+	</testcase>
+</testsuite>
