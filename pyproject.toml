@@ -33,6 +33,7 @@ smartypants = "*"
 pillow = "*"
 cairosvg = "*"
 ekglib = {git = "https://github.com/EKGF/ekglib.git"}
+mkdocs-material = {git = "https://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@github.com/squidfunk/mkdocs-material-insiders.git"}
 
 [project]
 name = "data-product"

@@ -178,7 +178,7 @@ else
 		echo "First remove the public version of mkdocs-material, if it's installed:" ;\
 		$(VENV_POETRY) remove mkdocs-material || true ;\
 		echo "Then install the actual insiders version:" ;\
-		$(VENV_POETRY) add "git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git" ;\
+		$(VENV_POETRY) add -- "git+https://$(PAT_MKDOCS_INSIDERS)@github.com/squidfunk/mkdocs-material-insiders.git" && \
 		echo "Insider's version of mkdocs-material has been installed successfully!" ;\
 	fi
 endif
