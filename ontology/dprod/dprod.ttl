@@ -64,7 +64,7 @@
 dprod:DataProduct
   a rdfs:Class ;
   a owl:Class ;
-  sh:NodeShape ;
+  a sh:NodeShape ;
   rdfs:comment "A description of a data product as defined by the data mesh method"@en ;
   rdfs:isDefinedBy <https://w3id.org/dprod/> ;
   rdfs:label "Data Product"@en ;
@@ -81,7 +81,7 @@ dprod:DataProduct-dataProductOwner
   rdfs:isDefinedBy <https://w3id.org/dprod>;
   sh:path dprod:dataProductOwner;
   sh:class dct:Agent;
-  dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
+  skos:definition "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
   rdfs:label "DataProduct-dataProductOwner";
 .
 
@@ -90,17 +90,19 @@ dprod:DataProduct-input
   rdfs:isDefinedBy <https://w3id.org/dprod>;
   sh:path dprod:input;
   sh:class dcat:Dataset;
-  dc:description "The dataset(s) that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
+  skos:definition  "The dataset(s) that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
   rdfs:label "DataProduct-input;
 .
+
 dprod:DataProduct-output
   a sh:PropertyShape;
   rdfs:isDefinedBy <https://w3id.org/dprod>;
   sh:path dprod:output
   sh:class dcat:Dataset;
-  dc:description "The dataset(s) that are created from the data product and become available in one or more distribution formats"@en ;
+  skos:definition  "The dataset(s) that are created from the data product and become available in one or more distribution formats"@en ;
   rdfs:label "DataProduct-input;
 .
+
 dprod:Port
   a rdfs:Class ;
   a owl:Class ;
@@ -170,7 +172,7 @@ dprod:contract
 
 dprod:dataProductOwner
     a rdfs:ObjectProperty ;
-    dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion).. This can be different from the creator or the publisher of the Data Product "@en ;
+    skos:definition "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion).. This can be different from the creator or the publisher of the Data Product "@en ;
     rdfs:isDefinedBy <https://w3id.org/dprod>;
     rdfs:label "data Product Owner";
     rdfs:domain dprod:DataProduct;
@@ -180,7 +182,7 @@ dprod:dataProductOwner
 dprod:input
     a rdfs:ObjectProperty ;
     rdfs:label "input";
-    dc:description "The dataset(s) that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
+    skos:definition "The dataset(s) that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
     rdfs:isDefinedBy <https://w3id.org/dprod>;
     rdfs:domain dprod:DataProduct;
     rdfs:range dcat:Dataset;
@@ -189,7 +191,7 @@ dprod:input
 dprod:output
     a rdfs:ObjectProperty ;
     rdfs:label "output" ;
-    dc:description "TThe dataset(s) that are created from the data product and become available in one or more distribution formats""@en ;
+    skos:definition  "This is a generic property. In this case, it describes he dataset(s) that are created from the data product and become available in one or more distribution formats""@en ;
     rdfs:isDefinedBy <https://w3id.org/dprod>;
     rdfs:domain dprod:DataProduct;
     rdfs:range dcat:Dataset;
