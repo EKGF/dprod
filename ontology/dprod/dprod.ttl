@@ -106,7 +106,7 @@ dprod:DataProduct-input
   rdfs:isDefinedBy dprod:;
   sh:path dprod:input;
   sh:class dcat:Dataset;
-  dc:description "The dataset that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
+  dc:description "The datasets that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
   rdfs:label "DataProduct-input";
 .
 
@@ -115,12 +115,12 @@ dprod:DataProduct-output
   rdfs:isDefinedBy dprod:;
   sh:path dprod:output;
   sh:class dcat:Dataset;
-  dc:description "The dataset that are created from the data product and become available in one or more distribution formats"@en ;
+  dc:description "The datasets that are created from the data product and become available in one or more distribution formats"@en ;
   rdfs:label "DataProduct-input";
 .
 
 dprod:dataProductOwner
-    a rdfs:ObjectProperty ;
+    a rdfs:Property, owl:ObjectProperty ;
     dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion).. This can be different from the creator or the publisher of the Data Product "@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
@@ -128,16 +128,16 @@ dprod:dataProductOwner
     .
 
 dprod:input
-    a rdfs:ObjectProperty ;
-    dc:description "The dataset that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The datasets that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dcat:Dataset;
     .
 
 dprod:output
-    a rdfs:ObjectProperty ;
-    dc:description "TThe dataset that are created from the data product and become available in one or more distribution formats"@en ;
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The datasets that are created from the data product and become available in one or more distribution formats"@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dcat:Dataset;
