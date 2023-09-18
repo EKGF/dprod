@@ -8,7 +8,7 @@
 
 
 
-@prefix dprod: <https://w3id.org/dprod#> .
+@prefix dprod: <https://w3id.org/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
@@ -22,26 +22,26 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix sh: <http://www.w3.org/ns/shacl#>
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 
 
 
-<https://w3id.org/dprod/>
-   a owl:Ontology ;
+dprod:
+  a owl:Ontology ;
   rdfs:label "Data Product Vocabulary"@en ;
-  Dc:description "DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors.";
+  dc:description "DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors.";
   rdfs:comment "This vocabulary includes terms for the definition of the Data Product as defined from the Data Product Working Group The vocabulary utilises the notion of Datasets as defined from DCAT vocabulary"@en ;
    owl:imports <http://purl.org/dc/terms/>;
    owl:imports <http://www.w3.org/2004/02/skos/core>;
    owl:imports <http://www.w3.org/ns/prov-o#>;
-   Owl:imports <http://www.w3.org/ns/dcat>;
-   owl:imports sh:;
+   owl:imports <http://www.w3.org/ns/dcat>;
+   owl:imports sh: ;
    dct:creator [
      a foaf:Person ;
-     foaf:name "Natasa Varytimou ;
+     foaf:name "Natasa Varytimou" ;
      sdo:affiliation [
         foaf:homepage <https://ubs.com> ;
-        foaf:name "UBS ;
+        foaf:name "UBS" ;
       ] ;
           ] ;
    dct:contributor [
@@ -84,7 +84,7 @@ dprod:DataProduct
     a owl:Class , rdfs:Class,  sh:NodeShape;
     dc:description "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
     rdfs:comment "A data product may have input and output datasets, code and metadata"@en ;
-    rdfs:isDefinedBy <https://w3id.org/dprod/>;
+    rdfs:isDefinedBy dprod:;
     rdfs:label "Data Product" ;
     rdfs:subClassOf dcat:Resource;
     sh:property dprod:DataProduct-dataProductOwner;
@@ -94,7 +94,7 @@ dprod:DataProduct
 
 dprod:DataProduct-dataProductOwner
   a sh:PropertyShape;
-  rdfs:isDefinedBy <https://w3id.org/dprod/>;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:dataProductOwner;
   sh:class dct:Agent;
   dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
@@ -103,42 +103,42 @@ dprod:DataProduct-dataProductOwner
 
 dprod:DataProduct-input
   a sh:PropertyShape;
-  rdfs:isDefinedBy <https://w3id.org/dprod/;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:input;
   sh:class dcat:Dataset;
-  dc:description "The dataset that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
-  rdfs:label "DataProduct-input;
+  dc:description "The datasets that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
+  rdfs:label "DataProduct-input";
 .
 
 dprod:DataProduct-output
   a sh:PropertyShape;
-  rdfs:isDefinedBy <https://w3id.org/dprod/>;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:output;
   sh:class dcat:Dataset;
-  dc:description "The dataset that are created from the data product and become available in one or more distribution formats"@en ;
-  rdfs:label "DataProduct-input;
+  dc:description "The datasets that are created from the data product and become available in one or more distribution formats"@en ;
+  rdfs:label "DataProduct-input";
 .
 
 dprod:dataProductOwner
-    a rdfs:ObjectProperty ;
+    a rdfs:Property, owl:ObjectProperty ;
     dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion).. This can be different from the creator or the publisher of the Data Product "@en ;
-    rdfs:isDefinedBy <https://w3id.org/dprod/;
+    rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dct:Agent;
     .
 
 dprod:input
-    a rdfs:ObjectProperty ;
-    dc:description "The dataset that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
-    rdfs:isDefinedBy <https://w3id.org/dprod/>;
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The datasets that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
+    rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dcat:Dataset;
     .
 
 dprod:output
-    a rdfs:ObjectProperty ;
-    dc:description "TThe dataset that are created from the data product and become available in one or more distribution formats""@en ;
-    rdfs:isDefinedBy <https://w3id.org/dprod/>;
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The datasets that are created from the data product and become available in one or more distribution formats"@en ;
+    rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dcat:Dataset;
     .
@@ -146,65 +146,103 @@ dprod:output
 ############################# additions to dcat ################
 
 dcat:Dataset
+  a sh:NodeShape ;
   sh:property dcat:Dataset-distribution
   .
 
 
 dcat:Dataset-distribution
   a sh:PropertyShape;
-  rdfs:isDefinedBy <https://w3id.org/dprod/;
+  rdfs:isDefinedBy dprod:;
   sh:path dcat:distribution;
   sh:class dcat:Distribution;
   dc:description "An available distribution of the dataset"@en ;
-  rdfs:label "Dataset-distribution;
+  rdfs:label "Dataset-distribution";
  .
 
 dcat:Distribution
+  a sh:NodeShape ;
   sh:property dcat:Distribution-accessService
   .
 
 dcat:Dataset-accessService
-    a sh:PropertyShape;
-    rdfs:isDefinedBy <https://w3id.org/dprod/;
-    sh:path dcat:accessService
-    sh:class dcat:DataService;
-    dc:description "A data service that gives access to the distribution of the dataset@en ;
-    rdfs:label "Dataset-accessService";
-   .
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dcat:accessService;
+  sh:class dcat:DataService;
+  dc:description "A data service that gives access to the distribution of the dataset"@en ;
+  rdfs:label "Dataset-accessService";
+  .
 
 
-dprod:HttpDataService
-       a owl:Class , rdfs:Class,  sh:NodeShape;
-       rdfs:comment "TBD"@en ;
-       dc:description "TDD"@en ;
-       rdfs:isDefinedBy <https://w3id.org/dprod/;
-       rdfs:label "Http Data Service ;
-       rdfs:subClassOf dcat:DataService ;
+dprod:RESTDataService
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Accessed using http verbs with parameters, may be defined using OpenAPI"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "REST Data Service" ;
+  rdfs:subClassOf dcat:DataService ;
+  .
+
+dprod:GraphQLDataService
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Single REST endpoint, with structure given by GraphQL schema"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "GraphQL Data Service" ;
+  rdfs:subClassOf dcat:RESTDataService ;
+  .
+
+dprod:ObjectDataService
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Structured API, e.g. gRPC, CORBA, SOAP, ORM"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "Object Data Service" ;
+  rdfs:subClassOf dcat:DataService ;
   .
 
 dprod:StreamingDataService
-         a owl:Class , rdfs:Class,  sh:NodeShape;
-         rdfs:comment "TBD"@en ;
-         dc:description "TDD"@en ;
-         rdfs:isDefinedBy <https://w3id.org/dprod/;
-         rdfs:label "Streaming Data Service ;
-         rdfs:subClassOf dcat:DataService ;
-    .
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Data is continuously made available"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "Streaming Data Service" ;
+  rdfs:subClassOf dcat:DataService ;
+.
+
+dprod:QueuingDataService
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Streams using a queue or topic e.g. MQTT, Kafka, DDS"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "Queuing Data Service" ;
+  rdfs:subClassOf dcat:StreamingDataService ;
+.
+
+dprod:CallbackDataService
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Streams by making calls to a client-provided e.g. WebSockets"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "Callback Data Service" ;
+  rdfs:subClassOf dcat:StreamingDataService ;
+.
 
 dprod:FileDataService
-             a owl:Class , rdfs:Class,  sh:NodeShape;
-             rdfs:comment "TBD"@en ;
-             dc:description "TDD"@en ;
-             rdfs:isDefinedBy <https://w3id.org/dprod/;
-             rdfs:label "File Data Service ;
-             rdfs:subClassOf dcat:DataService ;
-    .
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Uses file-like access methods. May or may not be streaming if the file is continuously wriitten to"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "File Data Service";
+  rdfs:subClassOf dcat:DataService ;
+.
 
 dprod:DatabaseDataService
-                 a owl:Class , rdfs:Class,  sh:NodeShape;
-                 rdfs:comment "TBD"@en ;
-                 dc:description "TDD"@en ;
-                 rdfs:isDefinedBy <https://w3id.org/dprod/;
-                 rdfs:label "File Data Service ;
-                 rdfs:subClassOf dcat:DataService ;
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Uses database-like access methods, including query e.g. JDBC, ODBC, SPARQL endpoint"@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "Database Data Service" ;
+  rdfs:subClassOf dcat:DataService ;
     .
