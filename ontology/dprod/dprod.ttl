@@ -88,8 +88,8 @@ dprod:DataProduct
     rdfs:label "Data Product" ;
     rdfs:subClassOf dcat:Resource;
     sh:property dprod:DataProduct-dataProductOwner;
-    sh:property dprod:DataProduct-input;
-    sh:property dprod:DataProduct-output;
+    sh:property dprod:DataProduct-inputPort;
+    sh:property dprod:DataProduct-outputPort;
 .
 
 dprod:DataProduct-dataProductOwner
@@ -101,22 +101,22 @@ dprod:DataProduct-dataProductOwner
   rdfs:label "DataProduct-dataProductOwner";
 .
 
-dprod:DataProduct-input
+dprod:DataProduct-inputPort
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
-  sh:path dprod:input;
-  sh:class dcat:Dataset;
-  dc:description "The datasets that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
-  rdfs:label "DataProduct-input";
+  sh:path dprod:inputPort;
+  sh:class dcat:DataService;
+  dc:description "The input data services (ports) that make the data available to the Data Product"@en ;
+  rdfs:label "DataProduct-inputPort";
 .
 
-dprod:DataProduct-output
+dprod:DataProduct-outputPort
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
-  sh:path dprod:output;
+  sh:path dprod:outputPort;
   sh:class dcat:Dataset;
-  dc:description "The datasets that are created from the data product and become available in one or more distribution formats"@en ;
-  rdfs:label "DataProduct-input";
+  dc:description "The Data Product makes its data available through one or more Data Services (ports)"@en ;
+  rdfs:label "DataProduct-outputPort";
 .
 
 dprod:dataProductOwner
@@ -127,20 +127,20 @@ dprod:dataProductOwner
     rdfs:range dct:Agent;
     .
 
-dprod:input
+dprod:inputPort
     a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The datasets that are included in the Data Product and can be the input of transformation efforts or surface in the product as is"@en ;
+    dc:description "The input data services (ports) that make the data available to the Data Product"@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
-    rdfs:range dcat:Dataset;
+    rdfs:range dcat:DataService;
     .
 
-dprod:output
+dprod:outputPort
     a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The datasets that are created from the data product and become available in one or more distribution formats"@en ;
+    dc:description "The Data Product makes its data available through one or more Data Services (ports)"@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
-    rdfs:range dcat:Dataset;
+    rdfs:range dcat:DataService;
     .
 
 ############################# additions to dcat ################
@@ -174,6 +174,9 @@ dcat:Dataset-accessService
   rdfs:label "Dataset-accessService";
   .
 
+dcat:DataService
+  a sh:NodeShape ;
+  .
 
 dprod:RESTDataService
   a owl:Class , rdfs:Class,  sh:NodeShape;
