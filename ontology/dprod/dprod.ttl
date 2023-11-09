@@ -83,7 +83,7 @@ dprod:
 dprod:DataProduct
     a owl:Class , rdfs:Class,  sh:NodeShape;
     dc:description "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
-    rdfs:comment "A data product may have input and output datasets, code and metadata"@en ;
+    rdfs:comment "A data product may have input and output ports, code and metadata"@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:label "Data Product" ;
     rdfs:subClassOf dcat:Resource;
@@ -162,7 +162,8 @@ dcat:Dataset-distribution
 
 dcat:Distribution
   a sh:NodeShape ;
-  sh:property dcat:Distribution-accessService
+  sh:property dcat:Distribution-accessService;
+  sh:property dprod:Distribution-isDistributionOf;
   .
 
 dcat:Dataset-accessService
@@ -174,9 +175,46 @@ dcat:Dataset-accessService
   rdfs:label "Dataset-accessService";
   .
 
+dprod:Distribution-isDistributionOf
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:isDistributionOf;
+  sh:class dcat:Dataset;
+  dc:description "The dataset that this distribution makes available"@en ;
+  rdfs:label "Distribution-isDistributionOf;
+  .
+
+dprod:isDistributionOf
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The dataset that this distribution makes available"@en ;
+    rdfs:isDefinedBy dprod:;
+     owl:inverseOf dcat:distribution;
+    rdfs:domain dcat:Distribution;
+    rdfs:range dcat:Dataset;
+    .
+
 dcat:DataService
   a sh:NodeShape ;
+  sh:property dprod:DataService-offersDistribution ;
   .
+
+dprod:DataService-offersDistribution 
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:offersDistribution;
+  sh:class dcat:Dataset;
+  dc:description "The dataset distribution that is being offered through this Data Service"@en ;
+  rdfs:label "Distribution-offersDistribution;
+  .
+
+dprod:offersDistribution
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "he dataset distribution that is being offered through this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    owl:inverseOf dcat:accessService;
+    rdfs:domain dcat:DataService;
+    rdfs:range dcat:Distribution;
+    .
 
 dprod:RESTDataService
   a owl:Class , rdfs:Class,  sh:NodeShape;
