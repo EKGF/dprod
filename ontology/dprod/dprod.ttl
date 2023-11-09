@@ -78,7 +78,7 @@ dprod:
     ] ;
    .
 
-######################################################
+############################# DPROD Classes  #########################
 
 dprod:DataProduct
     a owl:Class , rdfs:Class,  sh:NodeShape;
@@ -90,131 +90,24 @@ dprod:DataProduct
     sh:property dprod:DataProduct-dataProductOwner;
     sh:property dprod:DataProduct-inputPort;
     sh:property dprod:DataProduct-outputPort;
+    sh:property dprod:DataProduct-lifecycle;
 .
-
-dprod:DataProduct-dataProductOwner
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dprod:dataProductOwner;
-  sh:class dct:Agent;
-  dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
-  rdfs:label "DataProduct-dataProductOwner";
-.
-
-dprod:DataProduct-inputPort
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dprod:inputPort;
-  sh:class dcat:DataService;
-  dc:description "The input data services (ports) that make the data available to the Data Product"@en ;
-  rdfs:label "DataProduct-inputPort";
-.
-
-dprod:DataProduct-outputPort
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dprod:outputPort;
-  sh:class dcat:DataService;
-  dc:description "The Data Product makes its data available through one or more Data Services (ports)"@en ;
-  rdfs:label "DataProduct-outputPort";
-.
-
-dprod:dataProductOwner
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion).. This can be different from the creator or the publisher of the Data Product "@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:domain dprod:DataProduct;
-    rdfs:range dct:Agent;
-    .
-
-dprod:inputPort
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The input data services (ports) that make the data available to the Data Product"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:domain dprod:DataProduct;
-    rdfs:range dcat:DataService;
-    .
-
-dprod:outputPort
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The Data Product makes its data available through one or more Data Services (ports)"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:domain dprod:DataProduct;
-    rdfs:range dcat:DataService;
-    .
-
-############################# additions to dcat ################
-
-dcat:Dataset
-  a sh:NodeShape ;
-  sh:property dcat:Dataset-distribution
-  .
-
-
-dcat:Dataset-distribution
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dcat:distribution;
-  sh:class dcat:Distribution;
-  dc:description "An available distribution of the dataset"@en ;
-  rdfs:label "Dataset-distribution";
- .
-
-dcat:Distribution
-  a sh:NodeShape ;
-  sh:property dcat:Distribution-accessService;
-  sh:property dprod:Distribution-isDistributionOf;
-  .
-
-dcat:Dataset-accessService
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dcat:accessService;
-  sh:class dcat:DataService;
-  dc:description "A data service that gives access to the distribution of the dataset"@en ;
-  rdfs:label "Dataset-accessService";
-  .
-
-dprod:Distribution-isDistributionOf
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dprod:isDistributionOf;
-  sh:class dcat:Dataset;
-  dc:description "The dataset that this distribution makes available"@en ;
-  rdfs:label "Distribution-isDistributionOf;
-  .
-
-dprod:isDistributionOf
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The dataset that this distribution makes available"@en ;
-    rdfs:isDefinedBy dprod:;
-     owl:inverseOf dcat:distribution;
-    rdfs:domain dcat:Distribution;
-    rdfs:range dcat:Dataset;
-    .
 
 dcat:DataService
   a sh:NodeShape ;
   sh:property dprod:DataService-offersDistribution ;
   .
 
-dprod:DataService-offersDistribution 
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dprod:offersDistribution;
-  sh:class dcat:Dataset;
-  dc:description "The dataset distribution that is being offered through this Data Service"@en ;
-  rdfs:label "Distribution-offersDistribution;
+dcat:Distribution
+  a sh:NodeShape ;
+  sh:property dcat:Distribution-accessService;
+  sh:property dprod:Distribution-belongsToDataset;
   .
 
-dprod:offersDistribution
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "he dataset distribution that is being offered through this Data Service"@en ;
-    rdfs:isDefinedBy dprod:;
-    owl:inverseOf dcat:accessService;
-    rdfs:domain dcat:DataService;
-    rdfs:range dcat:Distribution;
-    .
+dcat:Dataset
+  a sh:NodeShape ;
+  sh:property dcat:Dataset-distribution
+  .
 
 dprod:RESTDataService
   a owl:Class , rdfs:Class,  sh:NodeShape;
@@ -286,4 +179,146 @@ dprod:DatabaseDataService
   rdfs:isDefinedBy dprod:;
   rdfs:label "Database Data Service" ;
   rdfs:subClassOf dcat:DataService ;
+    .
+
+dprod:DataProductLifecycle
+    a owl:Class , rdfs:Class,  sh:NodeShape;
+    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+    rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Data Product Lifecycle" ;
+    rdfs:subClassOf dprod:Enumeration;
+.
+
+dprod:Enumeration
+    a owl:Class , rdfs:Class,  sh:NodeShape;
+    dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Enumeration" ;
+    rdfs:subClassOf owl:Thing;
+.
+
+#############################  DPROD Property Shapes ################
+
+dprod:DataProduct-dataProductOwner
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:dataProductOwner;
+  sh:class dct:Agent;
+  dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
+  rdfs:label "DataProduct-dataProductOwner";
+.
+
+dprod:DataProduct-lifecycle
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:lifecycle;
+  sh:class dprod:DataProductLifecycle;
+  dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
+  rdfs:label "DataProduct-lifecycle";
+.
+
+dprod:DataProduct-inputPort
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:inputPort;
+  sh:class dcat:DataService;
+  dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
+  rdfs:label "DataProduct-inputPort";
+.
+
+dprod:DataProduct-outputPort
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:outputPort;
+  sh:class dcat:DataService;
+  sh:minCount 1;
+  dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted. Each data product must have at least one or more output ports"@en ;
+  rdfs:label "DataProduct-outputPort";
+.
+
+dcat:Dataset-distribution
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dcat:distribution;
+  sh:class dcat:Distribution;
+  dc:description "An available distribution of the dataset"@en ;
+  rdfs:label "Dataset-distribution";
+ .
+
+dcat:Distribution-accessService
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dcat:accessService;
+  sh:class dcat:DataService;
+  dc:description "A data service that gives access to the distribution of the dataset"@en ;
+  rdfs:label "Distribution-accessService";
+  .
+
+dprod:Distribution-belongsToDataset
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:belongsToDataset;
+  sh:class dcat:Dataset;
+  dc:description "The dataset that this distribution makes available"@en ;
+  rdfs:label "Distribution-belongsToDataset;
+  .
+
+dprod:belongsToDataset
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The dataset that this distribution makes available"@en ;
+    rdfs:isDefinedBy dprod:;
+    owl:inverseOf dcat:distribution;
+    rdfs:domain dcat:Distribution;
+    rdfs:range dcat:Dataset;
+    .
+
+dprod:DataService-offersDistribution
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:offersDistribution;
+  sh:class dcat:Dataset;
+  dc:description "The dataset distribution that is being offered through this Data Service"@en ;
+  rdfs:label "DataService-offersDistribution;
+  .
+
+dprod:offersDistribution
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "he dataset distribution that is being offered through this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    owl:inverseOf dcat:accessService;
+    rdfs:domain dcat:DataService;
+    rdfs:range dcat:Distribution;
+    .
+
+dprod:dataProductOwner
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). This can be different from the creator or the publisher of the Data Product "@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dprod:DataProduct;
+    rdfs:range dct:Agent;
+    .
+
+dprod:inputPort
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dprod:DataProduct;
+    rdfs:range dcat:DataService;
+    .
+
+dprod:outputPort
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted. Each data product must have at least one or more output ports"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dprod:DataProduct;
+    rdfs:range dcat:DataService;
+    .
+
+dprod:lifecycle
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dprod:DataProduct;
+    rdfs:range dcat:DataProductLifecycle;
     .
