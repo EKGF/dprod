@@ -114,7 +114,7 @@ dprod:DataProduct-outputPort
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:outputPort;
-  sh:class dcat:Dataset;
+  sh:class dcat:DataService;
   dc:description "The Data Product makes its data available through one or more Data Services (ports)"@en ;
   rdfs:label "DataProduct-outputPort";
 .
