@@ -181,12 +181,12 @@ dprod:DatabaseDataService
   rdfs:subClassOf dcat:DataService ;
     .
 
-dprod:DataProductLifecycle
+dprod:DataProductLifecycleStatus
     a owl:Class , rdfs:Class,  sh:NodeShape;
     dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
     rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
     rdfs:isDefinedBy dprod:;
-    rdfs:label "Data Product Lifecycle" ;
+    rdfs:label "Data Product Lifecycle Status" ;
     rdfs:subClassOf dprod:Enumeration;
 .
 
