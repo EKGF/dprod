@@ -90,7 +90,7 @@ dprod:DataProduct
     sh:property dprod:DataProduct-dataProductOwner;
     sh:property dprod:DataProduct-inputPort;
     sh:property dprod:DataProduct-outputPort;
-    sh:property dprod:DataProduct-lifecycle;
+    sh:property dprod:DataProduct-lifecycleStatus;
 .
 
 dcat:DataService
@@ -209,13 +209,13 @@ dprod:DataProduct-dataProductOwner
   rdfs:label "DataProduct-dataProductOwner";
 .
 
-dprod:DataProduct-lifecycle
+dprod:DataProduct-lifecycleStatus
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
-  sh:path dprod:lifecycle;
+  sh:path dprod:lifecycleStatus;
   sh:class dprod:DataProductLifecycle;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
-  rdfs:label "DataProduct-lifecycle";
+  rdfs:label "DataProduct-lifecycleStatus";
 .
 
 dprod:DataProduct-inputPort
