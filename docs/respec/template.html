@@ -69,7 +69,7 @@
         Everything else in this Profile is normative.</p>
 
       <p>The key words MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be interpreted as described in [[!RFC2119]].
-
+      </section>
       <section>
               <h3>Normative namespaces</h3>
               <p>Namespaces and prefixes used in normative parts of this Profile are shown in the following table.</p>
@@ -135,7 +135,7 @@
 
           </section>
 <section>
-      <h2>Data Product (DPROD) Model</h2>
+<h2>Data Product (DPROD) Model</h2>
   <p>Data Catalog Vocabulary (DCAT) is a W3C standard that facilitates interoperability between data catalogs published on the web. By using DCAT to declare input and output ports, Semantic Data Products can effectively describe the details of the data services they provide, including the datasets and the operations that can be performed on them.
 
 Semantic Data Products take advantage of this by defining ports that specify not only the data format and structure but also the semantics—meaning the meaning and relationships of the data elements. This allows for the integration of data across different domains, as the shared semantics ensure that all stakeholders have a common understanding of the data, which is critical in a Data Mesh architecture.
@@ -153,7 +153,8 @@ In a broader sense, using standards like DCAT contributes to a powerful and expr
               <figcaption>
                         Overview of DCAT Profile, showing the relevant classes, properties and relationships.
                     </figcaption>
-          </figure>
+    </figure>
+</section>
 <p>
 The Profile consists of the following classes:
 <UL>
@@ -175,6 +176,8 @@ Because DCAT DataService maps to the Data Mesh notion of a port we can declare a
   "@type": "dprod:DataProduct",
   "dprod:title": "UK Bonds",
   "dprod:description": "UK Bonds is your one-stop-shop for all ...",
+  "dprod:dataProductOwner" : "https://www.linkedin.com/in/tonyseale/",
+  "dprod:lifecycle" : "Consume",
   "dprod:outputPort": {
     "@type": "dprod:Port",
     "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
@@ -189,7 +192,28 @@ Because DCAT DataService maps to the Data Mesh notion of a port we can declare a
       The examples in map the type of the above classes to <code>@type</code> in the JSON-LD serialisations. You can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD
     </p>
 
-    </section>
+</section>
+      
+
+ {% for cls in classes %}
+      <section>
+      <h2>{{cls.name}}</h2>
+        {{cls.description}}
+        {% for prop in cls.properties %}
+        <section>
+        <h2>{{prop.name}}</h2>
+        <table class="def propdef">
+        <tbody>
+          <tr><th>Identifier:</th> <td><code>prod:{{prop.name}}</code></td></tr>
+          <tr><th>Notes:</th><td>{{prop.description}}</td></tr>
+          <tr><th>Domain:</th><td>{{prop.domain}}</td></tr>
+          <tr><th>Range:</th><td>{{prop.range}}</td></tr>
+        </tbody>
+        </table>
+      </section>
+        {% endfor %}
+      </section>
+{% endfor %}
 
       
 <section class="appendix">

@@ -93,3 +93,4 @@ virtualenv==20.21.0
 virtualenv-clone==0.5.7
 watchdog==3.0.0
 wcmatch==8.4.1
+Jinja2

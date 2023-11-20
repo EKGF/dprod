@@ -69,7 +69,7 @@
         Everything else in this Profile is normative.</p>
 
       <p>The key words MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be interpreted as described in [[!RFC2119]].
-
+      </section>
       <section>
               <h3>Normative namespaces</h3>
               <p>Namespaces and prefixes used in normative parts of this Profile are shown in the following table.</p>
@@ -135,7 +135,7 @@
 
           </section>
 <section>
-      <h2>Data Product (DPROD) Model</h2>
+<h2>Data Product (DPROD) Model</h2>
   <p>Data Catalog Vocabulary (DCAT) is a W3C standard that facilitates interoperability between data catalogs published on the web. By using DCAT to declare input and output ports, Semantic Data Products can effectively describe the details of the data services they provide, including the datasets and the operations that can be performed on them.
 
 Semantic Data Products take advantage of this by defining ports that specify not only the data format and structure but also the semantics—meaning the meaning and relationships of the data elements. This allows for the integration of data across different domains, as the shared semantics ensure that all stakeholders have a common understanding of the data, which is critical in a Data Mesh architecture.
@@ -153,7 +153,8 @@ In a broader sense, using standards like DCAT contributes to a powerful and expr
               <figcaption>
                         Overview of DCAT Profile, showing the relevant classes, properties and relationships.
                     </figcaption>
-          </figure>
+    </figure>
+</section>
 <p>
 The Profile consists of the following classes:
 <UL>
@@ -175,6 +176,8 @@ Because DCAT DataService maps to the Data Mesh notion of a port we can declare a
   "@type": "dprod:DataProduct",
   "dprod:title": "UK Bonds",
   "dprod:description": "UK Bonds is your one-stop-shop for all ...",
+  "dprod:dataProductOwner" : "https://www.linkedin.com/in/tonyseale/",
+  "dprod:lifecycle" : "Consume",
   "dprod:outputPort": {
     "@type": "dprod:Port",
     "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
@@ -191,21 +194,123 @@ Because DCAT DataService maps to the Data Mesh notion of a port we can declare a
 
 </section>
       
-# for each class
-<section>
-      <h2>Describing the Dataset Series</h2>
-      
-      #foreach property 
-       <section>
-        <h2>Identifier</h2>
+
+ 
+      <section>
+      <h2>DataProductLifecycleStatus</h2>
+        The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ).
+        
+      </section>
+
+      <section>
+      <h2>GraphQLDataService</h2>
+        Single REST endpoint, with structure given by GraphQL schema
+        
+      </section>
+
+      <section>
+      <h2>CallbackDataService</h2>
+        Streams by making calls to a client-provided e.g. WebSockets
+        
+      </section>
+
+      <section>
+      <h2>StreamingDataService</h2>
+        Data is continuously made available
+        
+      </section>
+
+      <section>
+      <h2>ObjectDataService</h2>
+        Structured API, e.g. gRPC, CORBA, SOAP, ORM
+        
+      </section>
+
+      <section>
+      <h2>RESTDataService</h2>
+        Accessed using http verbs with parameters, may be defined using OpenAPI
+        
+      </section>
+
+      <section>
+      <h2>QueuingDataService</h2>
+        Streams using a queue or topic e.g. MQTT, Kafka, DDS
+        
+      </section>
+
+      <section>
+      <h2>FileDataService</h2>
+        Uses file-like access methods. May or may not be streaming if the file is continuously wriitten to
+        
+      </section>
+
+      <section>
+      <h2>DatabaseDataService</h2>
+        Uses database-like access methods, including query e.g. JDBC, ODBC, SPARQL endpoint
+        
+      </section>
+
+      <section>
+      <h2>DataProduct</h2>
+        A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle.
+        
+        <section>
+        <h2>dataProductOwner</h2>
         <table class="def propdef">
         <tbody>
-          <tr><th>Identifier:</th> <td><code>dct:identifier</code></td></tr>
-          <tr><th>Notes:</th><td>A unique URI of the Dataset Series. Mapped to <code>@id</code> in JSON-LD serialisations.</td></tr>
+          <tr><th>Identifier:</th> <td><code>prod:dataProductOwner</code></td></tr>
+          <tr><th>Notes:</th><td>The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). This can be different from the creator or the publisher of the Data Product </td></tr>
+          <tr><th>Domain:</th><td>https://w3id.org/dprod/DataProduct</td></tr>
+          <tr><th>Range:</th><td>http://purl.org/dc/terms/Agent</td></tr>
         </tbody>
         </table>
       </section>
-</section>
+        
+        <section>
+        <h2>inputPort</h2>
+        <table class="def propdef">
+        <tbody>
+          <tr><th>Identifier:</th> <td><code>prod:inputPort</code></td></tr>
+          <tr><th>Notes:</th><td>an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports</td></tr>
+          <tr><th>Domain:</th><td>https://w3id.org/dprod/DataProduct</td></tr>
+          <tr><th>Range:</th><td>http://www.w3.org/ns/dcat#DataService</td></tr>
+        </tbody>
+        </table>
+      </section>
+        
+        <section>
+        <h2>outputPort</h2>
+        <table class="def propdef">
+        <tbody>
+          <tr><th>Identifier:</th> <td><code>prod:outputPort</code></td></tr>
+          <tr><th>Notes:</th><td>an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted. Each data product must have at least one or more output ports</td></tr>
+          <tr><th>Domain:</th><td>https://w3id.org/dprod/DataProduct</td></tr>
+          <tr><th>Range:</th><td>http://www.w3.org/ns/dcat#DataService</td></tr>
+        </tbody>
+        </table>
+      </section>
+        
+        <section>
+        <h2>lifecycle</h2>
+        <table class="def propdef">
+        <tbody>
+          <tr><th>Identifier:</th> <td><code>prod:lifecycle</code></td></tr>
+          <tr><th>Notes:</th><td>The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ).</td></tr>
+          <tr><th>Domain:</th><td>https://w3id.org/dprod/DataProduct</td></tr>
+          <tr><th>Range:</th><td>http://www.w3.org/ns/dcat#DataProductLifecycle</td></tr>
+        </tbody>
+        </table>
+      </section>
+        
+      </section>
+
+      <section>
+      <h2>Enumeration</h2>
+        The superclass of enumeration lists referenced from Data Product related artifacts
+        
+      </section>
+
+
       
 <section class="appendix">
   <h2>Acknowledgements</h2>

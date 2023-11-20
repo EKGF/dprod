@@ -1,0 +1,66 @@
+{
+    "@context": {
+        "@vocab": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#",
+        "dcat": "http://www.w3.org/ns/dcat#",
+        "inputPort": {
+            "@id": "https://w3id.org/dprod/inputPort",
+            "@type": "http://www.w3.org/ns/dcat#DataService"
+        },
+        "DataProductLifecycleStatus": {
+            "@id": "https://w3id.org/dprod/DataProductLifecycleStatus"
+        },
+        "GraphQLDataService": {
+            "@id": "https://w3id.org/dprod/GraphQLDataService"
+        },
+        "CallbackDataService": {
+            "@id": "https://w3id.org/dprod/CallbackDataService"
+        },
+        "StreamingDataService": {
+            "@id": "https://w3id.org/dprod/StreamingDataService"
+        },
+        "ObjectDataService": {
+            "@id": "https://w3id.org/dprod/ObjectDataService"
+        },
+        "lifecycle": {
+            "@id": "https://w3id.org/dprod/lifecycle",
+            "@type": "http://www.w3.org/ns/dcat#DataProductLifecycle"
+        },
+        "RESTDataService": {
+            "@id": "https://w3id.org/dprod/RESTDataService"
+        },
+        "dataProductOwner": {
+            "@id": "https://w3id.org/dprod/dataProductOwner",
+            "@type": "http://purl.org/dc/terms/Agent"
+        },
+        "outputPort": {
+            "@id": "https://w3id.org/dprod/outputPort",
+            "@type": "http://www.w3.org/ns/dcat#DataService"
+        },
+        "offersDistribution": {
+            "@id": "https://w3id.org/dprod/offersDistribution",
+            "@type": "http://www.w3.org/ns/dcat#Distribution"
+        },
+        "QueuingDataService": {
+            "@id": "https://w3id.org/dprod/QueuingDataService"
+        },
+        "FileDataService": {
+            "@id": "https://w3id.org/dprod/FileDataService"
+        },
+        "DatabaseDataService": {
+            "@id": "https://w3id.org/dprod/DatabaseDataService"
+        },
+        "DataProduct": {
+            "@id": "https://w3id.org/dprod/DataProduct"
+        },
+        "Enumeration": {
+            "@id": "https://w3id.org/dprod/Enumeration"
+        },
+        "belongsToDataset": {
+            "@id": "https://w3id.org/dprod/belongsToDataset",
+            "@type": "http://www.w3.org/ns/dcat#Dataset"
+        }
+    }
+}
