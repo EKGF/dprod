@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c' async class='remove'></script>
+    <script class='remove'>
+      // All config options at https://respec.org/docs/
+      var respecConfig = {
+        // Working Groups ids at https://respec.org/w3c/groups/
+        // group: "Semantic Data Products Working Group",
+
+        specStatus: "base",
+        editors: [{
+          name: "Tony Seale",
+          url:  "https://www.linkedin.com/in/tonyseale/",
+        }],
+        github: {
+          branch: "main",
+          repoURL: "https://github.com/EKGF/data-product",
+        },
+        //license: "w3c-software-doc",
+         logos: [ {
+             src: "../../images/dprod.jpg",
+             alt: "DPROD",
+             width: 200,
+              },
+        ],
+      };
+    </script>
+  </head>
+  <body>
+    <h1 id="title">W3C DCAT Profile for Semantic Data Products (DPROD)</h1>
+    <section id='abstract'>
+      <p>
+      This specification defines a profile of the W3C Data Catalog (DCAT) Vocabulary, specifically designed for describing Data Products. DPRODextends DCAT to allow organisations to create Semantic Data Products that interconnect data within a Semantic Data Mesh. DPROD follows two basic principles:
+      <p>
+        ⭕ Shift Data Publication Left: One team can't handle all data integration tasks so we should distribute responsibilities for better efficiency.
+      </p>
+      <p>
+        ⭕ Shift Schema Definition Right: A central team should manage a shared ontology and ensure data publishers adhere to consistent semantics.
+      </p>
+      <p>
+      The W3C DCAT recommendation enables publishers to describe datasets and data services in a catalogue using a standard model and vocabulary. This facilitates the consumption and aggregation of metadata from multiple catalogues, thereby increasing the discoverability of datasets and data services. It also supports a decentralised approach to publishing data catalogues, and enables federated searches for datasets across multiple sites using the same query mechanism and structure.
+      The DROD recommendation extends DCAT to enable datasets to link to Data Products, the Data Products then connect together to form a Data Mesh. The specification has four main mains:
+      </p>
+      <p>
+        ⭕ To provide unambiguous semantics to answer the question: 'What is a data product?' 
+      </p>
+      <p>
+        ⭕ Be simple for anyone to use, but expressive enough to power full data marketplaces 
+      </p>
+      <p>
+        ⭕ Allow organisations to reuse their existing data catalogues and dataset infrastructure
+      </p>
+      <p>
+        ⭕ To share common semantics across different Data Products to promote harmonisation
+      </p>
+  
+
+    </section>
+    <section id="sotd" class="override">
+    <h2>Status of this document</h2>
+    <p>The current version is DRAFT. Feedback and comments welcome via the Github Issue feature. </p>
+   </section>
+
+    <section id='conformance' class="override">
+      <h2>Conformance</h2>
+      <p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this Profile are non-normative.
+        Everything else in this Profile is normative.</p>
+
+      <p>The key words MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be interpreted as described in [[!RFC2119]].
+
+      <section>
+              <h3>Normative namespaces</h3>
+              <p>Namespaces and prefixes used in normative parts of this Profile are shown in the following table.</p>
+
+              <table id="table-namespaces" class="simple">
+                  <thead>
+                      <tr>
+                          <th>Prefix</th>
+                          <th>Namespace IRI</th>
+                          <th>Source</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>
+                              <code>dcat</code>
+                          </td>
+                          <td>
+                              <code>http://www.w3.org/ns/dcat#</code>
+                          </td>
+                          <td>[[VOCAB-DCAT-3]]</td>
+                      </tr>
+                      <tr>
+                          <td>
+                              <code>dct</code>
+                          </td>
+                          <td>
+                              <code>http://purl.org/dc/terms/</code>
+                          </td>
+                          <td>[[DCTERMS]]</td>
+                      </tr>
+                      <tr>
+                          <td>
+                              <code>odrl</code>
+                          </td>
+                          <td>
+                              <code>http://www.w3.org/ns/odrl/2/</code>
+                          </td>
+                          <td>[[ODRL-VOCAB]]</td>
+                      </tr>
+                    
+                     <tr>
+                          <td>
+                              <code>sdo</code>
+                          </td>
+                          <td>
+                              <code>https://schema.org</code>
+                          </td>
+                          <td>[[SCHEMA-ORG]]</td>
+                      </tr>
+                      <tr>
+                          <td>
+                              <code>vcard</code>
+                          </td>
+                          <td>
+                              <code>http://www.w3.org/2006/vcard/ns#</code>
+                          </td>
+                          <td>[[VCARD-RDF]]</td>
+                      </tr>
+
+                  </tbody>
+              </table>
+
+          </section>
+<section>
+      <h2>Data Product (DPROD) Model</h2>
+  <p>Data Catalog Vocabulary (DCAT) is a W3C standard that facilitates interoperability between data catalogs published on the web. By using DCAT to declare input and output ports, Semantic Data Products can effectively describe the details of the data services they provide, including the datasets and the operations that can be performed on them.
+
+Semantic Data Products take advantage of this by defining ports that specify not only the data format and structure but also the semantics—meaning the meaning and relationships of the data elements. This allows for the integration of data across different domains, as the shared semantics ensure that all stakeholders have a common understanding of the data, which is critical in a Data Mesh architecture.
+
+A Data Mesh is a decentralized approach to data architecture and organizational design. The fundamental idea behind a Data Mesh is to treat data as a product, with the goal being that these data products can be easily discovered, understood, and consumed across technical and business boundaries.
+
+By mapping to DCAT DataServices, these Semantic Data Products can describe their functionality in a standard way that can be programmatically understood and used, making the data easily accessible and shareable across the organization. This approach facilitates a self-serve data infrastructure, where domain-oriented data teams can autonomously build and maintain their data products yet ensure that these products can interact and integrate seamlessly with the rest of the data ecosystem within an organization.
+
+In a broader sense, using standards like DCAT contributes to a powerful and expressive model for a Data Mesh, allowing for greater agility, scalability, and innovation. It ensures that as the data landscape becomes increasingly complex, the fundamental mechanisms for describing, sharing, and manipulating data remain robust and standard across the organization.
+
+  </p>
+        
+    <figure id="ProfileModel">
+              <img alt="Information model for the Profile" src="../../images/dprod-model.png">
+              <figcaption>
+                        Overview of DCAT Profile, showing the relevant classes, properties and relationships.
+                    </figcaption>
+          </figure>
+<p>
+The Profile consists of the following classes:
+<UL>
+    <li> Data Product  (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and metadata</li>
+    <li> Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset</li>
+    <li> Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset</li>    
+    <li> Dataset (<code>dcat:Dataset</code>) - A collection of data related </li>    
+    <li> Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products </li>
+</ul>
+</p>
+<p>
+Because DCAT DataService maps to the Data Mesh notion of a port we can declare a DataProduct by and specify and input and output ports. This allows user to connect their Data Products to Datasets and from there onto shared Ontologies.
+</p>
+  
+
+  <pre id="eg12" class="example hljs json">
+{
+  "@id": "https://y.com/products/uk-bonds",
+  "@type": "dprod:DataProduct",
+  "dprod:title": "UK Bonds",
+  "dprod:description": "UK Bonds is your one-stop-shop for all ...",
+  "dprod:outputPort": {
+    "@type": "dprod:Port",
+    "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
+    "dcat:servesDataset": {
+      "@type": "dcat:Dataset",	
+      "dcat:conformsTo": "fibo:CallableBond",
+    },
+   }
+}
+    </pre>
+      <p class="note">
+      The examples in map the type of the above classes to <code>@type</code> in the JSON-LD serialisations. You can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD
+    </p>
+
+    </section>
+
+      
+<section class="appendix">
+  <h2>Acknowledgements</h2>
+<p>The editors gratefully acknowledge the feedback and contributions made to this document by: </p>
+  </section>
+
+  </body>
+</html>
