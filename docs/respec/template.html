@@ -172,19 +172,24 @@ Because DCAT DataService maps to the Data Mesh notion of a port we can declare a
 
   <pre id="eg12" class="example hljs json">
 {
+  "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
   "@id": "https://y.com/products/uk-bonds",
   "@type": "dprod:DataProduct",
   "dprod:title": "UK Bonds",
   "dprod:description": "UK Bonds is your one-stop-shop for all ...",
-  "dprod:dataProductOwner" : "https://www.linkedin.com/in/tonyseale/",
+  "dprod:dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
   "dprod:lifecycle" : "Consume",
   "dprod:outputPort": {
-    "@type": "dprod:Port",
+    "@type": "dcat:DataService",
     "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
-    "dcat:servesDataset": {
-      "@type": "dcat:Dataset",	
-      "dcat:conformsTo": "fibo:CallableBond",
-    },
+    "dprod:offersDistribution": {
+      "@type": "dcat:Distribution",	
+      "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
+      "dprod:belongsToDataset": {
+        "@type": "dcat:Dataset",	
+        "dcat:conformsTo": "fibo:CallableBond"
+      }
+    }
    }
 }
     </pre>
