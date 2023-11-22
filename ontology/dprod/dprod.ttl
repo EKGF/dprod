@@ -8,7 +8,7 @@
 
 
 
-@prefix dprod: <https://w3id.org/dprod/> .
+@prefix dprod: <https://ekgf.github.io/data-product-spec/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
@@ -96,16 +96,19 @@ dprod:DataProduct
 dcat:DataService
   a sh:NodeShape ;
   sh:property dprod:DataService-offersDistribution ;
+  dc:description "see http://www.w3.org/ns/dcat#DataService"
   .
 
 dcat:Distribution
   a sh:NodeShape ;
+  dc:description "see http://www.w3.org/ns/dcat#Distribution" ;
   sh:property dcat:Distribution-accessService;
   sh:property dprod:Distribution-belongsToDataset;
   .
 
 dcat:Dataset
   a sh:NodeShape ;
+  dc:description "see http://www.w3.org/ns/dcat#Dataset" ;
   sh:property dcat:Dataset-distribution
   .
 
