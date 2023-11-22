@@ -4,7 +4,6 @@ from typing import List
 
 import jinja2
 import rdflib
-from jinja2 import Environment, PackageLoader, select_autoescape
 from rdflib import Graph, URIRef, DCTERMS, SH
 from rdflib.namespace import OWL, RDF, RDFS, XSD, DCAT
 import json
@@ -77,7 +76,7 @@ def add_to_context(uri):
                 rdf_property = RdfProperty(name=short_name(s), uri=s)
                 class_obj.properties.append(rdf_property)
                 for s1, p1, o1 in g.triples((rdf_property.uri, None, None)):
-                    rdf_property.__dict__[short_name(p1)] = o1       
+                    rdf_property.__dict__[short_name(p1)] = o1  
         elif OWL.ObjectProperty in types:
             for s, p, o in g.triples((uri, RDFS.range, None)):
                 context[name] = {"@id": str(uri), "@type": str(o)}

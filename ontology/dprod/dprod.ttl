@@ -287,7 +287,7 @@ dprod:DataService-offersDistribution
 
 dprod:offersDistribution
     a rdfs:Property, owl:ObjectProperty ;
-    dc:description "he dataset distribution that is being offered through this Data Service"@en ;
+    dc:description "The dataset distribution that is being offered through this Data Service"@en ;
     rdfs:isDefinedBy dprod:;
     owl:inverseOf dcat:accessService;
     rdfs:domain dcat:DataService;
@@ -300,6 +300,7 @@ dprod:dataProductOwner
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dct:Agent;
+    rdfs:label "Data Product Owner" ;
     .
 
 dprod:inputPort

@@ -161,15 +161,17 @@ The Profile consists of the following classes:
 <UL>
     <li> Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products </li>
     <li> Data Product (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and metadata</li>
-    <li> Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTPEndpoint, a Database or a FileShare etc</li>
+    <li> Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTP URL, a Database or a FileShare etc</li>
     <li> Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc) with it own physical mode if needed</li>    
     <li> Dataset (<code>dcat:Dataset</code>) - A collection of data related that conforms to a logical model</li>
 </ul>
 </p>
 <p>
-Because DCAT DataService maps to the Data Mesh notion of a port we can declare a DataProduct by and specify and input and output ports. This allows user to connect their Data Products to Datasets and from there onto shared Ontologies.
+ DPROD maps to the Data Mesh notion of a port to the DCAT notion of a DataService, so we can declare a DataProduct by and specify and input and output ports and these ports are Dataservice. This allows user to connect their Data Products to Datasets and from there onto shared Ontologies.
 </p>
-  
+  <p>
+In this example, the UK Bonds Data Product features an output port, which is a RESTful API. This API returns JSON data that conforms to the shared FIBO specification for callable bonds.
+  </p>   
 
   <pre id="eg12" class="example hljs json">
   {
@@ -188,7 +190,7 @@ Because DCAT DataService maps to the Data Mesh notion of a port we can declare a
         "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
         "belongsToDataset": {
           "@type": "dcat:Dataset",	
-          "dcat:conformsTo": "fibo:CallableBond"
+          "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
         }
       }
      }
@@ -212,6 +214,9 @@ Because DCAT DataService maps to the Data Mesh notion of a port we can declare a
         <table class="def propdef">
         <tbody>
           <tr><th>Identifier:</th> <td><code>dprod:{{prop.name}}</code></td></tr>
+          {% if prop.label is not none %}   
+          <tr><th>Label:</th><td>{{prop.label}}</td></tr>
+          {% endif %}
           <tr><th>Notes:</th><td>{{prop.description}}</td></tr>
           <tr><th>Domain:</th><td>{{prop.domain}}</td></tr>
           <tr><th>Range:</th><td>{{prop.range}}</td></tr>
