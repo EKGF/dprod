@@ -42,15 +42,16 @@
         ⭕ <b>Shift Schema Definition Right</b>: A central team should manage a shared ontology and ensure data publishers adhere to consistent semantics.
       </p>
       <p>
-      The DPROD specification enables publishers to describe datasets and data services in a catalogue using a standard model and vocabulary. This facilitates the consumption and aggregation of metadata from multiple catalogues, thereby increasing the discoverability of datasets and data services. It also supports a decentralised approach to publishing data catalogues, and enables federated searches for datasets across multiple sites using the same query mechanism and structure.
-      The DROD recommendation extends DCAT to enable datasets to link to Data Products, the Data Products then connect together to form a Data Mesh.
+      The DCAT specification enables publishers to describe datasets and data services in a catalogue using a standard model and vocabulary. This facilitates the consumption and aggregation of metadata from multiple catalogues, thereby increasing the discoverability of datasets and data services.</p>
+      <p>
+      The DPROD specification extends DCAT by linking Datasets to Data Products. DPROD supports a decentralised approach to publishing Data Products, and enables federated searches for products, datasets and ontological classes across multiple sites using the same query mechanism and structure.
       </p>
       <p>The DPROD specification has four main mains:</p>
       <p>
         ⭕ To provide unambiguous semantics to answer the question: 'What is a data product?' 
       </p>
       <p>
-        ⭕ Be simple for anyone to use, but expressive enough to power full data marketplaces 
+        ⭕ Be simple for anyone to use, but expressive enough to powerful data marketplaces 
       </p>
       <p>
         ⭕ Allow organisations to reuse their existing data catalogues and dataset infrastructure
@@ -71,7 +72,7 @@
       <p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this Profile are non-normative.
         Everything else in this Profile is normative.</p>
 
-      <p>The key words MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be interpreted as described in [[!RFC2119]].
+      <p>The keywords MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be interpreted as described in [[!RFC2119]].
       </section>
       <section>
               <h3>Normative namespaces</h3>
@@ -129,9 +130,9 @@
           </section>
 <section>
 <h2>Data Product (DPROD) Model</h2>
-  <p>Data Catalog Vocabulary (DCAT) is a W3C standard that facilitates interoperability between data catalogs published on the web. By using DCAT to declare input and output ports, Semantic Data Products can effectively describe the details of the data services they provide, including the datasets and the operations that can be performed on them. </p>
+  <p>Data Catalog Vocabulary (DCAT) is a W3C standard that facilitates interoperability between data catalogs published on the web. By using DCAT to declare input and output ports, Semantic Data Products can effectively describe the details of the Data Services they provide.</p>
 
-  <p>Semantic Data Products take advantage of this by defining ports that specify not only the data format and structure but also the semantics—meaning the meaning and relationships of the data elements. This allows for the integration of data across different domains, as the shared semantics ensure that all stakeholders have a common understanding of the data, which is critical in a Data Mesh architecture.</p>
+  <p>Semantic Data Products define output ports that specify not only the data format and structure but also the semantic meaning and relationships of the data elements. This allows for the integration of data across different domains, as the shared semantics ensure that all stakeholders have a common understanding of the data, which is critical in a Data Mesh architecture.</p>
 
   <p>A Data Mesh is a decentralized approach to data architecture and organizational design. The fundamental idea behind a Data Mesh is to treat data as a product, with the goal being that these data products can be easily discovered, understood, and consumed across technical and business boundaries.</p>
 
