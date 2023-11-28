@@ -35,36 +35,31 @@
     </script>
   </head>
   <body>
-    <h1 id="title">Semantic Data Products (DPROD)</h1>
+    <h1 id="title">Data Product Vocabulary (DPROD)</h1>
     <section id='abstract'>
       <p>
-      The Data Product (DPROD) specification defines a profile of the W3C Data Catalog (DCAT) Vocabulary, specifically designed for describing Data Products. DPROD extends DCAT to allow organisations to create Semantic Data Products that interconnect data within a Semantic Data Mesh. DPROD follows two basic principles:
+        The <a href="https://martinfowler.com/articles/data-mesh-principles.html">Data Mesh</a> is an architectural and organizational paradigm that views data as a product, emphasizing domain-oriented decentralized data ownership and architecture. The <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a> is a <a href="https://www.w3.org/">W3C</a> standard that allows publishers to describe datasets and data services in a decentralized way.</p>  
+      <p>The Data Product (DPROD) specification defines a profile of DCAT, extending it to describe <a href="#dataproduct">Data Products</a>. DPROD follows two basic principles:</p>
       <p>
-        ⭕ <b>Shift Data Publication Left</b>: One team can't handle all data integration tasks, so we should distribute responsibilities for better efficiency.
+        🔵 Decentralize Data Ownership: Efficiency in data integration necessitates task distribution among multiple teams. The DCAT facilitates this by providing a standardised approach for decentralized dataset publication.
       </p>
       <p>
-        ⭕ <b>Shift Schema Definition Right</b>: Central teams should manage a shared ontologies and ensure data publishers adhere to consistent semantics.
+        🔵 Harmonize Data Schemas: Shared ontologies can be used to harmonize decentralize schemas to consistent semantics. For example this shared <a href="https://ekgf.github.io/data-product-spec/dprod">DPROD</a> ontology provides the semantics for defining what constitutes a <a href="#dataproduct">Data Product</a>.
+      </p>
+      The DPROD specification extends DCAT by linking <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to DPROD <a href="#dataproduct">Data Products</a>. This enables a decentralized approach to publishing <a href="#dataproduct">Data Products</a>, facilitating federated searches for products across distributed sites using the same query mechanism and structure. The DPROD specification has four main aims:
+      <p>
+        🔵 To provide unambiguous and sharable semantics to answer the question: 'What is a <a href="#dataproduct">data product</a>?' 
       </p>
       <p>
-      The DCAT specification enables publishers to describe datasets and data services in a catalogue using a standard model and vocabulary. This facilitates the consumption and aggregation of metadata from multiple catalogues, thereby increasing the discoverability of Datasets.</p>
-      <p>
-      The DPROD specification extends DCAT by linking Datasets to Data Products. DPROD supports a decentralised approach to publishing Data Products, and enables federated searches for products, datasets and ontological classes across multiple sites using the same query mechanism and structure.
-      </p>
-      <p>The DPROD specification has four main aims:</p>
-      <p>
-        ⭕ To provide unambiguous semantics to answer the question: 'What is a data product?' 
+        🔵 Be simple for anyone to use, but expressive enough to power large data marketplaces 
       </p>
       <p>
-        ⭕ Be simple for anyone to use, but expressive enough to power large data marketplaces 
+        🔵 Allow organisations to reuse their existing data catalogues and dataset infrastructure
       </p>
       <p>
-        ⭕ Allow organisations to reuse their existing data catalogues and dataset infrastructure
+        🔵 To share common semantics across different Data Products and promote harmonisation
       </p>
-      <p>
-        ⭕ To share common semantics across different Data Products and promote harmonisation
-      </p>
-  
-
+      
     </section>
     <section id="sotd" class="override">
     <h2>Status of this document</h2>
@@ -134,16 +129,11 @@
           </section>
 <section>
 <h2>Data Product (DPROD) Model</h2>
-  <p>The Data Catalog Vocabulary (DCAT) is a W3C standard that facilitates interoperability between data catalogs published on the web. By using DCAT Data Services to declare input and output ports, Semantic Data Products can effectively describe the details of the data they provide.</p>
-
-  <p>Semantic Data Products define output ports that specify not only the data format and structure but also the semantic meaning and relationships of the data elements. This allows for the integration of data across different domains, as the shared semantics ensure that all stakeholders have a common understanding of the data, which is critical in a Data Mesh architecture.</p>
-
-  <p>A Data Mesh is a decentralized approach to data architecture and organizational design. The fundamental idea behind a Data Mesh is to treat data as a product, with the goal being that these data products can be easily discovered, understood, and consumed across technical and business boundaries.</p>
-
-  <p>By mapping Data Product ports to DCAT DataServices, these Semantic Data Products can describe their functionality in a standard way that can be programmatically understood and used, making the data easily accessible and shareable across the organization. This approach facilitates a self-serve data infrastructure, where domain-oriented data teams can autonomously build and maintain their data products yet ensure that these products can interact and integrate seamlessly with the rest of the data ecosystem within an organization.</p>
-
-  <p>In a broader sense, using standards like DCAT contributes to a powerful and expressive model for a Data Mesh, allowing for greater agility, scalability, and innovation. It ensures that as the data landscape becomes increasingly complex, the fundamental mechanisms for describing, sharing, and manipulating data remain robust and standard across the organization</p>
-        
+<p>In the Data Mesh architecture, input and output ports in Data Products serve as interfaces for importing and exporting data, supporting various formats, schemas, and protocols. Input ports consume data, while output ports make data available to other Data Products or for downstream analytical and reporting purposes.</p>
+<p>In the Data Catalog Vocabulary (DCAT) framework, a DataService is a class that encapsulates services providing data access. Data Services offer standardized, machine-readable descriptions of a collection of operations that provide access to one or more datasets or data processing functions.</p>
+<p>Data Services facilitate data downloads and are linked to Distributions, which are specific representations of a dataset (like CSV or JSON). The datasets themselves are collections of data, published or curated by a single agent, and can be linked to classes defined in a shareable ontology.</p>
+<p>By mapping Data Product ports to DCAT DataServices, DPROD can describe Data Products in a machine-readable way across the organization. This approach facilitates a self-service data infrastructure, where domain-oriented data teams can autonomously build and maintain their data products, ensuring they interact and harmonize with the rest of the data ecosystem within an organization.</p>
+<p>In a broader sense, using standards like DCAT contributes to a powerful and expressive model for Data Mesh. It ensures that as the data landscape becomes increasingly complex, the fundamental mechanisms for describing, sharing, and manipulating data remain robust and standardized across the organization.</p>
     <figure id="ProfileModel">
               <img alt="Information model for the Profile" src="./dprod-model.png">
               <figcaption>
