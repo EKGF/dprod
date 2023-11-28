@@ -152,11 +152,8 @@ The Profile consists of the following classes:
 </ul>
 </p>
 <p>
- DPROD maps to the Data Mesh notion of a port to the DCAT notion of a DataService, so we can declare a DataProduct by and specify and input and output ports and these ports are Dataservice. This allows user to connect their Data Products to Datasets and from there onto shared Ontologies.
-</p>
-  <p>
-In this example, the UK Bonds Data Product features an output port, which is a RESTful API. This API returns JSON data that conforms to the shared FIBO specification for callable bonds.
-  </p>   
+As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a href="#inputport">input</a> and <a href="#outputport">output</a> ports can specify connection details, they have <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared ontologies. In this example, the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to the shared FIBO specification for callable bonds.
+</p>   
 
   <pre id="eg12" class="example hljs json">
   {
