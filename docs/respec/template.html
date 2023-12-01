@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <script src='https://www.w3.org/Tools/respec/respec-w3c' async class='remove'></script>
+    <script class='remove'>
+      // All config options at https://respec.org/docs/
+      var respecConfig = {
+        // Working Groups ids at https://respec.org/w3c/groups/
+        // group: "Semantic Data Products Working Group",
+        latestVersion: "https://ekgf.github.io/data-product-spec/dprod" ,
+        specStatus: "base",
+        editors: [
+        {
+          name: "Tony Seale",
+          url:  "https://www.linkedin.com/in/tonyseale/",
+        },
+        {
+          name: "Natasa Varytimou",
+          url:  "https://www.ubs.com/",
+        }
+        ],
+        github: {
+          branch: "main",
+          repoURL: "https://github.com/EKGF/data-product",
+        },
+        //license: "w3c-software-doc",
+         logos: [ {
+             src: "./dprod.jpg",
+             alt: "DPROD",
+             width: 200,
+              },
+        ],
+      };
+    </script>
+  </head>
+  <body>
+    <h1 id="title">Data Product Vocabulary (DPROD)</h1>
+    <section id='abstract'>
+      <p>
+        The <a href="https://martinfowler.com/articles/data-mesh-principles.html">Data Mesh</a> is an architectural and organizational paradigm that views data as a product, emphasizing domain-oriented decentralized data ownership and architecture. The <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a> is a <a href="https://www.w3.org/">W3C</a> standard that allows publishers to describe datasets and data services in a decentralized way.</p>  
+      <p>The Data Product (DPROD) specification defines a profile of DCAT, extending it to describe <a href="#dataproduct">Data Products</a>. DPROD follows two basic principles:</p>
+      <p>
+        🔵 Decentralize Data Ownership: Efficiency in data integration necessitates task distribution among multiple teams. DCAT facilitates this by providing a standardised approach for decentralized dataset publication.
+      </p>
+      <p>
+        🔵 Harmonize Data Schemas: Shared ontologies can be used to harmonize decentralize schemas to consistent semantics. For example this shared <a href="https://ekgf.github.io/data-product-spec/dprod">DPROD</a> ontology provides the semantics for defining what constitutes a <a href="#dataproduct">Data Product</a>.
+      </p>
+      The DPROD specification extends DCAT by linking <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to DPROD <a href="#dataproduct">Data Products</a>. This enables a decentralized approach to publishing <a href="#dataproduct">Data Products</a>, facilitating federated searches for products across distributed sites using the same query mechanism and structure. The DPROD specification has four main aims:
+      <p>
+        🔵 To provide unambiguous and sharable semantics to answer the question: 'What is a <a href="#dataproduct">data product</a>?' 
+      </p>
+      <p>
+        🔵 Be simple for anyone to use, but expressive enough to power large data marketplaces 
+      </p>
+      <p>
+        🔵 Allow organisations to reuse their existing data catalogues and dataset infrastructure
+      </p>
+      <p>
+        🔵 To share common semantics across different Data Products and promote harmonisation
+      </p>
+      
+    </section>
+    <section id="sotd" class="override">
+    <h2>Status of this document</h2>
+    <p>The current version is DRAFT. Feedback and comments welcome via the Github Issue feature. </p>
+   </section>
+
+    <section id='conformance' class="override">
+      <h2>Conformance</h2>
+      <p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this Profile are non-normative.
+        Everything else in this Profile is normative.</p>
+
+      <p>The keywords MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be interpreted as described in [[!RFC2119]].
+      </section>
+      <section>
+              <h3>Normative namespaces</h3>
+              <p>Namespaces and prefixes used in normative parts of this Profile are shown in the following table.</p>
+
+              <table id="table-namespaces" class="simple">
+                  <thead>
+                      <tr>
+                          <th>Prefix</th>
+                          <th>Namespace IRI</th>
+                          <th>Source</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>
+                              <code>dcat</code>
+                          </td>
+                          <td>
+                              <code>http://www.w3.org/ns/dcat#</code>
+                          </td>
+                          <td>[[VOCAB-DCAT-3]]</td>
+                      </tr>
+                      <tr>
+                          <td>
+                              <code>dct</code>
+                          </td>
+                          <td>
+                              <code>http://purl.org/dc/terms/</code>
+                          </td>
+                          <td>[[DCTERMS]]</td>
+                      </tr>
+                      <tr>
+                          <td>
+                              <code>odrl</code>
+                          </td>
+                          <td>
+                              <code>http://www.w3.org/ns/odrl/2/</code>
+                          </td>
+                          <td>[[ODRL-VOCAB]]</td>
+                      </tr>
+                    
+                     <tr>
+                          <td>
+                              <code>sdo</code>
+                          </td>
+                          <td>
+                              <code>https://schema.org</code>
+                          </td>
+                          <td>[[SCHEMA-ORG]]</td>
+                      </tr>
+                  </tbody>
+              </table>
+
+          </section>
+<section>
+<h2>Data Product (DPROD) Model</h2>
+<p>In the Data Mesh architecture, input and output ports in Data Products serve as interfaces for importing and exporting data, supporting various formats, schemas, and protocols. Input ports consume data, while output ports make data available to other Data Products or for downstream analytical and reporting purposes.</p>
+<p>In the Data Catalog Vocabulary (DCAT) framework, a DataService is a class that encapsulates services providing data access. Data Services offer standardized, machine-readable descriptions of a collection of operations that provide access to one or more datasets or data processing functions.</p>
+<p>Data Services facilitate data downloads and are linked to Distributions, which are specific representations of a dataset (like CSV or JSON). The datasets themselves are collections of data, published or curated by a single agent, and can be linked to classes defined in a shareable ontology.</p>
+<p>By mapping Data Product ports to DCAT DataServices, DPROD can describe Data Products in a machine-readable way across the organization. This approach facilitates a self-service data infrastructure, where domain-oriented data teams can autonomously build and maintain their data products, ensuring they interact and harmonize with the rest of the data ecosystem within an organization.</p>
+<p>In a broader sense, using standards like DCAT contributes to a powerful and expressive model for Data Mesh. It ensures that as the data landscape becomes increasingly complex, the fundamental mechanisms for describing, sharing, and manipulating data remain robust and standardized across the organization.</p>
+    <figure id="ProfileModel">
+              <img alt="Information model for the Profile" src="./dprod-model.png">
+              <figcaption>
+                        Overview of DCAT Profile, showing the relevant classes, properties and relationships.
+                    </figcaption>
+    </figure>
+</section>
+<p>
+The Profile consists of the following classes:
+<UL>
+    <li> Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products </li>
+    <li> Data Product (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and metadata</li>
+    <li> Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTP URL, a Database or a FileShare etc</li>
+    <li> Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc) with it own physical mode if needed</li>    
+    <li> Dataset (<code>dcat:Dataset</code>) - A collection of data related that conforms to a logical model</li>
+</ul>
+</p>
+<p>
+As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a href="#inputport">input</a> and <a href="#outputport">output</a> ports can specify connection details, they have <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared ontologies. In this example, the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to the shared FIBO specification for callable bonds.
+</p>   
+
+  <pre id="eg12" class="example hljs json">
+  {
+    "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+    "@id": "https://y.com/products/uk-bonds",
+    "@type": "DataProduct",
+    "title": "UK Bonds",
+    "description": "UK Bonds is your one-stop-shop for all your bonds!",
+    "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
+    "lifecycle" : "Consume",
+    "outputPort": {
+      "@type": "RESTDataService",
+      "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
+      "offersDistribution": {
+        "@type": "dcat:Distribution",	
+        "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
+        "belongsToDataset": {
+          "@type": "dcat:Dataset",	
+          "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
+        }
+      }
+     }
+  }
+  </pre>
+    <p class="note">
+      The examples in map the type of the above classes to <code>@type</code> in the JSON-LD serialisations. You can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD.
+      <br/>
+      You can copy the json above and paste it into <a href="https://json-ld.org/playground/">https://json-ld.org/playground</a>. You can see that the schema resolves. 
+    </p>
+</section>
+      
+
+ {% for cls in classes %}
+      <section>
+      <h2>{{cls.name}}</h2>
+        {{cls.description}}
+        {% for prop in cls.properties %}
+        <section>
+        <h2>{{prop.name}}</h2>
+        <table class="def propdef">
+        <tbody>
+          <tr><th>Identifier:</th> <td><code>dprod:{{prop.name}}</code></td></tr>
+          {% if prop.label is not none %}   
+          <tr><th>Label:</th><td>{{prop.label}}</td></tr>
+          {% endif %}
+          <tr><th>Notes:</th><td>{{prop.description}}</td></tr>
+          <tr><th>Domain:</th><td>{{prop.domain}}</td></tr>
+          <tr><th>Range:</th><td>{{prop.range}}</td></tr>
+        </tbody>
+        </table>
+      </section>
+        {% endfor %}
+      </section>
+{% endfor %}
+
+      
+<section class="appendix">
+  <h2>Acknowledgements</h2>
+<p>The editors gratefully acknowledge the feedback and contributions made to this document by: </p>
+  </section>
+
+  </body>
+</html>

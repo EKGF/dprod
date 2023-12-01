@@ -1,4 +1,4 @@
-# baseURI: https://w3id.org/dprod/
+# baseURI: https://ekgf.github.io/data-product-spec/dprod/
 # imports: http://purl.org/dc/terms/
 # imports: http://www.w3.org/2004/02/skos/core
 # imports: http://www.w3.org/ns/prov-o#
@@ -8,7 +8,7 @@
 
 
 
-@prefix dprod: <https://w3id.org/dprod/> .
+@prefix dprod: <https://ekgf.github.io/data-product-spec/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
@@ -100,6 +100,7 @@ dcat:DataService
 
 dcat:Distribution
   a sh:NodeShape ;
+  dc:description "see http://www.w3.org/ns/dcat#Distribution" ;
   sh:property dcat:Distribution-accessService;
   sh:property dprod:Distribution-belongsToDataset;
   .
@@ -111,7 +112,6 @@ dcat:Dataset
 
 dprod:RESTDataService
   a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
   dc:description "Accessed using http verbs with parameters, may be defined using OpenAPI"@en ;
   rdfs:isDefinedBy dprod:;
   rdfs:label "REST Data Service" ;
@@ -120,7 +120,6 @@ dprod:RESTDataService
 
 dprod:GraphQLDataService
   a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
   dc:description "Single REST endpoint, with structure given by GraphQL schema"@en ;
   rdfs:isDefinedBy dprod:;
   rdfs:label "GraphQL Data Service" ;
@@ -129,7 +128,6 @@ dprod:GraphQLDataService
 
 dprod:ObjectDataService
   a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
   dc:description "Structured API, e.g. gRPC, CORBA, SOAP, ORM"@en ;
   rdfs:isDefinedBy dprod:;
   rdfs:label "Object Data Service" ;
@@ -213,7 +211,7 @@ dprod:DataProduct-lifecycleStatus
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:lifecycleStatus;
-  sh:class dprod:DataProductLifecycle;
+  sh:class dprod:DataProductLifecycleStatus;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
   rdfs:label "DataProduct-lifecycleStatus";
 .
@@ -232,8 +230,7 @@ dprod:DataProduct-outputPort
   rdfs:isDefinedBy dprod:;
   sh:path dprod:outputPort;
   sh:class dcat:DataService;
-  sh:minCount 1;
-  dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted. Each data product must have at least one or more output ports"@en ;
+  dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted "@en ;
   rdfs:label "DataProduct-outputPort";
 .
 
@@ -261,7 +258,7 @@ dprod:Distribution-belongsToDataset
   sh:path dprod:belongsToDataset;
   sh:class dcat:Dataset;
   dc:description "The dataset that this distribution makes available"@en ;
-  rdfs:label "Distribution-belongsToDataset";
+  rdfs:label "Distribution-belongsToDataset" ;
   .
 
 dprod:belongsToDataset
@@ -279,12 +276,12 @@ dprod:DataService-offersDistribution
   sh:path dprod:offersDistribution;
   sh:class dcat:Dataset;
   dc:description "The dataset distribution that is being offered through this Data Service"@en ;
-  rdfs:label "DataService-offersDistribution";
+  rdfs:label "DataService-offersDistribution" ;
   .
 
 dprod:offersDistribution
     a rdfs:Property, owl:ObjectProperty ;
-    dc:description "he dataset distribution that is being offered through this Data Service"@en ;
+    dc:description "The dataset distribution that is being offered through this Data Service"@en ;
     rdfs:isDefinedBy dprod:;
     owl:inverseOf dcat:accessService;
     rdfs:domain dcat:DataService;
@@ -297,6 +294,7 @@ dprod:dataProductOwner
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dct:Agent;
+    rdfs:label "Data Product Owner" ;
     .
 
 dprod:inputPort
