@@ -64,14 +64,14 @@ dprod:
     sh:namespace "http://www.tbd.org/ns/dprod#" ;
    ] ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2023-07-07"^^xsd:date ;
+  dct:modified "2023-12-01"^^xsd:date ;
   rdfs:comment "DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors."@en ;
   rdfs:label "The data product vocabulary"@en ;
   owl:imports dct: ;
   owl:imports <http://www.w3.org/2004/02/skos/core> ;
   owl:imports <http://www.w3.org/ns/prov-o#> ;
   owl:imports <http://www.w3.org/ns/dcat#> ;
-  owl:versionInfo "Create the Data Product ontology based on input and output dcat datasets"@en ;
+  owl:versionInfo "Create the Data Product ontology based on input and output DCAT datasets"@en ;
   foaf:maker [
       foaf:homepage <http://www.ekgf.org/> ;
       foaf:name "Enterprise Knowledge Graph Foundation" ;
@@ -96,6 +96,8 @@ dprod:DataProduct
 dcat:DataService
   a sh:NodeShape ;
   sh:property dprod:DataService-offersDistribution ;
+  sh:property dprod:DataService-protocol ;
+  sh:property dprod:DataService-securityServiceType ;
   .
 
 dcat:Distribution
@@ -109,75 +111,6 @@ dcat:Dataset
   a sh:NodeShape ;
   sh:property dcat:Dataset-distribution
   .
-
-dprod:RESTDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  dc:description "Accessed using http verbs with parameters, may be defined using OpenAPI"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "REST Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
-  .
-
-dprod:GraphQLDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  dc:description "Single REST endpoint, with structure given by GraphQL schema"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "GraphQL Data Service" ;
-  rdfs:subClassOf dcat:RESTDataService ;
-  .
-
-dprod:ObjectDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  dc:description "Structured API, e.g. gRPC, CORBA, SOAP, ORM"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Object Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
-  .
-
-dprod:StreamingDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Data is continuously made available"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Streaming Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
-.
-
-dprod:QueuingDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Streams using a queue or topic e.g. MQTT, Kafka, DDS"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Queuing Data Service" ;
-  rdfs:subClassOf dcat:StreamingDataService ;
-.
-
-dprod:CallbackDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Streams by making calls to a client-provided e.g. WebSockets"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Callback Data Service" ;
-  rdfs:subClassOf dcat:StreamingDataService ;
-.
-
-dprod:FileDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Uses file-like access methods. May or may not be streaming if the file is continuously wriitten to"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "File Data Service";
-  rdfs:subClassOf dcat:DataService ;
-.
-
-dprod:DatabaseDataService
-  a owl:Class , rdfs:Class,  sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Uses database-like access methods, including query e.g. JDBC, ODBC, SPARQL endpoint"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Database Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
-    .
 
 dprod:DataProductLifecycleStatus
     a owl:Class , rdfs:Class,  sh:NodeShape;
@@ -194,6 +127,20 @@ dprod:Enumeration
     rdfs:isDefinedBy dprod:;
     rdfs:label "Enumeration" ;
     rdfs:subClassOf owl:Thing;
+.
+
+dprod:Protocol
+    a owl:Class , rdfs:Class,  sh:NodeShape;
+    dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Protocol" ;
+.
+
+dprod:SecuritySchemaType
+    a owl:Class , rdfs:Class,  sh:NodeShape;
+    dc:description "A security schema type used for authentication and communication."@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Security Schema Type" ;
 .
 
 #############################  DPROD Property Shapes ################
@@ -286,6 +233,40 @@ dprod:offersDistribution
     owl:inverseOf dcat:accessService;
     rdfs:domain dcat:DataService;
     rdfs:range dcat:Distribution;
+    .
+
+dprod:DataService-protocol
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:protocol;
+  sh:class dcat:Dataset;
+  dc:description "A protocol (possibly one of many options) used to communicate with this Data Service"@en ;
+  rdfs:label "DataService-protocol" ;
+  .
+
+dprod:protocol
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "A protocol (possibly one of many options) used to communicate with this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:DataService;
+    rdfs:range dprod:Protocol;
+    .
+
+dprod:DataService-securitySchemaType
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:protocol;
+  sh:class dcat:Dataset;
+  dc:description "The security schema type used for authentication and to communication with this Data Service"@en ;
+  rdfs:label "DataService-securitySchemaType" ;
+  .
+
+dprod:securitySchemaType
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The security schema type used for authentication and to communication with this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:DataService;
+    rdfs:range dprod:SecuritySchemaType;
     .
 
 dprod:dataProductOwner
