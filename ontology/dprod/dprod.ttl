@@ -90,19 +90,19 @@ dprod:DataProduct
     sh:property dprod:DataProduct-dataProductOwner;
     sh:property dprod:DataProduct-inputPort;
     sh:property dprod:DataProduct-outputPort;
-    sh:property dprod:DataProduct-lifecycleStatus;
+    sh:property dprod:f;
 .
 
 dcat:DataService
   a sh:NodeShape ;
-  sh:property dprod:DataService-offersDistribution ;
+  sh:property dprod:DataService-isAccessServiceOf ;
   .
 
 dcat:Distribution
   a sh:NodeShape ;
   dc:description "see http://www.w3.org/ns/dcat#Distribution" ;
   sh:property dcat:Distribution-accessService;
-  sh:property dprod:Distribution-belongsToDataset;
+  sh:property dprod:Distribution-isDistributionOf;
   .
 
 dcat:Dataset
@@ -252,34 +252,26 @@ dcat:Distribution-accessService
   rdfs:label "Distribution-accessService";
   .
 
-dprod:Distribution-belongsToDataset
+dcat:Distribution-isDistributionOf
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
-  sh:path dprod:belongsToDataset;
+  sh:path dcat:isDistributionOf;
   sh:class dcat:Dataset;
   dc:description "The dataset that this distribution makes available"@en ;
-  rdfs:label "Distribution-belongsToDataset" ;
+  rdfs:label "Distribution-isDistributionOf" ;
   .
 
-dprod:belongsToDataset
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The dataset that this distribution makes available"@en ;
-    rdfs:isDefinedBy dprod:;
-    owl:inverseOf dcat:distribution;
-    rdfs:domain dcat:Distribution;
-    rdfs:range dcat:Dataset;
-    .
 
-dprod:DataService-offersDistribution
+dprod:DataService-isAccessServiceOf
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
-  sh:path dprod:offersDistribution;
-  sh:class dcat:Dataset;
+  sh:path dprod:isAccessServiceOf;
+  sh:class dcat:Distribution;
   dc:description "The dataset distribution that is being offered through this Data Service"@en ;
-  rdfs:label "DataService-offersDistribution" ;
+  rdfs:label "DataService-isAccessServiceOf" ;
   .
 
-dprod:offersDistribution
+dprod:isAccessServiceOf
     a rdfs:Property, owl:ObjectProperty ;
     dc:description "The dataset distribution that is being offered through this Data Service"@en ;
     rdfs:isDefinedBy dprod:;
@@ -313,10 +305,10 @@ dprod:outputPort
     rdfs:range dcat:DataService;
     .
 
-dprod:lifecycle
+dprod:lifecycleStatus
     a rdfs:Property, owl:ObjectProperty ;
     dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
-    rdfs:range dcat:DataProductLifecycle;
+    rdfs:range dprod:DataProductLifecycle;
     .
