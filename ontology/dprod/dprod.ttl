@@ -102,7 +102,7 @@ dcat:Distribution
   a sh:NodeShape ;
   dc:description "see http://www.w3.org/ns/dcat#Distribution" ;
   sh:property dcat:Distribution-accessService;
-  sh:property dprod:Distribution-isDistributionOf;
+  sh:property dcat:Distribution-isDistributionOf;
   .
 
 dcat:Dataset
