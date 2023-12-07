@@ -4,9 +4,10 @@ This folder contains a rough draft for an Ontology for Data Product Descriptions
 
 ## File Overview
 
-- [dprod.ttl](dprod.ttl): definition of new Terms of the DPROD ontology
-- [dprod-sh.ttl](dprod-sh.ttl): shacl file for using DPROD to describe data products
-- [json-mapping.xlsx](json-mapping.xlsx) a mapping of Terms from the Data Product Descriptor Specification JSON Schema to Linked Data terms, mostly from DCAT and the new Vocabulary, DPROD
+- obsolete [dprod.ttl](dprod.ttl): all-in-one definitions
+- [dprod-vocabulary.ttl](dprod-vocabulary.ttl): classes and properties definitions (new vocabulary Terms)
+- [dprod-dcatprofile.ttl](dprod-dcatprofile.ttl): shacl shapes file for using DPROD to describe data products (data model)
+
 
 ## Executing the Ontology Pipeline
 
