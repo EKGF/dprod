@@ -1,0 +1,281 @@
+# baseURI: https://ekgf.github.io/data-product-spec/dprod/
+# imports: http://purl.org/dc/terms/
+# imports: http://www.w3.org/2004/02/skos/core
+# imports: http://www.w3.org/ns/prov-o#
+# imports: http://www.w3.org/ns/dcat
+# imports: http://www.w3.org/ns/shacl
+# prefix: dpdcat
+
+
+@prefix adms: <http://www.w3.org/ns/adms#>
+@prefix dpdcat: <https://ekgf.github.io/data-product-spec/dprod/dpdcat> .
+@prefix dprod: <https://ekgf.github.io/data-product-spec/dprod/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix dctype: <http://purl.org/dc/dcmitype/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sdo: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+
+dpdcat:
+  a owl:Ontology ;
+  rdfs:label "Data Product DCAT Profile"@en ;
+  dc:description "DPDCAT is the DCAT profile based on DPROD which is an RDF vocabulary designed to facilitate interoperability between data product descriptors.";
+  rdfs:comment "This vocabulary includes terms for the definition of the Data Product as defined from the Data Product Working Group The vocabulary utilises the notion of Datasets as defined from DCAT vocabulary"@en ;
+   owl:imports <http://purl.org/dc/terms/> ;
+   owl:imports <http://www.w3.org/2004/02/skos/core> ;
+   owl:imports <http://www.w3.org/ns/prov-o#> ;
+   owl:imports <http://www.w3.org/ns/dcat> ;
+   owl:imports dprod: ;
+   owl:imports sh: ;
+   dct:creator [
+     a foaf:Person ;
+     foaf:name "Natasa Varytimou" ;
+     sdo:affiliation [
+        foaf:homepage <https://ubs.com> ;
+        foaf:name "UBS" ;
+      ] ;
+          ] ;
+   dct:contributor [
+      a foaf:Person ;
+      sdo:affiliation [
+          foaf:homepage <https://eccenca.com> ;
+          foaf:name "eccenca GmbH" ;
+        ] ;
+      foaf:name "Marcel Fröhlich" ;
+    ] ;
+   dct:contributor [
+      sdo:affiliation [
+          foaf:homepage <https://brox.de> ;
+          foaf:name "Brox IT-Solutions GmbH"
+      ] ;
+      foaf:name "Matthias Jurisch" ;
+    ] ;
+   sh:declare [
+    sh:prefix "dpdcat" ;
+    sh:namespace "http://www.tbd.org/ns/dprod#" ;
+   ] ;
+  dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dct:modified "2023-07-07"^^xsd:date ;
+  rdfs:comment "DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors."@en ;
+  rdfs:label "The data product vocabulary"@en ;
+  owl:imports dct: ;
+  owl:imports <http://www.w3.org/2004/02/skos/core> ;
+  owl:imports <http://www.w3.org/ns/prov-o#> ;
+  owl:imports <http://www.w3.org/ns/dcat#> ;
+  owl:versionInfo "Create the Data Product ontology based on input and output dcat datasets"@en ;
+  foaf:maker [
+      foaf:homepage <http://www.ekgf.org/> ;
+      foaf:name "Enterprise Knowledge Graph Foundation" ;
+    ] ;
+   .
+
+############################# DPDCAT Shapes  #########################
+
+dpdcat:DataProduct
+    a sh:NodeShape;
+    dc:description "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
+    rdfs:comment "A data product may have input and output ports, code and metadata"@en ;
+    rdfs:isDefinedBy dpdcat:;
+    rdfs:label "Data Product" ;
+    sh:targetClass dprod:DataProduct;
+    sh:property dpdcat:DataProduct-dataProductOwner;
+    sh:property dpdcat:DataProduct-inputPort;
+    sh:property dpdcat:DataProduct-outputPort;
+.
+
+dpdcat:DataService
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dpdcat:;
+  sh:targetClass dcat:DataService ;
+  rdfs:label "Data Service" ;
+  sh:property dpdcat:DataService-isAccessServiceOf ;
+  .
+
+dpdcat:Distribution
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "Distribution" ;
+  sh:targetClass dcat:Distribution ;
+  sh:property dpdcat:Distribution-accessService ;
+  sh:property dpdcat:Distribution-isDistributionOf ;
+  .
+
+dpdcat:Dataset
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "Dataset" ;
+  sh:targetClass dcat:Dataset ;
+  sh:property dpdcat:Dataset-distribution
+  .
+
+dpdcat:RESTDataService
+  a sh:NodeShape;
+  dc:description "Accessed using http verbs with parameters, may be defined using OpenAPI"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "REST Data Service" ;
+  sh:targetClass dprod:RESTDataService ;
+  .
+
+dpdcat:GraphQLDataService
+  a sh:NodeShape ;
+  dc:description "Single REST endpoint, with structure given by GraphQL schema"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "GraphQL Data Service" ;
+  sh:targetclass dprod:GraphQLDataService ;
+  .
+
+dpdcat:ObjectDataService
+  a sh:NodeShape ;
+  dc:description "Structured API, e.g. gRPC, CORBA, SOAP, ORM"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "Object Data Service" ;
+  sh:targetclass dprod:ObjectDataService ;
+  .
+
+dpdcat:StreamingDataService
+  a sh:NodeShape ;
+  rdfs:comment "TBD"@en ;
+  dc:description "Data is continuously made available"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "Streaming Data Service" ;
+  sh:targetclass dprod:StreamingDataService ;
+.
+
+dpdcat:QueuingDataService
+  a sh:NodeShape ;
+  rdfs:comment "TBD"@en ;
+  dc:description "Streams using a queue or topic e.g. MQTT, Kafka, DDS"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "Queuing Data Service" ;
+  sh:targetclass dprod:QueuingDataService ;
+.
+
+dpdcat:CallbackDataService
+  a sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Streams by making calls to a client-provided e.g. WebSockets"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "Callback Data Service" ;
+  sh:targetclass dprod:CallbackDataService ;
+.
+
+dpdcat:FileDataService
+  a sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Uses file-like access methods. May or may not be streaming if the file is continuously wriitten to"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "File Data Service";
+  sh:targetclass dprod:FileDataService ;
+.
+
+dpdcat:DatabaseDataService
+  a sh:NodeShape;
+  rdfs:comment "TBD"@en ;
+  dc:description "Uses database-like access methods, including query e.g. JDBC, ODBC, SPARQL endpoint"@en ;
+  rdfs:isDefinedBy dpdcat:;
+  rdfs:label "Database Data Service" ;
+  sh:targetclass dprod:DatabaseDataService ;
+    .
+
+dpdcat:DataProductLifecycleStatus
+    a sh:NodeShape;
+    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+    rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
+    rdfs:isDefinedBy dpdcat:;
+    rdfs:label "Data Product Lifecycle Status" ;
+    sh:targetclass dprod:DataProductLifecycleStatus;
+.
+
+dpdcat:Enumeration
+    a sh:NodeShape;
+    dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
+    rdfs:isDefinedBy dpdcat:;
+    rdfs:label "Enumeration" ;
+    sh:targetclass dprod:Enumeration;
+.
+
+#############################  dpdcat Property Shapes ################
+
+dpdcat:DataProduct-dataProductOwner
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dprod:dataProductOwner;
+  sh:class foaf:Agent;
+  dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
+  rdfs:label "DataProduct-dataProductOwner";
+.
+
+dpdcat:DataProduct-lifecycleStatus
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dprod:lifecycleStatus;
+  sh:class dprod:DataProductLifecycleStatus;
+  dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
+  rdfs:label "DataProduct-lifecycleStatus";
+.
+
+dpdcat:DataProduct-inputPort
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dprod:inputPort;
+  sh:class dcat:DataService;
+  dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
+  rdfs:label "DataProduct-inputPort";
+.
+
+dpdcat:DataProduct-outputPort
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dprod:outputPort;
+  sh:class dcat:DataService;
+  dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted "@en ;
+  rdfs:label "DataProduct-outputPort";
+.
+
+dpdcat:Dataset-distribution
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dcat:distribution;
+  sh:class dcat:Distribution;
+  dc:description "An available distribution of the dataset"@en ;
+  rdfs:label "Dataset-distribution";
+ .
+
+dpdcat:Distribution-accessService
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dcat:accessService;
+  sh:class dcat:DataService;
+  dc:description "A data service that gives access to the distribution of the dataset"@en ;
+  rdfs:label "Distribution-accessService";
+  .
+
+dpdcat:Distribution-isDistributionOf
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dprod:isDistributionOf;
+  sh:class dcat:Dataset;
+  dc:description "The dataset that this distribution makes available"@en ;
+  rdfs:label "Distribution-isDistributionOf" ;
+  .
+
+dpdcat:DataService-isAccessServiceOf
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dpdcat:;
+  sh:path dprod:isAccessServiceOf;
+  sh:class dcat:Distribution;
+  dc:description "The dataset distribution that is being offered through this Data Service"@en ;
+  rdfs:label "DataService-isAccessServiceOf" ;
+  .
+
