@@ -13,6 +13,8 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix dctype: <http://purl.org/dc/dcmitype/> .
+@prefix cdmc-cls: <https://spec.edmcouncil.org/cdmc/ontology/Classification> .
+
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
@@ -107,8 +109,27 @@ dcat:Distribution
 
 dcat:Dataset
   a sh:NodeShape ;
-  sh:property dcat:Dataset-distribution
+  sh:property dcat:Dataset-distribution;
+  sh:property dcat:Dataset-classification;
+  sh:property dcat:Dataset-informationSensitivityClassification;
   .
+
+dprod:DataClassification
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:label "Data Classification" ;
+  dc:description "A taxonomy of concepts that organizes data for its most effective and efficient use "@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:seeAlso cdmc-cls:DataClassification;
+    .
+
+dprod:InformationSensitivityClassification
+  a owl:Class , rdfs:Class,  sh:NodeShape;
+  rdfs:label "Information Sensitivity Classification" ;
+  dc:description "A taxonomy of concepts that classifies the information within a dataset that indicates the level of control and protection that must be applied to the dataset "@en ;
+  rdfs:subClassOf  dprod:DataClassification;
+  rdfs:isDefinedBy dprod:;
+  rdfs:seeAlso cdmc-cls:InformationSensitivity;
+    .
 
 dprod:RESTDataService
   a owl:Class , rdfs:Class,  sh:NodeShape;
@@ -243,6 +264,24 @@ dcat:Dataset-distribution
   rdfs:label "Dataset-distribution";
  .
 
+dprod:Dataset-classification
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:classification;
+  sh:class dprod:DataClassification;
+  dc:description "The relationship to a taxonomy that defines dataset classification"@en ;
+  rdfs:label "Dataset-classification";
+ .
+
+dprod:Dataset-informationSensitivityClassification
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:informationSensitivityClassification;
+  sh:class dprod:InformationSensitivityClassification;
+  dc:description "The relationship to a taxonomy that defines the different levels of control and protection that must be applied to the dataset. This is a more granular relationship of the classification of a dataset that includes other classification concepts  "@en ;
+  rdfs:label "Dataset-informationSensitivityClassification";
+ .
+
 dcat:Distribution-accessService
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
@@ -264,13 +303,14 @@ dcat:Distribution-isDistributionOf
 
 dprod:DataService-isAccessServiceOf
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy prod:;
   sh:path dprod:isAccessServiceOf;
   sh:class dcat:Distribution;
   dc:description "The dataset distribution that is being offered through this Data Service"@en ;
   rdfs:label "DataService-isAccessServiceOf" ;
   .
 
+############################  DPROD Property  ################
 dprod:isAccessServiceOf
     a rdfs:Property, owl:ObjectProperty ;
     dc:description "The dataset distribution that is being offered through this Data Service"@en ;
@@ -311,4 +351,21 @@ dprod:lifecycleStatus
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dprod:DataProductLifecycle;
+    .
+
+dprod:classification
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The category that organizes data for its most effective and efficient way"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:Dataset;
+    rdfs:range dprod:DataClassfication;
+    .
+
+dprod:informationSensitivityClassification
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:Dataset;
+    rdfs:range dprod:InformationSensitiviyClassification;
+    rdfs:subPropertyOf dprod:classification;
     .
