@@ -87,6 +87,9 @@ dprod:DataProduct
     rdfs:isDefinedBy dprod:;
     rdfs:label "Data Product" ;
     rdfs:subClassOf dcat:Resource;
+    sh:property dprod:DataProduct-purpose;
+    sh:property dprod:DataProduct-productionProcess;
+    sh:property dprod:DataProduct-domain;
     sh:property dprod:DataProduct-dataProductOwner;
     sh:property dprod:DataProduct-inputPort;
     sh:property dprod:DataProduct-outputPort;
@@ -161,6 +164,53 @@ dprod:DataProduct-lifecycleStatus
   sh:class dprod:DataProductLifecycleStatus;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
   rdfs:label "DataProduct-lifecycleStatus";
+.
+dprod:purpose
+  a rdfs:Property, owl:DatatypeProperty ;
+  dc:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct;
+  rdfs:range xsd:string;
+  .
+dprod:DataProduct-purpose
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:purpose;
+  sh:datatype xsd:string;
+  dc:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:label "DataProduct-purpose";
+.
+
+dprod:productionProcess
+  a rdfs:Property, owl:DatatypeProperty ;
+  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct;
+  rdfs:range xsd:string;
+  .
+dprod:DataProduct-productionProcess
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:productionProcess;
+  sh:datatype xsd:string;
+  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
+  rdfs:label "DataProduct-productionProcess";
+.
+
+dprod:domain
+  a rdfs:Property, owl:ObjectProperty ;
+  dc:description "The business or information area supported by the data product."@en ;
+  rdfs:comment "The domain is intended to be a resource in its own right but this specification does not constrain the class to be used."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct;
+    .
+dprod:DataProduct-domain
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:domain;
+  dc:description "The business or information area supported by the data product."@en ;
+  rdfs:comment "The domain is intended to be a resource in its own right but this specification does not constrain the class to be used."@en ;
+  rdfs:label "DataProduct-domain";
 .
 
 dprod:DataProduct-inputPort
