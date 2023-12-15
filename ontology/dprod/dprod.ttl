@@ -88,7 +88,7 @@ dprod:DataProduct
     rdfs:label "Data Product" ;
     rdfs:subClassOf dcat:Resource;
     sh:property dprod:DataProduct-purpose;
-    sh:property dprod:DataProduct-productionProcess;
+    sh:property dprod:DataProduct-productionProcessDescription;
     sh:property dprod:DataProduct-domain;
     sh:property dprod:DataProduct-dataProductOwner;
     sh:property dprod:DataProduct-inputPort;
@@ -181,20 +181,20 @@ dprod:DataProduct-purpose
   rdfs:label "DataProduct-purpose";
 .
 
-dprod:productionProcess
+dprod:productionProcessDescription
   a rdfs:Property, owl:DatatypeProperty ;
   dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
   rdfs:isDefinedBy dprod:;
   rdfs:domain dprod:DataProduct;
   rdfs:range xsd:string;
   .
-dprod:DataProduct-productionProcess
+dprod:DataProduct-productionProcessDescription
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
-  sh:path dprod:productionProcess;
+  sh:path dprod:productionProcessDescription;
   sh:datatype xsd:string;
   dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
-  rdfs:label "DataProduct-productionProcess";
+  rdfs:label "DataProduct-productionProcessDescription";
 .
 
 dprod:domain
