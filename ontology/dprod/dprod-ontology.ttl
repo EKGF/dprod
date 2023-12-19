@@ -137,10 +137,10 @@ dprod:dataProductOwner
 
 dprod:lifecycle
   a rdfs:Property, owl:ObjectProperty ;
-  # a rdfs:subPropertyOf adms:status ;  # okay?
+  # a rdfs:subPropertyOf adms:status ;  
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataProduct ;
-  rdfs:range rdf:resource ; # most generic - allows for SKOS. too. 
+  # rdfs:range rdf:resource ; # better let user decide whether they want SecuritySchemaType class or own class or skos
   # rdfs:range dprod:DataProductLifecycle;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
   rdfs:label "lifecycleStatus" ;
@@ -250,7 +250,7 @@ dprod:protocol
     dc:description "A protocol (possibly one of many options) used to communicate with this Data Service"@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dcat:DataService;
-    rdfs:range rdf:resource ; # let user decide whether they want Protocol class or own class or skos
+    # rdfs:range rdf:resource ; # better let user decide whether they want Protocol class or own class or skos
 .
 
 dprod:securitySchemaType
@@ -258,5 +258,5 @@ dprod:securitySchemaType
     dc:description "The security schema type used for authentication and to communication with this Data Service"@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:domain dcat:DataService;
-    rdfs:range rdf:resource ; # let user decide whether they want SecuritySchemaType class or own class or skos
+    # rdfs:range rdf:resource ; # better let user decide whether they want SecuritySchemaType class or own class or skos
 .
