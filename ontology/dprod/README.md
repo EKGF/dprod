@@ -5,7 +5,7 @@ This folder contains a rough draft for an Ontology for Data Product Descriptions
 ## File Overview
 
 - obsolete [dprod.ttl](dprod.ttl): all-in-one definitions
-- [dprod-vocabulary.ttl](dprod-vocabulary.ttl): classes and properties definitions (new vocabulary Terms)
+- [dprod-ontology.ttl](dprod-ontology.ttl): classes and properties definitions (new terms)
 - [dprod-dcatprofile.ttl](dprod-dcatprofile.ttl): shacl shapes file for using DPROD to describe data products (data model)
 
 
