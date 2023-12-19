@@ -4,11 +4,11 @@
 # imports: http://www.w3.org/ns/prov-o#
 # imports: http://www.w3.org/ns/dcat
 # imports: http://www.w3.org/ns/shacl
-# prefix: dpdcat
+# prefix: dprod
 
 
-@prefix adms: <http://www.w3.org/ns/adms#>
-@prefix dpdcat: <https://ekgf.github.io/data-product-spec/dprod/dpdcat> .
+# @prefix adms: <http://www.w3.org/ns/adms#>
+# @prefix dpdcat: <https://ekgf.github.io/data-product-spec/dprod/dpdcat> .
 @prefix dprod: <https://ekgf.github.io/data-product-spec/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -26,11 +26,10 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-
 dpdcat:
   a owl:Ontology ;
   rdfs:label "Data Product DCAT Profile"@en ;
-  dc:description "DPDCAT is the DCAT profile based on DPROD which is an RDF vocabulary designed to facilitate interoperability between data product descriptors.";
+  dc:description "dprod-DCATprofile is the DCAT profile based on DPROD which is an RDF vocabulary file designed to facilitate interoperability between data product descriptors.";
   rdfs:comment "This vocabulary includes terms for the definition of the Data Product as defined from the Data Product Working Group The vocabulary utilises the notion of Datasets as defined from DCAT vocabulary"@en ;
    owl:imports <http://purl.org/dc/terms/> ;
    owl:imports <http://www.w3.org/2004/02/skos/core> ;
@@ -62,7 +61,7 @@ dpdcat:
       foaf:name "Matthias Jurisch" ;
     ] ;
    sh:declare [
-    sh:prefix "dpdcat" ;
+    sh:prefix "dprod" ;
     sh:namespace "http://www.tbd.org/ns/dprod#" ;
    ] ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -80,202 +79,126 @@ dpdcat:
     ] ;
    .
 
-############################# DPDCAT Shapes  #########################
+############################# dprod Shapes  #########################
 
-dpdcat:DataProduct
+dprod:DataProductShape
     a sh:NodeShape;
     dc:description "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
     rdfs:comment "A data product may have input and output ports, code and metadata"@en ;
-    rdfs:isDefinedBy dpdcat:;
-    rdfs:label "Data Product" ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Data Product Shape" ;
     sh:targetClass dprod:DataProduct;
-    sh:property dpdcat:DataProduct-dataProductOwner;
-    sh:property dpdcat:DataProduct-inputPort;
-    sh:property dpdcat:DataProduct-outputPort;
+    sh:property dprod:DataProduct-dataProductOwnerShape;
+    sh:property dprod:DataProduct-inputPortShape;
+    sh:property dprod:DataProduct-outputPortShape;
 .
 
-dpdcat:DataService
+dprod:DataServiceShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:targetClass dcat:DataService ;
-  rdfs:label "Data Service" ;
-  sh:property dpdcat:DataService-isAccessServiceOf ;
+  rdfs:label "Data Service Shape" ;
+  sh:property dprod:DataService-isAccessServiceOfShape ;
   .
 
-dpdcat:Distribution
+dprod:DistributionShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "Distribution" ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "Distribution Shape" ;
   sh:targetClass dcat:Distribution ;
-  sh:property dpdcat:Distribution-accessService ;
-  sh:property dpdcat:Distribution-isDistributionOf ;
+  sh:property dprod:Distribution-accessServiceShape ;
+  sh:property dprod:Distribution-isDistributionOfShape ;
   .
 
-dpdcat:Dataset
+dprod:DatasetShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "Dataset" ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:label "Dataset Shape" ;
   sh:targetClass dcat:Dataset ;
-  sh:property dpdcat:Dataset-distribution
+  sh:property dprod:Dataset-distributionShape
   .
 
-dpdcat:RESTDataService
-  a sh:NodeShape;
-  dc:description "Accessed using http verbs with parameters, may be defined using OpenAPI"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "REST Data Service" ;
-  sh:targetClass dprod:RESTDataService ;
-  .
 
-dpdcat:GraphQLDataService
-  a sh:NodeShape ;
-  dc:description "Single REST endpoint, with structure given by GraphQL schema"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "GraphQL Data Service" ;
-  sh:targetclass dprod:GraphQLDataService ;
-  .
+#############################  dprod Property Shapes ################
 
-dpdcat:ObjectDataService
-  a sh:NodeShape ;
-  dc:description "Structured API, e.g. gRPC, CORBA, SOAP, ORM"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "Object Data Service" ;
-  sh:targetclass dprod:ObjectDataService ;
-  .
-
-dpdcat:StreamingDataService
-  a sh:NodeShape ;
-  rdfs:comment "TBD"@en ;
-  dc:description "Data is continuously made available"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "Streaming Data Service" ;
-  sh:targetclass dprod:StreamingDataService ;
-.
-
-dpdcat:QueuingDataService
-  a sh:NodeShape ;
-  rdfs:comment "TBD"@en ;
-  dc:description "Streams using a queue or topic e.g. MQTT, Kafka, DDS"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "Queuing Data Service" ;
-  sh:targetclass dprod:QueuingDataService ;
-.
-
-dpdcat:CallbackDataService
-  a sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Streams by making calls to a client-provided e.g. WebSockets"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "Callback Data Service" ;
-  sh:targetclass dprod:CallbackDataService ;
-.
-
-dpdcat:FileDataService
-  a sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Uses file-like access methods. May or may not be streaming if the file is continuously wriitten to"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "File Data Service";
-  sh:targetclass dprod:FileDataService ;
-.
-
-dpdcat:DatabaseDataService
-  a sh:NodeShape;
-  rdfs:comment "TBD"@en ;
-  dc:description "Uses database-like access methods, including query e.g. JDBC, ODBC, SPARQL endpoint"@en ;
-  rdfs:isDefinedBy dpdcat:;
-  rdfs:label "Database Data Service" ;
-  sh:targetclass dprod:DatabaseDataService ;
-    .
-
-dpdcat:DataProductLifecycleStatus
-    a sh:NodeShape;
-    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
-    rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
-    rdfs:isDefinedBy dpdcat:;
-    rdfs:label "Data Product Lifecycle Status" ;
-    sh:targetclass dprod:DataProductLifecycleStatus;
-.
-
-dpdcat:Enumeration
-    a sh:NodeShape;
-    dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
-    rdfs:isDefinedBy dpdcat:;
-    rdfs:label "Enumeration" ;
-    sh:targetclass dprod:Enumeration;
-.
-
-#############################  dpdcat Property Shapes ################
-
-dpdcat:DataProduct-dataProductOwner
+dprod:DataProduct-dataProductOwnerShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:dataProductOwner;
   sh:class foaf:Agent;
   dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
-  rdfs:label "DataProduct-dataProductOwner";
+  rdfs:label "DataProduct-dataProductOwner Shape";
 .
 
-dpdcat:DataProduct-lifecycleStatus
+dprod:DataProduct-lifecycleStatusShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:lifecycleStatus;
   sh:class dprod:DataProductLifecycleStatus;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
-  rdfs:label "DataProduct-lifecycleStatus";
+  rdfs:label "DataProduct-lifecycleStatus Shape";
 .
 
-dpdcat:DataProduct-inputPort
+dprod:DataProduct-purposeShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:purpose;
+  sh:datatype xsd:string;
+  dc:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:label "DataProduct-purpose Shape";
+.
+
+dprod:DataProduct-inputPortShape
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:inputPort;
   sh:class dcat:DataService;
   dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
-  rdfs:label "DataProduct-inputPort";
+  rdfs:label "DataProduct-inputPort Shape";
 .
 
-dpdcat:DataProduct-outputPort
+dprod:DataProduct-outputPortShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:outputPort;
   sh:class dcat:DataService;
   dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted "@en ;
-  rdfs:label "DataProduct-outputPort";
+  rdfs:label "DataProduct-outputPort Shape";
 .
 
-dpdcat:Dataset-distribution
+dprod:Dataset-distributionShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:path dcat:distribution;
   sh:class dcat:Distribution;
   dc:description "An available distribution of the dataset"@en ;
-  rdfs:label "Dataset-distribution";
+  rdfs:label "Dataset-distribution Shape";
  .
 
-dpdcat:Distribution-accessService
+dprod:Distribution-accessServiceShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:path dcat:accessService;
   sh:class dcat:DataService;
   dc:description "A data service that gives access to the distribution of the dataset"@en ;
-  rdfs:label "Distribution-accessService";
+  rdfs:label "Distribution-accessService Shape";
   .
 
-dpdcat:Distribution-isDistributionOf
+dprod:Distribution-isDistributionOfShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:isDistributionOf;
   sh:class dcat:Dataset;
   dc:description "The dataset that this distribution makes available"@en ;
-  rdfs:label "Distribution-isDistributionOf" ;
+  rdfs:label "Distribution-isDistributionOf Shape" ;
   .
 
-dpdcat:DataService-isAccessServiceOf
+dprod:DataService-isAccessServiceOfShape
   a sh:PropertyShape;
-  rdfs:isDefinedBy dpdcat:;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:isAccessServiceOf;
   sh:class dcat:Distribution;
   dc:description "The dataset distribution that is being offered through this Data Service"@en ;
-  rdfs:label "DataService-isAccessServiceOf" ;
+  rdfs:label "DataService-isAccessServiceOf Shape" ;
   .
 
