@@ -79,6 +79,7 @@ dprod:
     ] ;
    .
 
+
 ############################# DPROD Classes  #########################
 
 dprod:DataProduct
@@ -91,118 +92,82 @@ dprod:DataProduct
   .
 
 
-dprod:RESTDataService
-  a owl:Class , rdfs:Class ;
-  dc:description "Accessed using http verbs with parameters, may be defined using OpenAPI"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "REST Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
-  .
-
-dprod:GraphQLDataService
-  a owl:Class , rdfs:Class ;
-  dc:description "Single REST endpoint, with structure given by GraphQL schema"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "GraphQL Data Service" ;
-  rdfs:subClassOf dprod:RESTDataService ;
-  .
-
-dprod:ObjectDataService
-  a owl:Class , rdfs:Class ;
-  dc:description "Structured API, e.g. gRPC, CORBA, SOAP, ORM"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Object Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
-  .
-
-dprod:StreamingDataService
-  a owl:Class , rdfs:Class ;
-  rdfs:comment "TBD"@en ;
-  dc:description "Data is continuously made available"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Streaming Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
+dprod:DataProductLifecycleStatus  
+   a owl:Class , rdfs:Class ;
+   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+   rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
+   rdfs:isDefinedBy dprod:;
+   rdfs:label "Data Product Lifecycle Status" ;
+   rdfs:subClassOf dprod:Enumeration;
 .
 
-dprod:QueuingDataService
-  a owl:Class , rdfs:Class ;
-  rdfs:comment "TBD"@en ;
-  dc:description "Streams using a queue or topic e.g. MQTT, Kafka, DDS"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Queuing Data Service" ;
-  rdfs:subClassOf dprod:StreamingDataService ;
+dprod:Enumeration
+   a owl:Class , rdfs:Class ;
+   dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
+   rdfs:isDefinedBy dprod:;
+   rdfs:label "Enumeration" ;
+   rdfs:subClassOf owl:Thing;
 .
 
-dprod:CallbackDataService
-  a owl:Class , rdfs:Class ;
-  rdfs:comment "TBD"@en ;
-  dc:description "Streams by making calls to a client-provided e.g. WebSockets"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Callback Data Service" ;
-  rdfs:subClassOf dprod:StreamingDataService ;
+dprod:Protocol
+    a owl:Class , rdfs:Class ;
+    dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Protocol" ;
 .
 
-dprod:FileDataService
-  a owl:Class , rdfs:Class ;
-  rdfs:comment "TBD"@en ;
-  dc:description "Uses file-like access methods. May or may not be streaming if the file is continuously wriitten to"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "File Data Service";
-  rdfs:subClassOf dcat:DataService ;
+dprod:SecuritySchemaType
+    a owl:Class , rdfs:Class ;
+    dc:description "A security schema type used for authentication and communication."@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Security Schema Type" ;
 .
-
-dprod:DatabaseDataService
-  a owl:Class , rdfs:Class ;
-  rdfs:comment "TBD"@en ;
-  dc:description "Uses database-like access methods, including query e.g. JDBC, ODBC, SPARQL endpoint"@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Database Data Service" ;
-  rdfs:subClassOf dcat:DataService ;
-    .
-
-# dprod:DataProductLifecycleStatus  #SKOS Concept instead
-#    a owl:Class , rdfs:Class ;
-#    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
-#    rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
-#    rdfs:isDefinedBy dprod:;
-#    rdfs:label "Data Product Lifecycle Status" ;
-#    rdfs:subClassOf dprod:Enumeration;
-#.
-
-# dprod:Enumeration
-#    a owl:Class , rdfs:Class ;
-#    dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
-#    rdfs:isDefinedBy dprod:;
-#    rdfs:label "Enumeration" ;
-#    rdfs:subClassOf owl:Thing;
-#.
 
 #############################  DPROD Properties ################
 
-#dprod:dataProductOwner  # see below
-#    a rdfs:Property, owl:ObjectProperty ;
-#    dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). This can be different from the creator or the publisher of the Data Product "@en ;
-#    rdfs:isDefinedBy dprod:;
-#    rdfs:domain dprod:DataProduct;
-#    rdfs:range dct:Agent;
-#    rdfs:label "Data Product Owner" ;
-#    .
 
 dprod:dataProductOwner
-  a rdfs:subPropertyOf prov:wasAttributedTo ; # in line with DCAT
+  a rdfs:Property, owl:ObjectProperty ;
+  # a rdfs:subPropertyOf prov:wasAttributedTo ; # in line with DCAT
   rdfs:isDefinedBy dprod:;
+  rdfs:range foaf:Agent ;
   dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
-  rdfs:label "dataProductOwner";
+  rdfs:label "dataProductowner";
 .
 
-dprod:lifecycleStatus
-  a rdfs:subPropertyOf adms:status ;  # okay?
-  # a rdfs:Property, owl:ObjectProperty ;
+dprod:lifecycle
+  a rdfs:Property, owl:ObjectProperty ;
+  # a rdfs:subPropertyOf adms:status ;  # okay?
   rdfs:isDefinedBy dprod: ;
-  rdfs:range skos:concept ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range rdf:resource ; # most generic - allows for SKOS. too. 
   # rdfs:range dprod:DataProductLifecycle;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
   rdfs:label "lifecycleStatus" ;
+.
+
+dprod:purpose
+  a rdfs:Property, owl:DatatypeProperty ;
+  dc:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range xsd:string ;
+.
+
+dprod:productionProcessDescription
+  a rdfs:Property, owl:DatatypeProperty ;
+  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range xsd:string ;
+.
+
+dprod:domain
+  a rdfs:Property, owl:ObjectProperty ;
+  dc:description "The business or information area supported by the data product."@en ;
+  rdfs:comment "The domain is intended to be a resource in its own right but this specification does not constrain the class to be used."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct ;
 .
 
 # dprod:inputPort
@@ -250,15 +215,48 @@ dprod:isDistributionOf
   rdfs:domain dcat:Distribution;
   dc:description "The dataset that this distribution makes available"@en ;
   rdfs:label "isDistributionOf" ;
-  .
+.
 
-dprod:isAccessServiceOf
+dprod:belongsToDataset
     a rdfs:Property, owl:ObjectProperty ;
-    owl:inverseOf dcat:accessService ;
+    dc:description "The dataset that this distribution makes available"@en ;
+    rdfs:isDefinedBy dprod:;
+    owl:inverseOf dcat:distribution;
+    rdfs:domain dcat:Distribution;
+    rdfs:range dcat:Dataset;
+.
+
+dprod:offersDistribution
+    a rdfs:Property, owl:ObjectProperty ;
     dc:description "The dataset distribution that is being offered through this Data Service"@en ;
     rdfs:isDefinedBy dprod:;
-    owl:inverseOf dcat:accessService;
+    # owl:inverseOf dcat:accessService; #not defined?
     rdfs:domain dcat:DataService;
     rdfs:range dcat:Distribution;
-    .
+.
 
+#dprod:isAccessServiceOf
+#    a rdfs:Property, owl:ObjectProperty ;
+#    owl:inverseOf dcat:accessService ;
+#    dc:description "The dataset distribution that is being offered through this Data Service"@en ;
+#    rdfs:isDefinedBy dprod:;
+#    owl:inverseOf dcat:accessService;
+#    rdfs:domain dcat:DataService;
+#    rdfs:range dcat:Distribution;
+#.
+
+dprod:protocol
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "A protocol (possibly one of many options) used to communicate with this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:DataService;
+    rdfs:range rdf:resource ; # let user decide whether they want Protocol class or own class or skos
+.
+
+dprod:securitySchemaType
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The security schema type used for authentication and to communication with this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:DataService;
+    rdfs:range rdf:resource ; # let user decide whether they want SecuritySchemaType class or own class or skos
+.
