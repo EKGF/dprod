@@ -100,6 +100,7 @@ dprod:DataProductShape
     sh:property dprod:DataProduct-dataProductOwner;
     sh:property dprod:DataProduct-inputPort;
     sh:property dprod:DataProduct-outputPort;
+
     .
 
 dprod:DataServiceShape
@@ -198,75 +199,19 @@ dprod:EnumerationShape
     rdfs:isDefinedBy dprod:;
   .
 
-############################# CLASSES and SHAPES to redefined or deleted #########################
-#dprod:RESTDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  dc:description "Accessed using http verbs with parameters, may be defined using OpenAPI"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "REST Data Service" ;
-#  rdfs:subClassOf dcat:DataService ;
-#  .
+dprod:Protocol
+    a owl:Class , rdfs:Class ;
+    dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Protocol" ;
+.
 
-#dprod:GraphQLDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  dc:description "Single REST endpoint, with structure given by GraphQL schema"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "GraphQL Data Service" ;
-#  rdfs:subClassOf dcat:RESTDataService ;
-#  .
-
-#dprod:ObjectDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  dc:description "Structured API, e.g. gRPC, CORBA, SOAP, ORM"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "Object Data Service" ;
-#  rdfs:subClassOf dcat:DataService ;
-#  .
-
-#dprod:StreamingDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  rdfs:comment "TBD"@en ;
-#  dc:description "Data is continuously made available"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "Streaming Data Service" ;
-#  rdfs:subClassOf dcat:DataService ;
-#.
-
-#dprod:QueuingDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  rdfs:comment "TBD"@en ;
-#  dc:description "Streams using a queue or topic e.g. MQTT, Kafka, DDS"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "Queuing Data Service" ;
-#  rdfs:subClassOf dcat:StreamingDataService ;
-#.
-
-#dprod:CallbackDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  rdfs:comment "TBD"@en ;
-#  dc:description "Streams by making calls to a client-provided e.g. WebSockets"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "Callback Data Service" ;
-#  rdfs:subClassOf dcat:StreamingDataService ;
-#.
-
-#dprod:FileDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  rdfs:comment "TBD"@en ;
-#  dc:description "Uses file-like access methods. May or may not be streaming if the file is continuously wriitten to"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "File Data Service";
-#  rdfs:subClassOf dcat:DataService ;
-#.
-
-#dprod:DatabaseDataService
-#  a owl:Class , rdfs:Class,  sh:NodeShape;
-#  rdfs:comment "TBD"@en ;
-#  dc:description "Uses database-like access methods, including query e.g. JDBC, ODBC, SPARQL endpoint"@en ;
-#  rdfs:isDefinedBy dprod:;
-#  rdfs:label "Database Data Service" ;
-#  rdfs:subClassOf dcat:DataService ;
-#    .
+dprod:SecuritySchemaType
+    a owl:Class , rdfs:Class ;
+    dc:description "A security schema type used for authentication and communication."@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Security Schema Type" ;
+.
 
 #############################  DPROD Property Shapes ################
 
@@ -380,21 +325,30 @@ dprod:dataProductOwner
     rdfs:label "Data Product Owner" ;
     .
 
+dprod:port 
+  a rdfs:Property, owl:objectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:DataService ;
+  dc:description "a port describes a set of services exposed by a data product."@en ;
+  rdfs:label "port";
+.
+
 dprod:inputPort
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:domain dprod:DataProduct;
-    rdfs:range dcat:DataService;
-    .
+  a rdfs:Property, owl:objectProperty ;
+  rdfs:subPropertyOf dprod:port ;
+  rdfs:isDefinedBy dprod: ;
+  dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
+  rdfs:label "inputPort";
+.
 
 dprod:outputPort
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted. Each data product must have at least one or more output ports"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:domain dprod:DataProduct;
-    rdfs:range dcat:DataService;
-    .
+  a rdfs:Property, owl:objectProperty ;
+  rdfs:subPropertyOf dprod:port ;
+  rdfs:isDefinedBy dprod:;
+  dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted "@en ;
+  rdfs:label "outputPort";
+.
 
 dprod:lifecycleStatus
     a rdfs:Property, owl:ObjectProperty ;
@@ -420,3 +374,27 @@ dprod:informationSensitivityClassification
     rdfs:range dprod:InformationSensitiviyClassification;
     rdfs:subPropertyOf dprod:classification;
     .
+
+dprod:purpose
+  a rdfs:Property, owl:DatatypeProperty ;
+  dc:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range xsd:string ;
+.
+
+dprod:productionProcessDescription
+  a rdfs:Property, owl:DatatypeProperty ;
+  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range xsd:string ;
+.
+
+dprod:domain
+  a rdfs:Property, owl:ObjectProperty ;
+  dc:description "The business or information area supported by the data product."@en ;
+  rdfs:comment "The domain is intended to be a resource in its own right but this specification does not constrain the class to be used."@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct ;
+.
