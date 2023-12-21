@@ -80,7 +80,7 @@ dprod:
     ] ;
    .
 
-############################# DPROD Classes  and Shapes #########################
+############################# DPROD Classes  #########################
 
 dprod:DataProduct
     a owl:Class , rdfs:Class;
@@ -91,6 +91,54 @@ dprod:DataProduct
     rdfs:subClassOf dcat:Resource;
 .
 
+dprod:DataProductLifecycleStatus  
+   a owl:Class , rdfs:Class ;
+   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+   rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
+   rdfs:isDefinedBy dprod:;
+   rdfs:label "Data Product Lifecycle Status" ;
+   rdfs:subClassOf dprod:Enumeration;
+.
+
+dprod:InformationSensitivityClassification
+  a owl:Class , rdfs:Class;
+  rdfs:label "Information Sensitivity Classification" ;
+  dc:description "A taxonomy of concepts that classifies the information within a dataset that indicates the level of control and protection that must be applied to the dataset "@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:seeAlso cdmc-cls:InformationSensitivity;
+.
+
+dprod:Protocol
+    a owl:Class , rdfs:Class ;
+    dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Protocol" ;
+.
+
+dprod:Domain
+    a owl:Class , rdfs:Class ;
+    dc:description "The business or information area supported by the data product.@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Domain" ;
+.
+
+dprod:SecuritySchemaType
+    a owl:Class , rdfs:Class ;
+    dc:description "A security schema type used for authentication and communication."@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Security Schema Type" ;
+.
+
+dprod:Enumeration
+    a owl:Class , rdfs:Class;
+    rdfs:label "Enumeration" ;
+    dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:subClassOf owl:Thing;
+.
+
+############################# DPROD Shapes #########################
+
 dprod:DataProductShape
     sh:NodeShape;
     rdfs:label "Data Product Shape" ;
@@ -98,10 +146,12 @@ dprod:DataProductShape
     rdfs:isDefinedBy dprod:;
     sh:targetClass dprod:DataProduct;
     sh:property dprod:DataProduct-dataProductOwner;
+    sh:property dprod:DataProduct-domain;   
     sh:property dprod:DataProduct-inputPort;
     sh:property dprod:DataProduct-outputPort;
-
-    .
+    sh:property dprod:DataProduct-purpose;
+    sh:property dprod:DataProduct-productionProcessDescription;    .
+.
 
 dprod:DataServiceShape
   a sh:NodeShape ;
@@ -110,7 +160,9 @@ dprod:DataServiceShape
   rdfs:isDefinedBy dprod:;
   sh:targetClass dcat:DataService;
   sh:property dprod:DataService-isAccessServiceOf ;
-  .
+  sh:property dprod:DataService-protocol ;
+  sh:property dprod:DataService-securitySchemaType;
+ .
 
 dprod:DistributionShape
   a sh:NodeShape ;
@@ -127,36 +179,8 @@ dprod:DatasetShape
   dc:description "The shape of the DCAT Dataset as used in the DPROD vocabulary. "@en ;
   sh:targetClass dcat:Dataset;
   sh:property dcat:Dataset-distribution;
-  sh:property dcat:Dataset-classification;
   sh:property dcat:Dataset-informationSensitivityClassification;
   .
-
-dprod:Classification
-  a owl:Class , rdfs:Class;
-  rdfs:label "Classification" ;
-  dc:description "A taxonomy of concepts that organizes data for its most effective and efficient use "@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:seeAlso cdmc-cls:DataClassification;
-  rdfs:subClassOf skos:Concept;
-    .
-
-dprod:ClassificationShape
-  a sh:NodeShape;
-  rdfs:label "Classification Shape" ;
-  dc:description "The shape of Classification as used in the DPROD vocabulary"@en ;
-  rdfs:isDefinedBy prod:;
-  sh:targetClass dprod:Classification;
-  rdfs:seeAlso cdmc-cls:DataClassification;
-  .
-
-dprod:InformationSensitivityClassification
-  a owl:Class , rdfs:Class;
-  rdfs:label "Information Sensitivity Classification" ;
-  dc:description "A taxonomy of concepts that classifies the information within a dataset that indicates the level of control and protection that must be applied to the dataset "@en ;
-  rdfs:subClassOf  dprod:Classification;
-  rdfs:isDefinedBy dprod:;
-  rdfs:seeAlso cdmc-cls:InformationSensitivity;
-    .
 
 dprod:InformationSensitivityClassificationShape
   a  sh:NodeShape;
@@ -164,17 +188,7 @@ dprod:InformationSensitivityClassificationShape
   dc:description "The shape of Information Sensitivity Classification as defined in the dprod schema"@en ;
   rdfs:isDefinedBy dprod:;
   sh:targetClass dprod:InformationSensitivityClassification;
-
-    .
-
-dprod:DataProductLifecycleStatus
-    a owl:Class , rdfs:Class;
-    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
-    rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:label "Data Product Lifecycle Status" ;
-    rdfs:subClassOf dprod:Enumeration;
-.
+  .
 
 dprod:DataProductLifecycleStatusShape
     a sh:NodeShape;
@@ -184,35 +198,37 @@ dprod:DataProductLifecycleStatusShape
     rdfs:isDefinedBy dprod:;
   .
 
-dprod:Enumeration
-    a owl:Class , rdfs:Class;
-    rdfs:label "Enumeration" ;
-    dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:subClassOf owl:Thing;
-.
-
 dprod:EnumerationShape
     a sh:NodeShape;
+    sh:targetClass dprod:Enumeration;    
     rdfs:label "Enumeration Shape" ;
     dc:description "The shape of enumerations"@en ;
     rdfs:isDefinedBy dprod:;
   .
 
-dprod:Protocol
-    a owl:Class , rdfs:Class ;
+dprod:ProtocolShape
+    a sh:NodeShape;
+    rdfs:label "Protocol Shape" ;
     dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
     rdfs:isDefinedBy dprod:;
-    rdfs:label "Protocol" ;
+    sh:target class dprod:Protocol;     
 .
 
-dprod:SecuritySchemaType
-    a owl:Class , rdfs:Class ;
+dprod:SecuritySchemaTypeShape
+    a sh:NodeShape;
+    rdfs:label "Security Schema Type Shape" ;
     dc:description "A security schema type used for authentication and communication."@en ;
     rdfs:isDefinedBy dprod:;
-    rdfs:label "Security Schema Type" ;
+    sh:targetClass dprod:SecuritySchemaType;     
 .
 
+dprod:DomainShape
+    a sh:NodeShape;
+    rdfs:label "Domain Shape" ;
+    dc:description "The business or information area supported by the data product."@en ;
+    rdfs:isDefinedBy dprod:;
+    sh:targetClass dprod:Domain;     
+.
 #############################  DPROD Property Shapes ################
 
 dprod:DataProduct-dataProductOwner
@@ -247,8 +263,35 @@ dprod:DataProduct-outputPort
   rdfs:isDefinedBy dprod:;
   sh:path dprod:outputPort;
   sh:class dcat:DataService;
-  dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted "@en ;
+  dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
   rdfs:label "DataProduct-outputPort";
+.
+
+dprod:DataProduct-domain
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:domain;
+  sh:class dprod:Domain;
+  dc:description "The business or information area supported by the data product."@en ;
+  rdfs:label "DataProduct-domain";
+.
+
+dprod:DataProduct-purpose
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:purpose;
+  sh:datatype xsd:string;
+  dc:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:label "DataProduct-purpose";
+.
+
+dprod:DataProduct-productionProcessDescription
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:productionProcessDescription ;
+  sh:datatype xsd:string;
+  dc:description "A description of how the data comprising the data product is gathered, refined, or managed.@en ;
+  rdfs:label "DataProduct-productionProcessDescription";
 .
 
 dcat:Dataset-distribution
@@ -258,15 +301,6 @@ dcat:Dataset-distribution
   sh:class dcat:Distribution;
   dc:description "An available distribution of the dataset"@en ;
   rdfs:label "Dataset-distribution";
- .
-
-dprod:Dataset-classification
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dprod:classification;
-  sh:class dprod:Classification;
-  dc:description "The relationship to a taxonomy that defines dataset classification"@en ;
-  rdfs:label "Dataset-classification";
  .
 
 dprod:Dataset-informationSensitivityClassification
@@ -306,7 +340,9 @@ dprod:DataService-isAccessServiceOf
   rdfs:label "DataService-isAccessServiceOf" ;
   .
 
+
 ############################  DPROD Property  ################
+
 dprod:isAccessServiceOf
     a rdfs:Property, owl:ObjectProperty ;
     dc:description "The dataset distribution that is being offered through this Data Service"@en ;
@@ -314,6 +350,7 @@ dprod:isAccessServiceOf
     owl:inverseOf dcat:accessService;
     rdfs:domain dcat:DataService;
     rdfs:range dcat:Distribution;
+    rdfs:label "isAccessServiceOf ;    
     .
 
 dprod:dataProductOwner
@@ -332,7 +369,7 @@ dprod:port
   rdfs:range dcat:DataService ;
   dc:description "a port describes a set of services exposed by a data product."@en ;
   rdfs:label "port";
-.
+  .
 
 dprod:inputPort
   a rdfs:Property, owl:objectProperty ;
@@ -356,15 +393,8 @@ dprod:lifecycleStatus
     rdfs:isDefinedBy dprod:;
     rdfs:domain dprod:DataProduct;
     rdfs:range dprod:DataProductLifecycle;
-    .
-
-dprod:classification
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The category that organizes data for its most effective and efficient way"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:domain dcat:Dataset;
-    rdfs:range dprod:Classfication;
-    .
+    rdfs:label "lifecycleStatus";    
+.
 
 dprod:informationSensitivityClassification
     a rdfs:Property, owl:ObjectProperty ;
@@ -372,8 +402,7 @@ dprod:informationSensitivityClassification
     rdfs:isDefinedBy dprod:;
     rdfs:domain dcat:Dataset;
     rdfs:range dprod:InformationSensitiviyClassification;
-    rdfs:subPropertyOf dprod:classification;
-    .
+    rdfs:label "informationSensitivityClassification;        .
 
 dprod:purpose
   a rdfs:Property, owl:DatatypeProperty ;
@@ -381,6 +410,7 @@ dprod:purpose
   rdfs:isDefinedBy dprod:;
   rdfs:domain dprod:DataProduct ;
   rdfs:range xsd:string ;
+  rdfs:label "purpose";
 .
 
 dprod:productionProcessDescription
@@ -389,6 +419,7 @@ dprod:productionProcessDescription
   rdfs:isDefinedBy dprod:;
   rdfs:domain dprod:DataProduct ;
   rdfs:range xsd:string ;
+  rdfs:label "productionProcessDescription";
 .
 
 dprod:domain
@@ -397,4 +428,21 @@ dprod:domain
   rdfs:comment "The domain is intended to be a resource in its own right but this specification does not constrain the class to be used."@en ;
   rdfs:isDefinedBy dprod:;
   rdfs:domain dprod:DataProduct ;
+  rdfs:label "domain";
+.
+
+dprod:protocol
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "A protocol (possibly one of many options) used to communicate with this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:DataService;
+    rdfs:label "protocol";
+  .
+
+dprod:securitySchemaType
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "The security schema type used for authentication and to communication with this Data Service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:DataService;
+  
 .
