@@ -117,7 +117,7 @@ dprod:Protocol
 
 dprod:Domain
     a owl:Class , rdfs:Class ;
-    dc:description "The business or information area supported by the data product.@en ;
+    dc:description "The business or information area supported by the data product."@en ;
     rdfs:isDefinedBy dprod:;
     rdfs:label "Domain" ;
 .
@@ -140,7 +140,7 @@ dprod:Enumeration
 ############################# DPROD Shapes #########################
 
 dprod:DataProductShape
-    sh:NodeShape;
+    a sh:NodeShape;
     rdfs:label "Data Product Shape" ;
     dc:description "The shape of the Data Product. A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
     rdfs:isDefinedBy dprod:;
@@ -150,7 +150,7 @@ dprod:DataProductShape
     sh:property dprod:DataProduct-inputPort;
     sh:property dprod:DataProduct-outputPort;
     sh:property dprod:DataProduct-purpose;
-    sh:property dprod:DataProduct-productionProcessDescription;    .
+    sh:property dprod:DataProduct-productionProcessDescription;    
 .
 
 dprod:DataServiceShape
@@ -211,7 +211,7 @@ dprod:ProtocolShape
     rdfs:label "Protocol Shape" ;
     dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
     rdfs:isDefinedBy dprod:;
-    sh:target class dprod:Protocol;     
+    sh:targetClass dprod:Protocol;     
 .
 
 dprod:SecuritySchemaTypeShape
@@ -290,7 +290,7 @@ dprod:DataProduct-productionProcessDescription
   rdfs:isDefinedBy dprod:;
   sh:path dprod:productionProcessDescription ;
   sh:datatype xsd:string;
-  dc:description "A description of how the data comprising the data product is gathered, refined, or managed.@en ;
+  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
   rdfs:label "DataProduct-productionProcessDescription";
 .
 
@@ -303,7 +303,7 @@ dcat:Dataset-distribution
   rdfs:label "Dataset-distribution";
  .
 
-dprod:Dataset-informationSensitivityClassification
+dcat:Dataset-informationSensitivityClassification
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:informationSensitivityClassification;
@@ -333,7 +333,7 @@ dcat:Distribution-isDistributionOf
 
 dprod:DataService-isAccessServiceOf
   a sh:PropertyShape;
-  rdfs:isDefinedBy prod:;
+  rdfs:isDefinedBy dprod:;
   sh:path dprod:isAccessServiceOf;
   sh:class dcat:Distribution;
   dc:description "The dataset distribution that is being offered through this Data Service"@en ;
@@ -350,7 +350,7 @@ dprod:isAccessServiceOf
     owl:inverseOf dcat:accessService;
     rdfs:domain dcat:DataService;
     rdfs:range dcat:Distribution;
-    rdfs:label "isAccessServiceOf ;    
+    rdfs:label "is Access Service Of" ;    
     .
 
 dprod:dataProductOwner
@@ -402,7 +402,8 @@ dprod:informationSensitivityClassification
     rdfs:isDefinedBy dprod:;
     rdfs:domain dcat:Dataset;
     rdfs:range dprod:InformationSensitiviyClassification;
-    rdfs:label "informationSensitivityClassification;        .
+    rdfs:label "information Sensitivity Classification";        
+.
 
 dprod:purpose
   a rdfs:Property, owl:DatatypeProperty ;
