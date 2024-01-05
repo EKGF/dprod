@@ -10,8 +10,12 @@ import json
 
 # Load the OWL ontology into an RDFlib graph
 g = Graph()
-g.parse('../ontology/dprod/dprod-ontology.ttl', format='ttl')
-g.parse('../ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
+# g.parse('../ontology/dprod/dprod-ontology.ttl', format='ttl')
+# g.parse('../ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
+g.parse('../ontology/dprod/dprod.ttl', format='ttl')
+g.add((DCAT.DataService, RDF.type, OWL.Class))
+g.add((DCAT.Distribution, RDF.type, OWL.Class))
+g.add((DCAT.Dataset, RDF.type, OWL.Class))
 
 # Define the JSON-LD context
 context = {
