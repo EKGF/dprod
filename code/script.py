@@ -10,7 +10,8 @@ import json
 
 # Load the OWL ontology into an RDFlib graph
 g = Graph()
-g.parse('../ontology/dprod/dprod.ttl', format='ttl')
+g.parse('../ontology/dprod/dprod-ontology.ttl', format='ttl')
+g.parse('../ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
 
 # Define the JSON-LD context
 context = {
@@ -28,15 +29,15 @@ context = {
 class RdfProperty:
     name: str
     uri: URIRef
-    label: str = None
-    description: str = None
+    label: str = ''
+    description: str = ''
 
 @dataclass
 class RdfClass:
     name: str
     uri: URIRef
-    label: str = None
-    description: str = None
+    label: str = ''
+    description: str = ''
     inherits: list = field(default_factory=list)
     properties: List[RdfProperty] = field(default_factory=list)
 
