@@ -356,7 +356,8 @@ dprod:isAccessServiceOf
 dprod:dataProductOwner
     a rdfs:Property, owl:ObjectProperty ;
     dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). This can be different from the creator or the publisher of the Data Product "@en ;
-    rdfs:isDefinedBy dprod:;
+    rdfs:domain dprod:DataProduct ;
+    rdfs:range dcat:DataService ;
     rdfs:domain dprod:DataProduct;
     rdfs:range dct:Agent;
     rdfs:label "Data Product Owner" ;
@@ -364,7 +365,8 @@ dprod:dataProductOwner
 
 dprod:inputPort
   a rdfs:Property, owl:objectProperty ;
-  rdfs:subPropertyOf dprod:port ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod: ;
   dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
   rdfs:label "inputPort";
