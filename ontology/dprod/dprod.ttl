@@ -362,15 +362,6 @@ dprod:dataProductOwner
     rdfs:label "Data Product Owner" ;
     .
 
-dprod:port 
-  a rdfs:Property, owl:objectProperty ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:domain dprod:DataProduct ;
-  rdfs:range dcat:DataService ;
-  dc:description "a port describes a set of services exposed by a data product."@en ;
-  rdfs:label "port";
-  .
-
 dprod:inputPort
   a rdfs:Property, owl:objectProperty ;
   rdfs:subPropertyOf dprod:port ;
