@@ -172,34 +172,20 @@ dprod:domain
   rdfs:domain dprod:DataProduct ;
 .
 
-# dprod:inputPort
-#    a rdfs:Property, owl:ObjectProperty ;
-#    dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
-#    rdfs:isDefinedBy dprod:;
-#    rdfs:domain dprod:DataProduct;
-#    rdfs:range dcat:DataService;
-#    .
 
-# dprod:outputPort
-#    a rdfs:Property, owl:ObjectProperty ;
-#    dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted. Each data product must have at least one or more output ports"@en ;
-#    rdfs:isDefinedBy dprod:;
-#    rdfs:domain dprod:DataProduct;
-#    rdfs:range dcat:DataService;
-#    .
-
-dprod:port 
-  a rdfs:Property, owl:objectProperty ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:domain dprod:DataProduct ;
-  rdfs:range dcat:DataService ;
-  dc:description "a port describes a set of services exposed by a data product."@en ;
-  rdfs:label "port";
-.
+#dprod:port 
+#  a rdfs:Property, owl:objectProperty ;
+#  rdfs:isDefinedBy dprod: ;
+#  rdfs:domain dprod:DataProduct ;
+#  rdfs:range dcat:DataService ;
+#  dc:description "a port describes a set of services exposed by a data product."@en ;
+#  rdfs:label "port";
+#.
 
 dprod:inputPort
   a rdfs:Property, owl:objectProperty ;
-  rdfs:subPropertyOf dprod:port ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod: ;
   dc:description "an input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports"@en ;
   rdfs:label "inputPort";
@@ -207,7 +193,8 @@ dprod:inputPort
 
 dprod:outputPort
   a rdfs:Property, owl:objectProperty ;
-  rdfs:subPropertyOf dprod:port ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod:;
   dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted "@en ;
   rdfs:label "outputPort";
