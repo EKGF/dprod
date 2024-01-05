@@ -374,7 +374,8 @@ dprod:inputPort
 
 dprod:outputPort
   a rdfs:Property, owl:objectProperty ;
-  rdfs:subPropertyOf dprod:port ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod:;
   dc:description "an output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted "@en ;
   rdfs:label "outputPort";
