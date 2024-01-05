@@ -13,9 +13,6 @@ g = Graph()
 # g.parse('../ontology/dprod/dprod-ontology.ttl', format='ttl')
 # g.parse('../ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
 g.parse('../ontology/dprod/dprod.ttl', format='ttl')
-g.add((DCAT.DataService, RDF.type, OWL.Class))
-g.add((DCAT.Distribution, RDF.type, OWL.Class))
-g.add((DCAT.Dataset, RDF.type, OWL.Class))
 
 # Define the JSON-LD context
 context = {
@@ -68,8 +65,10 @@ def reorder_list(list_to_order, reference_list):
 def add_to_context(uri):
     if isinstance(uri, rdflib.term.URIRef):
         name = short_name(uri)
+        if name.endswith("Shape"):
+            name = name[:-len("Shape")]
         types = list(g.objects(uri, RDF.type))
-        if OWL.Class in types or SH.NodeShape in types:
+        if SH.NodeShape in types:
             context[name] = {"@id": str(uri)}
             class_obj = RdfClass(name=name, uri=uri)
             classes[uri] = class_obj
@@ -77,11 +76,20 @@ def add_to_context(uri):
                 class_obj.__dict__[short_name(p1)] = o1
             for s, p, o in g.triples((None, RDFS.subClassOf, uri)):
                 add_to_context(s)            
-            for s, p, o in g.triples((None, RDFS.domain, uri)):
-                rdf_property = RdfProperty(name=short_name(s), uri=s)
+            for s, p, o in g.triples((uri, SH.property, None)):
+                property_name = short_name(o)
+                property_name = property_name.replace(f'{name}-', '')
+                rdf_property = RdfProperty(name=property_name, uri=o)
                 class_obj.properties.append(rdf_property)
+                rdf_property.__dict__["domain"] = class_obj.targetClass
+                rdf_property.__dict__["domain_short"] = g.namespace_manager.normalizeUri(class_obj.targetClass)
+                rdf_property.__dict__["short_uri"] = g.namespace_manager.normalizeUri(o)
                 for s1, p1, o1 in g.triples((rdf_property.uri, None, None)):
-                    rdf_property.__dict__[short_name(p1)] = o1  
+                    p1_name = short_name(p1)
+                    if p1_name == 'class' or p1_name == 'datatype':
+                        rdf_property.__dict__["range"] = o1
+                        rdf_property.__dict__["range_short"] = g.namespace_manager.normalizeUri(o1)
+                    rdf_property.__dict__[p1_name] = o1  
         elif OWL.ObjectProperty in types:
             for s, p, o in g.triples((uri, RDFS.range, None)):
                 context[name] = {"@id": str(uri), "@type": str(o)}
@@ -97,7 +105,7 @@ for class_uri in g.subjects():
 
 json_ld = {"@context": context}
 
-classes = reorder_list(classes.values(), ['DataProduct', 'Distribution', 'DataService'])
+classes = reorder_list(classes.values(), ['DataProduct', 'DataService', 'Distribution', 'Dataset'])
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="../docs/respec/"))
 template = env.get_template("template.html")
 spec = template.render(classes=classes)

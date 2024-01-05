@@ -198,13 +198,13 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
         <h2>{{prop.name}}</h2>
         <table class="def propdef">
         <tbody>
-          <tr><th>Identifier:</th> <td><code>dprod:{{prop.name}}</code></td></tr>
+          <tr><th>Identifier:</th><td><a href="{{prop.uri}}">dprod:{{prop.name}}</a></td></tr>
           {% if prop.label is not none %}   
           <tr><th>Label:</th><td>{{prop.label}}</td></tr>
           {% endif %}
           <tr><th>Notes:</th><td>{{prop.description}}</td></tr>
-          <tr><th>Domain:</th><td>{{prop.domain}}</td></tr>
-          <tr><th>Range:</th><td>{{prop.range}}</td></tr>
+          <tr><th>Domain:</th><td><a href="{{prop.domain}}">{{prop.domain_short}}</a></td></tr>
+          <tr><th>Range:</th><td><a href="{{prop.range}}">{{prop.range_short}}</a></td></tr>
         </tbody>
         </table>
       </section>
