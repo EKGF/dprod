@@ -170,10 +170,10 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
     "outputPort": {
       "@type": "dcat:DataService",
       "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
-      "offersDistribution": {
+      "isAccessServiceOf": {
         "@type": "dcat:Distribution",	
         "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
-        "belongsToDataset": {
+        "isDistributionOf": {
           "@type": "dcat:Dataset",	
           "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
         }

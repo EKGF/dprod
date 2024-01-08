@@ -72,10 +72,17 @@ def add_to_context(uri):
             context[name] = {"@id": str(uri)}
             class_obj = RdfClass(name=name, uri=uri)
             classes[uri] = class_obj
-            for s1, p1, o1 in g.triples((class_obj.uri, None, None)):
-                class_obj.__dict__[short_name(p1)] = o1
+            fill_object(class_obj)
             for s, p, o in g.triples((None, RDFS.subClassOf, uri)):
-                add_to_context(s)            
+                add_to_context(s)
+            
+            if hasattr(class_obj, 'targetClass'):
+                owl_class = RdfClass(name=name, uri=class_obj.targetClass)
+                fill_object(owl_class)
+                if owl_class.description and owl_class.description != '':
+                    print(f'description: {owl_class.description}')
+                    class_obj.description = owl_class.description
+                    
             for s, p, o in g.triples((uri, SH.property, None)):
                 property_name = short_name(o)
                 property_name = property_name.replace(f'{name}-', '')
@@ -97,6 +104,11 @@ def add_to_context(uri):
             range_uri = next(g.objects(uri, RDFS.range))
             context[name] = {"@id": str(uri), "@type": str(range_uri)}
     # context[name] = {"@id": str(uri)}
+
+
+def fill_object(obj):
+    for s1, p1, o1 in g.triples((obj.uri, None, None)):
+        obj.__dict__[short_name(p1)] = o1
 
 
 # Add classes and properties to the context
