@@ -81,8 +81,11 @@ dprod:DataProductShape
     rdfs:label "Data Product Shape" ;
     sh:targetClass dprod:DataProduct;
     sh:property dprod:DataProduct-dataProductOwnerShape;
+    sh:property dprod:DataProduct-domainShape;   
     sh:property dprod:DataProduct-inputPortShape;
     sh:property dprod:DataProduct-outputPortShape;
+    sh:property dprod:DataProduct-purposeShape;
+    sh:property dprod:DataProduct-productionProcessDescription;    
 .
 
 dprod:DataServiceShape
@@ -107,9 +110,41 @@ dprod:DatasetShape
   rdfs:isDefinedBy dprod:;
   rdfs:label "Dataset Shape" ;
   sh:targetClass dcat:Dataset ;
-  sh:property dprod:Dataset-distributionShape
+  sh:property dprod:Dataset-distributionShape ;
+  sh:property dcat:Dataset-informationSensitivityClassificationShape;
   .
 
+dprod:InformationSensitivityClassificationShape
+  a  sh:NodeShape;
+  rdfs:label "Information Sensitivity Classification Shape" ;
+  dc:description "The shape of Information Sensitivity Classification as defined in the dprod schema"@en ;
+  rdfs:isDefinedBy dprod:;
+  sh:targetClass dprod:InformationSensitivityClassification;
+  .
+
+dprod:DataProductLifecycleStatusShape
+    a sh:NodeShape;
+    rdfs:label "Data Product Lifecycle Status Shape" ;
+    dc:description "The shape of Data Product Lifecycle Status "@en ;
+    sh:targetClass dprod:DataProductLifecycleStatus;
+    rdfs:isDefinedBy dprod:;
+  .
+
+dprod:ProtocolShape
+    a sh:NodeShape;
+    rdfs:label "Protocol Shape" ;
+    dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
+    rdfs:isDefinedBy dprod:;
+    sh:targetClass dprod:Protocol;     
+.
+
+dprod:SecuritySchemaTypeShape
+    a sh:NodeShape;
+    rdfs:label "Security Schema Type Shape" ;
+    dc:description "A security schema type used for authentication and communication."@en ;
+    rdfs:isDefinedBy dprod:;
+    sh:targetClass dprod:SecuritySchemaType;     
+.
 
 #############################  dprod Property Shapes ################
 
@@ -131,6 +166,15 @@ dprod:DataProduct-lifecycleStatusShape
   rdfs:label "DataProduct-lifecycleStatus Shape";
 .
 
+dprod:DataProduct-domainShape
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:domain;
+  dc:description "The business or information area supported by the data product."@en ;
+  rdfs:comment "The target class is left open"@en;
+  rdfs:label "DataProduct-domain";
+.
+
 dprod:DataProduct-purposeShape
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
@@ -138,6 +182,15 @@ dprod:DataProduct-purposeShape
   sh:datatype xsd:string;
   dc:description "A description of the objectives and intended usage of the data product."@en ;
   rdfs:label "DataProduct-purpose Shape";
+.
+
+dprod:DataProduct-productionProcessDescriptionShape
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:productionProcessDescription ;
+  sh:datatype xsd:string;
+  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
+  rdfs:label "DataProduct-productionProcessDescription";
 .
 
 dprod:DataProduct-inputPortShape

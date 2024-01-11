@@ -93,7 +93,6 @@ dprod:DataProduct
     rdfs:subClassOf dcat:Resource;
   .
 
-
 dprod:DataProductLifecycleStatus  
    a owl:Class , rdfs:Class ;
    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
@@ -103,12 +102,19 @@ dprod:DataProductLifecycleStatus
    rdfs:subClassOf dprod:Enumeration;
 .
 
+dprod:InformationSensitivityClassification
+  a owl:Class , rdfs:Class;
+  rdfs:label "Information Sensitivity Classification" ;
+  dc:description "A taxonomy of concepts that classifies the information within a dataset that indicates the level of control and protection that must be applied to the dataset "@en ;
+  rdfs:isDefinedBy dprod:;
+  rdfs:seeAlso <https://spec.edmcouncil.org/cdmc/ontology/Classification/InformationSensitivity> ;
+.
+
 dprod:Enumeration
    a owl:Class , rdfs:Class ;
    dc:description "The superclass of enumeration lists referenced from Data Product related artifacts"@en ;
    rdfs:isDefinedBy dprod:;
    rdfs:label "Enumeration" ;
-   rdfs:subClassOf owl:Thing;
 .
 
 dprod:Protocol
@@ -132,12 +138,13 @@ dprod:dataProductOwner
   a rdfs:Property, owl:ObjectProperty ;
   # a rdfs:subPropertyOf prov:wasAttributedTo ; # in line with DCAT
   rdfs:isDefinedBy dprod:;
+  rdfs:domain dprod:DataProduct ;
   rdfs:range foaf:Agent ;
   dc:description "The Agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion). "@en ;
   rdfs:label "dataProductowner";
 .
 
-dprod:lifecycle
+dprod:lifecycleStatus
   a rdfs:Property, owl:ObjectProperty ;
   # a rdfs:subPropertyOf adms:status ;  
   rdfs:isDefinedBy dprod: ;
@@ -146,6 +153,15 @@ dprod:lifecycle
   # rdfs:range dprod:DataProductLifecycle;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
   rdfs:label "lifecycleStatus" ;
+.
+
+dprod:informationSensitivityClassification
+    a rdfs:Property, owl:ObjectProperty ;
+    dc:description "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:domain dcat:Dataset;
+    rdfs:range dprod:InformationSensitiviyClassification;
+    rdfs:label "information Sensitivity Classification";        
 .
 
 dprod:purpose
