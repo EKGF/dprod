@@ -94,6 +94,8 @@ dprod:DataServiceShape
   sh:targetClass dcat:DataService ;
   rdfs:label "Data Service Shape" ;
   sh:property dprod:DataService-isAccessServiceOfShape ;
+  sh:property dprod:DataService-protocolShape ;
+  sh:property dprod:DataService-securitySchemaTypeShape;
   .
 
 dprod:DistributionShape
@@ -220,6 +222,15 @@ dprod:Dataset-distributionShape
   rdfs:label "Dataset-distribution Shape";
  .
 
+dcat:Dataset-informationSensitivityClassificationShape
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:informationSensitivityClassification;
+  sh:class dprod:InformationSensitivityClassification;
+  dc:description "The relationship to a taxonomy that defines the different levels of control and protection that must be applied to the dataset. This is a more granular relationship of the classification of a dataset that includes other classification concepts  "@en ;
+  rdfs:label "Dataset-informationSensitivityClassification";
+ .
+
 dprod:Distribution-accessServiceShape
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
@@ -246,4 +257,23 @@ dprod:DataService-isAccessServiceOfShape
   dc:description "The dataset distribution that is being offered through this Data Service"@en ;
   rdfs:label "DataService-isAccessServiceOf Shape" ;
   .
+
+dprod:DataService-protocolShape
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:protocol;
+  sh:class dcat:Protocol;
+  dc:description "A protocol (possibly one of many options) used to communicate with this Data Service"@en ;
+  rdfs:label "DataService-protocol Shape" ;
+  .
+  
+dprod:DataService-securitySchemaTypeShape
+  a sh:PropertyShape;
+  rdfs:isDefinedBy dprod:;
+  sh:path dprod:securitySchemaType;
+  sh:class dcat:SecuritySchemaType;
+  dc:description "The security schema type used for authentication and to communication with this Data Service"@en ;
+  rdfs:label "DataService-securitySchemaType Shape" ;
+  .
+
 
