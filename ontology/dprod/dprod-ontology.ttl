@@ -234,24 +234,15 @@ dprod:belongsToDataset
     rdfs:range dcat:Dataset;
 .
 
-dprod:offersDistribution
+dprod:isAccessServiceOf
     a rdfs:Property, owl:ObjectProperty ;
     dc:description "The dataset distribution that is being offered through this Data Service"@en ;
     rdfs:isDefinedBy dprod:;
-    # owl:inverseOf dcat:accessService; #not defined?
+    owl:inverseOf dcat:accessService;
     rdfs:domain dcat:DataService;
     rdfs:range dcat:Distribution;
-.
-
-#dprod:isAccessServiceOf
-#    a rdfs:Property, owl:ObjectProperty ;
-#    owl:inverseOf dcat:accessService ;
-#    dc:description "The dataset distribution that is being offered through this Data Service"@en ;
-#    rdfs:isDefinedBy dprod:;
-#    owl:inverseOf dcat:accessService;
-#    rdfs:domain dcat:DataService;
-#    rdfs:range dcat:Distribution;
-#.
+    rdfs:label "is Access Service Of" ;    
+    .
 
 dprod:protocol
     a rdfs:Property, owl:ObjectProperty ;
