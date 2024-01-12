@@ -80,11 +80,11 @@ dprod:DataProductShape
     rdfs:isDefinedBy dprod:;
     rdfs:label "Data Product Shape" ;
     sh:targetClass dprod:DataProduct;
-    sh:property dprod:DataProduct-dataProductOwnerShape;
-    sh:property dprod:DataProduct-domainShape;   
-    sh:property dprod:DataProduct-inputPortShape;
-    sh:property dprod:DataProduct-outputPortShape;
-    sh:property dprod:DataProduct-purposeShape;
+    sh:property dprod:DataProduct-dataProductOwner;
+    sh:property dprod:DataProduct-domain;   
+    sh:property dprod:DataProduct-inputPort;
+    sh:property dprod:DataProduct-outputPort;
+    sh:property dprod:DataProduct-purpose;
     sh:property dprod:DataProduct-productionProcessDescription;    
 .
 
@@ -93,9 +93,9 @@ dprod:DataServiceShape
   rdfs:isDefinedBy dprod:;
   sh:targetClass dcat:DataService ;
   rdfs:label "Data Service Shape" ;
-  sh:property dprod:DataService-isAccessServiceOfShape ;
-  sh:property dprod:DataService-protocolShape ;
-  sh:property dprod:DataService-securitySchemaTypeShape;
+  sh:property dprod:DataService-isAccessServiceOf ;
+  sh:property dprod:DataService-protocol ;
+  sh:property dprod:DataService-securitySchemaType;
   .
 
 dprod:DistributionShape
@@ -103,8 +103,8 @@ dprod:DistributionShape
   rdfs:isDefinedBy dprod:;
   rdfs:label "Distribution Shape" ;
   sh:targetClass dcat:Distribution ;
-  sh:property dprod:Distribution-accessServiceShape ;
-  sh:property dprod:Distribution-isDistributionOfShape ;
+  sh:property dprod:Distribution-accessService ;
+  sh:property dprod:Distribution-isDistributionOf ;
   .
 
 dprod:DatasetShape
@@ -112,12 +112,12 @@ dprod:DatasetShape
   rdfs:isDefinedBy dprod:;
   rdfs:label "Dataset Shape" ;
   sh:targetClass dcat:Dataset ;
-  sh:property dprod:Dataset-distributionShape ;
-  sh:property dcat:Dataset-informationSensitivityClassificationShape;
+  sh:property dprod:Dataset-distribution ;
+  sh:property dcat:Dataset-informationSensitivityClassification;
   .
 
 dprod:InformationSensitivityClassificationShape
-  a  sh:NodeShape;
+  a sh:NodeShape ;
   rdfs:label "Information Sensitivity Classification Shape" ;
   dc:description "The shape of Information Sensitivity Classification as defined in the dprod schema"@en ;
   rdfs:isDefinedBy dprod:;
@@ -150,7 +150,7 @@ dprod:SecuritySchemaTypeShape
 
 #############################  dprod Property Shapes ################
 
-dprod:DataProduct-dataProductOwnerShape
+dprod:DataProduct-dataProductOwner
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:dataProductOwner;
@@ -159,7 +159,7 @@ dprod:DataProduct-dataProductOwnerShape
   rdfs:label "DataProduct-dataProductOwner Shape";
 .
 
-dprod:DataProduct-lifecycleStatusShape
+dprod:DataProduct-lifecycleStatus
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:lifecycleStatus;
@@ -168,7 +168,7 @@ dprod:DataProduct-lifecycleStatusShape
   rdfs:label "DataProduct-lifecycleStatus Shape";
 .
 
-dprod:DataProduct-domainShape
+dprod:DataProduct-domain
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:domain;
@@ -177,7 +177,7 @@ dprod:DataProduct-domainShape
   rdfs:label "DataProduct-domain";
 .
 
-dprod:DataProduct-purposeShape
+dprod:DataProduct-purpose
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:purpose;
@@ -186,7 +186,7 @@ dprod:DataProduct-purposeShape
   rdfs:label "DataProduct-purpose Shape";
 .
 
-dprod:DataProduct-productionProcessDescriptionShape
+dprod:DataProduct-productionProcessDescription
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:productionProcessDescription ;
@@ -195,7 +195,7 @@ dprod:DataProduct-productionProcessDescriptionShape
   rdfs:label "DataProduct-productionProcessDescription";
 .
 
-dprod:DataProduct-inputPortShape
+dprod:DataProduct-inputPort
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:inputPort;
@@ -204,7 +204,7 @@ dprod:DataProduct-inputPortShape
   rdfs:label "DataProduct-inputPort Shape";
 .
 
-dprod:DataProduct-outputPortShape
+dprod:DataProduct-outputPort
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:outputPort;
@@ -213,7 +213,7 @@ dprod:DataProduct-outputPortShape
   rdfs:label "DataProduct-outputPort Shape";
 .
 
-dprod:Dataset-distributionShape
+dprod:Dataset-distribution
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dcat:distribution;
@@ -222,7 +222,7 @@ dprod:Dataset-distributionShape
   rdfs:label "Dataset-distribution Shape";
  .
 
-dcat:Dataset-informationSensitivityClassificationShape
+dcat:Dataset-informationSensitivityClassification
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:informationSensitivityClassification;
@@ -231,7 +231,7 @@ dcat:Dataset-informationSensitivityClassificationShape
   rdfs:label "Dataset-informationSensitivityClassification";
  .
 
-dprod:Distribution-accessServiceShape
+dprod:Distribution-accessService
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dcat:accessService;
@@ -240,7 +240,7 @@ dprod:Distribution-accessServiceShape
   rdfs:label "Distribution-accessService Shape";
   .
 
-dprod:Distribution-isDistributionOfShape
+dprod:Distribution-isDistributionOf
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:isDistributionOf;
@@ -249,7 +249,7 @@ dprod:Distribution-isDistributionOfShape
   rdfs:label "Distribution-isDistributionOf Shape" ;
   .
 
-dprod:DataService-isAccessServiceOfShape
+dprod:DataService-isAccessServiceOf
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:isAccessServiceOf;
@@ -258,7 +258,7 @@ dprod:DataService-isAccessServiceOfShape
   rdfs:label "DataService-isAccessServiceOf Shape" ;
   .
 
-dprod:DataService-protocolShape
+dprod:DataService-protocol
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:protocol;
@@ -267,7 +267,7 @@ dprod:DataService-protocolShape
   rdfs:label "DataService-protocol Shape" ;
   .
   
-dprod:DataService-securitySchemaTypeShape
+dprod:DataService-securitySchemaType
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dprod:securitySchemaType;
