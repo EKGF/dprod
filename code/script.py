@@ -10,9 +10,9 @@ import json
 
 # Load the OWL ontology into an RDFlib graph
 g = Graph()
-# g.parse('../ontology/dprod/dprod-ontology.ttl', format='ttl')
-# g.parse('../ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
-g.parse('../ontology/dprod/dprod.ttl', format='ttl')
+g.parse('../ontology/dprod/dprod-ontology.ttl', format='ttl')
+g.parse('../ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
+#g.parse('../ontology/dprod/dprod.ttl', format='ttl')
 
 # Define the JSON-LD context
 context = {
@@ -80,7 +80,7 @@ def add_to_context(uri):
                 owl_class = RdfClass(name=name, uri=class_obj.targetClass)
                 fill_object(owl_class)
                 if owl_class.description and owl_class.description != '':
-                    print(f'description: {owl_class.description}')
+                    #print(f'description: {owl_class.description}')
                     class_obj.description = owl_class.description
                     
             for s, p, o in g.triples((uri, SH.property, None)):
