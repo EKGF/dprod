@@ -7,8 +7,7 @@
 # prefix: dprod
 
 
-# @prefix adms: <http://www.w3.org/ns/adms#> .
-@prefix dpdcat: <https://ekgf.github.io/data-product-spec/dprod/dpdcat> .
+
 @prefix dprod: <https://ekgf.github.io/data-product-spec/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -20,7 +19,8 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sdo: <http://schema.org/> .
-# @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix dcterms:	<http://purl.org/dc/terms/> .
+@prefix odrl:	<http://www.w3.org/ns/odrl/2/>.
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -31,7 +31,7 @@ dprod:
   a owl:Ontology ;
   rdfs:label "Data Product Vocabulary"@en ;
   dc:description "DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors.";
-  rdfs:comment "This vocabulary includes terms for the definition of the Data Product as defined from the Data Product Working Group The vocabulary utilises the notion of Datasets as defined from DCAT vocabulary"@en ;
+  rdfs:comment "This vocabulary includes terms for the definition of the Data Product as defined from the Data Product Working Group. The vocabulary utilises the notion of Datasets as defined from DCAT vocabulary"@en ;
    owl:imports <http://purl.org/dc/terms/>;
    owl:imports <http://www.w3.org/2004/02/skos/core>;
    owl:imports <http://www.w3.org/ns/prov-o#>;
@@ -93,7 +93,7 @@ dprod:DataProduct
     rdfs:subClassOf dcat:Resource;
   .
 
-dprod:DataProductLifecycleStatus  
+dprod:DataProductLifecycleStatus
    a owl:Class , rdfs:Class ;
    dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
    rdfs:comment "The lifecycle of the Data Product as defined from EDM Council CDMC"@en ;
@@ -131,6 +131,14 @@ dprod:SecuritySchemaType
     rdfs:label "Security Schema Type" ;
 .
 
+dprod:Protocol
+    a owl:Class , rdfs:Class ;
+    dc:description "A protocol, possibly including a specific version, used for communicating with a service"@en ;
+    rdfs:isDefinedBy dprod:;
+    rdfs:label "Protocol" ;
+.
+
+
 #############################  DPROD Properties ################
 
 
@@ -146,11 +154,10 @@ dprod:dataProductOwner
 
 dprod:lifecycleStatus
   a rdfs:Property, owl:ObjectProperty ;
-  # a rdfs:subPropertyOf adms:status ;  
+  # a rdfs:subPropertyOf adms:status ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataProduct ;
-  # rdfs:range rdf:resource ; # better let user decide whether they want SecuritySchemaType class or own class or skos
-  # rdfs:range dprod:DataProductLifecycle;
+  rdfs:range dprod:DataProductLifecycleStatus;
   dc:description "The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
   rdfs:label "lifecycleStatus" ;
 .
@@ -161,7 +168,7 @@ dprod:informationSensitivityClassification
     rdfs:isDefinedBy dprod:;
     rdfs:domain dcat:Dataset;
     rdfs:range dprod:InformationSensitiviyClassification;
-    rdfs:label "information Sensitivity Classification";        
+    rdfs:label "information Sensitivity Classification";
 .
 
 dprod:purpose
@@ -183,20 +190,10 @@ dprod:productionProcessDescription
 dprod:domain
   a rdfs:Property, owl:ObjectProperty ;
   dc:description "The business or information area supported by the data product."@en ;
-  rdfs:comment "The domain is intended to be a resource in its own right but this specification does not constrain the class to be used."@en ;
+  rdfs:comment "The domain is intended to be a resource in its own right. This specification does not constrain the class to be used."@en ;
   rdfs:isDefinedBy dprod:;
   rdfs:domain dprod:DataProduct ;
 .
-
-
-#dprod:port 
-#  a rdfs:Property, owl:objectProperty ;
-#  rdfs:isDefinedBy dprod: ;
-#  rdfs:domain dprod:DataProduct ;
-#  rdfs:range dcat:DataService ;
-#  dc:description "a port describes a set of services exposed by a data product."@en ;
-#  rdfs:label "port";
-#.
 
 dprod:inputPort
   a rdfs:Property, owl:objectProperty ;
@@ -216,6 +213,24 @@ dprod:outputPort
   rdfs:label "outputPort";
 .
 
+dprod:inputDataset
+  a rdfs:Property, owl:objectProperty ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:Dataset ;
+  rdfs:isDefinedBy dprod: ;
+  dc:description "the source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports"@en ;
+  rdfs:label "input Dataset;
+.
+
+dprod:outputDataset
+  a rdfs:Property, owl:objectProperty ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:Dataset ;
+  rdfs:isDefinedBy dprod:;
+  dc:description "the data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports"@en ;
+  rdfs:label "output Dataset";
+.
+
 dprod:isDistributionOf
   a rdfs:Property, owl:objectProperty ;
   owl:inverseOf dcat:distribution ;
@@ -225,15 +240,6 @@ dprod:isDistributionOf
   rdfs:label "isDistributionOf" ;
 .
 
-dprod:belongsToDataset
-    a rdfs:Property, owl:ObjectProperty ;
-    dc:description "The dataset that this distribution makes available"@en ;
-    rdfs:isDefinedBy dprod:;
-    owl:inverseOf dcat:distribution;
-    rdfs:domain dcat:Distribution;
-    rdfs:range dcat:Dataset;
-.
-
 dprod:isAccessServiceOf
     a rdfs:Property, owl:ObjectProperty ;
     dc:description "The dataset distribution that is being offered through this Data Service"@en ;
@@ -241,7 +247,7 @@ dprod:isAccessServiceOf
     owl:inverseOf dcat:accessService;
     rdfs:domain dcat:DataService;
     rdfs:range dcat:Distribution;
-    rdfs:label "is Access Service Of" ;    
+    rdfs:label "is Access Service Of" ;
     .
 
 dprod:protocol
