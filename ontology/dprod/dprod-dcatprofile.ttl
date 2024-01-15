@@ -66,6 +66,12 @@
     sh:namespace "http://www.tbd.org/ns/dprod#" ;
    ] ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  owl:imports dct: ;
+  owl:imports <http://www.w3.org/2004/02/skos/core> ;
+  owl:imports <http://www.w3.org/ns/prov-o#> ;
+  owl:imports <http://www.w3.org/ns/dcat#> ;
+  owl:imports <http://www.w3.org/ns/shacl>;
+  owl:imports <https://ekgf.github.io/data-product-spec/dprod/>;
   dct:modified "2023-12-20"^^xsd:date ;
   foaf:maker [
       foaf:homepage <http://www.ekgf.org/> ;
