@@ -219,7 +219,7 @@ dprod:inputDataset
   rdfs:range dcat:Dataset ;
   rdfs:isDefinedBy dprod: ;
   dc:description "the source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports"@en ;
-  rdfs:label "input Dataset;
+  rdfs:label "input Dataset";
 .
 
 dprod:outputDataset

@@ -295,7 +295,7 @@ dprod:Dataset-label
   sh:path rdfs:label;
   sh:datatype xsd:string ;
   dc:description "The name given to the dataset"@en ;
-  rdfs:label "Dataset-label;
+  rdfs:label "Dataset-label" ;
  .
 
 dprod:Dataset-description
@@ -355,7 +355,7 @@ dprod:Distribution-accessService
   sh:path dcat:accessService;
   sh:class dcat:DataService;
   dc:description "A data service that gives access to the distribution of the dataset"@en ;
-  rdfs:label "Distribution-accessService;
+  rdfs:label "Distribution-accessService" ;
   .
 
 dprod:Distribution-isDistributionOf
@@ -414,7 +414,7 @@ dprod:DataService-endpointURL
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
   sh:path dcat:endpointURL;
-  dc:description "The root location or primary endpoint of the service""@en ;
+  dc:description "The root location or primary endpoint of the service"@en ;
   rdfs:label "DataService-endpointURL" ;
   .
 
