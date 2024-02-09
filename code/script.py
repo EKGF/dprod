@@ -23,7 +23,9 @@ context = {
     "xsd": str(XSD),
     "dcat": str(DCAT),
     "dcterms": str(DCTERMS),
-    "sh": str(SH)
+    "sh": str(SH),
+    "id": "@id",
+    "type": "@type"
 }
 
 @dataclass
@@ -78,6 +80,7 @@ def add_to_context(uri):
             
             if hasattr(class_obj, 'targetClass'):
                 owl_class = RdfClass(name=name, uri=class_obj.targetClass)
+                context[name]["@id"] = str(owl_class.uri)
                 fill_object(owl_class)
                 if owl_class.description and owl_class.description != '':
                     #print(f'description: {owl_class.description}')
