@@ -100,6 +100,7 @@ dprod:DataProductShape
     sh:property dprod:DataProduct-purpose;
     sh:property dprod:DataProduct-hasPolicy;
     sh:property dprod:DataProduct-productionProcessDescription;
+    sh:property dprod:DataProduct-lifecycleStatus;
 .
 
 dprod:DataServiceShape
