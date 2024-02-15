@@ -34,6 +34,7 @@ class RdfProperty:
     uri: URIRef
     label: str = ''
     description: str = ''
+    range: str = ''
 
 @dataclass
 class RdfClass:
@@ -87,6 +88,10 @@ def add_to_context(uri):
                     class_obj.description = owl_class.description
                     
             for s, p, o in g.triples((uri, SH.property, None)):
+                property_shape_uri = o
+                path = next(g.triples((o, SH.path, None)))
+                if path is not None:
+                    o = str(path[2])
                 property_name = short_name(o)
                 property_name = property_name.replace(f'{name}-', '')
                 rdf_property = RdfProperty(name=property_name, uri=o)
@@ -94,19 +99,27 @@ def add_to_context(uri):
                 rdf_property.__dict__["domain"] = class_obj.targetClass
                 rdf_property.__dict__["domain_short"] = g.namespace_manager.normalizeUri(class_obj.targetClass)
                 rdf_property.__dict__["short_uri"] = g.namespace_manager.normalizeUri(o)
-                for s1, p1, o1 in g.triples((rdf_property.uri, None, None)):
+
+                for s1, p1, o1 in g.triples((property_shape_uri, None, None)):
                     p1_name = short_name(p1)
-                    if p1_name == 'class' or p1_name == 'datatype':
+                    if p1_name == 'class' or p1_name == 'datatype' or p1_name == 'range':
                         rdf_property.__dict__["range"] = o1
-                        rdf_property.__dict__["range_short"] = g.namespace_manager.normalizeUri(o1)
+                        rdf_property.__dict__["range_short"] = g.namespace_manager.normalizeUri(o1)                    
+                    if p1_name == 'path':
+                        pass
                     rdf_property.__dict__[p1_name] = o1  
-        elif OWL.ObjectProperty in types:
-            for s, p, o in g.triples((uri, RDFS.range, None)):
-                context[name] = {"@id": str(uri), "@type": str(o)}
-        elif OWL.DatatypeProperty in types:
-            range_uri = next(g.objects(uri, RDFS.range))
-            context[name] = {"@id": str(uri), "@type": str(range_uri)}
-    # context[name] = {"@id": str(uri)}
+            for p in class_obj.properties:
+                if p.range and p.range != "":
+                    context[p.name] = {"@id": str(p.uri), "@type": str(p.range)}
+                else:
+                    context[p.name] = {"@id": str(p.uri)}
+        # elif OWL.ObjectProperty in types:
+        #     for s, p, o in g.triples((uri, RDFS.range, None)):
+        #         context[name] = {"@id": str(uri), "@type": str(o)}
+        # elif OWL.DatatypeProperty in types:
+        #     range_uri = next(g.objects(uri, RDFS.range))
+        #     context[name] = {"@id": str(uri), "@type": str(range_uri)}
+    context["type"] = "@type"
 
 
 def fill_object(obj):
@@ -129,6 +142,8 @@ with open('../docs/assets/spec.html', 'w', encoding='utf-8') as f:
     f.write(spec)
     
 with open('../docs/assets/dprod.jsonld', 'w', encoding='utf-8') as f:
-    f.write(json.dumps(json_ld, indent=4))
+    json_dump = json.dumps(json_ld, indent=4)
+    #print(json_dump)
+    f.write(json_dump)
     
 
