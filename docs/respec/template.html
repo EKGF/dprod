@@ -161,21 +161,23 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
   <pre id="eg12" class="example hljs json">
   {
     "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
-    "@id": "https://y.com/products/uk-bonds",
-    "@type": "DataProduct",
+    "id": "https://y.com/products/uk-bonds",
+    "type": "DataProduct",
     "title": "UK Bonds",
     "description": "UK Bonds is your one-stop-shop for all your bonds!",
     "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
-    "lifecycle" : "Consume",
+    "lifecycleStatus" : "https://ekgf.github.io/data-product-spec/dprod/data/lifecycle-status/Consume",
+    "dcat:releaseDate": "2021-21-01",
     "outputPort": {
-      "@type": "dcat:DataService",
-      "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
+      "type": "DataService",
+      "endpointURL": "https://y.com/uk-10-year-bonds",
       "isAccessServiceOf": {
-        "@type": "dcat:Distribution",	
-        "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
+        "type": "Distribution",
+        "format": "https://www.iana.org/assignments/media-types/application/json",
         "isDistributionOf": {
-          "@type": "dcat:Dataset",	
-          "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
+          "type": "Dataset",
+          "id": "https://y.com/products/uk-bonds/datasets/10-year",
+          "conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
         }
       }
      }
