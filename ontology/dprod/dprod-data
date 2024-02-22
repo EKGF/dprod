@@ -80,44 +80,44 @@ dprod-data:
 
 ############################# DPROD Instances for Data Product Lifecycle  #########################
 
-dprod-data:Ideation a dprod:DataProductLifecycleStatus;
+dprod-data:DataProductLifecycleStatus-Ideation a dprod:DataProductLifecycleStatus;
 rdfs:label "Ideation";
 dc:description "Identify a business need and conceptualize an idea"
 rdfs:seeAlso "https://docs.google.com/document/d/1JKuGMOekpLvgrHql3XAjmFeujoktp8wcvcWfG1FrBpo/edit?pli=1";
-rdfs:comment "Ideation Lifecycle Status according to CDMC Working Griuo Designing and Managing Data Products";
+rdfs:comment "Ideation Lifecycle Status according to CDMC Working Group Designing and Managing Data Products";
 .
 
-dprod-data:Design a dprod:DataProductLifecycleStatus;
+dprod-data:DataProductLifecycleStatus-Design a dprod:DataProductLifecycleStatus;
 rdfs:label "Design";
 dc:description "Design the data product to align with the business need identified in Ideation";
 rdfs:seeAlso "https://docs.google.com/document/d/1JKuGMOekpLvgrHql3XAjmFeujoktp8wcvcWfG1FrBpo/edit?pli=1";
-rdfs:comment "Design phase according to CDMC include: 1. Product Architecture, Design and prototyping 2. Specification of Sourcing and curation 3. Ensure data used in data products will be fit for purpose, relevant, and up-to-date etc.";
+rdfs:comment "Design phase according to CDMC includes: 1. Product Architecture, Design and prototyping 2. Specification of Sourcing and curation 3. Ensure data used in data products will be fit for purpose, relevant, and up-to-date etc.";
 .
 
-dprod-data:Build a dprod:DataProductLifecycleStatus;
+dprod-data:DataProductLifecycleStatus-Build a dprod:DataProductLifecycleStatus;
 rdfs:label "Build";
 dc:description "Build must cover each deliverable for a data product to be consumed and cover all aspects of the design phase";
 rdfs:seeAlso "https://docs.google.com/document/d/1JKuGMOekpLvgrHql3XAjmFeujoktp8wcvcWfG1FrBpo/edit?pli=1";
-rdfs:comment "Build phase according to CDMC include: 1. Development of data products from the IT perspective 2. Development from the Business perspective 3. Data quality measurements 4. Business and Technical Lineage 5. Cataloging and explicit Metadata identification etc.";
+rdfs:comment "Build phase according to CDMC includes: 1. Development of data products from the IT perspective 2. Development from the Business perspective 3. Data quality measurements 4. Business and Technical Lineage 5. Cataloging and explicit Metadata identification etc.";
 .
 
-dprod-data:Deploy a dprod:DataProductLifecycleStatus;
+dprod-data:DataProductLifecycleStatus-Deploy a dprod:DataProductLifecycleStatus;
 rdfs:label "Deplpy";
 dc:description "Data Product producer’s focused requirements. Data product is published in Data Marketplace";
 rdfs:seeAlso "https://docs.google.com/document/d/1JKuGMOekpLvgrHql3XAjmFeujoktp8wcvcWfG1FrBpo/edit?pli=1";
 rdfs:comment "Deploy phase according to CDMC include: 1. Data product is published in Data Marketplace 2. Define and associated Data Sharing Agreement/Data Contracts 3. Feedback mechanism for the consumer 4. Data product is deployed for consumption to identified channels 5. External consumer cost 6. Internal cost for data producer 7. Develop best practice";
 .
 
-dprod-data:Consume a dprod:DataProductLifecycleStatus;
+dprod-data:DataProductLifecycleStatus-Consume a dprod:DataProductLifecycleStatus;
 rdfs:label "Consume";
 dc:description "Consumer focused requirements where the consumer finds and access the data product" ;
 rdfs:seeAlso "https://docs.google.com/document/d/1JKuGMOekpLvgrHql3XAjmFeujoktp8wcvcWfG1FrBpo/edit?pli=1";
-rdfs:comment "Consume phase according to CDMC include: 1. Data discovery mechanism via Data Marketplace 2. Data product provision, delivery and subscriptions 3. Data Sharing Agreements/Data Contracts 4. Feedback mechanism for the consumer 5. Price or consumer cost to use the product etc.";
+rdfs:comment "Consume phase according to CDMC includes: 1. Data discovery mechanism via Data Marketplace 2. Data product provision, delivery and subscriptions 3. Data Sharing Agreements/Data Contracts 4. Feedback mechanism for the consumer 5. Price or consumer cost to use the product etc.";
 .
 
-dprod-data:Retire a dprod:DataProductLifecycleStatus;
+dprod-data:DataProductLifecycleStatus-Retire a dprod:DataProductLifecycleStatus;
 rdfs:label "Retire";
-dc:description "Data product retirement components" ;
+dc:description "ata product retirement components" ;
 rdfs:seeAlso "https://docs.google.com/document/d/1JKuGMOekpLvgrHql3XAjmFeujoktp8wcvcWfG1FrBpo/edit?pli=1";
 rdfs:comment "Data product retirement phase according to CDMC includes: 1. Adherence to retention policies for the data product 2. Remediate redundant, obsolete, and trivial (ROT) data products. Changes of authoritative sources for data products that are no longer accessible should be communicated to data consumers and to associated products.";
 .
