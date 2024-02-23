@@ -199,7 +199,7 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
         <h2>{{prop.name}}</h2>
         <table class="def propdef">
         <tbody>
-          <tr><th>Identifier:</th><td><a href="{{prop.uri}}">dprod:{{prop.name}}</a></td></tr>
+          <tr><th>Identifier:</th><td><a href="{{prop.uri}}">{{prop.short_uri}}</a></td></tr>
           {% if prop.label is not none %}   
           <tr><th>Label:</th><td>{{prop.label}}</td></tr>
           {% endif %}
