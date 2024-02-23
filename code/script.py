@@ -131,7 +131,21 @@ def fill_object(obj):
 for class_uri in g.subjects():
     add_to_context(class_uri)
 
-json_ld = {"@context": context}
+json_ld_context = dict(context)
+dcat_g = Graph()
+dcat_g.parse('https://www.w3.org/ns/dcat2.ttl', format='ttl')
+for uri in dcat_g.subjects():
+    name = short_name(uri)
+    if name not in json_ld_context:
+        types = list(dcat_g.objects(uri, RDF.type))
+        if OWL.ObjectProperty in types:
+            for s, p, o in dcat_g.triples((uri, RDFS.range, None)):
+                json_ld_context[name] = {"@id": str(uri), "@type": str(o)}
+        elif OWL.DatatypeProperty in types:
+            for s, p, o in dcat_g.triples((uri, RDFS.range, None)):
+                json_ld_context[name] = {"@id": str(uri), "@type": str(o)}
+
+json_ld = {"@context": json_ld_context}
 
 classes = reorder_list(classes.values(), ['DataProduct', 'DataService', 'Distribution', 'Dataset'])
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="../docs/respec/"))
