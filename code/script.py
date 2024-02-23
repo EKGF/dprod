@@ -106,19 +106,19 @@ def add_to_context(uri):
                         rdf_property.__dict__["range"] = o1
                         rdf_property.__dict__["range_short"] = g.namespace_manager.normalizeUri(o1)                    
                     if p1_name == 'path':
-                        pass
-                    rdf_property.__dict__[p1_name] = o1  
+                        try:
+                            label = next(g.objects(o1, RDFS.label))
+                            rdf_property.label = label
+                        except:
+                            pass
+                    if p1_name not in rdf_property.__dict__:
+                        rdf_property.__dict__[p1_name] = o1  
             for p in class_obj.properties:
                 if p.range and p.range != "":
                     context[p.name] = {"@id": str(p.uri), "@type": str(p.range)}
                 else:
                     context[p.name] = {"@id": str(p.uri)}
-        # elif OWL.ObjectProperty in types:
-        #     for s, p, o in g.triples((uri, RDFS.range, None)):
-        #         context[name] = {"@id": str(uri), "@type": str(o)}
-        # elif OWL.DatatypeProperty in types:
-        #     range_uri = next(g.objects(uri, RDFS.range))
-        #     context[name] = {"@id": str(uri), "@type": str(range_uri)}
+
     context["type"] = "@type"
 
 
@@ -147,7 +147,7 @@ for uri in dcat_g.subjects():
 
 json_ld = {"@context": json_ld_context}
 
-classes = reorder_list(classes.values(), ['DataProduct', 'DataService', 'Distribution', 'Dataset'])
+classes = reorder_list(classes.values(), ['DataProduct', 'Port', 'DataService', 'Distribution', 'Dataset'])
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="../docs/respec/"))
 template = env.get_template("template.html")
 spec = template.render(classes=classes)
