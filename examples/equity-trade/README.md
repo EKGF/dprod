@@ -1,0 +1,54 @@
+Example of a Data Product with Equity Trades. Contains two datasets, one for trades in LSEG and one in Euronext
+
+"@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+"id":  "equity trade-xxx",
+"@id": "https://y.com/products/equity-trade-xxx",
+"@type": "DataProduct",
+"title": "Equity Trade XXX",
+"description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
+"dataProductOwner": "https://www.schema.xxx/person/AnnTaylor",
+"lifecycle" : "Consume",
+"outputPort": {
+  "@type": "dcat:DataService",
+  "id":  "equity-trade-euronext-xxx-tabular-adls-prod",
+  "@id": "https://y.com/service/equity-trade-euronext-xxx-adls-prod-1",
+  "dcat:endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
+  "dcat:endpointDescription": "Details for accessing storage account",
+  "isAccessServiceOf": {
+    "@id": "https://y.com/service/equity-trade-euronext-xxx-tabular",
+    "id":  "equity-trade-euronext-xxx-tabular",
+    "@type": "dcat:Distribution",
+    "dcterms:format": "application/parquet",
+     "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
+    "isDistributionOf": {
+      "@type": "dcat:Dataset",
+      "@id": "https://y.com/dataset/equity-trade-euronext-paris,
+      "datasetOwner": "https://www.schema.xxx/person/JohnBarks",
+      "title":  "Equity Trade Euronext Paris XXX",
+      "id":  "equity-trade-euronext-paris-xxx",
+      "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
+        } 
+    }
+  }
+ "outputPort": {
+   "@type": "dcat:DataService",
+  "id":  "equity-trade-lseg-xxx-tabular-adls-prod",
+  "@id": "https://y.com/service/equity-trade-lseg-xxx-adls-prod-1",
+  "dcat:endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-lseg",
+  "dcat:endpointDescription": "Details for accessing storage account",
+  "isAccessServiceOf": {
+    "@id": "https://y.com/service/equity-trade-lseg-xxx-tabular",
+    "id":  "equity-trade-lseg-xxx-tabular",
+    "@type": "dcat:Distribution",
+    "dcterms:format": "application/parquet",
+     "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
+    "isDistributionOf": {
+      "@type": "dcat:Dataset",
+      "@id": "https://y.com/dataset/equity-trade-lseg-xxx,
+      "title":  "Equity Trade LSEG XXX",
+      "id":  "equity-trade-lseg-xxx",
+      "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
+        } 
+    }
+  }
+}
