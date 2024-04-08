@@ -1,0 +1,77 @@
+{  "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+  "id":  "sba-pool-rates",
+  "@id": "https://y.com/products/sba-pool-rates",
+  "@type": "DataProduct",
+  "title": "SBA Pool Rates",
+  "description": "Rates for SBE Pool that are Mortgage Backed Securities. The data product is provided through 3 ports, one of them proving all sba pool rates through a query to a database, another port providing EMEA only rates through an api and another one providing US only rates through a Kafka topic",
+  "dataProductOwner": "https://www.schema.xxx/person/johnSmith",
+  "lifecycle" : "Consume",
+ 
+  "outputPort": {         // all sba pool rates from a query to a database
+    "@type": "dcat:DataService",
+    "id":  "sba-pool-tabulat-prod1",
+    "environment": "PROD",
+    "@id": "https://y.com/service/sba-pool-rates-tabular-prod1",
+    "dcat:endpointURL": "jdbc:oracle:thin@sd656-5656-6745.ldn.organiation.com:43534/PGPERG.WORLD",
+    "sql": "select * from ...";
+    "isAccessServiceOf": {
+      "@id": "https://y.com/distribution/sba-pool-tabular",
+      "id":  "sba-pool-tabular",
+      "@type": "dcat:Distribution",
+      "dcterms:format": "https://www.iana.org/assignments/media-types/application/sql",
+      "isDistributionOf": {
+        "@type": "dcat:Dataset",
+        "@id": "https://y.com/dataset/sba-pool,
+        "id":  "sba-pool",
+        "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
+      }
+    }
+   }
+
+  "outputPort": {             // all sba pool rates covering emea through an api
+    "@type": "dcat:DataService",  
+    "id":  "sba-pool-emea-api-prod1",
+    "environment": "PROD",
+    "@id": "https://y.com/service/sba-pool-emea-api-prod1",
+    "dcat:endpointURL": "https://example.org/mbs/SBA-Pool-location-emea",
+    "dcat:conformsTo":  "../resources/users.yaml'"
+    "isAccessServiceOf": {
+      "@id": "https://y.com/distribution/sba-pool-emea-json1",  
+      "id":  "sba-pool-emea-json1",
+      "@type": "dcat:Distribution",
+      "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
+      "isDistributionOf": {             
+        "@type": "dcat:Dataset",
+        "@id": "https://y.com/dataset/sba-pool-rates-emea",
+        "description": "sba pool data that cover EMEA accessed through an api"
+        "geographicalCoverage" :"https://y.com/country/EMEA",
+        "id":  "sba-pool-rates-emea",
+        "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
+      }
+    }
+   }
+
+   "outputPort": {        // all sba pool rates covering us through a kafka topic
+     "@type": "dcat:DataService",
+     "id":  "sba-pool-rates-json-prod1",
+     "@id": "https://y.com/service/sba-pool-rates-json-prod1",
+     "dcat:endpointURL": "q1.debt.mbs.dataset.us", 
+     "isAccessServiceOf": {
+       "@id": "https://y.com/distribution/sba-pool-rates-json",
+       "id":  "sba-pool-rates-json",
+       "@type": "dcat:Distribution",
+       "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
+       "conformsTo": [
+             "http://confluent-registry-y/rates-json-schema.json",  
+           ]
+        "schemaCompatiblity": "backwards compatible",
+        "isDistributionOf": {
+         "@type": "dcat:Dataset",
+         "@id": "https://y.com/dataset/sba-pool-rates-us",
+         "id":  "sba-pool-rates-us",
+         "geographicalCoverage" :"https://y.com/country/US"
+         "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
+       }
+     }
+  }
+}
