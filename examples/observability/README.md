@@ -16,4 +16,4 @@ WHERE
 }
 ```
 
-This query will return the URI: https://y.com/uk-bonds/observability-port
+You can see that the example data product has two ports one with the data and one with the logging. This query will return the URI of the port that returns logging data: https://y.com/uk-bonds/observability-port
