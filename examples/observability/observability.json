@@ -1,0 +1,34 @@
+{
+  "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+  "id": "https://y.com/products/uk-bonds",
+  "type": "DataProduct",
+  "outputPort": [{
+    "id": "https://y.com/uk-bonds/observability-port",
+    "type": "DataService",
+    "label": "Observability Port",
+    "endpointURL": "https://y.com/uk-bonds/observability",
+    "isAccessServiceOf": {
+      "type": "Distribution",
+      "format": "https://www.iana.org/assignments/media-types/text/turtle",
+      "isDistributionOf": {
+        "type": "Dataset",
+        "conformsTo": "http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#Entry"
+      }
+    }
+   },
+    {
+      "type": "DataService",
+      "label": "Main Data Port",
+      "endpointURL": "https://y.com/uk-10-year-bonds",
+      "isAccessServiceOf": {
+        "type": "Distribution",
+        "format": "https://www.iana.org/assignments/media-types/application/json",
+        "isDistributionOf": {
+          "type": "Dataset",
+          "id": "https://y.com/products/uk-bonds/datasets/10-year",
+          "conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
+        }
+      }
+    }
+  ]
+}
