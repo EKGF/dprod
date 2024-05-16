@@ -1,0 +1,20 @@
+{
+"@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+"id": "https://y.com/products/equity-trade-xxx",
+"@type": "DataProduct",
+"title": "Equity Trade XXX",
+"description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
+"outputPort": {
+  "@type": "DataService",
+  "endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
+  "isAccessServiceOf": {
+    "@type": "Distribution",
+    "format": "application/parquet",
+    "isDistributionOf": {
+      "@type": "Dataset",
+      "@id": "https://y.com/dataset/equity-trade-euronext-paris",
+      "title":  "Equity Trade Euronext Paris XXX",
+        "conformsTo":"https://spec.edmcouncil.org/fibo/ontology/BP/Process/FinancialContextAndProcess/SecuritiesTrade"     } 
+    }
+  }
+}
