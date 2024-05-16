@@ -1,0 +1,30 @@
+{
+  "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+  "id": "https://y.com/derived-quality-measurementA",
+  "@type": "QualityMeasurement",
+  "value": 1,
+  "computedOn": {
+      "@type": "DataProduct",
+      "@id": "https://y.com/products/uk-bonds"
+    },
+  "isMeasurementOf": {
+    "@type": "Metric",
+    "label": "Number of stale datasets"
+    }
+}
+
+
+{
+  "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+  "@id": "https://y.com/quality-measurement-B",
+  "@type": "QualityMeasurement",
+  "value": "false",
+  "computedOn": {
+      "@type": "Dataset",
+      "@id": "https://y.com/products/uk-bonds/yearlyPrices"
+    },
+  "isMeasurementOf": {
+    "@type": "Metric",
+    "label": "Expected distribution frequency achieved"
+  }
+}
