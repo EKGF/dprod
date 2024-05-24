@@ -99,7 +99,6 @@ dprod:DataProductShape
     sh:property dprod:DataProduct-outputDataset;
     sh:property dprod:DataProduct-purpose;
     sh:property dprod:DataProduct-hasPolicy;
-    sh:property dprod:DataProduct-productionProcessDescription;
     sh:property dprod:DataProduct-lifecycleStatus;
 .
 
@@ -245,14 +244,6 @@ dprod:DataProduct-hasPolicy
   rdfs:label "DataProduct-hasPolicy";
 .
 
-dprod:DataProduct-productionProcessDescription
-  a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dprod:productionProcessDescription ;
-  sh:datatype xsd:string;
-  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
-  rdfs:label "DataProduct-productionProcessDescription";
-.
 
 dprod:DataProduct-inputPort
   a sh:PropertyShape;
