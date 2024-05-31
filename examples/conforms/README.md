@@ -7,8 +7,9 @@ If a logical schema does not exist to describe the dataset, then the dataset pub
 
 Example of a Dataset conforming to a SHACL Schema
 
-```exampleDataset dcat:conforms exampleSchema:DatasetLogicalSchema.
-exampleSchema:DatasetLogicalSchema a owl:Ontology, dct:Standard.```
+~~~ exampleDataset dcat:conforms exampleSchema:DatasetLogicalSchema.
+exampleSchema:DatasetLogicalSchema a owl:Ontology, dct:Standard.
+~~~
 
 
 Based on [SHACL](https://www.w3.org/TR/shacl/) all entities that exist in the dataset are Node Shapes.
@@ -16,7 +17,8 @@ The attributes of the entities are described as Property Shapes with sh:datatype
 The relationships are also defined as Property Shaped with sh:class the target class of the relationship  (2)
 
 
-```example:Account a sh:NodeShape;       // definition of the entity as a Node Shape
+~~~
+example:Account a sh:NodeShape;       // definition of the entity as a Node Shape
 rdfs:label "Account"@en;              // human readable description of the entity
 sh:property example:Account-AccountAge;       // an account has a property shape Account Age. Definition of the property shape follows 
 sh:property example:Account-AccountBranch     // an account has a property shape Account Branch. Definition of the property shape follows 
@@ -42,4 +44,4 @@ example:Branch a sh:NodeShape;       // definition of the entity Branch as a Nod
 rdfs:label "Branch"@en;              // human readable description of the entity
 rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
 ....
-```
+~~~
