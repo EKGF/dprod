@@ -5,6 +5,7 @@ This allows a user to query the lineage of where the data has come from by follo
 ```sparql
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX dprod: <https://ekgf.github.io/data-product-spec/dprod/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX : <https://y.com/data-product/>
 
 SELECT DISTINCT ?input
