@@ -1,4 +1,4 @@
-# baseURI: https://ekgf.github.io/data-product-spec/dprod/
+#product baseURI: https://ekgf.github.io/data-product-spec/dprod/
 # imports: http://purl.org/dc/terms/
 # imports: http://www.w3.org/2004/02/skos/core
 # imports: http://www.w3.org/ns/prov-o#
@@ -174,14 +174,6 @@ dprod:informationSensitivityClassification
 dprod:purpose
   a rdfs:Property, owl:DatatypeProperty ;
   dc:description "A description of the objectives and intended usage of the data product."@en ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:domain dprod:DataProduct ;
-  rdfs:range xsd:string ;
-.
-
-dprod:productionProcessDescription
-  a rdfs:Property, owl:DatatypeProperty ;
-  dc:description "A description of how the data comprising the data product is gathered, refined, or managed."@en ;
   rdfs:isDefinedBy dprod:;
   rdfs:domain dprod:DataProduct ;
   rdfs:range xsd:string ;
