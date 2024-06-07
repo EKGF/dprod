@@ -1,4 +1,4 @@
-The Data Product provides to the consumers (outputs) datasets defined based on [DCAT](https://www.w3.org/TR/vocab-dcat-3/).
+The Data Product provides to the consumers (dprod:outputDataset) datasets defined based on [DCAT](https://www.w3.org/TR/vocab-dcat-3/).
 Datasets should be described ([dcat:conforms](https://www.w3.org/TR/vocab-dcat-2/#Property:resource_conforms_to)) with logical models. 
 Logical models describe business entities and their properties (attributes and relationships) with consistent business terms and they are technology independent.
 Ideally, logical models are based on existing standards eg, [FIBO](https://spec.edmcouncil.org/fibo/ontology), [CDM](https://www.finos.org/common-domain-model) etc.
