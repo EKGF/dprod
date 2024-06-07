@@ -6,7 +6,8 @@ If a logical model does not exist to describe the dataset, then the dataset publ
 
 Example of a Dataset conforming to a SHACL Schema
 
-~~~ exampleDataset dcat:conforms exampleSchema:DatasetLogicalSchema.
+~~~
+exampleDataset dcat:conforms exampleSchema:DatasetLogicalSchema.
 exampleSchema:DatasetLogicalSchema a owl:Ontology, dct:Standard.
 ~~~
 
