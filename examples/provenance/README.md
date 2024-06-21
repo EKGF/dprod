@@ -2,12 +2,8 @@ It is important to be able to trace the lineage of data. Data Products have inpu
 
 This allows a user to query the lineage of where the data has come from by following the inputs. Here is an example query that will return all the input datasets for the finance data product.
 
-```sparql
-PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX dprod: <https://ekgf.github.io/data-product-spec/dprod/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX : <https://y.com/data-product/>
 
+```sparql
 SELECT DISTINCT ?input
 WHERE
 { 
@@ -20,4 +16,11 @@ Based on the data in the example, this query would return:
 - Sales
 - Payroll
 
+
 NOTE: If you wish to track lineage at a more granular level, you can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level. See: https://www.w3.org/TR/vocab-dcat-3/#examples-dataset-provenance.
+
+NOTE: For the example SPARQL query above to run you would also need to include the following prefixes:
+  - PREFIX dcat: <http://www.w3.org/ns/dcat#>
+  - PREFIX dprod: <https://ekgf.github.io/data-product-spec/dprod/>
+  - PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  - PREFIX : <https://y.com/data-product/>
