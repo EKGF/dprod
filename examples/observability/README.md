@@ -4,10 +4,6 @@ DPROD has a schema-first design, to the first thing you would need to do is defi
 
 If I want to find the Observability Port then I would query the ports to find the ones that returned an RLOG:Entry:
 ```sparql
-PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX dprod: <https://ekgf.github.io/data-product-spec/dprod/>
-PREFIX rlog: <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/rlog#>
-
 SELECT ?port
 WHERE
 { 

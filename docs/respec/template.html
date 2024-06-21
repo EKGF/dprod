@@ -197,14 +197,12 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
         {% for prop in cls.properties %}
         <section>
         <h2>{{prop.name}}</h2>
+          {{prop.description}}
         <table class="def propdef">
         <tbody>
           <tr><th>Identifier:</th><td><a href="{{prop.uri}}">{{prop.short_uri}}</a></td></tr>
           {% if prop.label is not none and prop.label  != '' %}   
           <tr><th>Label:</th><td>{{prop.label}}</td></tr>
-          {% endif %}
-          {% if prop.description is not none and prop.description  != '' %}   
-          <tr><th>Definition:</th><td>{{prop.description}}</td></tr>
           {% endif %}
           {% if prop.comment is not none and prop.comment  != '' %}   
           <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
@@ -219,6 +217,21 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
 {% endfor %}
 
       
+<section class="Examples">
+  <h2>Worked Examples</h2>
+  <p>Here are some worked examples of how to use DPROD for some common use cases</p>
+  
+   {% for example in examples %}
+    <section>   
+      <h2>{{example.name}}</h2>
+        {{example.text}}
+        <pre class="example hljs json">
+        {{example.json}} 
+        </pre>
+     </section>   
+   {% endfor %}
+</section>
+    
 <section class="appendix">
   <h2>Acknowledgements</h2>
 <p>The editors gratefully acknowledge the feedback and contributions made to this document by: </p>
