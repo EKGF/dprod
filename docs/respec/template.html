@@ -200,10 +200,15 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
         <table class="def propdef">
         <tbody>
           <tr><th>Identifier:</th><td><a href="{{prop.uri}}">{{prop.short_uri}}</a></td></tr>
-          {% if prop.label is not none %}   
+          {% if prop.label is not none and prop.label  != '' %}   
           <tr><th>Label:</th><td>{{prop.label}}</td></tr>
           {% endif %}
-          <tr><th>Notes:</th><td>{{prop.description}}</td></tr>
+          {% if prop.description is not none and prop.description  != '' %}   
+          <tr><th>Definition:</th><td>{{prop.description}}</td></tr>
+          {% endif %}
+          {% if prop.comment is not none and prop.comment  != '' %}   
+          <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
+          {% endif %}
           <tr><th>Domain:</th><td><a href="{{prop.domain}}">{{prop.domain_short}}</a></td></tr>
           <tr><th>Range:</th><td><a href="{{prop.range}}">{{prop.range_short}}</a></td></tr>
         </tbody>

@@ -4,7 +4,7 @@ from typing import List
 
 import jinja2
 import rdflib
-from rdflib import Graph, URIRef, DCTERMS, SH
+from rdflib import Graph, URIRef, DCTERMS, SH, DC
 from rdflib.namespace import OWL, RDF, RDFS, XSD, DCAT
 import json
 
@@ -34,6 +34,7 @@ class RdfProperty:
     uri: URIRef
     label: str = ''
     description: str = ''
+    comment: str = ''
     range: str = ''
 
 @dataclass
@@ -107,8 +108,15 @@ def add_to_context(uri):
                         rdf_property.__dict__["range_short"] = g.namespace_manager.normalizeUri(o1)                    
                     if p1_name == 'path':
                         try:
-                            label = next(g.objects(o1, RDFS.label))
-                            rdf_property.label = label
+                            label = g.value(o1, RDFS.label)
+                            if label:
+                                rdf_property.label = label
+                            description = g.value(o1, DC.description)
+                            if description:
+                                rdf_property.description = description
+                            comment = g.value(o1, RDFS.comment)
+                            if comment:
+                                rdf_property.comment = comment
                         except:
                             pass
                     if p1_name not in rdf_property.__dict__:
