@@ -26,7 +26,7 @@ sh:property example:Account-AccountBranch     // an account has a property shape
 rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
 .
 
-example:Account-AccountAge a sh:PropertyPage;   // (2) Definition of the Account-AccountAge property shape describing that an account MUST have exactly AccountAge attribute and its datatype is integer
+example:Account-AccountAge a sh:PropertyShape;   // (2) Definition of the Account-AccountAge property shape describing that an account MUST have exactly AccountAge attribute and its datatype is integer
 sh:path example:AccountAge;
 sh:datatype xsd:integer;
 sh:minCount 1;
@@ -34,7 +34,7 @@ sh:maxCount 1;
 rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
 .
 
-example:Account-AccountBranch a sh:PropertyPage;   // (3) Definition of the Account-AccountBranch property shape describing than an account must have at least one Account Branch which is another entity
+example:Account-AccountBranch a sh:PropertyShape;   // (3) Definition of the Account-AccountBranch property shape describing than an account must have at least one Account Branch which is another entity
 sh:path example:AccountBranch;
 sh:class  example:Branch;
 sh:minCount 1;

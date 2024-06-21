@@ -174,7 +174,7 @@ def load_examples(parent_folder, white_list=None):
         
         child_folder_path = os.path.join(parent_folder, child_folder_name)
         if os.path.isdir(child_folder_path) and (white_list is None or child_folder_name in white_list):
-            print(f'PROCESS: {child_folder_name}')
+            #print(f'PROCESS: {child_folder_name}')
             formatted_name = child_folder_name.replace('-', ' ').title()
             example = Example(name=formatted_name)
             examples.append(example)
@@ -214,8 +214,8 @@ for uri in dcat_g.subjects():
 
 json_ld = {"@context": json_ld_context}
 
-examples_filter = ["conforms", "observability", "provenance"]
-examples = load_examples("../examples/", white_list=examples_filter)
+examples_filter = ["data-schema", "observability", "data-linage", "data-quality"]
+examples = load_examples("../examples/", white_list=None)
 
 classes = reorder_list(classes.values(), ['DataProduct', 'Port', 'DataService', 'Distribution', 'Dataset'])
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="../docs/respec/"))

@@ -1,4 +1,6 @@
-{
+[
+  
+  {
   "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
   "id": "https://y.com/derived-quality-measurementA",
   "@type": "QualityMeasurement",
@@ -12,7 +14,7 @@
     "label": "Number of stale datasets"
     }
 }
-
+,
 
 {
   "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
@@ -28,3 +30,21 @@
     "label": "Expected distribution frequency achieved"
   }
 }
+,
+  {
+    "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+    "id": "https://y.com/products/uk-bonds",
+    "type": "DataProduct",
+    "outputPort": {
+      "type": "DataService",
+      "endpointURL": "https://y.com/uk-bonds/quality-report",
+      "isAccessServiceOf": {
+        "type": "Distribution",
+        "isDistributionOf": {
+          "type": "Dataset",
+          "conformsTo": "https://www.w3.org/TR/vocab-dqv/#dqv:QualityMeasurement"
+        }
+      }
+    }
+  }
+]
