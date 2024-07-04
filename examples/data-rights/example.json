@@ -1,0 +1,24 @@
+{
+  "@type": "Policy",
+  "id": "56456df-dfg-34535345-5545",
+  
+  "assigner": 'https://schema.org/person/AdamSmith",
+
+  "target" : "https://data.org/data-product/equity-trade-xxx",
+  
+  "permission": [
+      {
+       "action": "odrl:read",
+       "constraint": [
+          {
+            "@type": "Constraint",
+            "leftOperand": "workingCountry",
+            "operator": "odrl:isAnyOf",
+            "rightOperand": [region:EMEA, region:APAC],
+            "description": " Permission to read all the datasets of the product if user
+      }
+  ]
+ }
+ ]
+}
+        
