@@ -17,13 +17,14 @@ An example of a Policy follows, that describes permission to distribute the data
 
 ```json
 examplePolicyA odrl:permission
-    [
+   {
     "action": "odrl:distribute",
     "constraint": [
        {"leftOperand": "region",
          "operator": "eq",
         "rightOperator": "region:EMEA"
+       }
+     ]
     }
-    ]
-```
-.
+ ```
+
