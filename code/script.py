@@ -108,23 +108,27 @@ def add_to_context(uri,classes):
             fill_object(class_obj)
             for s, p, o in g.triples((None, RDFS.subClassOf, uri)):
                 add_to_context(s)
-
+            
+            description = g.value(URIRef(uri), DC.description)
+                
             if hasattr(class_obj, 'targetClass'):
                 owl_class = RdfClass(name=name, uri=class_obj.targetClass)
                 context[name]["@id"] = str(owl_class.uri)
                 fill_object(owl_class)
-                if owl_class.description and owl_class.description != '':
-                    # print(f'description: {owl_class.description}')
+                if not class_obj.description and owl_class.description and owl_class.description != '':
                     class_obj.description = owl_class.description
+
+                #print(f"{class_obj.uri}")
+                if description:
+                    class_obj.description = str(description)
+                    #print(f"{class_obj.uri} SCL DEC {class_obj.description}")
 
             for s, p, o in g.triples((uri, SH.property, None)):
                 property_shape_uri = o
                 path = next(g.triples((o, SH.path, None)))
-                label = next(g.triples((o, RDFS.label, None)))
                 description = next(g.triples((o, DC.description, None)))
                 if description:
                     description = str(description[2])
-                print(f"SCL  DEC {description}")
                 if path is not None:
                     o = str(path[2])
                 property_name = short_name(o)
