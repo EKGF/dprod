@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:Ownership="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset='utf-8'>
     <script src='https://www.w3.org/Tools/respec/respec-w3c' async class='remove'></script>
@@ -38,18 +38,30 @@
     <h1 id="title">Data Product Vocabulary (DPROD)</h1>
     <section id='abstract'>
       <p>
-        The <a href="https://martinfowler.com/articles/data-mesh-principles.html">Data Mesh</a> is an architectural and organizational paradigm that views data as a product, emphasizing domain-oriented decentralized data ownership and architecture. The <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a> is a <a href="https://www.w3.org/">W3C</a> standard that allows publishers to describe datasets and data services in a decentralized way.
-        The Data Product (DPROD) specification defines a profile of DCAT, extending it to describe <a href="#dataproduct">Data Products</a>.</p> 
-      <p>DPROD follows two basic principles:</p>
-      <p>
-        🔵 Decentralize Data Ownership: Efficiency in data integration necessitates task distribution among multiple teams. DCAT facilitates this by providing a standardised approach for decentralized dataset publication.
+        The <a href="https://ekgf.github.io/data-product-spec/dprod.ttl">Data Product (DPROD)</a> specification is a profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>, designed to describe Data Products. This document defines the schema and provides examples for its use.
       </p>
       <p>
-        🔵 Harmonize Data Schemas: Shared ontologies can be used to harmonize decentralize schemas to consistent semantics. For example this shared <a href="https://ekgf.github.io/data-product-spec/dprod">DPROD</a> ontology provides the semantics for defining what constitutes a <a href="#dataproduct">Data Product</a>.
+        DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way. By using a standard model and vocabulary, DPROD facilitates the consumption and aggregation of metadata from multiple Data Marketplaces. This approach increases the discoverability of products and services, supports decentralized data publishing, and enables federated search across multiple sites using a uniform query mechanism and structure.
+      </p>
+      <p>
+        The namespace for DPROD terms is <a href="https://ekgf.github.io/data-product-spec/dprod">https://ekgf.github.io/data-product-spec/dprod</a>
+      </p>
+      <p>
+        The suggested prefix for the DPROD namespace is <code>dprod</code>
       </p>
       <br>
-      The DPROD specification extends DCAT by linking <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to DPROD <a href="#dataproduct">Data Products</a>. This enables a decentralized approach to publishing <a href="#dataproduct">Data Products</a>, facilitating federated searches for products across distributed sites using the same query mechanism and structure. 
-      <p>The DPROD specification has four main aims:</p>
+      <p><strong>DPROD follows two basic principles:</strong></p>
+    <p>
+      🔵Decentralize Data Ownership: To make data integration more efficient, tasks should be shared among multiple teams. DCAT helps by offering a standard way to publish datasets in a decentralized manner.
+    </p>
+    <p>
+      🔵Harmonize Data Schemas: Using shared schemas helps unify different data formats. For instance, the <a href="https://ekgf.github.io/data-product-spec/dprod.ttl">DPROD</a> specification provides a common set of rules for defining a <a href="#dataproduct">Data Product</a>. You can extend this schema as needed.
+    </p>
+      <br>
+      The DPROD specification builds on DCAT by connecting <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to DPROD <a href="#dataproduct">Data Products</a> using <a href="#inputport">Input</a> and <a href="#outputport">output</a> ports. These ports are used to publish and consume data from a Data Product. DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">dcat data services</a>, so the data exchanged can be described using DCAT's highly expressive metadata around <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> and <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a>.
+      This approach also allows you to create your own descriptions for the data you are sharing. You can use a special property called <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> from DCAT to link to your own set of rules or guidelines for your data.
+      <br>
+      <p><strong>The DPROD specification has four main aims:</strong> </p>
       <p>
         🔵 To provide unambiguous and sharable semantics to answer the question: 'What is a <a href="#dataproduct">data product</a>?' 
       </p>
@@ -132,11 +144,21 @@
           </section>
 <section>
 <h2>Data Product (DPROD) Model</h2>
-<p>In the Data Mesh architecture, input and output ports in Data Products serve as interfaces for importing and exporting data, supporting various formats, schemas, and protocols. Input ports consume data, while output ports make data available to other Data Products or for downstream analytical and reporting purposes.</p>
-<p>In the Data Catalog Vocabulary (DCAT) framework, a DataService is a class that encapsulates services providing data access. Data Services offer standardized, machine-readable descriptions of a collection of operations that provide access to one or more datasets or data processing functions.</p>
-<p>Data Services facilitate data downloads and are linked to Distributions, which are specific representations of a dataset (like CSV or JSON). The datasets themselves are collections of data, published or curated by a single agent, and can be linked to classes defined in a shareable ontology.</p>
-<p>By mapping Data Product ports to DCAT DataServices, DPROD can describe Data Products in a machine-readable way across the organization. This approach facilitates a self-service data infrastructure, where domain-oriented data teams can autonomously build and maintain their data products, ensuring they interact and harmonize with the rest of the data ecosystem within an organization.</p>
-<p>In a broader sense, using standards like DCAT contributes to a powerful and expressive model for Data Mesh. It ensures that as the data landscape becomes increasingly complex, the fundamental mechanisms for describing, sharing, and manipulating data remain robust and standardized across the organization.</p>
+<p>
+  <a href="https://en.wikipedia.org/wiki/Data_mesh">Data Mesh Architectures</a> use input and output ports to manage how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or reporting etc.
+</p>
+<p>
+  In the Data Catalog Vocabulary (DCAT) framework, a <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:DataService">Data Service</a> is a way to describe services that provide access to data. Data Services give standardized, machine-readable descriptions of how to access one or more datasets or data processing functions.
+</p>
+<p>
+  Data Services specify how to access and download the data. In DPROD Data Services are connected to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called <a href="#isaccessserviceof">isAccessServiceOf</a>, on the Distribution you can specify formats (like CSV or JSON etc) and provide metadata about the "physical model" of the data. Distributions link to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">Datasets</a> and DCAT has a very rich vocabulary for describing every aspect of your dataset. Finally, Datasets use the <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> property to link to the "logical model" where you can specify rich semantic metadata of your own.
+</p>
+<p>
+  By linking Data Product ports to DCAT DataServices, DPROD can describe Data Products in a way that machines can read across the organization. This makes it easier for data teams to build and manage their own data products independently, while still working well with the rest of the organization's data.
+</p>
+<p>
+  Using standards like DCAT helps create a strong and clear way to define Data Products. It ensures that as data becomes more complex, the methods for describing, sharing, and using data stay consistent and reliable. It also allows different organizations to share data securely and in a standardized way.
+</p>
     <figure id="ProfileModel">
               <img alt="Information model for the Profile" src="./dprod-model.png">
               <figcaption>
@@ -155,7 +177,7 @@ The Profile consists of the following classes:
 </ul>
 </p>
 <p>
-As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a href="#inputport">input</a> and <a href="#outputport">output</a> ports can specify connection details, they have <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared ontologies. In this example, the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to the shared FIBO specification for callable bonds.
+As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a href="#inputport">input</a> and <a href="#outputport">output</a> ports can specify connection details, they have <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared schemas. In this example, the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to the shared FIBO specification for callable bonds.
 </p>   
 
   <pre id="eg12" class="example hljs json">

@@ -167,13 +167,15 @@ def fill_object(obj):
         obj.__dict__[short_name(p1)] = o1
 
 
-def load_examples(parent_folder, white_list=None):
+def load_examples(parent_folder, white_list=None, black_list=None):
     examples = []
     # Loop through each child folder in the parent folder
     for child_folder_name in os.listdir(parent_folder):
         
         child_folder_path = os.path.join(parent_folder, child_folder_name)
-        if os.path.isdir(child_folder_path) and (white_list is None or child_folder_name in white_list):
+        wl_ok = (white_list is None or child_folder_name in white_list)
+        bl_ok = (black_list is None or child_folder_name not in black_list)
+        if os.path.isdir(child_folder_path) and wl_ok and bl_ok:
             #print(f'PROCESS: {child_folder_name}')
             formatted_name = child_folder_name.replace('-', ' ').title()
             example = Example(name=formatted_name)
@@ -214,8 +216,7 @@ for uri in dcat_g.subjects():
 
 json_ld = {"@context": json_ld_context}
 
-examples_filter = ["data-schema", "observability", "data-linage", "data-quality"]
-examples = load_examples("../examples/", white_list=None)
+examples = load_examples("../examples/")
 
 classes = reorder_list(classes.values(), ['DataProduct', 'Port', 'DataService', 'Distribution', 'Dataset'])
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="../docs/respec/"))
