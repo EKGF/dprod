@@ -1,0 +1,28 @@
+[
+  {
+    "@context": [
+      https://ekgf.github.io/data-product-spec/dprod.jsonld,
+      {
+        "fibo": http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#,
+        "ex": http://example.org/dp#
+      }
+    ],
+    "@id": "ex:isSubjectToAgreement",
+    "@type": "rdf:Property",
+    "rdfs:label": "Data Product is Subject To FIBO Agreement",
+    "rdfs:domain": {
+      "@id": "DataProduct"
+    },
+    "rdfs:range": {
+      "@id": "DataProductAgreement"
+    }
+  },
+  {
+    "@id": "ex:DataProductAgreement",
+    "@type": "rdfs:class",
+    "rdfs:label": "DataProductAgreement",
+    "rdfs:subClassOf": {
+      "@id": "fibo:Agreement"
+    }
+  }
+]
