@@ -23,7 +23,7 @@ GitPython==3.1.37
 htmlmin2==0.1.13
 httplib2==0.22.0
 humps==0.2.2
-idna==3.4
+idna==3.7
 inflection==0.5.1
 isodate==0.6.1
 Jinja2==3.1.2
