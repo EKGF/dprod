@@ -26,7 +26,7 @@ humps==0.2.2
 idna==3.4
 inflection==0.5.1
 isodate==0.6.1
-Jinja2==3.1.2
+Jinja2==3.1.4
 jmespath==1.0.1
 jsbeautifier==1.14.7
 jsmin==3.0.1
