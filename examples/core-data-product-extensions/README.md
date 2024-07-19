@@ -8,10 +8,10 @@ In this example, a Data Product Agreement is defined as a subclass of FIBO Agree
 [
   {
     "@context": [
-      https://ekgf.github.io/data-product-spec/dprod.jsonld,
+      "https://ekgf.github.io/data-product-spec/dprod.jsonld",
       {
-        "fibo": http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#,
-        "ex": http://example.org/dp#
+        "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
+        "ex": "http://example.org/dp#"
       }
     ],
     "@id": "ex:isSubjectToAgreement",
@@ -44,10 +44,10 @@ Below is an example of a Data Product with an associated Data Product Agreement 
 ```json
 {
   "@context": [
-    https://ekgf.github.io/data-product-spec/dprod.jsonld,
+    "https://ekgf.github.io/data-product-spec/dprod.jsonld",
     {
-      "fibo": http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#,
-      "ex": http://example.org/dp#
+      "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
+      "ex": "http://example.org/dp#"
     }
   ],
   
@@ -56,18 +56,18 @@ Below is an example of a Data Product with an associated Data Product Agreement 
       "id": https://y.com/data-product/company-sales,
       "type": "DataProduct",
       "outputPort": {
-        "id": https://y.com/data-product/company-sales/port/2025-sales,
+        "id": "https://y.com/data-product/company-sales/port/2025-sales",
         "type": "DataService",
         "label": "Sales",
-        "endpointURL": https://y.com/data-product/company-sales/port/2025-sales,
+        "endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
         "isAccessServiceOf": {
           "type": "Distribution",
-          "format": https://www.iana.org/assignments/media-types/application/json,
+          "format": "https://www.iana.org/assignments/media-types/application/json",
           "isDistributionOf": {
             "type": "Dataset",
             "label": "Sales",
-            "id": https://y.com/data-product/company-sales/dataset/2025-sales,
-            "conformsTo": https://y.com/schema/Sale
+            "id": "https://y.com/data-product/company-sales/dataset/2025-sales",
+            "conformsTo": "https://y.com/schema/Sale"
           }
         }
       },
