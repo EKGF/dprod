@@ -7,8 +7,7 @@ readme = "README.md"
 license = "GPL-3.0-only"
 homepage = "https://data-product.ekgf.org"
 repository = "https://github.com/EKGF/data-product"
-packages = [
-]
+packages = []
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -32,7 +31,7 @@ markdown-emdash = "*"
 smartypants = "*"
 pillow = "*"
 cairosvg = "*"
-ekglib = {git = "https://github.com/EKGF/ekglib.git"}
+#ekglib = {git = "https://github.com/EKGF/ekglib.git"}
 mkdocs-material = {git = "https://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@github.com/squidfunk/mkdocs-material-insiders.git"}
 
 [project]
@@ -40,7 +39,7 @@ name = "data-product"
 version = "1.0.0"
 description = ""
 authors = [
-  {name = "Jacobus Geluk", email = "jacobus.geluk@ekgf.org"},
+  { name = "Jacobus Geluk", email = "jacobus.geluk@ekgf.org" },
 ]
 dependencies = []
 requires-python = ">=3.10"

@@ -14,17 +14,17 @@ ifeq ($(YOUR_OS), Linux)
 		PIP := pip
 		SYSTEM_PYTHON := python3
 	else
-		PIP := $(shell asdf where python)/bin/python -m pip
-		SYSTEM_PYTHON := $(shell asdf where python)/bin/python3
+		PIP := python3 -m pip
+		SYSTEM_PYTHON := /usr/bin/python3
 	endif
 endif
 ifeq ($(YOUR_OS), Darwin)
 	INSTALL_TARGET := install-macos
-	PIP := $(shell asdf where python)/bin/python -m pip
-	ifneq (,$(wildcard /usr/local/bin/python3))
-		SYSTEM_PYTHON := /usr/local/bin/python3
+	PIP := python3 -m pip
+	ifneq (,$(wildcard /opt/homebrew/bin/python3))
+		SYSTEM_PYTHON := /opt/homebrew/bin/python3
 	else
-		SYSTEM_PYTHON := $(shell asdf where python)/bin/python3
+		SYSTEM_PYTHON := /usr/bin/python3
 	endif
 endif
 endif
@@ -39,9 +39,15 @@ VENV_POETRY := $(VIRTUAL_ENV)/bin/poetry
 VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
 VENV_PYTHON := $(VIRTUAL_ENV)/bin/python3
 else # On mac and linux we have asdf:
-VENV_POETRY := $(shell asdf where poetry)/bin/poetry
-VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
-VENV_PYTHON := $(VIRTUAL_ENV)/bin/python3
+  ifneq (,$(wildcard ~/.local/bin/poetry))
+		VENV_POETRY := ~/.local/bin/poetry
+		VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
+		VENV_PYTHON := $(VIRTUAL_ENV)/bin/python3
+  else
+		VENV_POETRY := $(shell asdf where poetry)/bin/poetry
+		VENV_MKDOCS := $(VIRTUAL_ENV)/bin/mkdocs
+		VENV_PYTHON := $(VIRTUAL_ENV)/bin/python3
+  endif
 endif
 
 PIPENV_DEFAULT_PYTHON_VERSION := 3.11
