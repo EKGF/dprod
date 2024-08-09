@@ -6,3 +6,6 @@ Artifacts of the EKGF Data Product Workgroup
 - [Ontologies](ontology/README.md)
 - [Concepts](concept/README.md)
 
+## Contribution Licence Agreement
+
+[![CLA assistant](https://cla-assistant.io/readme/badge/EKGF/data-product)](https://cla-assistant.io/EKGF/data-product)
