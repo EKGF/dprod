@@ -1,6 +1,6 @@
 # DPROD - Ontology for Data Product Descriptions
 
-This folder contains a rough draft for an Ontology for Data Product Descriptions according to data mesh principles. It is mainly based on the [Data Product Descriptor Specification](https://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/)
+This folder contains the Ontology for Data Product Descriptions according to data mesh principles. It is mainly based on the [Data Product Descriptor Specification](https://dpds.opendatamesh.org/resources/specifications/1.0.0-DRAFT/)
 
 ## File Overview
 
