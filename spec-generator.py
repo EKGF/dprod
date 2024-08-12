@@ -1,3 +1,4 @@
+import shutil
 import os
 import re
 from dataclasses import dataclass, field, asdict
@@ -236,13 +237,28 @@ def main():
     spec = template.render(classes=classes, examples=examples)
     
     with open('assets/index.html', 'w', encoding='utf-8') as f:
+        print(f"Generating home page: ./{f.name}")
         f.write(spec)
     
     with open('assets/dprod.jsonld', 'w', encoding='utf-8') as f:
+        print(f"Generating RDF JSON-LD: ./{f.name}")
         json_dump = json.dumps(json_ld, indent=4)
         # print(json_dump)
         f.write(json_dump)
+        
+    with open('assets/dprod.ttl', 'w', encoding='utf-8') as f:
+        print(f"Generating RDF Turtle: ./{f.name}")
+        f.write(g.serialize(format='turtle'))
 
+    with open('assets/dprod.rdf', 'w', encoding='utf-8') as f:
+        print(f"Generating RDF/XML: ./{f.name}")
+        f.write(g.serialize(format='application/rdf+xml'))
 
+    for img in os.listdir('./images/'):
+        print(f"Copying image: {img}")
+        shutil.copy2(f'./images/{img}', './assets')
+
+    print("Specification generated successfully!")
+    
 if __name__ == "__main__":
     main()
