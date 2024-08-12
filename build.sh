@@ -3,7 +3,7 @@
 # Execute this from your document repo's root
 #
 REPO_DIR="$(dirname $(realpath ${BASH_SOURCE[0]}))"
-dist_dir="${REPO_DIR}/assets"
+dist_dir="${REPO_DIR}/dist"
 venv_dir="${REPO_DIR}/.venv"
 system_python_bin="/usr/bin/python3"
 venv_python_bin="${venv_dir}/bin/python3"
