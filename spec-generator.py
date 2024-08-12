@@ -20,7 +20,7 @@ g.parse('./ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
 # Define the JSON-LD context
 context = {
     "@vocab": str(RDF),
-    "dprod": 'https://ekgf.github.io/data-product/',
+    "dprod": 'https://ekgf.github.io/dprod/',
     "owl": str(OWL),
     "rdfs": str(RDFS),
     "xsd": str(XSD),

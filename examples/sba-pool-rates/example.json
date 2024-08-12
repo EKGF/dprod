@@ -1,4 +1,4 @@
-{  "@context": "https://ekgf.github.io/data-product/dprod.jsonld",
+{  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
   "id":  "sba-pool-rates",
   "@id": "https://y.com/products/sba-pool-rates",
   "@type": "DataProduct",

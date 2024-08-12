@@ -9,7 +9,7 @@
     var respecConfig = {
       // Working Groups ids at https://respec.org/w3c/groups/
       // group: "Semantic Data Products Working Group",
-      latestVersion: "https://ekgf.github.io/data-product/dprod",
+      latestVersion: "https://ekgf.github.io/dprod/dprod",
       specStatus: "base",
       editors: [
         {
@@ -35,7 +35,7 @@
       ],
       github: {
         branch: "main",
-        repoURL: "https://github.com/EKGF/data-product",
+        repoURL: "https://github.com/EKGF/dprod",
       },
       license: "mit",
       logos: [{
@@ -50,7 +50,7 @@
 <h1 id="title">Data Product Vocabulary (DPROD)</h1>
 <section id='abstract'>
   <p>
-    The <a href="https://ekgf.github.io/data-product/dprod.ttl">Data Product (DPROD)</a> specification is a
+    The <a href="https://ekgf.github.io/dprod/dprod.ttl">Data Product (DPROD)</a> specification is a
     profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>,
     designed to describe Data Products.
     This document defines the schema and provides examples for its use.
@@ -63,7 +63,7 @@
     and enables federated search across multiple sites using a uniform query mechanism and structure.
   </p>
   <p>
-    The namespace for DPROD terms is <a href="https://ekgf.github.io/data-product/#">https://ekgf.github.io/data-product/#</a>
+    The namespace for DPROD terms is <a href="https://ekgf.github.io/dprod/#">https://ekgf.github.io/dprod/#</a>
   </p>
   <p>
     The suggested prefix for the DPROD namespace is <strong><code>dprod</code></strong>
@@ -77,7 +77,7 @@
     </li>
     <li>
       Harmonize Data Schemas: Using shared schemas helps unify different data formats.
-      For instance, the <a href="https://ekgf.github.io/data-product/dprod.ttl">DPROD</a> specification provides a
+      For instance, the <a href="https://ekgf.github.io/dprod/dprod.ttl">DPROD</a> specification provides a
       common set of rules for defining a <a href="#dataproduct">Data Product</a>.
       You can extend this schema as needed.
     </li>
@@ -121,7 +121,7 @@
   <p>
     The current version is DRAFT.
     Feedback and comments welcome via the
-    <a href="https://github.com/EKGF/data-product/issues">Github Issue feature</a>.
+    <a href="https://github.com/EKGF/dprod/issues">Github Issue feature</a>.
   </p>
 </section>
 
@@ -260,13 +260,13 @@
 
   <pre id="eg12" class="example hljs json">
   {
-    "@context": "https://ekgf.github.io/data-product/dprod.jsonld",
+    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
     "id": "https://y.com/products/uk-bonds",
     "type": "DataProduct",
     "title": "UK Bonds",
     "description": "UK Bonds is your one-stop-shop for all your bonds!",
     "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
-    "lifecycleStatus" : "https://ekgf.github.io/data-product/data/lifecycle-status/Consume",
+    "lifecycleStatus" : "https://ekgf.github.io/dprod/data/lifecycle-status/Consume",
     "outputPort": {
       "type": "DataService",
       "endpointURL": "https://y.com/uk-10-year-bonds",

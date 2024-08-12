@@ -17,7 +17,7 @@ Data Product >> inputPort >> isAccessServiceOf >> isDistributionOf >> Input Data
 Let's look at some example data with three data products that connect to each other through their input and output ports: 
 ```json
 {
-  "@context": "https://ekgf.github.io/data-product/dprod.jsonld",
+  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
   "dataProducts": [
     {
       "id": "https://y.com/data-product/company-finance",
@@ -100,7 +100,7 @@ https://y.com/data-product/company-finance >> :inputPort >> :isAccessServiceOf >
 In Linked Data, we would actually do this with a query like this:
 ```sparql
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX dprod: <https://ekgf.github.io/data-product/#>
+PREFIX dprod: <https://ekgf.github.io/dprod/#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX : <https://y.com/data-product/>
 

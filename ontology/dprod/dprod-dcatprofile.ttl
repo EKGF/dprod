@@ -1,15 +1,15 @@
-# baseURI: https://ekgf.github.io/data-product/dprod-shapes/
+# baseURI: https://ekgf.github.io/dprod/dprod-shapes/
 # imports: http://purl.org/dc/terms/
 # imports: http://www.w3.org/2004/02/skos/core
 # imports: http://www.w3.org/ns/prov-o#
 # imports: http://www.w3.org/ns/dcat
 # imports: http://www.w3.org/ns/shacl
-# imports: https://ekgf.github.io/data-product/
+# imports: https://ekgf.github.io/dprod/
 # prefix: dprod
 
 
 
-@prefix dprod: <https://ekgf.github.io/data-product/#> .
+@prefix dprod: <https://ekgf.github.io/dprod/#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
@@ -28,7 +28,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-<https://ekgf.github.io/data-product/dprod-shapes/>
+<https://ekgf.github.io/dprod/dprod-shapes/>
   a owl:Ontology ;
   rdfs:label "Data Product Shapes DCAT Profile"@en ;
   dc:description "This is the DCAT profile based on DPROD which is an ontology designed to facilitate interoperability between data product descriptors.";
@@ -71,7 +71,7 @@
   owl:imports <http://www.w3.org/ns/prov-o#> ;
   owl:imports <http://www.w3.org/ns/dcat#> ;
   owl:imports <http://www.w3.org/ns/shacl>;
-  owl:imports <https://ekgf.github.io/data-product/#>;
+  owl:imports <https://ekgf.github.io/dprod/#>;
   dct:modified "2023-12-20"^^xsd:date ;
   foaf:maker [
       foaf:homepage <http://www.ekgf.org/> ;

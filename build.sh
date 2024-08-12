@@ -14,6 +14,10 @@ function setup() {
   
   ${system_python_bin} -m venv ${venv_dir} || return $?
 
+	source .venv/bin/activate
+	${venv_python_bin} -m pip install --upgrade pip || return $?
+	${venv_python_bin} -m pip install -r requirements.txt || return $?
+
   return 0  
 }
 

@@ -1,4 +1,4 @@
-#product baseURI: https://ekgf.github.io/data-product/
+#product baseURI: https://ekgf.github.io/dprod/
 # imports: http://purl.org/dc/terms/
 # imports: http://www.w3.org/2004/02/skos/core
 # imports: http://www.w3.org/ns/prov-o#
@@ -8,7 +8,7 @@
 
 
 
-@prefix dprod: <https://ekgf.github.io/data-product/#> .
+@prefix dprod: <https://ekgf.github.io/dprod/#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/> .
