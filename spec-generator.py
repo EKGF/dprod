@@ -12,9 +12,9 @@ import json
 
 # Load the OWL ontology into an RDFlib graph
 g = Graph()
-g.parse('../ontology/dprod/dprod-ontology.ttl', format='ttl')
-g.parse('../ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
-# g.parse('../ontology/dprod/dprod.ttl', format='ttl')
+g.parse('./ontology/dprod/dprod-ontology.ttl', format='ttl')
+g.parse('./ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
+# g.parse('./ontology/dprod/dprod.ttl', format='ttl')
 
 # Define the JSON-LD context
 context = {
@@ -96,6 +96,7 @@ def reorder_list(list_to_order, reference_list):
 
 # Define a function to add classes and properties to the context
 def add_to_context(uri,classes):
+    print(f"Processing {uri}")
     if isinstance(uri, rdflib.term.URIRef):
         name = short_name(uri)
         if name.endswith("Shape"):
@@ -191,6 +192,7 @@ def load_examples(parent_folder, white_list=None, black_list=None):
             readme_path = os.path.join(child_folder_path, 'README.md')
             if os.path.isfile(readme_path):
                 with open(readme_path, 'r', encoding='utf-8') as readme_file:
+                    print(f"Processing {readme_path}")
                     readme_content = readme_file.read()
                     example.text = convert_markdown_to_html(replace_backticks(readme_content))
 
@@ -198,12 +200,14 @@ def load_examples(parent_folder, white_list=None, black_list=None):
             example_json_path = os.path.join(child_folder_path, 'example.json')
             if os.path.isfile(example_json_path):
                 with open(example_json_path, 'r', encoding='utf-8') as json_file:
+                    print(f"Processing {example_json_path}")
                     example_json_content = json_file.read()
                     example.json = example_json_content
     return examples
 
 
 def main():
+    print("Generating the specification...")
     classes = {}
     for class_uri in g.subjects():
         add_to_context(class_uri, classes)
@@ -224,17 +228,17 @@ def main():
     
     json_ld = {"@context": json_ld_context}
     
-    examples = load_examples("../examples/")
+    examples = load_examples("./examples/")
     
     classes = reorder_list(classes.values(), ['DataProduct', 'Port', 'DataService', 'Distribution', 'Dataset'])
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="../docs/respec/"))
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="./respec/"))
     template = env.get_template("template.html")
     spec = template.render(classes=classes, examples=examples)
     
-    with open('../docs/assets/spec.html', 'w', encoding='utf-8') as f:
+    with open('assets/spec.html', 'w', encoding='utf-8') as f:
         f.write(spec)
     
-    with open('../docs/assets/dprod.jsonld', 'w', encoding='utf-8') as f:
+    with open('assets/dprod.jsonld', 'w', encoding='utf-8') as f:
         json_dump = json.dumps(json_ld, indent=4)
         # print(json_dump)
         f.write(json_dump)

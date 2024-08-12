@@ -57,5 +57,7 @@ out/
 .idea
 *.fdb_latexmk
 *.xdy
-.venv/
 .pdm-python
+code/bin/
+code/lib/
+code/include

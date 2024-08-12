@@ -1,4 +1,0 @@
-# Objectives
-
-Work in progress
-
