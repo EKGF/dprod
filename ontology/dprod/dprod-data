@@ -9,7 +9,7 @@
 
 
 @prefix dprod-data: <https://ekgf.github.io/data-product/data/> .
-@prefix dprod: <https://ekgf.github.io/data-product/> .
+@prefix dprod: <https://ekgf.github.io/data-product/#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
@@ -37,7 +37,7 @@ dprod-data:
    owl:imports <http://www.w3.org/2004/02/skos/core>;
    owl:imports <http://www.w3.org/ns/prov-o#>;
    owl:imports <http://www.w3.org/ns/dcat>;
-   owl:imports <https://ekgf.github.io/data-product/>;
+   owl:imports <https://ekgf.github.io/data-product/#>;
    dct:creator [
      a foaf:Person ;
      foaf:name "Natasa Varytimou" ;
