@@ -1,196 +1,262 @@
 <!DOCTYPE html>
 <html xml:lang="en">
-  <head>
-    <title>EKGF DPROD Ontology</title>
-    <meta charset='utf-8'>
-    <script src='https://ekgf.github.io/respec/builds/respec-w3c.js' async class='remove'></script>
-    <script class='remove'>
-      // All config options at https://respec.org/docs/
-      var respecConfig = {
-        // Working Groups ids at https://respec.org/w3c/groups/
-        // group: "Semantic Data Products Working Group",
-        latestVersion: "https://ekgf.github.io/data-product/dprod" ,
-        specStatus: "base",
-        editors: [
-          {
-            name: "Tony Seale",
-            url:  "https://www.linkedin.com/in/tonyseale/",
-          },
-          {
-            name: "Natasa Varytimou",
-            url:  "https://www.linkedin.com/in/natasavaritimou/",
-          },
-          {
-            name: "Andrea Gioia",
-            url:  "https://www.linkedin.com/in/andreagioia/",
-          },
-          {
-            name: "Pete Rivett",
-            url:  "https://www.linkedin.com/in/peterivett/",
-          },
-          {
-            name: "Marcel Fröhlich",
-            url:  "https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/",
-          },
-        ],
-        github: {
-          branch: "main",
-          repoURL: "https://github.com/EKGF/data-product",
+<head>
+  <title>EKGF DPROD Ontology</title>
+  <meta charset='utf-8'>
+  <script src='https://ekgf.github.io/respec/builds/respec-w3c.js' async class='remove'></script>
+  <script class='remove'>
+    // All config options at https://respec.org/docs/
+    var respecConfig = {
+      // Working Groups ids at https://respec.org/w3c/groups/
+      // group: "Semantic Data Products Working Group",
+      latestVersion: "https://ekgf.github.io/data-product/dprod",
+      specStatus: "base",
+      editors: [
+        {
+          name: "Tony Seale",
+          url: "https://www.linkedin.com/in/tonyseale/",
         },
-        license: "mit",
-        logos: [{
-          src: "./dprod.jpg",
-          alt: "DPROD",
-          width: 200,
-        }],
-      };
-    </script>
-  </head>
-  <body>
-    <h1 id="title">Data Product Vocabulary (DPROD)</h1>
-    <section id='abstract'>
-      <p>
-        The <a href="https://ekgf.github.io/data-product/dprod.ttl">Data Product (DPROD)</a> specification is a profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>, designed to describe Data Products. This document defines the schema and provides examples for its use.
-      </p>
-      <p>
-        DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way. By using a standard model and vocabulary, DPROD facilitates the consumption and aggregation of metadata from multiple Data Marketplaces. This approach increases the discoverability of products and services, supports decentralized data publishing, and enables federated search across multiple sites using a uniform query mechanism and structure.
-      </p>
-      <p>
-        The namespace for DPROD terms is <a href="https://ekgf.github.io/data-product/dprod">https://ekgf.github.io/data-product/dprod</a>
-      </p>
-      <p>
-        The suggested prefix for the DPROD namespace is <code>dprod</code>
-      </p>
-      <br>
-      <p><strong>DPROD follows two basic principles:</strong></p>
-    <p>
-      🔵Decentralize Data Ownership: To make data integration more efficient, tasks should be shared among multiple teams. DCAT helps by offering a standard way to publish datasets in a decentralized manner.
-    </p>
-    <p>
-      🔵Harmonize Data Schemas: Using shared schemas helps unify different data formats. For instance, the <a href="https://ekgf.github.io/data-product/dprod.ttl">DPROD</a> specification provides a common set of rules for defining a <a href="#dataproduct">Data Product</a>. You can extend this schema as needed.
-    </p>
-      <br>
-      The DPROD specification builds on DCAT by connecting <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to DPROD <a href="#dataproduct">Data Products</a> using <a href="#inputport">Input</a> and <a href="#outputport">output</a> ports. These ports are used to publish and consume data from a Data Product. DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">dcat data services</a>, so the data exchanged can be described using DCAT's highly expressive metadata around <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> and <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a>.
-      This approach also allows you to create your own descriptions for the data you are sharing. You can use a special property called <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> from DCAT to link to your own set of rules or guidelines for your data.
-      <br>
-      <p><strong>The DPROD specification has four main aims:</strong> </p>
-      <p>
-        🔵 To provide unambiguous and sharable semantics to answer the question: 'What is a <a href="#dataproduct">data product</a>?' 
-      </p>
-      <p>
-        🔵 Be simple for anyone to use, but expressive enough to power large data marketplaces 
-      </p>
-      <p>
-        🔵 Allow organisations to reuse their existing data catalogues and dataset infrastructure
-      </p>
-      <p>
-        🔵 To share common semantics across different Data Products and promote harmonisation
-      </p>
-      
-    </section>
-    <section id="sotd" class="override">
-    <h2>Status of this document</h2>
-    <p>The current version is DRAFT. Feedback and comments welcome via the Github Issue feature. </p>
-   </section>
+        {
+          name: "Natasa Varytimou",
+          url: "https://www.linkedin.com/in/natasavaritimou/",
+        },
+        {
+          name: "Andrea Gioia",
+          url: "https://www.linkedin.com/in/andreagioia/",
+        },
+        {
+          name: "Pete Rivett",
+          url: "https://www.linkedin.com/in/peterivett/",
+        },
+        {
+          name: "Marcel Fröhlich",
+          url: "https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/",
+        },
+      ],
+      github: {
+        branch: "main",
+        repoURL: "https://github.com/EKGF/data-product",
+      },
+      license: "mit",
+      logos: [{
+        src: "./dprod.jpg",
+        alt: "DPROD",
+        width: 200,
+      }],
+    };
+  </script>
+</head>
+<body>
+<h1 id="title">Data Product Vocabulary (DPROD)</h1>
+<section id='abstract'>
+  <p>
+    The <a href="https://ekgf.github.io/data-product/dprod.ttl">Data Product (DPROD)</a> specification is a
+    profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>,
+    designed to describe Data Products.
+    This document defines the schema and provides examples for its use.
+  </p>
+  <p>
+    DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way.
+    By using a standard model and vocabulary, DPROD facilitates the consumption and aggregation of metadata
+    from multiple Data Marketplaces.
+    This approach increases the discoverability of products and services, supports decentralized data publishing,
+    and enables federated search across multiple sites using a uniform query mechanism and structure.
+  </p>
+  <p>
+    The namespace for DPROD terms is <a href="https://ekgf.github.io/data-product/#">https://ekgf.github.io/data-product/#</a>
+  </p>
+  <p>
+    The suggested prefix for the DPROD namespace is <strong><code>dprod</code></strong>
+  </p>
 
-    <section id='conformance' class="override">
-      <h2>Conformance</h2>
-      <p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this Profile are non-normative.
-        Everything else in this Profile is normative.</p>
+  <p><strong>DPROD follows two basic principles:</strong></p>
+  <ul style="list-style-type: '🔵&nbsp'">
+    <li>
+      Decentralize Data Ownership: To make data integration more efficient, tasks should be shared among multiple
+      teams. DCAT helps by offering a standard way to publish datasets in a decentralized manner.
+    </li>
+    <li>
+      Harmonize Data Schemas: Using shared schemas helps unify different data formats.
+      For instance, the <a href="https://ekgf.github.io/data-product/dprod.ttl">DPROD</a> specification provides a
+      common set of rules for defining a <a href="#dataproduct">Data Product</a>.
+      You can extend this schema as needed.
+    </li>
+  </ul>
 
-      <p>The keywords MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be interpreted as described in [[!RFC2119]].
-      </section>
-      <section>
-              <h3>Normative namespaces</h3>
-              <p>Namespaces and prefixes used in normative parts of this Profile are shown in the following table.</p>
+  The DPROD specification builds on DCAT by connecting
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to
+  DPROD <a href="#dataproduct">Data Products</a> using <a href="#inputport">Input</a> and
+  <a href="#outputport">output</a> ports.
+  These ports are used to publish and consume data from a Data Product.
+  DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">dcat data services</a>,
+  so the data exchanged can be described using DCAT's highly expressive metadata around
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> and
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a>.
+  This approach also allows you to create your own descriptions for the data you are sharing.
+  You can use a special property called
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> from DCAT to link to
+  your own set of rules or guidelines for your data.
 
-              <table id="table-namespaces" class="simple">
-                  <thead>
-                      <tr>
-                          <th>Prefix</th>
-                          <th>Namespace IRI</th>
-                          <th>Source</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      <tr>
-                          <td>
-                              <code>dcat</code>
-                          </td>
-                          <td>
-                              <code>http://www.w3.org/ns/dcat#</code>
-                          </td>
-                          <td>[[VOCAB-DCAT-3]]</td>
-                      </tr>
-                      <tr>
-                          <td>
-                              <code>dct</code>
-                          </td>
-                          <td>
-                              <code>http://purl.org/dc/terms/</code>
-                          </td>
-                          <td>[[DCTERMS]]</td>
-                      </tr>
-                      <tr>
-                          <td>
-                              <code>odrl</code>
-                          </td>
-                          <td>
-                              <code>http://www.w3.org/ns/odrl/2/</code>
-                          </td>
-                          <td>[[ODRL-VOCAB]]</td>
-                      </tr>
-                    
-                     <tr>
-                          <td>
-                              <code>sdo</code>
-                          </td>
-                          <td>
-                              <code>https://schema.org</code>
-                          </td>
-                          <td>[[SCHEMA-ORG]]</td>
-                      </tr>
-                  </tbody>
-              </table>
+  <p><strong>The DPROD specification has four main aims:</strong></p>
+  <ul style="list-style-type: '🔵&nbsp'">
+    <li>
+      To provide unambiguous and sharable semantics to answer the question: 'What is a <a href="#dataproduct">data
+      product</a>?'
+    </li>
+    <li>
+      Be simple for anyone to use, but expressive enough to power large data marketplaces
+    </li>
+    <li>
+      Allow organisations to reuse their existing data catalogues and dataset infrastructure
+    </li>
+    <li>
+      To share common semantics across different Data Products and promote harmonisation
+    </li>
+  </ul>
 
-          </section>
-<section>
-<h2>Data Product (DPROD) Model</h2>
-<p>
-  <a href="https://en.wikipedia.org/wiki/Data_mesh">Data Mesh Architectures</a> use input and output ports to manage how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or reporting etc.
-</p>
-<p>
-  In the Data Catalog Vocabulary (DCAT) framework, a <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:DataService">Data Service</a> is a way to describe services that provide access to data. Data Services give standardized, machine-readable descriptions of how to access one or more datasets or data processing functions.
-</p>
-<p>
-  Data Services specify how to access and download the data. In DPROD Data Services are connected to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called <a href="#isaccessserviceof">isAccessServiceOf</a>, on the Distribution you can specify formats (like CSV or JSON etc) and provide metadata about the "physical model" of the data. Distributions link to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">Datasets</a> and DCAT has a very rich vocabulary for describing every aspect of your dataset. Finally, Datasets use the <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> property to link to the "logical model" where you can specify rich semantic metadata of your own.
-</p>
-<p>
-  By linking Data Product ports to DCAT DataServices, DPROD can describe Data Products in a way that machines can read across the organization. This makes it easier for data teams to build and manage their own data products independently, while still working well with the rest of the organization's data.
-</p>
-<p>
-  Using standards like DCAT helps create a strong and clear way to define Data Products. It ensures that as data becomes more complex, the methods for describing, sharing, and using data stay consistent and reliable. It also allows different organizations to share data securely and in a standardized way.
-</p>
-    <figure id="ProfileModel">
-              <img alt="Information model for the Profile" src="./dprod-model.png">
-              <figcaption>
-                        Overview of DPROD model and its relationship with DCAT classes
-                    </figcaption>
-    </figure>
 </section>
-<p>
-The Profile consists of the following classes:
-<UL>
-    <li> Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products </li>
-    <li> Data Product (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and metadata</li>
-    <li> Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTP URL, a Database or a FileShare etc</li>
-    <li> Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc) which can conform to a physical model</li>
+
+<section id="sotd" class="override">
+  <h2>Status of this document</h2>
+  <p>
+    The current version is DRAFT.
+    Feedback and comments welcome via the
+    <a href="https://github.com/EKGF/data-product/issues">Github Issue feature</a>.
+  </p>
+</section>
+
+<section id='conformance' class="override">
+  <h2>Conformance</h2>
+
+  <p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this
+    Profile are non-normative.
+    Everything else in this Profile is normative.
+  </p>
+
+  <p>
+    The keywords MAY, MUST, MUST NOT, RECOMMENDED, SHOULD, and SHOULD NOT are to be
+    interpreted as described in [[!RFC2119]].
+  </p>
+</section>
+
+<section>
+  <h3>Normative namespaces</h3>
+  <p>Namespaces and prefixes used in normative parts of this Profile are shown in the following table.</p>
+
+  <table id="table-namespaces" class="simple">
+    <thead>
+    <tr>
+      <th>Prefix</th>
+      <th>Namespace IRI</th>
+      <th>Source</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <code>dcat</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/ns/dcat#</code>
+      </td>
+      <td>[[VOCAB-DCAT-3]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>dct</code>
+      </td>
+      <td>
+        <code>http://purl.org/dc/terms/</code>
+      </td>
+      <td>[[DCTERMS]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>odrl</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/ns/odrl/2/</code>
+      </td>
+      <td>[[ODRL-VOCAB]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>sdo</code>
+      </td>
+      <td>
+        <code>https://schema.org</code>
+      </td>
+      <td>[[SCHEMA-ORG]]</td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Data Product (DPROD) Model</h2>
+  <p>
+    <a href="https://en.wikipedia.org/wiki/Data_mesh">Data Mesh Architectures</a> use input and output ports to manage
+    how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input
+    ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or
+    reporting etc.
+  </p>
+  <p>
+    In the Data Catalog Vocabulary (DCAT) framework, a <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:DataService">Data
+    Service</a> is a way to describe services that provide access to data. Data Services give standardized,
+    machine-readable descriptions of how to access one or more datasets or data processing functions.
+  </p>
+  <p>
+    Data Services specify how to access and download the data. In DPROD Data Services are connected to <a
+    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called <a
+    href="#isaccessserviceof">isAccessServiceOf</a>, on the Distribution you can specify formats (like CSV or JSON etc)
+    and provide metadata about the "physical model" of the data. Distributions link to <a
+    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">Datasets</a> and DCAT has a very rich vocabulary for
+    describing every aspect of your dataset. Finally, Datasets use the <a
+    href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> property to link to the
+    "logical model" where you can specify rich semantic metadata of your own.
+  </p>
+  <p>
+    By linking Data Product ports to DCAT DataServices, DPROD can describe Data Products in a way that machines can read
+    across the organization. This makes it easier for data teams to build and manage their own data products
+    independently, while still working well with the rest of the organization's data.
+  </p>
+  <p>
+    Using standards like DCAT helps create a strong and clear way to define Data Products. It ensures that as data
+    becomes more complex, the methods for describing, sharing, and using data stay consistent and reliable. It also
+    allows different organizations to share data securely and in a standardized way.
+  </p>
+  <figure id="ProfileModel">
+    <img alt="Information model for the Profile" src="./dprod-model.png">
+    <figcaption>
+      Overview of DPROD model and its relationship with DCAT classes
+    </figcaption>
+  </figure>
+
+  <p>
+    The Profile consists of the following classes:
+  <UL>
+    <li> Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products</li>
+    <li> Data Product (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and
+      metadata
+    </li>
+    <li> Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTP
+      URL, a Database or a FileShare etc
+    </li>
+    <li> Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc)
+      which can conform to a physical model
+    </li>
     <li> Dataset (<code>dcat:Dataset</code>) - A collection of related data that can conform to a logical model</li>
-</ul>
-</p>
-<p>
-As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a href="#inputport">input</a> and <a href="#outputport">output</a> ports can specify connection details, they have <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared schemas. In this example, the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to the shared FIBO specification for callable bonds.
-</p>   
+  </ul>
+  </p>
+  <p>
+    As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a
+    href="#inputport">input</a> and <a href="#outputport">output</a> ports can specify connection details, they have <a
+    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a
+    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared schemas. In this
+    example,
+    the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to
+    the shared FIBO specification for callable bonds.
+  </p>
 
   <pre id="eg12" class="example hljs json">
   {
@@ -216,57 +282,75 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
      }
   }
   </pre>
-    <p class="note">
-      The examples in map the type of the above classes to <code>@type</code> in the JSON-LD serialisations. You can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD.
-      <br/>
-      You can copy the json above and paste it into <a href="https://json-ld.org/playground/">https://json-ld.org/playground</a>. You can see that the schema resolves. 
-    </p>
+  <p class="note">
+    The examples in map the type of the above classes to <code>@type</code> in the JSON-LD serializations. 
+    You can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD.
+    <br/>
+    You can copy the json above and paste it into <a
+    href="https://json-ld.org/playground/">https://json-ld.org/playground</a>. 
+    You can see that the schema resolves.
+  </p>
 </section>
-      
 
- {% for cls in classes %}
-      <section>
-      <h2>{{cls.name}}</h2>
-        {{cls.description}}
-        {% for prop in cls.properties %}
-        <section>
-        <h2>{{prop.name}}</h2>
-          {{prop.description}}
-        <table class="def propdef">
-        <tbody>
-          <tr><th>Identifier:</th><td><a href="{{prop.uri}}">{{prop.short_uri}}</a></td></tr>
-          {% if prop.label is not none and prop.label  != '' %}   
-          <tr><th>Label:</th><td>{{prop.label}}</td></tr>
-          {% endif %}
-          {% if prop.comment is not none and prop.comment  != '' %}   
-          <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
-          {% endif %}
-          <tr><th>Domain:</th><td><a href="{{prop.domain}}">{{prop.domain_short}}</a></td></tr>
-          <tr><th>Range:</th><td><a href="{{prop.range}}">{{prop.range_short}}</a></td></tr>
-        </tbody>
-        </table>
-      </section>
-        {% endfor %}
-      </section>
+
+{% for cls in classes %}
+<section>
+  <h2>{{cls.name}}</h2>
+  {{cls.description}}
+  {% for prop in cls.properties %}
+  <section>
+    <h2>{{prop.name}}</h2>
+    {{prop.description}}
+    <table class="def propdef">
+      <tbody>
+      <tr>
+        <th>Identifier:</th>
+        <td><a href="{{prop.uri}}">{{prop.short_uri}}</a></td>
+      </tr>
+      {% if prop.label is not none and prop.label != '' %}
+      <tr>
+        <th>Label:</th>
+        <td>{{prop.label}}</td>
+      </tr>
+      {% endif %}
+      {% if prop.comment is not none and prop.comment != '' %}
+      <tr>
+        <th>Comment:</th>
+        <td>{{prop.comment}}</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <th>Domain:</th>
+        <td><a href="{{prop.domain}}">{{prop.domain_short}}</a></td>
+      </tr>
+      <tr>
+        <th>Range:</th>
+        <td><a href="{{prop.range}}">{{prop.range_short}}</a></td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+  {% endfor %}
+</section>
 {% endfor %}
 
-      
+
 <section class="Examples">
   <h2>Worked Examples</h2>
   <p>Here are some worked examples of how to use DPROD for some common use cases</p>
-  
-   {% for example in examples %}
-    <section>   
-      <h2>{{example.name}}</h2>
-        {{example.text}}
-        <pre class="example hljs json">{{example.json}}</pre>
-     </section>   
-   {% endfor %}
+
+  {% for example in examples %}
+  <section>
+    <h2>{{example.name}}</h2>
+    {{example.text}}
+    <pre class="example hljs json">{{example.json}}</pre>
+  </section>
+  {% endfor %}
 </section>
-    
+
 <section class="appendix">
   <h2>Acknowledgements</h2>
-<p>The editors gratefully acknowledge the feedback and contributions made to this document by: </p>
+  <p>The editors gratefully acknowledge the feedback and contributions made to this document by: </p>
   <ul>
     <li><a href="https://www.linkedin.com/in/tonyseale/">Tony Seale</a>,&nbsp;Chair</li>
     <li><a href="https://www.linkedin.com/in/jgeluk/">Jacobus Geluk</a>,&nbsp;Initiator</li>
@@ -281,9 +365,10 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
     <li><a href="https://www.linkedin.com/in/carlmattocks/">Carl Mattocks</a></li>
     <li><a href="https://www.linkedin.com/in/carlos-tubbax-975058118/">Carlos Tubbax</a></li>
     <li><a href="https://www.linkedin.com/in/charlesivie/">Charles Ivie</a></li>
-    <li><a href="https://www.linkedin.com/in/mikehypercube/">Mike Bennett</a>,&nbsp;OMG Technical Director & Ontologist</li>
+    <li><a href="https://www.linkedin.com/in/mikehypercube/">Mike Bennett</a>,&nbsp;OMG Technical Director & Ontologist
+    </li>
   </ul>
-  </section>
+</section>
 
-  </body>
+</body>
 </html>
