@@ -49,18 +49,29 @@ dprod:
   dct:contributor
     [
       a foaf:Person ;
+      foaf:name "Pete Rivett" ;
+      foaf:homepage <https://www.linkedin.com/in/peterivett/> ;
+    ] ;
+  dct:contributor
+    [
+      a foaf:Person ;
+      foaf:homepage <https://www.linkedin.com/in/jgeluk/> ;
+      sdo:affiliation
+        [
+          foaf:homepage <https://agnos.ai> ;
+          foaf:name "agnos.ai" ;
+        ] ;
+      foaf:name "Jacobus Geluk" ;
+    ] ;
+  dct:contributor
+    [
+      a foaf:Person ;
       sdo:affiliation
         [
           foaf:homepage <https://eccenca.com> ;
           foaf:name "eccenca GmbH" ;
         ] ;
       foaf:name "Marcel Fröhlich" ;
-    ] ;
-  dct:contributor
-    [
-      a foaf:Person ;
-      foaf:name "Pete Rivett" ;
-      foaf:homepage <https://www.linkedin.com/in/peterivett/> ;
     ] ;
   dct:contributor
     [
