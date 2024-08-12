@@ -1,4 +1,4 @@
-name: build-spec
+name: build-and-deploy
 
 on:
   push:
@@ -16,4 +16,23 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip' # caching pip dependencies
-      - run: pip install -r requirements.txt ; python -m spec-generator.py
+      - run: pip install -r requirements.txt ; python spec-generator.py
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+      
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
