@@ -100,7 +100,7 @@ https://y.com/data-product/company-finance >> :inputPort >> :isAccessServiceOf >
 In Linked Data, we would actually do this with a query like this:
 ```sparql
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX dprod: <https://ekgf.github.io/data-product/dprod/>
+PREFIX dprod: <https://ekgf.github.io/data-product/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX : <https://y.com/data-product/>
 
