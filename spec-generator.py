@@ -19,7 +19,7 @@ g.parse('./ontology/dprod/dprod-dcatprofile.ttl', format='ttl')
 # Define the JSON-LD context
 context = {
     "@vocab": str(RDF),
-    "dprod": 'https://ekgf.github.io/data-product-spec/dprod/',
+    "dprod": 'https://ekgf.github.io/data-product/dprod/',
     "owl": str(OWL),
     "rdfs": str(RDFS),
     "xsd": str(XSD),
@@ -235,7 +235,7 @@ def main():
     template = env.get_template("template.html")
     spec = template.render(classes=classes, examples=examples)
     
-    with open('assets/spec.html', 'w', encoding='utf-8') as f:
+    with open('assets/index.html', 'w', encoding='utf-8') as f:
         f.write(spec)
     
     with open('assets/dprod.jsonld', 'w', encoding='utf-8') as f:

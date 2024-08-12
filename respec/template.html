@@ -8,7 +8,7 @@
       var respecConfig = {
         // Working Groups ids at https://respec.org/w3c/groups/
         // group: "Semantic Data Products Working Group",
-        latestVersion: "https://ekgf.github.io/data-product-spec/dprod" ,
+        latestVersion: "https://ekgf.github.io/data-product/dprod" ,
         specStatus: "base",
         editors: [
           {
@@ -53,13 +53,13 @@
     <h1 id="title">Data Product Vocabulary (DPROD)</h1>
     <section id='abstract'>
       <p>
-        The <a href="https://ekgf.github.io/data-product-spec/dprod.ttl">Data Product (DPROD)</a> specification is a profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>, designed to describe Data Products. This document defines the schema and provides examples for its use.
+        The <a href="https://ekgf.github.io/data-product/dprod.ttl">Data Product (DPROD)</a> specification is a profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>, designed to describe Data Products. This document defines the schema and provides examples for its use.
       </p>
       <p>
         DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way. By using a standard model and vocabulary, DPROD facilitates the consumption and aggregation of metadata from multiple Data Marketplaces. This approach increases the discoverability of products and services, supports decentralized data publishing, and enables federated search across multiple sites using a uniform query mechanism and structure.
       </p>
       <p>
-        The namespace for DPROD terms is <a href="https://ekgf.github.io/data-product-spec/dprod">https://ekgf.github.io/data-product-spec/dprod</a>
+        The namespace for DPROD terms is <a href="https://ekgf.github.io/data-product/dprod">https://ekgf.github.io/data-product/dprod</a>
       </p>
       <p>
         The suggested prefix for the DPROD namespace is <code>dprod</code>
@@ -70,7 +70,7 @@
       🔵Decentralize Data Ownership: To make data integration more efficient, tasks should be shared among multiple teams. DCAT helps by offering a standard way to publish datasets in a decentralized manner.
     </p>
     <p>
-      🔵Harmonize Data Schemas: Using shared schemas helps unify different data formats. For instance, the <a href="https://ekgf.github.io/data-product-spec/dprod.ttl">DPROD</a> specification provides a common set of rules for defining a <a href="#dataproduct">Data Product</a>. You can extend this schema as needed.
+      🔵Harmonize Data Schemas: Using shared schemas helps unify different data formats. For instance, the <a href="https://ekgf.github.io/data-product/dprod.ttl">DPROD</a> specification provides a common set of rules for defining a <a href="#dataproduct">Data Product</a>. You can extend this schema as needed.
     </p>
       <br>
       The DPROD specification builds on DCAT by connecting <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to DPROD <a href="#dataproduct">Data Products</a> using <a href="#inputport">Input</a> and <a href="#outputport">output</a> ports. These ports are used to publish and consume data from a Data Product. DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">dcat data services</a>, so the data exchanged can be described using DCAT's highly expressive metadata around <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> and <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a>.
@@ -197,13 +197,13 @@ As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Se
 
   <pre id="eg12" class="example hljs json">
   {
-    "@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+    "@context": "https://ekgf.github.io/data-product/dprod.jsonld",
     "id": "https://y.com/products/uk-bonds",
     "type": "DataProduct",
     "title": "UK Bonds",
     "description": "UK Bonds is your one-stop-shop for all your bonds!",
     "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
-    "lifecycleStatus" : "https://ekgf.github.io/data-product-spec/dprod/data/lifecycle-status/Consume",
+    "lifecycleStatus" : "https://ekgf.github.io/data-product/dprod/data/lifecycle-status/Consume",
     "outputPort": {
       "type": "DataService",
       "endpointURL": "https://y.com/uk-10-year-bonds",

@@ -1,5 +1,5 @@
 {
-"@context": "https://ekgf.github.io/data-product-spec/dprod.jsonld",
+"@context": "https://ekgf.github.io/data-product/dprod.jsonld",
 "id":  "equity trade-xxx",
 "@id": "https://y.com/products/equity-trade-xxx",
 "@type": "DataProduct",
