@@ -13,13 +13,13 @@ instances_file: instances.ttl
 instances_file_exists: false
 instances_graph_iri: http://data.example.org
 ontology_file: dprod.ttl
-ontology_graph_iri: https://w3id.org/dprod/
-ontology_iri: https://w3id.org/dprod/
+ontology_graph_iri: https://ekgf.github.io/dprod/
+ontology_iri: https://ekgf.github.io/dprod/
 ontology_prefix: 'dprod:'
 project_name: dprod
 shape: true
-shape_base_iri: https://w3id.org/dprod/shapes
+shape_base_iri: https://ekgf.github.io/dprod/shapes
 shape_base_prefix: 'dprod-sh:'
 shape_file: dprod-sh.ttl
-shape_graph_iri: https://w3id.org/dprod/shapes
+shape_graph_iri: https://ekgf.github.io/dprod/shapes
 
