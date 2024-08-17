@@ -257,6 +257,9 @@ def main():
     for img in os.listdir('./images/'):
         print(f"Copying image: {img}")
         shutil.copy2(f'./images/{img}', './dist')
+        
+    print("Copying dprod-dcatprofile.ttl")    
+    shutil.copy2('./ontology/dprod/dprod-dcatprofile.ttl', './dist/')
 
     print("Specification generated successfully!")
     
