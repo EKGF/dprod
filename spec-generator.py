@@ -67,9 +67,10 @@ def replace_backticks(markdown_text):
     def replace_code_block(match):
         code_type = match.group(1)
         code_content = match.group(2)
-        return f'''<pre>
-                        <code>\n{code_content}\n</code>
-                    </pre>'''
+        if code_type == 'text':
+            return f'''<pre><code>{code_content}\n</code></pre>'''
+        else:
+            return f'''<pre class="nolinks hljs {code_type}"><code>{code_content}\n</code></pre>'''
         # return f'<pre class="example hljs {code_type}">\n{code_content}\n</pre>'
 
     # Replace all code blocks
