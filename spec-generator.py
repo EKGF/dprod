@@ -1,7 +1,7 @@
 import shutil
 import os
 import re
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from typing import List
 
 import jinja2
@@ -110,7 +110,7 @@ def add_to_context(uri,classes):
             classes[uri] = class_obj
             fill_object(class_obj)
             for s, p, o in g.triples((None, RDFS.subClassOf, uri)):
-                add_to_context(s)
+                add_to_context(s) # TODO: second parameter is missing
             
             description = g.value(URIRef(uri), DC.description)
                 
@@ -136,10 +136,10 @@ def add_to_context(uri,classes):
                     o = str(path[2])
                 property_name = short_name(o)
                 property_name = property_name.replace(f'{name}-', '')
-                rdf_property = RdfProperty(name=property_name, uri=o)
+                rdf_property = RdfProperty(name=property_name, uri=o) # TODO: uri: Expected URIRef, got 'Union[str, Node]' instead
                 rdf_property.description = description
                 class_obj.properties.append(rdf_property)
-                rdf_property.__dict__["domain"] = class_obj.targetClass
+                rdf_property.__dict__["domain"] = class_obj.targetClass # TODO: targetClass is not an attribute of RdfClass
                 rdf_property.__dict__["domain_short"] = g.namespace_manager.normalizeUri(class_obj.targetClass)
                 rdf_property.__dict__["short_uri"] = g.namespace_manager.normalizeUri(o)
 
@@ -147,7 +147,7 @@ def add_to_context(uri,classes):
                     p1_name = short_name(p1)
                     if p1_name == 'class' or p1_name == 'datatype' or p1_name == 'range':
                         rdf_property.__dict__["range"] = o1
-                        rdf_property.__dict__["range_short"] = g.namespace_manager.normalizeUri(o1)
+                        rdf_property.__dict__["range_short"] = g.namespace_manager.normalizeUri(o1) # TODO: expected type 'str', got 'Node' instead
                     if p1_name == 'path':
                         try:
                             label = g.value(o1, RDFS.label)
