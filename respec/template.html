@@ -610,9 +610,9 @@
 
   {% for example in examples %}
   <section>
-    <h2>{{example.name}}</h2>
-    {{example.text}}
-    <pre class="example hljs json">{{example.json}}</pre>
+    <h3>{{example.name}}</h3>
+    <p>{{example.text}}</p>
+    <pre class="hljs json">{{example.json}}</pre>
   </section>
   {% endfor %}
 </section>
