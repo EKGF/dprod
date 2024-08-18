@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xml:lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
   <title>EKGF DPROD Ontology</title>
   <meta charset='utf-8'>
@@ -106,12 +106,17 @@
     .preamble-section {
       margin: 0 auto;
       max-width: 800px;
-      color: gray;
       text-align: justify;
     }
 
-    .preamble-section-title {
-      text-align: center
+    .preamble-section p {
+      margin: 0 0 1em 0;
+      color: gray;
+    }
+
+    .preamble-section .section-title {
+      padding-bottom: 1em;
+      text-align: center;
     }
 
     .preamble-section a:link {
@@ -129,6 +134,7 @@
     }
 
     .preamble-section ol {
+      color: gray;
       counter-reset: item;
       list-style-type: none;
       padding-left: 0;
@@ -170,17 +176,20 @@
   </style>
 </head>
 <body>
-<div id="copyright" class="copyright preamble-section">
+<details id="copyright" class="copyright preamble-section">
+  <summary>Preamble</summary>
+  <p>
   Copyright © 2024, <a href="https://www.lseg.com/en">London Stock Exchange Group plc</a><br/>
   Copyright © 2024, <a href="https://federatedknowledge.com/">Federated Knowledge, LLC</a><br/>
   Copyright © 2024, <a href="https://agnos.ai">agnos.ai UK Ltd.</a><br/>
   Copyright © 2024, <a href="https://www.quantyca.it/en/home-en/">Quantyca S.p.A.</a><br/>
   Copyright © 2024, <a href="https://eccenca.com">eccenca GmbH</a><br/>
   Copyright © 2024, <a href="https://www.omg.org/communities/enterprise-knowledge-graph-forum.htm">Object Management
-  Group, Inc.</a><br/>
+  Group, Inc.</a>
+  </p>
   <br/>
   <div>
-    <p class="preamble-section-title">USE OF SPECIFICATION – TERMS, CONDITIONS & NOTICES</p>
+    <p class="section-title">USE OF SPECIFICATION – TERMS, CONDITIONS & NOTICES</p>
     <p>
       The material in this document details an Object Management Group specification in accordance with the terms,
       conditions and notices set forth below.
@@ -190,7 +199,7 @@
     </p>
   </div>
   <div>
-    <p class="preamble-section-title">LICENSES</p>
+    <p class="section-title">LICENSES</p>
     <p>
       Contributions to this specification are made under the terms of the Contributor License Agreement given
       at <a href="https://cla-assistant.io/EKGF/dprod">https://cla-assistant.io/EKGF/dprod</a>.
@@ -225,7 +234,7 @@
     </p>
   </div>
   <div>
-    <p class="preamble-section-title">PATENTS</p>
+    <p class="section-title">PATENTS</p>
     <p>
       The attention of adopters is directed to the possibility that compliance with or adoption of OMG specifications
       may require use of an invention covered by patent rights.
@@ -237,8 +246,7 @@
     </p>
   </div>
   <div>
-    <p class="preamble-section-title">GENERAL USE RESTRICTIONS
-    <p>
+    <p class="section-title">GENERAL USE RESTRICTIONS</p>
     <p>
       Any unauthorized use of this specification may violate copyright laws, trademark laws, and communications
       regulations and statutes.
@@ -250,7 +258,7 @@
     </p>
   </div>
   <div>
-    <p class="preamble-section-title">DISCLAIMER OF WARRANTY</p>
+    <p class="section-title">DISCLAIMER OF WARRANTY</p>
     <p>
       WHILE THIS PUBLICATION IS BELIEVED TO BE ACCURATE, IT IS PROVIDED "AS IS" AND MAY CONTAIN ERRORS OR MISPRINTS.
       THE OBJECT MANAGEMENT GROUP AND THE COMPANIES LISTED ABOVE MAKE NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
@@ -267,7 +275,7 @@
     </p>
   </div>
   <div>
-    <p class="preamble-section-title">RESTRICTED RIGHTS LEGEND</p>
+    <p class="section-title">RESTRICTED RIGHTS LEGEND</p>
     <p>
       Use, duplication or disclosure by the U.S. Government is subject to the restrictions set forth in subparagraph
       (c) (1) (ii) of The Rights in Technical Data and Computer Software Clause at DFARS 252.227-7013 or in
@@ -279,7 +287,7 @@
     </p>
   </div>
   <div>
-    <p class="preamble-section-title">TRADEMARKS</p>
+    <p class="section-title">TRADEMARKS</p>
     <p>
       CORBA®, CORBA logos®, FIBO®, Financial Industry Business Ontology®, FINANCIAL INSTRUMENT GLOBAL IDENTIFIER®,
       IIOP®, IMM®, Model Driven Architecture®, MDA®, Object Management Group®, OMG®, OMG Logo®, SoaML®, SOAML®, SysML®,
@@ -294,7 +302,7 @@
     </p>
   </div>
   <div>
-    <p class="preamble-section-title">COMPLIANCE</p>
+    <p class="section-title">COMPLIANCE</p>
     <p>
       The copyright holders listed above acknowledge that the Object Management Group (acting itself or through its
       designees) is and shall at all times be the sole entity that may authorize developers, suppliers and sellers of
@@ -310,7 +318,8 @@
       if the software satisfactorily completes the testing suites.
     <p>
   </div>
-</div>
+  </details>
+<!--</div>-->
 <h1 id="title">Data Product Vocabulary (DPROD)</h1>
 
 <section id='abstract'>
@@ -464,9 +473,11 @@
     reporting etc.
   </p>
   <p>
-    In the Data Catalog Vocabulary (DCAT) framework, a <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:DataService">Data
-    Service</a> is a way to describe services that provide access to data. Data Services give standardized,
-    machine-readable descriptions of how to access one or more datasets or data processing functions.
+    In the Data Catalog Vocabulary (DCAT) framework, 
+    a <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:DataService">Data Service</a> is a way 
+    to describe services that provide access to data. 
+    Data Services give standardized, machine-readable descriptions of how to access one or more 
+    datasets or data processing functions.
   </p>
   <p>
     Data Services specify how to access and download the data. In DPROD Data Services are connected to <a
@@ -497,19 +508,26 @@
 
   <p>
     The Profile consists of the following classes:
-  <UL>
-    <li> Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products</li>
-    <li> Data Product (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and
-      metadata
-    </li>
-    <li> Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTP
-      URL, a Database or a FileShare etc
-    </li>
-    <li> Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc)
-      which can conform to a physical model
-    </li>
-    <li> Dataset (<code>dcat:Dataset</code>) - A collection of related data that can conform to a logical model</li>
-  </ul>
+    <ul>
+      <li>
+        Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products
+      </li>
+      <li>
+        Data Product (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and
+        metadata
+      </li>
+      <li>
+        Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTP
+        URL, a Database or a FileShare etc
+      </li>
+      <li>
+        Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc)
+        which can conform to a physical model
+      </li>
+      <li>
+        Dataset (<code>dcat:Dataset</code>) - A collection of related data that can conform to a logical model
+      </li>
+    </ul>
   </p>
   <p>
     As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a
@@ -574,7 +592,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -615,7 +633,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#dataProductOwner">dprod:dataProductOwner</a></td>
+        <td><a href="#dataproductowner">dprod:dataProductOwner</a></td>
       </tr>
 
       <tr>
@@ -626,7 +644,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -643,7 +661,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#domain">dprod:domain</a></td>
+        <td><a href="#domain">dprod:domain</a></td>
       </tr>
 
 
@@ -656,7 +674,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -676,7 +694,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#inputPort">dprod:inputPort</a></td>
+        <td><a href="#inputport">dprod:inputPort</a></td>
       </tr>
 
       <tr>
@@ -687,7 +705,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -705,7 +723,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#outputPort">dprod:outputPort</a></td>
+        <td><a href="#outputport">dprod:outputPort</a></td>
       </tr>
 
       <tr>
@@ -716,7 +734,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -734,7 +752,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#inputDataset">dprod:inputDataset</a></td>
+        <td><a href="#inputdataset">dprod:inputDataset</a></td>
       </tr>
 
       <tr>
@@ -745,7 +763,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -764,7 +782,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#outputDataset">dprod:outputDataset</a></td>
+        <td><a href="#outputdataset">dprod:outputDataset</a></td>
       </tr>
 
       <tr>
@@ -775,7 +793,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -792,13 +810,13 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#purpose">dprod:purpose</a></td>
+        <td><a href="#purpose">dprod:purpose</a></td>
       </tr>
 
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -822,7 +840,7 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
@@ -834,12 +852,12 @@
 
   <section>
     <h2>lifecycleStatus</h2>
-    The lifecycle status of the Data Product taken from a control list ( Ideation, Design, Build, Deploy, Consume ).
+    The lifecycle status of the Data Product taken from a control list (Ideation, Design, Build, Deploy, Consume).
     <table class="def propdef">
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#lifecycleStatus">dprod:lifecycleStatus</a></td>
+        <td><a href="#lifecyclestatus">dprod:lifecycleStatus</a></td>
       </tr>
 
       <tr>
@@ -850,11 +868,11 @@
 
       <tr>
         <th>Domain:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProduct">dprod:DataProduct</a></td>
+        <td><a href="#dataproduct">dprod:DataProduct</a></td>
       </tr>
       <tr>
         <th>Range:</th>
-        <td><a href="https://ekgf.github.io/dprod/#DataProductLifecycleStatus">dprod:DataProductLifecycleStatus</a></td>
+        <td><a href="#dataproductlifecyclestatus">dprod:DataProductLifecycleStatus</a></td>
       </tr>
       </tbody>
     </table>
@@ -873,7 +891,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#isAccessServiceOf">dprod:isAccessServiceOf</a></td>
+        <td><a href="#isaccessserviceof">dprod:isAccessServiceOf</a></td>
       </tr>
 
       <tr>
@@ -901,7 +919,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#protocol">dprod:protocol</a></td>
+        <td><a href="#protocol">dprod:protocol</a></td>
       </tr>
 
 
@@ -924,7 +942,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#securitySchemaType">dprod:securitySchemaType</a></td>
+        <td><a href="#securityschematype">dprod:securitySchemaType</a></td>
       </tr>
 
 
@@ -1047,7 +1065,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#isDistributionOf">dprod:isDistributionOf</a></td>
+        <td><a href="#isdistributionof">dprod:isDistributionOf</a></td>
       </tr>
 
       <tr>
@@ -1245,7 +1263,7 @@
       <tbody>
       <tr>
         <th>Identifier:</th>
-        <td><a href="https://ekgf.github.io/dprod/#informationSensitivityClassification">dprod:informationSensitivityClassification</a>
+        <td><a href="#informationsensitivityclassification">dprod:informationSensitivityClassification</a>
         </td>
       </tr>
 
@@ -1261,7 +1279,7 @@
       </tr>
       <tr>
         <th>Range:</th>
-        <td><a href="https://ekgf.github.io/dprod/#InformationSensitivityClassification">dprod:InformationSensitivityClassification</a>
+        <td><a href="#informationsensitivityclassification">dprod:InformationSensitivityClassification</a>
         </td>
       </tr>
       </tbody>
@@ -1294,732 +1312,17 @@
 
 </section>
 
-
 <section class="Examples">
   <h2>Worked Examples</h2>
   <p>Here are some worked examples of how to use DPROD for some common use cases</p>
 
-
+  {% for example in examples %}
   <section>
-    <h2>Sba Pool Rates</h2>
-    <p>Rates for SBE Pool that are Mortgage Backed Securities. The data product is provided through 3 ports:
-      1st port: providing all sba pool rates through a query to a database
-      2nd port: providing only EMEA rates through an api
-      3rd port: providing only US rates through a Kafka topic</p>
-    <pre class="example hljs json">{  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-  "id":  "sba-pool-rates",
-  "@id": "https://y.com/products/sba-pool-rates",
-  "@type": "DataProduct",
-  "title": "SBA Pool Rates",
-  "description": "Rates for SBE Pool that are Mortgage Backed Securities. The data product is provided through 3 ports, one of them proving all sba pool rates through a query to a database, another port providing EMEA only rates through an api and another one providing US only rates through a Kafka topic",
-  "dataProductOwner": "https://www.schema.xxx/person/johnSmith",
-  "lifecycle" : "Consume",
- 
-  "outputPort": [{         
-    "@type": "dcat:DataService",
-    "id":  "sba-pool-rate-tabular-prod1",
-    "environment": "PROD",
-    "@id": "https://y.com/service/sba-pool-rate-tabular-prod1",
-    "dcat:endpointURL": "jdbc:oracle:thin@sd656-5656-6745.ldn.organiation.com:43534/PGPERG.WORLD",
-    "sql": "select * from ...",
-    "isAccessServiceOf": {
-      "@id": "https://y.com/distribution/sba-pool-rate-tabular",
-      "id":  "sba-pool-rate-tabular",
-      "@type": "dcat:Distribution",
-      "dcterms:format": "https://www.iana.org/assignments/media-types/application/sql",
-      "isDistributionOf": {
-        "@type": "dcat:Dataset",
-        "@id": "https://y.com/dataset/sba-pool-rate",
-        "id":  "sba-pool-rate",
-        "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
-      }
-    }
-   }
-,
-  {            
-    "@type": "dcat:DataService",  
-    "id":  "sba-pool-rate-emea-api-prod1",
-    "environment": "PROD",
-    "@id": "https://y.com/service/sba-pool-rate-emea-api-prod1",
-    "dcat:endpointURL": "https://example.org/mbs/SBA-Pool-location-emea",
-    "dcat:conformsTo":  "../resources/users.yaml'" ,
-    "isAccessServiceOf": {
-      "@id": "https://y.com/distribution/sba-pool-rate-emea-json1",  
-      "id":  "sba-pool-rate-emea-json1",
-      "@type": "dcat:Distribution",
-      "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
-      "isDistributionOf": {             
-        "@type": "dcat:Dataset",
-        "@id": "https://y.com/dataset/sba-pool-rate-emea",
-        "description": "sba pool data that cover EMEA accessed through an api" ,
-        "geographicalCoverage" :"https://y.com/country/EMEA",
-        "id":  "sba-pool-rate-emea",
-        "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
-      }
-    }
-   }
-
- , {   
-     "@type": "dcat:DataService",
-     "id":  "sba-pool-rate-json-prod1",
-     "@id": "https://y.com/service/sba-pool-rate-json-prod1",
-     "dcat:endpointURL": "q1.debt.mbs.dataset.us", 
-     "isAccessServiceOf": {
-       "@id": "https://y.com/distribution/sba-pool-rate-json",
-       "id":  "sba-pool-rate-json",
-       "@type": "dcat:Distribution",
-       "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
-       "conformsTo": "http://confluent-registry-y/rates-json-schema.json",
-        "schemaCompatiblity": "backwards compatible",
-        "isDistributionOf": {
-         "@type": "dcat:Dataset",
-         "@id": "https://y.com/dataset/sba-pool-rate-us",
-         "id":  "sba-pool-rate-us",
-         "geographicalCoverage" :"https://y.com/country/US" ,
-         "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
-       }
-     }
-  }
-    ]
-}
-</pre>
+    <h2>{{example.name}}</h2>
+    {{example.text}}
+    <pre class="example hljs json">{{example.json}}</pre>
   </section>
-
-  <section>
-    <h2>Core Data Product Extensions</h2>
-    <p>For real world data products, the core data product details will be part of a wider set of metadata that allows
-      the data and data product to be used effectively. Below is an example of extending the DPROD data product,
-      specifically by adding an agreement to a data product.</p>
-    <p>In this example, a Data Product Agreement is defined as a subclass of FIBO Agreement. </p>
-    <p><em>Definition of a simple Agreement based on FIBO:</em></p>
-    <pre>
-                        <code>
-[
-  {
-    "@context": [
-      "https://ekgf.github.io/dprod/dprod.jsonld",
-      {
-        "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
-        "ex": "http://example.org/dp#"
-      }
-    ],
-    "@id": "ex:isSubjectToAgreement",
-    "@type": "rdf:Property",
-    "rdfs:label": "Data Product is Subject To FIBO Agreement",
-    "rdfs:domain": {
-      "@id": "DataProduct"
-    },
-    "rdfs:range": {
-      "@id": "DataProductAgreement"
-    }
-  },
-  {
-    "@id": "ex:DataProductAgreement",
-    "@type": "rdfs:class",
-    "rdfs:label": "DataProductAgreement",
-    "rdfs:subClassOf": {
-      "@id": "fibo:Agreement"
-    }
-  }
-]
-
-</code>
-                    </pre>
-
-    <p>A full definition of agreements for data products is likely to be more complex than a single class and may use
-      other information models or their profiles (such as ODRL Policy) or create dedicated definitions.</p>
-    <p>Below is an example of a Data Product with an associated Data Product Agreement with an effective date.</p>
-    <p><em>Using the agreement:</em></p>
-    <pre>
-                        <code>
-{
-  "@context": [
-    "https://ekgf.github.io/dprod/dprod.jsonld",
-    {
-      "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
-      "ex": "http://example.org/dp#"
-    }
-  ],
-
-  "dataProducts": [
-    {
-      "id": https://y.com/data-product/company-sales,
-      "type": "DataProduct",
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-sales",
-        "type": "DataService",
-        "label": "Sales",
-        "endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/application/json",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "label": "Sales",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-sales",
-            "conformsTo": "https://y.com/schema/Sale"
-          }
-        }
-      },
-      "ex:iSubjectToAgreement": {
-        "@id": "ex:VVSimpleAgreement",
-        "@type": "ex:DataProductagreement"
-      }
-    }
-  ],
-
-  "agreements": [
-    {
-      "@id": "ex:VVSimpleAgreement",
-      "@type": "ex:DataProductAgreement",
-      "rdfs:label": "Very Simple Data Product Agreement",
-      "fibo:hasEffectiveDate": {
-        "@type": "xsd:date",
-        "@value": "2024-08-31"
-      }
-    }
-  ]
-}
-
-</code>
-                    </pre>
-    <pre class="example hljs json"></pre>
-  </section>
-
-  <section>
-    <h2>Data Schema</h2>
-    <p>The Data Product provides to the consumers (dprod:outputDataset) datasets defined based on <a
-      href="https://www.w3.org/TR/vocab-dcat-3/">DCAT</a>.
-      Datasets should be described (<a href="https://www.w3.org/TR/vocab-dcat-2/#Property:resource_conforms_to">dcat:conforms</a>)
-      with logical models.
-      Logical models describe business entities and their properties (attributes and relationships) with consistent
-      business terms and they are technology independent.
-      Ideally, logical models are based on existing standards eg, <a href="https://spec.edmcouncil.org/fibo/ontology">FIBO</a>,
-      <a href="https://www.finos.org/common-domain-model">CDM</a> etc.
-      If a logical model does not exist to describe the dataset, then the dataset publisher can create one, preferably
-      by using SHACL modelling language:</p>
-    <p>Example of a Dataset conforming to a SHACL Schema</p>
-    <pre>
-                        <code>
-exampleDataset dcat:conforms exampleSchema:DatasetLogicalSchema.
-exampleSchema:DatasetLogicalSchema a owl:Ontology, dct:Standard.
-
-</code>
-                    </pre>
-
-    <p>Based on <a href="https://www.w3.org/TR/shacl/">SHACL</a> all entities that exist in the dataset are Node Shapes
-      (1).
-      The attributes of the entities are described as Property Shapes with sh:datatype (2)
-      The relationships are also defined as Property Shaped with sh:class the target class of the relationship (3)</p>
-    <pre>
-                        <code>
-example:Account a sh:NodeShape;       // definition of the entity as a Node Shape (1)
-rdfs:label "Account"@en;              // human readable name of the entity
-dc:description "An Account is...";    // description of the entity
-sh:property example:Account-AccountAge;       // an account has a property shape Account Age. Definition of the property shape follows (2)
-sh:property example:Account-AccountBranch     // an account has a property shape Account Branch. Definition of the property shape follows   (3)
-rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
-.
-
-example:Account-AccountAge a sh:PropertyShape;   // (2) Definition of the Account-AccountAge property shape describing that an account MUST have exactly AccountAge attribute and its datatype is integer
-sh:path example:AccountAge;
-sh:datatype xsd:integer;
-sh:minCount 1;
-sh:maxCount 1;
-rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
-.
-
-example:Account-AccountBranch a sh:PropertyShape;   // (3) Definition of the Account-AccountBranch property shape describing than an account must have at least one Account Branch which is another entity
-sh:path example:AccountBranch;
-sh:class  example:Branch;
-sh:minCount 1;
-rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
-.
-
-example:Branch a sh:NodeShape;     //definition of the entity Branch as a Node Shape (1)
-rdfs:label "Branch"@en;              // human readable description of the entity
-dc:description "A Branch is..";
-rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
-....
-
-</code>
-                    </pre>
-    <pre class="example hljs json">{
-"@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-"id": "https://y.com/products/equity-trade-xxx",
-"@type": "DataProduct",
-"title": "Equity Trade XXX",
-"description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
-"outputPort": {
-  "@type": "DataService",
-  "endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
-  "isAccessServiceOf": {
-    "@type": "Distribution",
-    "format": "application/parquet",
-    "isDistributionOf": {
-      "@type": "Dataset",
-      "@id": "https://y.com/dataset/equity-trade-euronext-paris",
-      "title":  "Equity Trade Euronext Paris XXX",
-        "conformsTo":"https://spec.edmcouncil.org/fibo/ontology/BP/Process/FinancialContextAndProcess/SecuritiesTrade"     } 
-    }
-  }
-}
-</pre>
-  </section>
-
-  <section>
-    <h2>Data Quality</h2>
-    <ul>
-      <li>DQV is a standard vocabulary to describe data quality and is proposed along with the DCAT vocabulary to
-        measure the quality of Datasets.
-      </li>
-      <li>It is based on 3 basic entities: Dimensions, the Metrics that belong to its dimension, and the Measurement for
-        each Metric.
-      </li>
-      <li>Data Quality can be computed in different levels, eg. data product, dataset, table, column level etc.</li>
-      <li>Usually, data quality metrics are measured on a Dataset level and can inform more high level quality metrics
-        on a data product level.
-      </li>
-    </ul>
-    <pre class="example hljs json">[
-  
-  {
-  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-  "id": "https://y.com/derived-quality-measurementA",
-  "@type": "QualityMeasurement",
-  "value": 1,
-  "computedOn": {
-      "@type": "DataProduct",
-      "@id": "https://y.com/products/uk-bonds"
-    },
-  "isMeasurementOf": {
-    "@type": "Metric",
-    "label": "Number of stale datasets"
-    }
-}
-,
-
-{
-  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-  "@id": "https://y.com/quality-measurement-B",
-  "@type": "QualityMeasurement",
-  "value": "false",
-  "computedOn": {
-      "@type": "Dataset",
-      "@id": "https://y.com/products/uk-bonds/yearlyPrices"
-    },
-  "isMeasurementOf": {
-    "@type": "Metric",
-    "label": "Expected distribution frequency achieved"
-  }
-}
-,
-  {
-    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-    "id": "https://y.com/products/uk-bonds",
-    "type": "DataProduct",
-    "outputPort": {
-      "type": "DataService",
-      "endpointURL": "https://y.com/uk-bonds/quality-report",
-      "isAccessServiceOf": {
-        "type": "Distribution",
-        "isDistributionOf": {
-          "type": "Dataset",
-          "conformsTo": "https://www.w3.org/TR/vocab-dqv/#dqv:QualityMeasurement"
-        }
-      }
-    }
-  }
-]
-</pre>
-  </section>
-
-  <section>
-    <h2>Equity Trade</h2>
-    <p>Example of a Data Product with Equity Trades.</p>
-    <p>The Equity Trade Data Product provides to the consumers two datasets, one for trades in LSEG and one in
-      Euronext.</p>
-    <pre class="example hljs json">{
-"@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-"id":  "equity trade-xxx",
-"@id": "https://y.com/products/equity-trade-xxx",
-"@type": "DataProduct",
-"title": "Equity Trade XXX",
-"description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
-"dataProductOwner": "https://www.schema.xxx/person/AnnTaylor",
-"lifecycle" : "Consume",
-"outputPort": [{
-  "@type": "dcat:DataService",
-  "id":  "equity-trade-euronext-xxx-tabular-adls-prod",
-  "@id": "https://y.com/service/equity-trade-euronext-xxx-adls-prod-1",
-  "dcat:endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
-  "dcat:endpointDescription": "Details for accessing storage account",
-  "isAccessServiceOf": {
-    "@id": "https://y.com/service/equity-trade-euronext-xxx-tabular",
-    "id":  "equity-trade-euronext-xxx-tabular",
-    "@type": "dcat:Distribution",
-    "dcterms:format": "application/parquet",
-     "dcat:conformsTo": "https://cdm.finos.org/docs/event-model" ,
-    "isDistributionOf": {
-      "@type": "dcat:Dataset",
-      "@id": "https://y.com/dataset/equity-trade-euronext-paris",
-      "datasetOwner": "https://www.schema.xxx/person/JohnBarks",
-      "title":  "Equity Trade Euronext Paris XXX",
-      "id":  "equity-trade-euronext-paris-xxx",
-      "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
-        } 
-    }
-  }
-,{
-   "@type": "dcat:DataService",
-  "id":  "equity-trade-lseg-xxx-tabular-adls-prod",
-  "@id": "https://y.com/service/equity-trade-lseg-xxx-adls-prod-1",
-  "dcat:endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-lseg",
-  "dcat:endpointDescription": "Details for accessing storage account",
-  "isAccessServiceOf": {
-    "@id": "https://y.com/service/equity-trade-lseg-xxx-tabular",
-    "id":  "equity-trade-lseg-xxx-tabular",
-    "@type": "dcat:Distribution",
-    "dcterms:format": "application/parquet",
-     "dcat:conformsTo": "https://cdm.finos.org/docs/event-model" ,
-    "isDistributionOf": {
-      "@type": "dcat:Dataset",
-      "@id": "https://y.com/dataset/equity-trade-lseg-xxx",
-      "title":  "Equity Trade LSEG XXX",
-      "id":  "equity-trade-lseg-xxx",
-      "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
-        } 
-    }
-  }
-  ]
-}
-</pre>
-  </section>
-
-  <section>
-    <h2>Data Rights</h2>
-    <p><a href="https://www.w3.org/TR/odrl-model/">ODRL</a> is a W3C standard to describe rights and entitlements</p>
-    <p>More specifically based on ODRL, data product and dataset publishers can describe the policies in a consistent,
-      standard and machine-readable manner. Policies contain permissions and prohibitions on specific actions that are
-      required to be met by stakeholders.</p>
-    <p>In addition, policies may be limited by constraints (eg. temporal or geographical constraints) and duties ( eg.
-      payments) that may be imposed on the permissions.</p>
-    <p>Policies and their permitted or prohibited actions can be described on different levels, eg. a Policy can target
-      a Data Product, a Dataset, a Data Service or even a Column.</p>
-    <p>Sophisticated engines should interpret and enforce the odrl policies on the appropriate level eg.:</p>
-    <pre>
-                        <code>
-examplePolicyA odrl:targets exampleProduct:ProductA.
-examplePolicyB odrl:targets exampleDataset:DatasetA1
-
-</code>
-                    </pre>
-
-    <p>An example of a Policy follows, that describes permission to distribute the data only inside a specific
-      region:</p>
-    <pre>
-                        <code>
-examplePolicyA odrl:permission
-   {
-    "action": "odrl:distribute",
-    "constraint": [
-       {"leftOperand": "region",
-         "operator": "eq",
-        "rightOperator": "region:EMEA"
-       }
-     ]
-    }
-
-</code>
-                    </pre>
-    <pre class="example hljs json">{
-  "@type": "Policy",
-  "id": "56456df-dfg-34535345-5545",
-  
-  "assigner": 'https://schema.org/person/AdamSmith",
-  "target": "https://data.org/data-product/equity-trade-xxx",
-  
-  "permission": [
-      {
-       "action": "odrl:read",
-       "constraint": [
-          {
-            "@type": "Constraint",
-            "leftOperand": "workingCountry",
-            "operator": "odrl:isAnyOf",
-            "rightOperand": [region:EMEA, region:APAC],
-            "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
-        }
-    ]
-}
-        
-</pre>
-  </section>
-
-  <section>
-    <h2>Observability</h2>
-    <h2>Observability Ports</h2>
-    <p>An Observability Port is a designated interface or endpoint in a system or application specifically used for
-      monitoring and diagnostic purposes. It allows external tools or services to collect and analyze data related to
-      the system's performance, health, and behaviour. By exposing metrics, logs, and traces through this port,
-      administrators and developers can gain insights into the system's state, troubleshoot issues, and ensure it
-      operates efficiently and reliably.</p>
-    <h3>Defining Observability Ports in DPROD</h3>
-    <p>DPROD has a schema-first design. The first thing you would need to do is define a schema for your logging
-      information. It could be a schema based on OpenTelemetry, but in this example, we use RLOG (which is a semantic
-      ontology for logging).</p>
-    <p>To find the Observability Port, you would query the ports to identify the ones that return an
-      <code>RLOG:Entry</code>:</p>
-    <pre>
-                        <code>
-  outputPort >> isAccessServiceOf >> isDistributionOf >> conformsTo  >> rlog:Entry
-
-</code>
-                    </pre>
-
-    <h3>Example Data Product with Observability Port</h3>
-    <p>You can see that the example data product has two ports, one with the data and one with the logging. This query
-      will return the URI of the port that returns logging data: <code>https://y.com/uk-bonds/observability-port</code>.
-    </p>
-    <p>Here is an example of a data product with an observability port:</p>
-    <pre>
-                        <code>
-{
-  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-  "dataProducts": [
-    {
-      "id": "https://y.com/data-product/uk-bonds",
-      "type": "DataProduct",
-      "inputPort": [
-        {
-          "id": "https://y.com/data-product/uk-bonds/port/2024-data",
-          "type": "DataService"
-        }
-      ],
-      "outputPort": [
-        {
-          "id": "https://y.com/data-product/uk-bonds/port/2024-observability",
-          "type": "DataService",
-          "label": "Observability Port",
-          "endpointURL": "https://y.com/data-product/uk-bonds/port/2024-observability",
-          "isAccessServiceOf": {
-            "type": "Distribution",
-            "format": "https://www.iana.org/assignments/media-types/application/json",
-            "isDistributionOf": {
-              "type": "Dataset",
-              "id": "https://y.com/data-product/uk-bonds/dataset/2024-observability",
-              "conformsTo": "https://y.com/schema/ObservabilityLog"
-            }
-          }
-        },
-        {
-          "id": "https://y.com/data-product/uk-bonds/port/2024-data",
-          "type": "DataService",
-          "label": "Data Port",
-          "endpointURL": "https://y.com/data-product/uk-bonds/port/2024-data",
-          "isAccessServiceOf": {
-            "type": "Distribution",
-            "format": "https://www.iana.org/assignments/media-types/application/json",
-            "isDistributionOf": {
-              "type": "Dataset",
-              "id": "https://y.com/data-product/uk-bonds/dataset/2024-data",
-              "conformsTo": "https://y.com/schema/Data"
-            }
-          }
-        }
-      ]
-    }
-  ]
-}
-
-</code>
-                    </pre>
-
-    <p>Given that our schema defines the class for an observation, we can use that to find all observantly ports on data
-      product like this:</p>
-    <pre>
-                        <code>
-[https://y.com/data-product/uk-bonds/port/2024-observability] >> isAccessServiceOf >> isDistributionOf >> conformsTo >> https://y.com/schema/ObservabilityLog
-
-</code>
-                    </pre>
-
-    <p>In Linked Data we would use a SPARQL query to do that:</p>
-    <pre>
-                        <code>
-SELECT ?port
-WHERE
-{ 
-  ?port a dcat:DataService .
-  ?port (dprod:isAccessServiceOf/dprod:isDistributionOf)/dcat:conformsTo rlog:Entry
-}
-
-</code>
-                    </pre>
-
-    <p>This query will return the URI of the port that provides logging data: <code>https://y.com/data-product/uk-bonds/port/2024-observability</code>.
-    </p>
-    <pre class="example hljs json"></pre>
-  </section>
-
-  <section>
-    <h2>Data Lineage</h2>
-    <h2>Data Lineage</h2>
-    <p>It is important to be able to trace the lineage of data. Within DPROD, this can be done in two ways: at a high
-      level from one data product to another and, if you want, at a more detailed level of the underlying datasets.</p>
-    <h3>High Level Lineage: Between Data Products</h3>
-    <p>Data products have input and output ports, and one data product’s input port will point to another data product’s
-      output port.</p>
-    <p>This allows a user to query the lineage. The data products all have URLs as identifiers, and properties all
-      connect to each other, so you can walk from one data product to the downstream data products that feed it.</p>
-    <p>You can follow the path that leads from one data product to another like this:</p>
-    <pre>
-                        <code>
-Data Product >> inputPort >> isAccessServiceOf >> isDistributionOf >> Input Data Product 
-
-</code>
-                    </pre>
-
-    <p>Let's look at some example data with three data products that connect to each other through their input and
-      output ports: </p>
-    <pre>
-                        <code>
-{
-  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
-  "dataProducts": [
-    {
-      "id": "https://y.com/data-product/company-finance",
-      "type": "DataProduct",
-      "inputPort": [
-        {
-          "id": "https://y.com/data-product/company-sales/port/2025-sales",
-          "type": "DataService"
-        },
-        {
-          "id": "https://y.com/data-product/company-hr/port/2025-payroll",
-          "type": "DataService"
-        }
-      ],
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-balance-sheet",
-        "type": "DataService",
-        "label": "Balance Sheet",
-        "endpointURL": "https://y.com/data-product/company-sales/port/2025-c",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/application/json",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-balance-sheet",
-            "conformsTo": "https://y.com/schema/BalanceSheet"
-          }
-        }
-      }
-    },
-    {
-      "id": "https://y.com/data-product/company-sales",
-      "type": "DataProduct",
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-sales",
-        "type": "DataService",
-        "label": "Sales",
-        "endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/application/json",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "label": "Sales",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-sales",
-            "conformsTo": "https://y.com/schema/Sale"
-          }
-        }
-      }
-    },
-    {
-      "id": "https://y.com/data-product/company-hr",
-      "type": "DataProduct",
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-payroll",
-        "type": "DataService",
-        "label": "Payroll",
-        "endpointURL": "https://y.com/data-product/company-hr/port/2025-payroll",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/text/csv",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "label": "Payroll",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-payroll",
-            "conformsTo": "https://y.com/schema/Payroll"
-          }
-        }
-      }
-    }
-  ]
-}
-
-</code>
-                    </pre>
-
-    <p>Given this example data, if we started at the data product
-      <code>https://y.com/data-product/company-finance</code>, we could walk the relationships to find the input data
-      products that feed it:</p>
-    <pre>
-                        <code>
-https://y.com/data-product/company-finance >> :inputPort >> :isAccessServiceOf >> :isDistributionOf >> [https://y.com/data-product/company-sales , https://y.com/data-product/company-hr]
-
-</code>
-                    </pre>
-
-    <p>In Linked Data, we would actually do this with a query like this:</p>
-    <pre>
-                        <code>
-PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX dprod: <https://ekgf.github.io/dprod/#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX : <https://y.com/data-product/>
-
-SELECT DISTINCT ?input
-WHERE
-{ 
-  :company-finance dprod:inputPort ?inputPort.
-  ?inputPort dprod:isAccessServiceOf/dprod:isDistributionOf/rdfs:label ?input.
-}
-
-</code>
-                    </pre>
-
-    <h3>Detailed Level: Between Datasets</h3>
-    <p>If you wish to track lineage at a more granular level, you can also use PROV (https://www.w3.org/TR/prov-o/) at
-      the dataset level.</p>
-    <pre>
-                        <code>
-dap:atnf-P366-2003SEPT
-  rdf:type dcat:Dataset ;
-  dcterms:bibliographicCitation "Burgay, M; McLaughlin, M; Kramer, M; Lyne, A; Joshi, B; Pearce, G; D'Amico, N; Possenti, A; Manchester, R; Camilo, F (2017): Parkes observations for project P366 semester 2003SEPT. v1. CSIRO. Data Collection. https://doi.org/10.4225/08/598dc08d07bb7" ;
-  dcterms:title "Parkes observations for project P366 semester 2003SEPT"@en ;
-  dcat:landingPage <https://data.csiro.au/dap/landingpage?pid=csiro:P366-2003SEPT> ;
-  prov:wasGeneratedBy dap:P366 ;
-  .
-
-dap:P366
-  rdf:type prov:Activity ;
-  dcterms:type <http://dbpedia.org/resource/Observation> ;
-  prov:startedAtTime "2000-11-01"^^xsd:date ;
-  prov:used dap:Parkes-radio-telescope ;
-  prov:wasInformedBy dap:ATNF ;
-  rdfs:label "P366 - Parkes multibeam high-latitude pulsar survey"@en ;
-  rdfs:seeAlso <https://doi.org/10.1111/j.1365-2966.2006.10100.x> ;
-  .
-
-</code>
-                    </pre>
-
-    <p>See: https://www.w3.org/TR/vocab-dcat-3/#examples-dataset-provenance.</p>
-    <pre class="example hljs json"></pre>
-  </section>
-
+  {% endfor %}
 </section>
 
 <section class="appendix">
