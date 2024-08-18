@@ -1,4 +1,8 @@
-For real world data products, the core data product details will be part of a wider set of metadata that allows the data and data product to be used effectively. Below is an example of extending the DPROD data product, specifically by adding an agreement to a data product.
+For real world data products, the core data product details will be part of a 
+wider set of metadata that allows the data and data product to be used effectively. 
+
+Below is an example of extending the DPROD data product, 
+specifically by adding an agreement to a data product.
 
 In this example, a Data Product Agreement is defined as a subclass of FIBO Agreement. 
 
@@ -35,7 +39,9 @@ In this example, a Data Product Agreement is defined as a subclass of FIBO Agree
 ]
 ```
 
-A full definition of agreements for data products is likely to be more complex than a single class and may use other information models or their profiles (such as ODRL Policy) or create dedicated definitions.
+A full definition of agreements for data products is likely to be more complex 
+than a single class and may use other information models or their profiles 
+(such as ODRL Policy) or create dedicated definitions.
 
 Below is an example of a Data Product with an associated Data Product Agreement with an effective date.
 
@@ -50,10 +56,9 @@ Below is an example of a Data Product with an associated Data Product Agreement 
       "ex": "http://example.org/dp#"
     }
   ],
-  
   "dataProducts": [
     {
-      "id": https://y.com/data-product/company-sales,
+      "id": "https://y.com/data-product/company-sales",
       "type": "DataProduct",
       "outputPort": {
         "id": "https://y.com/data-product/company-sales/port/2025-sales",
@@ -77,7 +82,6 @@ Below is an example of a Data Product with an associated Data Product Agreement 
       }
     }
   ],
-
   "agreements": [
     {
       "@id": "ex:VVSimpleAgreement",
@@ -91,4 +95,3 @@ Below is an example of a Data Product with an associated Data Product Agreement 
   ]
 }
 ```
-

@@ -8,7 +8,7 @@ Policies and their permitted or prohibited actions can be described on different
 
 Sophisticated engines should interpret and enforce the odrl policies on the appropriate level eg.:
 
-```json
+```turtle
 examplePolicyA odrl:targets exampleProduct:ProductA.
 examplePolicyB odrl:targets exampleDataset:DatasetA1
 ```

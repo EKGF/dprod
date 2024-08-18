@@ -1,20 +1,28 @@
-## Data Lineage
+It is important to be able to trace the lineage of data. 
+Within DPROD, this can be done in two ways: at a high level from one 
+data product to another and, if you want, 
+at a more detailed level of the underlying datasets.
 
-It is important to be able to trace the lineage of data. Within DPROD, this can be done in two ways: at a high level from one data product to another and, if you want, at a more detailed level of the underlying datasets.
+## High Level Lineage: Between Data Products
 
-### High Level Lineage: Between Data Products
+Data products have input and output ports, and one data product’s 
+input port will point to another data product’s output port.
 
-Data products have input and output ports, and one data product’s input port will point to another data product’s output port.
+This allows a user to query the lineage. 
+The data products all have URLs as identifiers, and properties all 
+connect to each other, so you can walk from one data product to 
+the downstream data products that feed it.
 
-This allows a user to query the lineage. The data products all have URLs as identifiers, and properties all connect to each other, so you can walk from one data product to the downstream data products that feed it.
-
-You can follow the path that leads from one data product to another like this:
+You can follow the path that leads from one data product to
+another like this:
 
 ```text
 Data Product >> inputPort >> isAccessServiceOf >> isDistributionOf >> Input Data Product 
 ```
 
-Let's look at some example data with three data products that connect to each other through their input and output ports: 
+Let's look at some example data with three data products that 
+connect to each other through their input and output ports:
+
 ```json
 {
   "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
@@ -92,12 +100,16 @@ Let's look at some example data with three data products that connect to each ot
 }
 ```
 
-Given this example data, if we started at the data product `https://y.com/data-product/company-finance`, we could walk the relationships to find the input data products that feed it:
+Given this example data, if we started at the data product
+`https://y.com/data-product/company-finance`, 
+we could walk the relationships to find the input data products that feed it:
+
 ```text
 https://y.com/data-product/company-finance >> :inputPort >> :isAccessServiceOf >> :isDistributionOf >> [https://y.com/data-product/company-sales , https://y.com/data-product/company-hr]
 ```
 
 In Linked Data, we would actually do this with a query like this:
+
 ```sparql
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX dprod: <https://ekgf.github.io/dprod/#>
@@ -112,11 +124,10 @@ WHERE
 }
 ```
 
-
-
 ### Detailed Level: Between Datasets
 
-If you wish to track lineage at a more granular level, you can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.
+If you wish to track lineage at a more granular level, 
+you can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.
 
 ```ttl
 dap:atnf-P366-2003SEPT
@@ -137,5 +148,6 @@ dap:P366
   rdfs:seeAlso <https://doi.org/10.1111/j.1365-2966.2006.10100.x> ;
   .
 ```
+
 
 See: https://www.w3.org/TR/vocab-dcat-3/#examples-dataset-provenance.
