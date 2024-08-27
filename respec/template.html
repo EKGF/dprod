@@ -390,23 +390,23 @@
       Harmonize Data Schemas: Using shared schemas helps unify different data formats.
       For instance, the <a href="https://ekgf.github.io/dprod/dprod.ttl">DPROD</a> specification provides a
       common set of rules for defining a <a href="#dataproduct">Data Product</a>.
-      You can extend this schema as needed.
+      Users of DPROD can extend this schema as needed.
     </li>
   </ul>
 
   The DPROD specification builds on DCAT by connecting
   <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to
-  DPROD <a href="#dataproduct">Data Products</a> using <a href="#inputport">Input</a> and
+  DPROD <a href="#dataproduct">Data Products</a> using <a href="#inputport">input</a> and
   <a href="#outputport">output</a> ports.
   These ports are used to publish and consume data from a Data Product.
-  DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">dcat data services</a>,
+  DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT data services</a>,
   so the data exchanged can be described using DCAT's highly expressive metadata around
   <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> and
   <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a>.
-  This approach also allows you to create your own descriptions for the data you are sharing.
-  You can use a special property called
+  This approach also allows publishers to create their own descriptions for the data they are sharing.
+  They can use a special property called
   <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> from DCAT to link to
-  your own set of rules or guidelines for your data.
+  their own set of rules or guidelines for their data.
 
   <p><strong>The DPROD specification has four main aims:</strong></p>
   <ul class="blue-balls">
@@ -512,14 +512,14 @@
     datasets or data processing functions.
   </p>
   <p>
-    Data Services specify how to access and download the data. In DPROD Data Services are connected to <a
+    Data Services specify how to access and download the data. In DPROD, Data Services are connected to <a
     href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called <a
-    href="#isaccessserviceof">isAccessServiceOf</a>, on the Distribution you can specify formats (like CSV or JSON etc)
+    href="#isaccessserviceof">isAccessServiceOf</a>; on the Distribution one can specify formats (like CSV or JSON etc)
     and provide metadata about the "physical model" of the data. Distributions link to <a
     href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">Datasets</a> and DCAT has a very rich vocabulary for
-    describing every aspect of your dataset. Finally, Datasets use the <a
+    describing every aspect of a dataset. Finally, Datasets use the <a
     href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> property to link to the
-    "logical model" where you can specify rich semantic metadata of your own.
+    "logical model" where one can specify one's own rich semantic metadata.
   </p>
   <p>
     By linking Data Product ports to DCAT DataServices, DPROD can describe Data Products in a way that machines can read
@@ -549,7 +549,7 @@
         metadata
       </li>
       <li>
-        Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. The can be a HTTP
+        Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. This can be a HTTP
         URL, a Database or a FileShare etc
       </li>
       <li>
@@ -596,12 +596,12 @@
   }
   </pre>
   <p class="note">
-    The examples in map the type of the above classes to <code>@type</code> in the JSON-LD serializations.
-    You can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD.
+    The examples map the type of the above classes to <code>@type</code> in the JSON-LD serializations.
+    One can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD.
     <br/>
-    You can copy the json above and paste it into <a
+    The JSON above can be pasted into <a
     href="https://json-ld.org/playground/">https://json-ld.org/playground</a>.
-    You can see that the schema resolves.
+    One can see that the schema resolves.
   </p>
 
   {% for cls in classes %}
@@ -637,7 +637,9 @@
 
 <section class="Examples">
   <h2>Worked Examples</h2>
-  <p>Here are some worked examples of how to use DPROD for some common use cases</p>
+  <p>This section contains some worked examples illustrating how to use DPROD for some common use cases.
+    All these examples are provided as accompanying machine readable files, from which this part of the specification is automatically generated (hence soem formatting variations).
+  </p>
 
   {% for example in examples %}
   <section>

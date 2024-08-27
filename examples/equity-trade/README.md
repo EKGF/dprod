@@ -1,5 +1,5 @@
-Example of a Data Product with Equity Trades.
+Example of a data product for Equity Trades.
 
-The Equity Trade Data Product provides to the consumers two datasets, one for trades in LSEG and one in Euronext.
+The Equity Trades Data Product provides two datasets to the consumers: one for trades in London Stock Exchange (LSEG) and one in Euronext.
 
 

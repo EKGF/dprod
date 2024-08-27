@@ -9,12 +9,12 @@ and ensure it operates efficiently and reliably.
 ## Defining Observability Ports in DPROD
 
 DPROD has a schema-first design. 
-The first thing you would need to do is define a schema for your 
+The first thing to do is define a schema for the 
 logging information. 
-It could be a schema based on OpenTelemetry, but in this example, 
-we use RLOG (which is a semantic ontology for logging).
+It could be a schema based on OpenTelemetry, but this 
+uses RLOG (which is a semantic ontology for logging).
 
-To find the Observability Port, you would query the ports to identify the 
+To find the Observability Port, query the ports to identify the 
 ones that return an `RLOG:Entry`:
 
 ```text
@@ -23,7 +23,7 @@ outputPort >> isAccessServiceOf >> isDistributionOf >> conformsTo >> rlog:Entry
 
 ## Example Data Product with Observability Port
 
-You can see that the example data product has two ports, one with the data 
+One can see that the example data product has two ports, one with the data 
 and one with the logging. 
 This query will return the URI of the port that returns logging 
 data: `https://y.com/uk-bonds/observability-port`.
@@ -80,14 +80,14 @@ Here is an example of a data product with an observability port:
 }
 ```
 
-Given that our schema defines the class for an observation, we can use that to 
+Given that the schema defines the class for an observation, it can be used to 
 find all observability ports on data product like this:
 
 ```text
 [https://y.com/data-product/uk-bonds/port/2024-observability] >> isAccessServiceOf >> isDistributionOf >> conformsTo >> https://y.com/schema/ObservabilityLog
 ```
 
-In Linked Data we would use a SPARQL query to do that:
+In Linked Data a SPARQL query would do that:
 
 ```sparql
 SELECT ?port
