@@ -10,17 +10,17 @@ input port will point to another data product’s output port.
 
 This allows a user to query the lineage. 
 The data products all have URLs as identifiers, and properties all 
-connect to each other, so you can walk from one data product to 
+connect to each other, so a query can walk from one data product to 
 the downstream data products that feed it.
 
-You can follow the path that leads from one data product to
+One can follow the path that leads from one data product to
 another like this:
 
 ```text
 Data Product >> inputPort >> isAccessServiceOf >> isDistributionOf >> Input Data Product 
 ```
 
-Let's look at some example data with three data products that 
+The following example data has three data products that 
 connect to each other through their input and output ports:
 
 ```json
@@ -100,15 +100,15 @@ connect to each other through their input and output ports:
 }
 ```
 
-Given this example data, if we started at the data product
+Given this example data, starting at the data product
 `https://y.com/data-product/company-finance`, 
-we could walk the relationships to find the input data products that feed it:
+one could walk the relationships to find the input data products that feed it:
 
 ```text
 https://y.com/data-product/company-finance >> :inputPort >> :isAccessServiceOf >> :isDistributionOf >> [https://y.com/data-product/company-sales , https://y.com/data-product/company-hr]
 ```
 
-In Linked Data, we would actually do this with a query like this:
+In Linked Data, this would use a query such as:
 
 ```sparql
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
@@ -126,8 +126,8 @@ WHERE
 
 ### Detailed Level: Between Datasets
 
-If you wish to track lineage at a more granular level, 
-you can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.
+To track lineage at a more granular level, 
+one can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.
 
 ```turtle
 dap:atnf-P366-2003SEPT
