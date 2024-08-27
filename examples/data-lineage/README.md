@@ -1,7 +1,7 @@
 It is important to be able to trace the lineage of data. 
 Within DPROD, this can be done in two ways: at a high level from one 
-data product to another and, if you want, 
-at a more detailed level of the underlying datasets.
+data product to another and, if desired, 
+at the more detailed level of the underlying datasets.
 
 ## High Level Lineage: Between Data Products
 
