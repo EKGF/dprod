@@ -3,7 +3,6 @@
 # imports: http://www.w3.org/2004/02/skos/core
 # imports: http://www.w3.org/ns/prov-o#
 # imports: http://www.w3.org/ns/dcat
-# imports: http://www.w3.org/ns/shacl
 # prefix: dprod
 
 
