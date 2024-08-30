@@ -4,7 +4,7 @@
 # imports: http://www.w3.org/ns/prov-o#
 # imports: http://www.w3.org/ns/dcat
 # imports: http://www.w3.org/ns/shacl
-# imports: https://ekgf.github.io/dprod/
+# imports: https://ekgf.github.io/dprod/#
 # prefix: dprod
 
 
