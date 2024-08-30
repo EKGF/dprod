@@ -1,4 +1,4 @@
-#product baseURI: https://ekgf.github.io/dprod/
+# baseURI: https://ekgf.github.io/dprod/
 # imports: http://purl.org/dc/terms/
 # imports: http://www.w3.org/2004/02/skos/core
 # imports: http://www.w3.org/ns/prov-o#
