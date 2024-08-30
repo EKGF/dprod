@@ -6,7 +6,7 @@
 # prefix: dprod
 
 
-
+@base: https://ekgf.github.io/dprod/#
 @prefix dprod: <https://ekgf.github.io/dprod/#> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
