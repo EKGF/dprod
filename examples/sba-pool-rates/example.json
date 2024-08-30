@@ -3,7 +3,7 @@
   "@id": "https://y.com/products/sba-pool-rates",
   "@type": "DataProduct",
   "title": "SBA Pool Rates",
-  "description": "Rates for SBE Pool that are Mortgage Backed Securities. The data product is provided through 3 ports, one of them proving all sba pool rates through a query to a database, another port providing EMEA only rates through an api and another one providing US only rates through a Kafka topic",
+  "description": "Rates for SBA Pool that are Mortgage Backed Securities. The data product is provided through 3 ports, one of them proving all SBA pool rates through a query to a database, another port providing EMEA only rates through an api and another one providing US only rates through a Kafka topic",
   "dataProductOwner": "https://www.schema.xxx/person/johnSmith",
   "lifecycle" : "Consume",
  
@@ -43,7 +43,7 @@
       "isDistributionOf": {             
         "@type": "dcat:Dataset",
         "@id": "https://y.com/dataset/sba-pool-rate-emea",
-        "description": "sba pool data that cover EMEA accessed through an api" ,
+        "description": "SBA pool data that cover EMEA accessed through an api" ,
         "geographicalCoverage" :"https://y.com/country/EMEA",
         "id":  "sba-pool-rate-emea",
         "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
@@ -67,7 +67,7 @@
          "@type": "dcat:Dataset",
          "@id": "https://y.com/dataset/sba-pool-rate-us",
          "id":  "sba-pool-rate-us",
-         "geographicalCoverage" :"https://y.com/country/US" ,
+         "geographicalCoverage" :"https://y.com/country/US",
          "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
        }
      }
