@@ -3,6 +3,7 @@
 venv/
 __pypackages__/
 site/
+dist/
 poetry.lock
 .DS_Store
 .texpadtmp
