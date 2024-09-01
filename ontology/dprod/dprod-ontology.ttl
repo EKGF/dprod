@@ -2,19 +2,17 @@
 # imports: http://www.w3.org/ns/dcat#
 # prefix: dprod
 
-
 @base <https://ekgf.github.io/dprod/> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix sdo: <http://schema.org/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# Since Dublin Core is not an ontology, declare here that the properties used are too be treated as AnnotationProperties in OWL
+# Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL
 dct:description a owl:AnnotationProperty .
 dct:contributor a owl:AnnotationProperty .
 dct:license a owl:AnnotationProperty .
@@ -22,56 +20,22 @@ dct:modified a owl:AnnotationProperty .
 
 dprod:
   a owl:Ontology ;
-  rdfs:label "Data Product Vocabulary"@en ;
-  rdfs:label "The data product ontology"@en ;
-  dct:description "DPROD is an RDF vocabulary designed to facilitate interoperability between data product descriptors." ;
+  dct:title "The Data Product Vocabulary"@en ;
+  rdfs:label "data product ontology"@en ;
+  dct:description "DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way."@en ;
   rdfs:comment
-    "This vocabulary includes terms for the definition of the data product as defined from the Data Product Working Group. The vocabulary utilizes the notion of Datasets as defined from DCAT vocabulary"@en ;
+    "The vocabulary utilizes the notion of Datasets as defined from DCAT vocabulary."@en ;
   rdfs:comment "DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
   dct:modified "2024-08-31"^^xsd:date ;
-  dct:publisher
-    [
-      sdo:url <https://www.omg.org/> ;
-      sdo:name "Object Management Group Standards Development Organization" ;
-    ] ;
-  dct:contributor
-    [
-      a sdo:Person ;
-      sdo:name "Natasa Varytimou" ;
-      sdo:affiliation
-        [
-          sdo:url <https://ubs.com> ;
-          sdo:name "UBS" ;
-        ] ;
-    ] ;
+  dct:publisher <https://www.omg.org/> ;
+  dct:contributor <https://www.linkedin.com/in/natasavaritimou/> ;
   dct:contributor <https://www.linkedin.com/in/peterivett/> ;
   dct:contributor <https://www.linkedin.com/in/jgeluk/> ;
-  dct:contributor
-    [
-      a sdo:Person ;
-      sdo:affiliation
-        [
-          sdo:url <https://eccenca.com> ;
-          sdo:name "eccenca GmbH" ;
-        ] ;
-      sdo:name "Marcel Fröhlich" ;
-    ] ;
-  dct:contributor
-    [
-      a sdo:Person ;
-      sdo:affiliation
-        [
-          sdo:url <https://brox.de> ;
-          sdo:name "Brox IT-Solutions GmbH"
-        ] ;
-      sdo:name "Matthias Jurisch" ;
-    ] ;
-
-  owl:imports dct: ;
-  owl:imports <http://www.w3.org/2004/02/skos/core> ;
+  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/> ;
+  dct:contributor <https://www.linkedin.com/in/tonyseale/> ;
   owl:imports <http://www.w3.org/ns/dcat#> ;
-  owl:versionInfo "Create the Data Product Ontology based on input and output DCAT datasets"@en ;
+  owl:versionInfo "OMG Request For Comments Errata 2" ;
 .
 
 ############################# DPROD Classes  #########################
@@ -79,7 +43,7 @@ dprod:
 dprod:DataProduct
   a owl:Class, rdfs:Class ;
   dct:description
-    "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
+    "A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
   rdfs:comment "A data product may have input and output ports, code and metadata"@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "data product" ;
@@ -89,18 +53,19 @@ dprod:DataProduct
 dprod:DataProductLifecycleStatus
   a owl:Class, rdfs:Class ;
   dct:description
-    "The lifecycle status of the data product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
-  rdfs:comment "The lifecycle of the data product as defined from EDM Council CDMC"@en ;
+    "The development status of the data product taken from a controlled list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+  rdfs:comment "The lifecycle of the data product as defined by EDM Council CDMC"@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "data product lifecycle status" ;
   rdfs:subClassOf dprod:Enumeration ;
+  rdfs:seeAlso <https://edmcouncil.org/wp-content/uploads/2024/03/EDMWebinar_DPSIG_04-30-Presentation.pdf#page=7> ;
 .
 
 dprod:InformationSensitivityClassification
   a owl:Class, rdfs:Class ;
   rdfs:label "information sensitivity classification" ;
   dct:description
-    "A taxonomy of concepts that classifies the information within a dataset that indicates the level of control and protection that must be applied to the dataset."@en ;
+    "A classification of the information within a dataset to indicate the level of control and protection that must be applied."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:seeAlso <https://spec.edmcouncil.org/cdmc/ontology/Classification/InformationSensitivity> ;
 .
@@ -114,16 +79,16 @@ dprod:Enumeration
 
 dprod:Protocol
   a owl:Class, rdfs:Class ;
-  dct:description "A protocol, possibly including a specific version, used for communicating with a service."@en ;
+  dct:description "A detailed specification, possibly including a specific version, for how to communicate with a service."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "protocol" ;
 .
 
 dprod:SecuritySchemaType
   a owl:Class, rdfs:Class ;
-  dct:description "A security schema type used for authentication and communication."@en ;
+  dct:description "A classification encompassing a set of rules used for authentication and communication."@en ;
   rdfs:isDefinedBy dprod: ;
-  rdfs:label "Security Schema Type" ;
+  rdfs:label "security schema type" ;
 .
 
 
@@ -137,7 +102,7 @@ dprod:dataProductOwner
   rdfs:domain dprod:DataProduct ;
   rdfs:range prov:Agent ;
   dct:description
-    "The agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion)."@en ;
+    "The agent that is accountable overall for the data product, including managing it through its lifecycle."@en ;
   rdfs:label "data product owner" ;
 .
 
@@ -148,7 +113,7 @@ dprod:lifecycleStatus
   rdfs:domain dprod:DataProduct ;
   rdfs:range dprod:DataProductLifecycleStatus ;
   dct:description
-    "The lifecycle status of the data product taken from a control list ( Ideation, Design, Build, Deploy, Consume ). "@en ;
+    "The development status of the data product. "@en ;
   rdfs:label "lifecycle status" ;
 .
 
@@ -158,7 +123,7 @@ dprod:informationSensitivityClassification
     "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:Dataset ;
-  rdfs:range dprod:InformationSensitiviyClassification ;
+  rdfs:range dprod:InformationSensitivityClassification ;
   rdfs:label "information sensitivity classification" ;
 .
 
@@ -182,27 +147,27 @@ dprod:domain
 .
 
 dprod:inputPort
-  a rdfs:Property, owl:objectProperty ;
+  a rdfs:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod: ;
   dct:description
-    "An input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."@en ;
+    "A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."@en ;
   rdfs:label "input port" ;
 .
 
 dprod:outputPort
-  a rdfs:Property, owl:objectProperty ;
+  a rdfs:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod: ;
   dct:description
-    "An output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
+    "A set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
   rdfs:label "output port" ;
 .
 
 dprod:inputDataset
-  a rdfs:Property, owl:objectProperty ;
+  a rdfs:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:Dataset ;
   rdfs:isDefinedBy dprod: ;
@@ -212,7 +177,7 @@ dprod:inputDataset
 .
 
 dprod:outputDataset
-  a rdfs:Property, owl:objectProperty ;
+  a rdfs:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:Dataset ;
   rdfs:isDefinedBy dprod: ;
@@ -222,7 +187,7 @@ dprod:outputDataset
 .
 
 dprod:isDistributionOf
-  a rdfs:Property, owl:objectProperty ;
+  a rdfs:Property, owl:ObjectProperty ;
   owl:inverseOf dcat:distribution ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:Distribution ;
@@ -232,7 +197,7 @@ dprod:isDistributionOf
 
 dprod:isAccessServiceOf
   a rdfs:Property, owl:ObjectProperty ;
-  dct:description "The dataset distribution that is being offered through this Data Service."@en ;
+  dct:description "The dataset distribution that is being offered through this data service."@en ;
   rdfs:isDefinedBy dprod: ;
   owl:inverseOf dcat:accessService ;
   rdfs:domain dcat:DataService ;
@@ -242,7 +207,7 @@ dprod:isAccessServiceOf
 
 dprod:protocol
   a rdfs:Property, owl:ObjectProperty ;
-  dct:description "A protocol (possibly one of many options) used to communicate with this Data Service."@en ;
+  dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:DataService ;
 # rdfs:range rdf:resource ; # better let user decide whether they want Protocol class or own class or skos

@@ -11,7 +11,6 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl:	<http://www.w3.org/ns/odrl/2/>.
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix sdo: <http://schema.org/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -25,54 +24,22 @@
   dct:description "This is the DCAT profile based on DPROD which is an ontology designed to facilitate interoperability between data product descriptors.";
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
   dct:modified "2024-08-31"^^xsd:date ;
-  dct:publisher
-    [
-      sdo:url <https://www.omg.org/> ;
-      sdo:name "Object Management Group Standards Development Organization" ;
-    ] ;
-dct:contributor
-    [
-      a sdo:Person ;
-      sdo:name "Natasa Varytimou" ;
-      sdo:affiliation
-        [
-          sdo:url <https://ubs.com> ;
-          sdo:name "UBS" ;
-        ] ;
-    ] ;
+  dct:contributor <https://www.linkedin.com/in/natasavaritimou/> ;
   dct:contributor <https://www.linkedin.com/in/peterivett/> ;
   dct:contributor <https://www.linkedin.com/in/jgeluk/> ;
-  dct:contributor
-    [
-      a sdo:Person ;
-      sdo:affiliation
-        [
-          sdo:url <https://eccenca.com> ;
-          sdo:name "eccenca GmbH" ;
-        ] ;
-      sdo:name "Marcel Fröhlich" ;
-    ] ;
-  dct:contributor
-    [
-      a sdo:Person ;
-      sdo:affiliation
-        [
-          sdo:url <https://brox.de> ;
-          sdo:name "Brox IT-Solutions GmbH"
-        ] ;
-      sdo:name "Matthias Jurisch" ;
-    ] ;
-   sh:declare [
-    sh:prefix "dprod" ;
-    sh:namespace "https://ekgf.github.io/dprod/" ;
-   ] ;
+  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/> ;
+  dct:contributor <https://www.linkedin.com/in/tonyseale/> ;
   owl:imports dct: ;
-  owl:imports <http://www.w3.org/2004/02/skos/core> ;
   owl:imports <http://www.w3.org/ns/dcat#> ;
   owl:imports <http://www.w3.org/ns/shacl>;
   owl:imports <https://ekgf.github.io/dprod/>;
-  .
-
+  owl:versionInfo "OMG Request For Comments Errata 2" ;
+  sh:declare [
+    sh:prefix "dprod" ;
+    sh:namespace "https://ekgf.github.io/dprod/" ;
+   ] ;
+. 
+ 
 ############################# dprod Shapes  #########################
 
 dprod:DataProductShape
@@ -241,7 +208,6 @@ dprod:DataProduct-hasPolicy
   rdfs:label "data product has policy shape";
 .
 
-
 dprod:DataProduct-inputPort
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod:;
@@ -313,7 +279,7 @@ dprod:Dataset-distribution
   rdfs:label "dataset distribution shape";
  .
 
- dprod:Dataset-conformsTo
+dprod:Dataset-conformsTo
    a sh:PropertyShape;
    rdfs:isDefinedBy dprod:;
    sh:path dct:conformsTo;
