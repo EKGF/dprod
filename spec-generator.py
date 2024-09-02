@@ -1,3 +1,4 @@
+import inspect
 import shutil
 import os
 import re
@@ -138,7 +139,7 @@ def add_to_context(uri,classes):
                 property_name = short_name(o)
                 property_name = property_name.replace(f'{name}-', '')
                 rdf_property = RdfProperty(name=property_name, uri=o) # TODO: uri: Expected URIRef, got 'Union[str, Node]' instead
-                rdf_property.description = description
+                rdf_property.description = html.escape(description)
                 class_obj.properties.append(rdf_property)
                 rdf_property.__dict__["domain"] = class_obj.targetClass # TODO: targetClass is not an attribute of RdfClass
                 rdf_property.__dict__["domain_short"] = g.namespace_manager.normalizeUri(class_obj.targetClass)
@@ -153,13 +154,13 @@ def add_to_context(uri,classes):
                         try:
                             label = g.value(o1, RDFS.label)
                             if label:
-                                rdf_property.label = label
+                                rdf_property.label = html.escape(label)
                             description = g.value(o1, DC.description)
                             if not rdf_property.description and description:
-                                rdf_property.description = description
+                                rdf_property.description = html.escape(description)
                             comment = g.value(o1, RDFS.comment)
                             if comment:
-                                rdf_property.comment = comment
+                                rdf_property.comment = html.escape(comment)
                         except:
                             pass
                     if p1_name not in rdf_property.__dict__:
@@ -240,22 +241,49 @@ def main():
 
     if not os.path.exists('dist'):
         os.makedirs('dist')
+
+    for cls in classes:
+        print(f"Class: {cls.name}")
+        with open(f"dist/{cls.name}.html", mode='x', encoding='utf-8') as f:
+            print(f"Generating class page: dist/{cls.name}.html")
+            f.write(inspect.cleandoc(f'''
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>{cls.name}</title>
+                <script>
+                    window.onload = function() {{
+                        window.location.href = window.location.href.substring(
+                            0, window.location.href.lastIndexOf( "/" ) + 1
+                        ) + "#{cls.name.lower()}";
+                    }};
+                </script>
+            </head>
+            <body>
+                <h1>{cls.name}</h1>
+                <p>{cls.description}</p>
+            </body>
+            </html>
+            '''))
+        for prop in cls.properties:
+            print(f"  Property: {prop.name}")
+
     
-    with open('dist/index.html', 'w', encoding='utf-8') as f:
+    with open('dist/index.html', mode='x', encoding='utf-8') as f:
         print(f"Generating home page: ./{f.name}")
         f.write(spec)
     
-    with open('dist/dprod.jsonld', 'w', encoding='utf-8') as f:
+    with open('dist/dprod.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF JSON-LD: ./{f.name}")
         json_dump = json.dumps(json_ld, indent=4)
         # print(json_dump)
         f.write(json_dump)
         
-    with open('dist/dprod.ttl', 'w', encoding='utf-8') as f:
+    with open('dist/dprod.ttl', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF Turtle: ./{f.name}")
         f.write(g.serialize(format='turtle'))
 
-    with open('dist/dprod.rdf', 'w', encoding='utf-8') as f:
+    with open('dist/dprod.rdf', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF/XML: ./{f.name}")
         f.write(g.serialize(format='application/rdf+xml'))
 
