@@ -10,6 +10,7 @@ import rdflib
 from rdflib import Graph, URIRef, DCTERMS, SH, DC
 from rdflib.namespace import OWL, RDF, RDFS, XSD, DCAT
 import json
+import html
 
 # Load the OWL ontology into an RDFlib graph
 g = Graph()
@@ -66,11 +67,11 @@ def replace_backticks(markdown_text):
 
     def replace_code_block(match):
         code_type = match.group(1)
-        code_content = match.group(2)
+        code_content = html.escape(match.group(2))
         if code_type == 'text':
-            return f'''<pre><code>{code_content}\n</code></pre>'''
+            return f'''<pre class="ekgfexample"><code class="ekgfexample">{code_content}\n</code></pre>'''
         else:
-            return f'''<pre class="nolinks hljs {code_type}"><code>{code_content}\n</code></pre>'''
+            return f'''<pre class="nolinks hljs {code_type} ekgfexample"><code class="ekgfexample">{code_content}\n</code></pre>'''
         # return f'<pre class="example hljs {code_type}">\n{code_content}\n</pre>'
 
     # Replace all code blocks
