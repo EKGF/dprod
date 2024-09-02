@@ -105,22 +105,27 @@ Given this example data, starting at the data product
 one could walk the relationships to find the input data products that feed it:
 
 ```text
-https://y.com/data-product/company-finance >> :inputPort >> :isAccessServiceOf >> :isDistributionOf >> [https://y.com/data-product/company-sales , https://y.com/data-product/company-hr]
+https://y.com/data-product/company-finance >> 
+    :inputPort >> 
+    :isAccessServiceOf >> 
+    :isDistributionOf >> [
+        https://y.com/data-product/company-sales, 
+        https://y.com/data-product/company-hr
+    ]
 ```
 
 In Linked Data, this would use a query such as:
 
 ```sparql
-PREFIX dcat: <http://www.w3.org/ns/dcat#>
-PREFIX dprod: <https://ekgf.github.io/dprod/#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX : <https://y.com/data-product/>
+PREFIX :      <https://y.com/data-product/>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dprod: <https://ekgf.github.io/dprod/>
 
 SELECT DISTINCT ?input
 WHERE
 { 
-  :company-finance dprod:inputPort ?inputPort.
-  ?inputPort dprod:isAccessServiceOf/dprod:isDistributionOf/rdfs:label ?input.
+  :company-finance dprod:inputPort ?inputPort .
+  ?inputPort dprod:isAccessServiceOf/dprod:isDistributionOf/rdfs:label ?input .
 }
 ```
 
@@ -148,6 +153,5 @@ dap:P366
   rdfs:seeAlso <https://doi.org/10.1111/j.1365-2966.2006.10100.x> ;
   .
 ```
-
 
 See: https://www.w3.org/TR/vocab-dcat-3/#examples-dataset-provenance.
