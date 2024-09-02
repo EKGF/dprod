@@ -567,7 +567,7 @@
     the shared FIBO specification for callable bonds.
   </p>
 
-  <pre id="eg12" class="example hljs json">
+  <pre id="eg12" class="example hljs json ekgfexample">
   {
     "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
     "id": "https://y.com/products/uk-bonds",
@@ -611,7 +611,7 @@
         <p>
           <table class="def propdef">
           <tbody>
-            <tr><th>Identifier:</th><td><a href="{{prop.uri}}">{{prop.short_uri}}</a></td></tr>
+            <tr><th>Identifier:</th><td><a href="#{{prop.name.lower()}}">{{prop.short_uri}}</a></td></tr>
             {% if prop.label is not none and prop.label  != '' %}   
             <tr><th>Label:</th><td>{{prop.label}}</td></tr>
             {% endif %}
