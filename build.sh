@@ -10,7 +10,7 @@ venv_python_bin="${venv_dir}/bin/python3"
 
 function setup() {
 
-  mkdir -p "${dist_dir}" >/dev/null 2>&1 || return $?
+  rm -rf dist > /dev/null 2>&1
   
   ${system_python_bin} -m venv ${venv_dir} || return $?
 

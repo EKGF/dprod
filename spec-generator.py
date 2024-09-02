@@ -237,6 +237,9 @@ def main():
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="./respec/"))
     template = env.get_template("template.html")
     spec = template.render(classes=classes, examples=examples)
+
+    if not os.path.exists('dist'):
+        os.makedirs('dist')
     
     with open('dist/index.html', 'w', encoding='utf-8') as f:
         print(f"Generating home page: ./{f.name}")
