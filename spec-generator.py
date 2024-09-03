@@ -239,8 +239,10 @@ def main():
     template = env.get_template("template.html")
     spec = template.render(classes=classes, examples=examples)
 
-    if not os.path.exists('dist'):
-        os.makedirs('dist')
+    if os.path.exists('dist'):
+        shutil.rmtree('dist')
+        
+    os.makedirs('dist')
 
     for cls in classes:
         print(f"Class: {cls.name}")
