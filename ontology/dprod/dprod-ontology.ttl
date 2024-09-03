@@ -33,6 +33,7 @@ dprod:
   dct:contributor <https://www.linkedin.com/in/peterivett/> ;
   dct:contributor <https://www.linkedin.com/in/jgeluk/> ;
   dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/> ;
+  dct:contributor <https://www.linkedin.com/in/matthias-jurisch/> ;
   dct:contributor <https://www.linkedin.com/in/tonyseale/> ;
   owl:imports <http://www.w3.org/ns/dcat#> ;
   owl:versionInfo "OMG Request For Comments Errata 2" ;
