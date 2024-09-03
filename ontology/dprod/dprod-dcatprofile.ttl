@@ -61,17 +61,17 @@ dprod-shapes:DataProductShape
     rdfs:isDefinedBy dprod-shapes:;
     rdfs:label "data product shape" ;
     sh:targetClass dprod:DataProduct;
-    sh:property dprod:DataProduct-label;
-    sh:property dprod:DataProduct-description;
-    sh:property dprod:DataProduct-dataProductOwner;
-    sh:property dprod:DataProduct-domain;
-    sh:property dprod:DataProduct-inputPort;
-    sh:property dprod:DataProduct-outputPort;
-    sh:property dprod:DataProduct-inputDataset;
-    sh:property dprod:DataProduct-outputDataset;
-    sh:property dprod:DataProduct-purpose;
-    sh:property dprod:DataProduct-hasPolicy;
-    sh:property dprod:DataProduct-lifecycleStatus;
+    sh:property dprod-shapes:DataProduct-label;
+    sh:property dprod-shapes:DataProduct-description;
+    sh:property dprod-shapes:DataProduct-dataProductOwner;
+    sh:property dprod-shapes:DataProduct-domain;
+    sh:property dprod-shapes:DataProduct-inputPort;
+    sh:property dprod-shapes:DataProduct-outputPort;
+    sh:property dprod-shapes:DataProduct-inputDataset;
+    sh:property dprod-shapes:DataProduct-outputDataset;
+    sh:property dprod-shapes:DataProduct-purpose;
+    sh:property dprod-shapes:DataProduct-hasPolicy;
+    sh:property dprod-shapes:DataProduct-lifecycleStatus;
 .
 
 dprod-shapes:DataServiceShape
@@ -80,11 +80,11 @@ dprod-shapes:DataServiceShape
   sh:targetClass dcat:DataService ;
   rdfs:label "data service shape" ;
   dct:description "A collection of operations that provides access to one or more datasets or data processing functions."@en ;
-  sh:property dprod:DataService-isAccessServiceOf ;
-  sh:property dprod:DataService-protocol ;
-  sh:property dprod:DataService-securitySchemaType;
-  sh:property dprod:DataService-endpointURL;
-  sh:property dprod:DataService-endpointDescription ;
+  sh:property dprod-shapes:DataService-isAccessServiceOf ;
+  sh:property dprod-shapes:DataService-protocol ;
+  sh:property dprod-shapes:DataService-securitySchemaType;
+  sh:property dprod-shapes:DataService-endpointURL;
+  sh:property dprod-shapes:DataService-endpointDescription ;
   .
 
 dprod-shapes:DistributionShape
@@ -93,10 +93,10 @@ dprod-shapes:DistributionShape
   rdfs:label "distribution shape" ;
   dct:description "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
   sh:targetClass dcat:Distribution ;
-  sh:property dprod:Distribution-accessService ;
-  sh:property dprod:Distribution-conformsTo ;
-  sh:property dprod:Distribution-isDistributionOf ;
-  sh:property dprod:Distribution-format;
+  sh:property dprod-shapes:Distribution-accessService ;
+  sh:property dprod-shapes:Distribution-conformsTo ;
+  sh:property dprod-shapes:Distribution-isDistributionOf ;
+  sh:property dprod-shapes:Distribution-format;
   .
 
 dprod-shapes:DatasetShape
@@ -105,12 +105,12 @@ dprod-shapes:DatasetShape
   rdfs:label "dataset shape" ;
   dct:description "A collection of data, published or curated by a single agent, and available for access or download in one or more representations."@en ;
   sh:targetClass dcat:Dataset ;
-  sh:property dprod:Dataset-label;
-  sh:property dprod:Dataset-description;
-  sh:property dprod:Dataset-type;
-  sh:property dprod:Dataset-distribution ;
-  sh:property dprod:Dataset-conformsTo ;
-  sh:property dprod:Dataset-hasPolicy ;
+  sh:property dprod-shapes:Dataset-label;
+  sh:property dprod-shapes:Dataset-description;
+  sh:property dprod-shapes:Dataset-type;
+  sh:property dprod-shapes:Dataset-distribution ;
+  sh:property dprod-shapes:Dataset-conformsTo ;
+  sh:property dprod-shapes:Dataset-hasPolicy ;
   sh:property dcat:Dataset-informationSensitivityClassification;
   .
 
