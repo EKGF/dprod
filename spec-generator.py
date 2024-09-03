@@ -8,7 +8,7 @@ from typing import List
 import jinja2
 import markdown
 import rdflib
-from rdflib import Graph, URIRef, DCTERMS, SH, DC
+from rdflib import Graph, URIRef, DCTERMS, SH, DCTERMS
 from rdflib.namespace import OWL, RDF, RDFS, XSD, DCAT
 import json
 import html
@@ -27,7 +27,7 @@ context = {
     "rdfs": str(RDFS),
     "xsd": str(XSD),
     "dcat": str(DCAT),
-    "dcterms": str(DCTERMS),
+    "dct": str(DCTERMS),
     "sh": str(SH),
     "id": "@id",
     "type": "@type"
@@ -114,7 +114,7 @@ def add_to_context(uri,classes):
             for s, p, o in g.triples((None, RDFS.subClassOf, uri)):
                 add_to_context(s) # TODO: second parameter is missing
             
-            description = g.value(URIRef(uri), DC.description)
+            description = g.value(URIRef(uri), DCTERMS.description)
                 
             if hasattr(class_obj, 'targetClass'):
                 owl_class = RdfClass(name=name, uri=class_obj.targetClass)
@@ -130,8 +130,9 @@ def add_to_context(uri,classes):
 
             for s, p, o in g.triples((uri, SH.property, None)):
                 property_shape_uri = o
+                print(f"  uri={uri} p={p} o={o}")
                 path = next(g.triples((o, SH.path, None)))
-                description = next(g.triples((o, DC.description, None)))
+                description = next(g.triples((o, DCTERMS.description, None)))
                 if description:
                     description = str(description[2])
                 if path is not None:
@@ -155,7 +156,7 @@ def add_to_context(uri,classes):
                             label = g.value(o1, RDFS.label)
                             if label:
                                 rdf_property.label = html.escape(label)
-                            description = g.value(o1, DC.description)
+                            description = g.value(o1, DCTERMS.description)
                             if not rdf_property.description and description:
                                 rdf_property.description = html.escape(description)
                             comment = g.value(o1, RDFS.comment)
