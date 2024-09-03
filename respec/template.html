@@ -601,31 +601,32 @@
   </p>
 
   {% for cls in classes %}
+  <section>
+    <h3 id="{{cls.html_id()}}">{{cls.name}}</h3>
+    <p>{{cls.description}}</p>
+    {% if cls.comment is not none %}
+    <p>{{cls.comment}}</p>
+    {% endif %}
+    {% for prop in cls.properties %}
     <section>
-      <h3>{{cls.name}}</h3>
-      {{cls.description}}
-      {% for prop in cls.properties %}
-      <section>
-        <h4>{{prop.name}}</h4>
-        <p>{{prop.description}}</p>
-        <p>
-          <table class="def propdef">
-          <tbody>
-            <tr><th>Identifier:</th><td><a href="#{{prop.name.lower()}}">{{prop.short_uri}}</a></td></tr>
-            {% if prop.label is not none and prop.label  != '' %}   
-            <tr><th>Label:</th><td>{{prop.label}}</td></tr>
-            {% endif %}
-            {% if prop.comment is not none and prop.comment  != '' %}   
-            <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
-            {% endif %}
-            <tr><th>Domain:</th><td><a href="{{prop.domain}}">{{prop.domain_short}}</a></td></tr>
-            <tr><th>Range:</th><td><a href="{{prop.range}}">{{prop.range_short}}</a></td></tr>
-          </tbody>
-          </table>
-        </p>
-      </section>
-    {% endfor %}
+      <h4 id="{{prop.html_id()}}">{{prop.name}}</h4>
+      <p>{{prop.description}}</p>
+      <table class="def propdef">
+      <tbody>
+        <tr><th>Identifier:</th><td><a href="{{prop.href()}}">{{prop.short_uri}}</a></td></tr>
+        {% if prop.label is not none and prop.label  != '' %}   
+        <tr><th>Label:</th><td>{{prop.label}}</td></tr>
+        {% endif %}
+        {% if prop.comment is not none and prop.comment  != '' %}   
+        <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
+        {% endif %}
+        <tr><th>Domain:</th><td>{{prop.htmlDomain()}}</td></tr>
+        <tr><th>Range:</th><td>{{prop.htmlRange()}}</td></tr>
+      </tbody>
+      </table>
     </section>
+    {% endfor %}
+  </section>
   {% endfor %}
 
 </section>
