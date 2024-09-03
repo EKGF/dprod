@@ -170,6 +170,32 @@
       top: 0.5em; /* Aligns the bullet vertically with the text */
       font-size: 0.6em; /* Adjust the size of the bullet */
     }
+    
+    pre.ekgfexample {
+      background-color: #f9f9f9;
+      border-left: 6px solid #3c78d8;
+      margin: 1.5em 1.5em 0;
+      padding: 1em 1em 0;
+    }
+    
+    code.ekgfexample {
+      overflow-wrap: break-word;
+      background-color: #f9f9f9;
+      margin: 1.5em 0;
+      padding: 1em 1em 0;
+      color: black;
+    }
+    @media print {
+      body {
+        max-width: none !important;
+      }
+      img {
+        max-width:100% !important;
+      }
+      code.ekgfexample {
+        white-space: pre-wrap;
+      }
+    }
   </style>
 </head>
 <body>
@@ -782,7 +808,9 @@
   <section>
     <h3>{{example.name}}</h3>
     <p>{{example.text}}</p>
-    <pre class="hljs json">{{example.json}}</pre>
+    {% if example.json is not none and example.json != '' %}
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">{{example.json}}</code></pre>
+    {% endif %}
   </section>
   {% endfor %}
 </section>
