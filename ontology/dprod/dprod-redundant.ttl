@@ -8,7 +8,7 @@
 
 
 
-@prefix dprod: <https://ekgf.github.io/dprod/#> .
+@prefix dprod: <https://ekgf.github.io/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
@@ -145,12 +145,12 @@ dprod:DataProductShape
     dc:description "The shape of the Data Product. A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
     rdfs:isDefinedBy dprod:;
     sh:targetClass dprod:DataProduct;
-    sh:property dprod:DataProduct-dataProductOwner;
-    sh:property dprod:DataProduct-domain;   
-    sh:property dprod:DataProduct-inputPort;
-    sh:property dprod:DataProduct-outputPort;
-    sh:property dprod:DataProduct-purpose;
-    sh:property dprod:DataProduct-productionProcessDescription;    
+    sh:property dprod-shapes:DataProduct-dataProductOwner;
+    sh:property dprod-shapes:DataProduct-domain;   
+    sh:property dprod-shapes:DataProduct-inputPort;
+    sh:property dprod-shapes:DataProduct-outputPort;
+    sh:property dprod-shapes:DataProduct-purpose;
+    sh:property dprod-shapes:DataProduct-productionProcessDescription;    
 .
 
 dprod:DataServiceShape
@@ -159,9 +159,9 @@ dprod:DataServiceShape
   dc:description "The shape of the DCAT Data Service as used in the DPROD vocabulary. "@en ;
   rdfs:isDefinedBy dprod:;
   sh:targetClass dcat:DataService;
-  sh:property dprod:DataService-isAccessServiceOf ;
-  sh:property dprod:DataService-protocol ;
-  sh:property dprod:DataService-securitySchemaType;
+  sh:property dprod-shapes:DataService-isAccessServiceOf ;
+  sh:property dprod-shapes:DataService-protocol ;
+  sh:property dprod-shapes:DataService-securitySchemaType;
  .
 
 dprod:DistributionShape

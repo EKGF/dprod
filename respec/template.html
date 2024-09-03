@@ -97,6 +97,32 @@
           ],
         },
       ],
+      localBiblio: {
+        OWL: {
+          title: "OWL 2 Web Ontology Language Quick Reference Guide (Second Edition)",
+          href: "http://www.w3.org/TR/2012/RECowl2-quick-reference-20121211/",
+          status: "W3C Recommendation 11 December 2012",
+          publisher: "W3C",
+        },
+        RDF: {
+          title: "RDF 1.1 Concepts and Abstract Syntax",
+          href: "http://www.w3.org/TR/rdf11-concepts/",
+          status: "W3C Recommendation, 25 February 2014",
+          publisher: "W3C",
+        },
+        DCAT: {
+          title: "Data Catalog Vocabulary (DCAT) - Version 3",
+          href: "https://www.w3.org/TR/vocab-dcat/",
+          status: "W3C Recommendation 24 August 2024",
+          publisher: "W3C",
+        },
+        "Dublin Core": {
+          title: "DCMI Metadata Terms",
+          href: "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
+          status: "Issued 2020-01-20 by the Dublin Core™ Metadata Initiative.",
+          publisher: "Dublin Core™ Metadata Initiative",
+        },
+      },
     };
   </script>
   <style>
@@ -170,6 +196,32 @@
       top: 0.5em; /* Aligns the bullet vertically with the text */
       font-size: 0.6em; /* Adjust the size of the bullet */
     }
+    
+    pre.ekgfexample {
+      background-color: #f9f9f9;
+      border-left: 6px solid #3c78d8;
+      margin: 1.5em 1.5em 0;
+      padding: 1em 1em 0;
+    }
+    
+    code.ekgfexample {
+      overflow-wrap: break-word;
+      background-color: #f9f9f9;
+      margin: 1.5em 0;
+      padding: 1em 1em 0;
+      color: black;
+    }
+    @media print {
+      body {
+        max-width: none !important;
+      }
+      img {
+        max-width:100% !important;
+      }
+      .ekgfexample {
+        white-space: pre-wrap;
+      }
+    }
   </style>
 </head>
 <body>
@@ -233,6 +285,8 @@
   <div>
     <p class="section-title">PATENTS</p>
     <p>
+      This specification is made available under the OMG’s Copyright and Non-Assertion Covenant (see
+      https://www.omg.org/cgi-bin/doc.cgi?ipr for details).
       The attention of adopters is directed to the possibility that compliance with or adoption of OMG specifications
       may require use of an invention covered by patent rights.
       OMG shall not be responsible for identifying patents for which a license may be required by any OMG specification,
@@ -317,7 +371,7 @@
   </div>
   </details>
 <!--</div>-->
-<h1 id="title">Data Product Vocabulary (DPROD)</h1>
+<h1 id="title">Data Product Ontology (DPROD)</h1>
 
 <section id='abstract'>
   <p>
@@ -360,17 +414,17 @@
     The <a href="https://ekgf.github.io/dprod/dprod.ttl">Data Product (DPROD)</a> specification is a
     profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>,
     designed to describe Data Products.
-    This document defines the schema and provides examples for its use.
+    This document defines the schema and provides examples of its use.
   </p>
   <p>
     DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way.
-    By using a standard model and vocabulary, DPROD facilitates the consumption and aggregation of metadata
+    By using a standard model and ontology, DPROD facilitates the consumption and aggregation of metadata
     from multiple Data Marketplaces.
     This approach increases the discoverability of products and services, supports decentralized data publishing,
     and enables federated search across multiple sites using a uniform query mechanism and structure.
   </p>
   <p>
-    The namespace for DPROD terms is <a href="https://ekgf.github.io/dprod/#">https://ekgf.github.io/dprod/#</a>
+    The namespace for DPROD terms is <a href="https://ekgf.github.io/dprod/">https://ekgf.github.io/dprod/</a>
   </p>
   <p>
     The suggested prefix for the DPROD namespace is <strong><code>dprod</code></strong>
@@ -433,10 +487,98 @@
 </section>
 
 <section>
+  <h2>References</h2>
+  <p>
+    <strong>[DCAT]</strong> Data Catalog Vocabulary (DCAT) - Version 3, W3C Recommendation 24 August 2024.
+    Available at <a href="https://www.w3.org/TR/vocab-dcat/.">https://www.w3.org/TR/vocab-dcat/.</a>
+    </p>
+    <p>
+    <strong>[Dublin Core]</strong> DCMI Metadata Terms, Issued 2020-01-20 by the Dublin Core™ Metadata Initiative.
+    Available at <a href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/.">https://www.dublincore.org/specifications/dublin-core/dcmi-terms/.</a>
+  </p>
+  <p><strong>[JSON-LD]</strong> JSON-LD 1.1, Gregg Kellogg, Markus Lanthaler, Editors. W3C Recommendation 11 January 2018.
+    Available at <a href="https://www.w3.org/TR/json-ld11/.">https://www.w3.org/TR/json-ld11/.</a>
+  </p>
+  <p><strong>[ODRL]</strong> Open Digital Rights Language (ODRL) Version 2.2, W3C Recommendation 15 September 2016.
+    Available at <a href="https://www.w3.org/TR/odrl/.">https://www.w3.org/TR/odrl/.</a>
+  </p>
+  <p><strong>[[OWL]]</strong> OWL 2 Web Ontology Language Quick Reference Guide (Second Edition), W3C
+    Recommendation 11 December 2012. Available at <a href="http://www.w3.org/TR/2012/RECowl2-quick-reference-20121211/.">http://www.w3.org/TR/2012/RECowl2-quick-reference-20121211/.</a>
+  </p>
+  <p><strong>[[\PROV]]</strong> PROV-Overview: An Overview of the PROV Family of Documents, W3C Recommendation 30 April
+    2013. Available at <a href="http://www.w3.org/TR/prov-overview/.">http://www.w3.org/TR/prov-overview/.</a>
+  </p>
+  <p><strong>[RDF Concepts]</strong> RDF 1.1 Concepts and Abstract Syntax. Richard Cyganiak, David Wood and Markus
+    Lanthaler, Editors. W3C Recommendation, 25 February 2014. Available at
+    <a href="http://www.w3.org/TR/rdf11-concepts/">http://www.w3.org/TR/rdf11-concepts/</a>
+  </p>
+  <p><strong>[RDF Schema]</strong> RDF Schema 1.1. Dan Brickley and R.V. Guha, Editors. W3C Recommendation, 25
+    February 2014. Available at http:// www.w3.org/TR/rdf-schema/.
+  </p>
+  <p><strong>[SHACL]</strong> Shapes Constraint Language (SHACL), Dimitris Kontokostas, Holger Knublauch, et al., Editors.
+    W3C Recommendation 20 July 2017. Available at <a href="https://www.w3.org/TR/shacl/.">https://www.w3.org/TR/shacl/.</a>
+  </p>
+  <p><strong>[Turtle]</strong> Turtle - Terse RDF Triple Language. Eric Prudhommeaux and Gavin Carothers, Editors. W3C
+    Recommendation 14 January 2014. Available at <a href="http://www.w3.org/TR/turtle/.">http://www.w3.org/TR/turtle/.</a>
+  </p>
+  <p><strong>[W3C Datatypes in RDF and OWL]</strong> XML Schema Datatypes in RDF and OWL, W3C Working Group Note 14 March
+    2006, Available at <a href="http://www.w3.org/TR/2006/NOTE-swbp-xsch-datatypes20060314/.">http://www.w3.org/TR/2006/NOTE-swbp-xsch-datatypes20060314/.</a>
+  </p>
+  <p><strong>[XML Schema Datatypes]</strong> XML Schema Part 2: Datatypes Second Edition. W3C Recommendation 28 October
+    2004. Available at <a href="http://www.w3.org/TR/xmlschema-2/.">http://www.w3.org/TR/xmlschema-2/.</a>
+  </p>
+</section>
+
+<section>
   <h2>Terms and Definitions</h2>
   <p>
-    All terms introduced in this specification are given definitions in Chapter 5.
+    All terms introduced in this specification are given definitions in the Data Product Model defined later.
   </p>
+</section>
+
+<section>
+  <h2>Symbols</h2>
+  <p>
+    The following acronyms are used in this specification.
+    <ul class="no-bullets">
+      <li>
+        <strong>DCAT</strong> - Data Catalog Vocabulary
+      </li>
+      <li>
+        <strong>DPROD</strong> - Data Product Ontology
+      </li>
+      <li>
+        <strong>JSON-LD</strong> - Javascript Object Notation for Linked Data
+      </li>
+      <li>
+        <strong>IRI</strong> - Internationalized Resource Identifier
+      </li>
+      <li>
+        <strong>ODRL</strong> - Open Digital Rights Language
+      </li>
+      <li>
+        <strong>OWL</strong> - Web Ontology Language
+      </li>
+      <li>
+        <strong>PROV</strong> - Provenance Ontology
+      </li>
+      <li>
+        <strong>RDF</strong> - Resource Description Format
+      </li>
+      <li>
+        <strong>SHACL</strong> - Shapes Constraint Language
+      </li>
+      <li>
+        <strong>TTL</strong> - Turtle (commonly used serialization for RDF)
+      </li>
+      <li>
+        <strong>URI</strong> - Uniform Resource Identifier
+      </li>
+      <li>
+        <strong>W3C</strong> - World Wide Web Consortium
+      </li>
+    </ul>
+   </p>
 </section>
 
 <section>
@@ -459,7 +601,7 @@
       <td>
         <code>http://www.w3.org/ns/dcat#</code>
       </td>
-      <td>[[VOCAB-DCAT-3]]</td>
+      <td>[[\VOCAB-DCAT-3]]</td>
     </tr>
     <tr>
       <td>
@@ -468,7 +610,7 @@
       <td>
         <code>http://purl.org/dc/terms/</code>
       </td>
-      <td>[[DCTERMS]]</td>
+      <td>[[\DCTERMS]]</td>
     </tr>
     <tr>
       <td>
@@ -477,16 +619,61 @@
       <td>
         <code>http://www.w3.org/ns/odrl/2/</code>
       </td>
-      <td>[[ODRL-VOCAB]]</td>
+      <td>[[\ODRL-VOCAB]]</td>
     </tr>
     <tr>
       <td>
-        <code>sdo</code>
+        <code>owl</code>
       </td>
       <td>
-        <code>https://schema.org</code>
+        <code><http://www.w3.org/2002/07/owl#></code>
       </td>
-      <td>[[SCHEMA-ORG]]</td>
+      <td>[[\OWL]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>prov</code>
+      </td>
+      <td>
+        <code><http://www.w3.org/ns/prov#></code>
+      </td>
+      <td>[[\PROV]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>rdf</code>
+      </td>
+      <td>
+        <code><http://www.w3.org/1999/02/22-rdf-syntax-ns#></code>
+      </td>
+      <td>[[RDF]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>rdfs</code>
+      </td>
+      <td>
+        <code><http://www.w3.org/2000/01/rdf-schema#></code>
+      </td>
+      <td>[[\RDFS]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>sh</code>
+      </td>
+      <td>
+        <code><http://www.w3.org/ns/shacl#></code>
+      </td>
+      <td>[[\SHACL]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>xsd</code>
+      </td>
+      <td>
+        <code><http://www.w3.org/2001/XMLSchema#></code>
+      </td>
+      <td>[[\XSD]]</td>
     </tr>
     </tbody>
   </table>
@@ -528,7 +715,7 @@
     allows different organizations to share data securely and in a standardized way.
   </p>
   <figure id="ProfileModel">
-    <img alt="Information model for the Profile" src="./dprod-model.png">
+    <img alt="Information model for the Profile" src="./DPROD.drawio.svg">
     <figcaption>
       Overview of DPROD model and its relationship with DCAT classes
     </figcaption>
@@ -567,7 +754,7 @@
     the shared FIBO specification for callable bonds.
   </p>
 
-  <pre id="eg12" class="example hljs json">
+  <pre id="eg12" class="example hljs json ekgfexample">
   {
     "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
     "id": "https://y.com/products/uk-bonds",
@@ -600,6 +787,12 @@
     One can see that the schema resolves.
   </p>
 
+  <p class="note">
+    The following sections are driven by the Shapes definitions for DPROD, which represent the properties 
+    expected to be used for instances of the above classes. As such they include properties defined by the DCAT specification
+    which DPROD extends. The prefix in the <i>identifier</i> for each entry indicates the ontology defining the property.
+  </p>
+
   {% for cls in classes %}
     <section>
       <h3>{{cls.name}}</h3>
@@ -611,7 +804,7 @@
         <p>
           <table class="def propdef">
           <tbody>
-            <tr><th>Identifier:</th><td><a href="{{prop.uri}}">{{prop.short_uri}}</a></td></tr>
+            <tr><th>Identifier:</th><td><a href="#{{prop.name.lower()}}">{{prop.short_uri}}</a></td></tr>
             {% if prop.label is not none and prop.label  != '' %}   
             <tr><th>Label:</th><td>{{prop.label}}</td></tr>
             {% endif %}
@@ -641,7 +834,9 @@
   <section>
     <h3>{{example.name}}</h3>
     <p>{{example.text}}</p>
-    <pre class="hljs json">{{example.json}}</pre>
+    {% if example.json is not none and example.json != '' %}
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">{{example.json}}</code></pre>
+    {% endif %}
   </section>
   {% endfor %}
 </section>
@@ -650,7 +845,7 @@
   <h2>Acknowledgements</h2>
   <p>
     The editors gratefully acknowledge the feedback and
-    contributions made by the <a href="https://edmcouncil.org/frameworks/cdmc/">EDM Council's CDMC team</a>.
+    contributions made by individuals who have participated in <a href="https://edmcouncil.org/frameworks/cdmc/">EDM Council's CDMC team</a>.
   </p>
 </section>
 

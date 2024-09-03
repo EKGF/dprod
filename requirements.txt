@@ -1,3 +1,8 @@
 jinja2
 markdown
 rdflib
+pip>=21.2.4
+wheel>=0.37.0
+six>=1.15.0
+setuptools>=58.0.4
+future>=0.18.2
