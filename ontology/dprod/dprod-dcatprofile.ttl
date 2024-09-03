@@ -22,8 +22,8 @@
 dprod-shapes:
   a owl:Ontology ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:title "Shapes for the Data Product Vocabulary"@en ;
-  rdfs:label "data product ontology shapes"@en ;
+  dct:title "Shapes for the Data Product (DPROD) Ontology"@en ;
+  rdfs:label "DPROD ontology shapes"@en ;
   dct:description "SHACL shapes for DPROD, including the DCAT classes and properties to be used."@en ;
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;

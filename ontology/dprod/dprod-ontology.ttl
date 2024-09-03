@@ -20,11 +20,11 @@ dct:modified a owl:AnnotationProperty .
 
 dprod:
   a owl:Ontology ;
-  dct:title "The Data Product Vocabulary"@en ;
-  rdfs:label "data product ontology"@en ;
+  dct:title "The Data Product (DPROD) Ontology"@en ;
+  rdfs:label "DPROD ontology"@en ;
   dct:description "DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way."@en ;
   rdfs:comment
-    "The vocabulary utilizes the notion of Datasets as defined from DCAT vocabulary."@en ;
+    "The ontology utilizes the notion of Datasets as defined from DCAT vocabulary."@en ;
   rdfs:comment "DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
   dct:modified "2024-08-31"^^xsd:date ;
