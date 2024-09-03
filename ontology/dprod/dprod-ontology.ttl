@@ -54,7 +54,7 @@ dprod:DataProduct
 dprod:DataProductLifecycleStatus
   a owl:Class, rdfs:Class ;
   dct:description
-    "The development status of the data product taken from a controlled list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+    "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."@en ;
   rdfs:comment "The lifecycle of the data product as defined by EDM Council CDMC"@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "data product lifecycle status" ;

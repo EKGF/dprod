@@ -179,7 +179,7 @@ dprod-shapes:DataProduct-dataProductOwner
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:dataProductOwner;
   sh:class prov:Agent;
-  dct:description "The agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion)."@en ;
+  dct:description "The agent that is overall accountable for the data product. This includes managing the data product along its lifecycle."@en ;
   rdfs:label "data product owner shape";
 .
 
