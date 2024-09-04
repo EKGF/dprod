@@ -29,7 +29,7 @@ json_ld_context = {
     "rdfs": str(RDFS),
     "xsd": str(XSD),
     "dcat": str(DCAT),
-    "dcterms": str(DCTERMS),
+    "dct": str(DCTERMS),
     "sh": str(SH),
     "id": "@id",
     "type": "@type"

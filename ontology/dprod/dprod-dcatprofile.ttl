@@ -1,420 +1,393 @@
 # baseURI: https://ekgf.github.io/dprod/dprod-shapes/
-# imports: http://purl.org/dc/terms/
-# imports: http://www.w3.org/2004/02/skos/core
-# imports: http://www.w3.org/ns/prov-o#
-# imports: http://www.w3.org/ns/dcat
-# imports: http://www.w3.org/ns/shacl
+# imports: http://www.w3.org/ns/dcat#
+# imports: http://www.w3.org/ns/shacl#
 # imports: https://ekgf.github.io/dprod/
-# prefix: dprod
+# prefix: dprod-shapes
 
 
-@base <https://ekgf.github.io/dprod/> .
+@base <https://ekgf.github.io/dprod-shapes/> .
+@prefix dprod-shapes: <https://ekgf.github.io/dprod-shapes/> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
-@prefix dc: <http://purl.org/dc/elements/1.1/>.
-@prefix dctype: <http://purl.org/dc/dcmitype/> .
-@prefix dcterms:	<http://purl.org/dc/terms/> .
 @prefix odrl:	<http://www.w3.org/ns/odrl/2/>.
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix sdo: <http://schema.org/> .
 
-<https://ekgf.github.io/dprod/dprod-shapes/>
+dprod-shapes:
   a owl:Ontology ;
-  rdfs:label "Data Product Shapes DCAT Profile"@en ;
-  dc:description "This is the DCAT profile based on DPROD which is an ontology designed to facilitate interoperability between data product descriptors.";
-   dct:creator [
-     a foaf:Person ;
-     foaf:name "Natasa Varytimou" ;
-     sdo:affiliation [
-        foaf:homepage <https://ubs.com> ;
-        foaf:name "UBS" ;
-      ] ;
-          ] ;
-   dct:contributor [
-      a foaf:Person ;
-      sdo:affiliation [
-          foaf:homepage <https://eccenca.com> ;
-          foaf:name "eccenca GmbH" ;
-        ] ;
-      foaf:name "Marcel Fröhlich" ;
-    ] ;
-   dct:contributor [
-      a foaf:Person ;
-      foaf:name "Pete Rivett" ;
-      foaf:homepage <https://www.linkedin.com/in/peterivett/> ;
-    ] ;
-   dct:contributor [
-      a foaf:Person ;
-      sdo:affiliation [
-          foaf:homepage <https://brox.de> ;
-          foaf:name "Brox IT-Solutions GmbH"
-      ] ;
-      foaf:name "Matthias Jurisch" ;
-    ] ;
-   sh:declare [
-    sh:prefix "dprod" ;
-    sh:namespace "http://www.tbd.org/ns/dprod#" ;
-   ] ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  owl:imports dct: ;
-  owl:imports <http://www.w3.org/2004/02/skos/core> ;
-  owl:imports <http://www.w3.org/ns/prov-o#> ;
+  dct:title "Shapes for the Data Product (DPROD) Ontology"@en ;
+  rdfs:label "DPROD ontology shapes"@en ;
+  dct:description "SHACL shapes for DPROD, including the DCAT classes and properties to be used."@en ;
+  rdfs:comment
+    "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
+  dct:modified "2024-08-31"^^xsd:date ;
+  dct:contributor <https://www.linkedin.com/in/natasavaritimou/> ;
+  dct:contributor <https://www.linkedin.com/in/peterivett/> ;
+  dct:contributor <https://www.linkedin.com/in/jgeluk/> ;
+  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/> ;
+  dct:contributor <https://www.linkedin.com/in/matthias-jurisch/> ;
+  dct:contributor <https://www.linkedin.com/in/tonyseale/> ;
   owl:imports <http://www.w3.org/ns/dcat#> ;
-  owl:imports <http://www.w3.org/ns/shacl>;
+  owl:imports <http://www.w3.org/ns/shacl#>;
   owl:imports <https://ekgf.github.io/dprod/>;
-  dct:modified "2023-12-20"^^xsd:date ;
-  foaf:maker [
-      foaf:homepage <http://www.ekgf.org/> ;
-      foaf:name "Enterprise Knowledge Graph Foundation" ;
-    ] ;
-   .
-
+  owl:versionInfo "OMG Request For Comments Errata 2" ;
+  sh:declare [
+    sh:prefix "dprod" ;
+    sh:namespace "https://ekgf.github.io/dprod/" ;
+   ] ;
+  sh:declare [
+    sh:prefix "dprod-shapes" ;
+    sh:namespace "https://ekgf.github.io/dprod-shapes/" ;
+  ] ;
+  sh:declare [
+    sh:prefix "dcat" ;
+    sh:namespace "http://www.w3.org/ns/dcat#" ;
+  ] ;
+. 
+ 
 ############################# dprod Shapes  #########################
 
-dprod:DataProductShape
+dprod-shapes:DataProductShape
     a sh:NodeShape;
-    dc:description "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
+    dct:description "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
     rdfs:comment "A data product may have input and output ports, code and metadata"@en ;
-    rdfs:isDefinedBy dprod:;
-    rdfs:label "Data Product Shape" ;
+    rdfs:isDefinedBy dprod-shapes:;
+    rdfs:label "data product shape" ;
     sh:targetClass dprod:DataProduct;
-    sh:property dprod:DataProduct-label;
-    sh:property dprod:DataProduct-description;
-    sh:property dprod:DataProduct-dataProductOwner;
-    sh:property dprod:DataProduct-domain;
-    sh:property dprod:DataProduct-domain;
-    sh:property dprod:DataProduct-inputPort;
-    sh:property dprod:DataProduct-outputPort;
-    sh:property dprod:DataProduct-inputDataset;
-    sh:property dprod:DataProduct-outputDataset;
-    sh:property dprod:DataProduct-purpose;
-    sh:property dprod:DataProduct-hasPolicy;
-    sh:property dprod:DataProduct-lifecycleStatus;
+    sh:property dprod-shapes:DataProduct-label;
+    sh:property dprod-shapes:DataProduct-description;
+    sh:property dprod-shapes:DataProduct-dataProductOwner;
+    sh:property dprod-shapes:DataProduct-domain;
+    sh:property dprod-shapes:DataProduct-inputPort;
+    sh:property dprod-shapes:DataProduct-outputPort;
+    sh:property dprod-shapes:DataProduct-inputDataset;
+    sh:property dprod-shapes:DataProduct-outputDataset;
+    sh:property dprod-shapes:DataProduct-purpose;
+    sh:property dprod-shapes:DataProduct-hasPolicy;
+    sh:property dprod-shapes:DataProduct-lifecycleStatus;
 .
 
-dprod:DataServiceShape
+dprod-shapes:DataServiceShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:targetClass dcat:DataService ;
-  rdfs:label "Data Service Shape" ;
-  dc:description "A collection of operations that provides access to one or more datasets or data processing functions."@en ;
-  sh:property dprod:DataService-isAccessServiceOf ;
-  sh:property dprod:DataService-protocol ;
-  sh:property dprod:DataService-securitySchemaType;
-  sh:property dprod:DataService-endpointURL;
-  sh:property dprod:DataService-endpointDescription ;
+  rdfs:label "data service shape" ;
+  dct:description "A collection of operations that provides access to one or more datasets or data processing functions."@en ;
+  sh:property dprod-shapes:DataService-isAccessServiceOf ;
+  sh:property dprod-shapes:DataService-protocol ;
+  sh:property dprod-shapes:DataService-securitySchemaType;
+  sh:property dprod-shapes:DataService-endpointURL;
+  sh:property dprod-shapes:DataService-endpointDescription ;
   .
 
-dprod:DistributionShape
+dprod-shapes:DistributionShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Distribution Shape" ;
-  dc:description "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
+  rdfs:isDefinedBy dprod-shapes:;
+  rdfs:label "distribution shape" ;
+  dct:description "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."@en ;
   sh:targetClass dcat:Distribution ;
-  sh:property dprod:Distribution-accessService ;
-  sh:property dprod:Distribution-conformsTo ;
-  sh:property dprod:Distribution-isDistributionOf ;
-  sh:property dprod:Distribution-format;
+  sh:property dprod-shapes:Distribution-accessService ;
+  sh:property dprod-shapes:Distribution-conformsTo ;
+  sh:property dprod-shapes:Distribution-isDistributionOf ;
+  sh:property dprod-shapes:Distribution-format;
   .
 
-dprod:DatasetShape
+dprod-shapes:DatasetShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod:;
-  rdfs:label "Dataset Shape" ;
-  dc:description "A collection of data, published or curated by a single agent, and available for access or download in one or more representations."@en ;
+  rdfs:isDefinedBy dprod-shapes:;
+  rdfs:label "dataset shape" ;
+  dct:description "A collection of data, published or curated by a single agent, and available for access or download in one or more representations."@en ;
   sh:targetClass dcat:Dataset ;
-  sh:property dprod:Dataset-label;
-  sh:property dprod:Dataset-description;
-  sh:property dprod:Dataset-type;
-  sh:property dprod:Dataset-distribution ;
-  sh:property dprod:Dataset-conformsTo ;
-  sh:property dprod:Dataset-hasPolicy ;
+  sh:property dprod-shapes:Dataset-label;
+  sh:property dprod-shapes:Dataset-description;
+  sh:property dprod-shapes:Dataset-type;
+  sh:property dprod-shapes:Dataset-distribution ;
+  sh:property dprod-shapes:Dataset-conformsTo ;
+  sh:property dprod-shapes:Dataset-hasPolicy ;
   sh:property dcat:Dataset-informationSensitivityClassification;
   .
 
-dprod:InformationSensitivityClassificationShape
+dprod-shapes:InformationSensitivityClassificationShape
   a sh:NodeShape ;
-  rdfs:label "Information Sensitivity Classification Shape" ;
-  dc:description "The shape of Information Sensitivity Classification as defined in the DPROD schema."@en ;
-  rdfs:isDefinedBy dprod:;
+  rdfs:label "information sensitivity classification shape" ;
+  dct:description "The shape of Information Sensitivity Classification as defined in the DPROD schema."@en ;
+  rdfs:isDefinedBy dprod-shapes: ;
   sh:targetClass dprod:InformationSensitivityClassification;
   .
 
-dprod:DataProductLifecycleStatusShape
+dprod-shapes:DataProductLifecycleStatusShape
     a sh:NodeShape;
-    rdfs:label "Data Product Lifecycle Status Shape" ;
-    dc:description "The shape of Data Product Lifecycle Status."@en ;
+    rdfs:label "data product lifecycle status shape" ;
+    dct:description "The shape of Data Product Lifecycle Status."@en ;
     sh:targetClass dprod:DataProductLifecycleStatus;
-    rdfs:isDefinedBy dprod:;
+    rdfs:isDefinedBy dprod-shapes:;
   .
 
-dprod:ProtocolShape
+dprod-shapes:ProtocolShape
     a sh:NodeShape;
-    rdfs:label "Protocol Shape" ;
-    dc:description "A protocol, possibly including a specific version, used for communicating with a service."@en ;
-    rdfs:isDefinedBy dprod:;
+    rdfs:label "protocol shape" ;
+    dct:description "A protocol, possibly including a specific version, used for communicating with a service."@en ;
+    rdfs:isDefinedBy dprod-shapes:;
     sh:targetClass dprod:Protocol;
 .
 
-dprod:SecuritySchemaTypeShape
+dprod-shapes:SecuritySchemaTypeShape
     a sh:NodeShape;
-    rdfs:label "Security Schema Type Shape" ;
-    dc:description "A security schema type used for authentication and communication."@en ;
-    rdfs:isDefinedBy dprod:;
+    rdfs:label "security schema type shape" ;
+    dct:description "A security schema type used for authentication and communication."@en ;
+    rdfs:isDefinedBy dprod-shapes:;
     sh:targetClass dprod:SecuritySchemaType;
 .
 
 #############################  dprod Property Shapes ################
 
-dprod:DataProduct-label
+dprod-shapes:DataProduct-label
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path rdfs:label;
   sh:datatype xsd:string;
-  dc:description "The name given to the data product."@en ;
-  rdfs:label "DataProduct-label";
+  dct:description "The name given to the data product."@en ;
+  rdfs:label "data product label shape";
 .
 
-dprod:DataProduct-description
+dprod-shapes:DataProduct-description
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dcterms:description;
+  rdfs:isDefinedBy dprod-shapes:;
+  sh:path dct:description;
   sh:datatype xsd:string;
-  dc:description "A free text description of the data product."@en ;
-  rdfs:label "DataProduct-description";
+  dct:description "A free text description of the data product."@en ;
+  rdfs:label "data product description shape";
 .
 
-dprod:DataProduct-type
+dprod-shapes:DataProduct-type
 a sh:PropertyShape;
-rdfs:isDefinedBy dprod:;
-sh:path dcterms:type;
-dc:description "The nature or genre of the data product."@en ;
-rdfs:label "DataProduct-description";
+rdfs:isDefinedBy dprod-shapes:;
+sh:path dct:type;
+dct:description "The nature or genre of the data product."@en ;
+rdfs:label "data product description shape";
 .
 
-dprod:DataProduct-dataProductOwner
+dprod-shapes:DataProduct-dataProductOwner
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:dataProductOwner;
-  sh:class foaf:Agent;
-  dc:description "The agent that is overall accountable for the data product. This includes managing the data product along its lifecycle ( creation, usage, versioning, deletion)."@en ;
-  rdfs:label "DataProduct-dataProductOwner";
+  sh:class prov:Agent;
+  dct:description "The agent that is overall accountable for the data product. This includes managing the data product along its lifecycle."@en ;
+  rdfs:label "data product owner shape";
 .
 
-dprod:DataProduct-lifecycleStatus
+dprod-shapes:DataProduct-lifecycleStatus
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:lifecycleStatus;
   sh:class dprod:DataProductLifecycleStatus;
-  dc:description "The lifecycle status of the data product taken from a control list ( Ideation, Design, Build, Deploy, Consume )."@en ;
-  rdfs:label "DataProduct-lifecycleStatus";
+  dct:description "The lifecycle status of the data product taken from a controlled list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+  rdfs:label "data product lifecycle status shape";
 .
 
-dprod:DataProduct-domain
+dprod-shapes:DataProduct-domain
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:domain;
-  dc:description "The business or information area supported by the data product."@en ;
+  dct:description "The business or information area supported by the data product."@en ;
   rdfs:comment "The target class is left open"@en;
-  rdfs:label "DataProduct-domain";
+  rdfs:label "data product domain shape";
 .
 
-dprod:DataProduct-purpose
+dprod-shapes:DataProduct-purpose
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:purpose;
   sh:datatype xsd:string;
-  dc:description "A description of the objectives and intended usage of the data product."@en ;
-  rdfs:label "DataProduct-purpose";
+  dct:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:label "data product purpose shape";
 .
 
-dprod:DataProduct-hasPolicy
+dprod-shapes:DataProduct-hasPolicy
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path odrl:hasPolicy;
   sh:class odrl:Policy;
-  dc:description "An ODRL conformant policy expressing the rights associated with the data product. This is an inferred relationship based on the rights expressed on the individual datasets of the data product."@en ;
-  rdfs:label "DataProduct-hasPolicy";
+  dct:description "An ODRL conformant policy expressing the rights associated with the data product. This is an inferred relationship based on the rights expressed on the individual datasets of the data product."@en ;
+  rdfs:label "data product has policy shape";
 .
 
-
-dprod:DataProduct-inputPort
+dprod-shapes:DataProduct-inputPort
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:inputPort;
   sh:class dcat:DataService;
-  dc:description "An input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."@en ;
-  rdfs:label "DataProduct-inputPort Shape";
+  dct:description "An input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."@en ;
+  rdfs:label "data product input port shape";
 .
 
-dprod:DataProduct-outputPort
+dprod-shapes:DataProduct-outputPort
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:outputPort;
   sh:class dcat:DataService;
-  dc:description "An output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
-  rdfs:label "DataProduct-outputPort Shape";
+  dct:description "An output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
+  rdfs:label "data product output port shape";
 .
 
-dprod:DataProduct-inputDataset
+dprod-shapes:DataProduct-inputDataset
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:inputDataset;
   sh:class dcat:Dataset ;
-  dc:description "The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports."@en ;
-  rdfs:label "DataProduct-inputDataset";
+  dct:description "The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports."@en ;
+  rdfs:label "data product input dataset shape";
 .
 
-dprod:DataProduct-outputDataset
+dprod-shapes:DataProduct-outputDataset
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:outputDataset;
   sh:class dcat:Dataset;
-  dc:description "The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports."@en ;
-  rdfs:label "DataProduct-outputDataset";
+  dct:description "The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports."@en ;
+  rdfs:label "data product output dataset shape";
 .
 
-dprod:Dataset-label
+dprod-shapes:Dataset-label
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path rdfs:label;
   sh:datatype xsd:string ;
-  dc:description "The name given to the dataset"@en ;
-  rdfs:label "Dataset-label" ;
+  dct:description "The name given to the dataset"@en ;
+  rdfs:label "dataset label shape" ;
  .
 
-dprod:Dataset-description
+dprod-shapes:Dataset-description
    a sh:PropertyShape;
-   rdfs:isDefinedBy dprod:;
-   sh:path dcterms:description ;
+   rdfs:isDefinedBy dprod-shapes:;
+   sh:path dct:description ;
    sh:datatype xsd:string ;
-   dc:description "Free text description of the dataset."@en ;
-   rdfs:label "Dataset-distribution";
+   dct:description "Free text description of the dataset."@en ;
+   rdfs:label "dataset distribution shape";
   .
 
-dprod:Dataset-type
+dprod-shapes:Dataset-type
      a sh:PropertyShape;
-     rdfs:isDefinedBy dprod:;
-     sh:path dcterms:type;
-     dc:description "The type or genre of the dataset."@en ;
-     rdfs:label "Dataset-type";
+     rdfs:isDefinedBy dprod-shapes:;
+     sh:path dct:type;
+     dct:description "The type or genre of the dataset."@en ;
+     rdfs:label "dataset type shape";
     .
 
-dprod:Dataset-distribution
+dprod-shapes:Dataset-distribution
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dcat:distribution;
   sh:class dcat:Distribution;
-  dc:description "An available distribution of the dataset."@en ;
-  rdfs:label "Dataset-distribution";
+  dct:description "An available distribution of the dataset."@en ;
+  rdfs:label "dataset distribution shape";
  .
 
- dprod:Dataset-conformsTo
+dprod-shapes:Dataset-conformsTo
    a sh:PropertyShape;
-   rdfs:isDefinedBy dprod:;
-   sh:path dcterms:conformsTo;
-   dc:description "A model, schema, ontology, view or profile that the dataset conforms to."@en ;
-   rdfs:label "Dataset-conformsTo";
+   rdfs:isDefinedBy dprod-shapes:;
+   sh:path dct:conformsTo;
+   dct:description "A model, schema, ontology, view or profile that the dataset conforms to."@en ;
+   rdfs:label "dataset conforms to shape";
   .
 
-dprod:Dataset-hasPolicy
+dprod-shapes:Dataset-hasPolicy
     a sh:PropertyShape;
-    rdfs:isDefinedBy dprod:;
+    rdfs:isDefinedBy dprod-shapes:;
     sh:path odrl:hasPolicy;
-    dc:description "An ODRL conformant policy expressing the rights associated with the resource."@en ;
-    rdfs:label "Dataset-hasPolicy";
+    dct:description "An ODRL conformant policy expressing the rights associated with the resource."@en ;
+    rdfs:label "dataset has policy shape";
    .
 
 dcat:Dataset-informationSensitivityClassification
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:informationSensitivityClassification;
   sh:class dprod:InformationSensitivityClassification;
-  dc:description "The relationship to a taxonomy that defines the different levels of control and protection that must be applied to the dataset. This is a more granular relationship of the classification of a dataset that includes other classification concepts  "@en ;
-  rdfs:label "Dataset-informationSensitivityClassification.";
+  dct:description "The relationship to a taxonomy that defines the different levels of control and protection that must be applied to the dataset. This is a more granular relationship of the classification of a dataset that includes other classification concepts  "@en ;
+  rdfs:label "dataset information sensitivity classification shape";
  .
 
-dprod:Distribution-accessService
+dprod-shapes:Distribution-accessService
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dcat:accessService;
   sh:class dcat:DataService;
-  dc:description "A data service that gives access to the distribution of the dataset."@en ;
-  rdfs:label "Distribution-accessService" ;
+  dct:description "A data service that gives access to the distribution of the dataset."@en ;
+  rdfs:label "distribution access service shape" ;
   .
 
-dprod:Distribution-isDistributionOf
+dprod-shapes:Distribution-isDistributionOf
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:isDistributionOf;
   sh:class dcat:Dataset;
-  dc:description "The dataset that this distribution makes available."@en ;
-  rdfs:label "Distribution-isDistributionOf" ;
+  dct:description "The dataset that this distribution makes available."@en ;
+  rdfs:label "distribution is distribution of shape" ;
   .
 
-dprod:Distribution-conformsTo
+dprod-shapes:Distribution-conformsTo
     a sh:PropertyShape;
-    rdfs:isDefinedBy dprod:;
-    sh:path dcterms:conformsTo;
-    dc:description "The schema that the distribution conforms to that is format and technology dependent."@en ;
-    rdfs:label "Distribution-conformsTo";
+    rdfs:isDefinedBy dprod-shapes:;
+    sh:path dct:conformsTo;
+    dct:description "The schema that the distribution conforms to that is format and technology dependent."@en ;
+    rdfs:label "distribution conforms to shape";
    .
 
-dprod:Distribution-format
+dprod-shapes:Distribution-format
    a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
-  sh:path dcterms:format;
-  dc:description "The file format of the distribution."@en ;
-  rdfs:label "Distribution-format";
+  rdfs:isDefinedBy dprod-shapes:;
+  sh:path dct:format;
+  dct:description "The file format of the distribution."@en ;
+  rdfs:label "distribution format shape";
   .
 
-dprod:DataService-isAccessServiceOf
+dprod-shapes:DataService-isAccessServiceOf
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:isAccessServiceOf;
   sh:class dcat:Distribution;
-  dc:description "The dataset distribution that is being offered through this Data Service."@en ;
-  rdfs:label "DataService-isAccessServiceOf Shape" ;
+  dct:description "The dataset distribution that is being offered through this Data Service."@en ;
+  rdfs:label "data service is access service of shape" ;
   .
 
-dprod:DataService-protocol
+dprod-shapes:DataService-protocol
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:protocol;
   sh:class dcat:Protocol;
-  dc:description "A protocol (possibly one of many options) used to communicate with this Data Service."@en ;
-  rdfs:label "DataService-protocol Shape" ;
+  dct:description "A protocol (possibly one of many options) used to communicate with this Data Service."@en ;
+  rdfs:label "data service protocol shape" ;
   .
 
-dprod:DataService-securitySchemaType
+dprod-shapes:DataService-securitySchemaType
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:securitySchemaType;
   sh:class dcat:SecuritySchemaType;
-  dc:description "The security schema type used for authentication and communication with this Data Service."@en ;
-  rdfs:label "DataService-securitySchemaType Shape" ;
+  dct:description "The security schema type used for authentication and communication with this Data Service."@en ;
+  rdfs:label "data service security schema type shape" ;
   .
 
-dprod:DataService-endpointURL
+dprod-shapes:DataService-endpointURL
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dcat:endpointURL;
-  dc:description "The root location or primary endpoint of the service."@en ;
-  rdfs:label "DataService-endpointURL" ;
+  dct:description "The root location or primary endpoint of the service."@en ;
+  rdfs:label "data service endpoint URL shape" ;
   .
 
-dprod:DataService-endpointDescription
+dprod-shapes:DataService-endpointDescription
   a sh:PropertyShape;
-  rdfs:isDefinedBy dprod:;
+  rdfs:isDefinedBy dprod-shapes:;
   sh:path dcat:endpointDescription;
-  dc:description "A description of the services available via the end-points, including their operations, parameters etc."@en ;
-  rdfs:label "DataService-endpointDescription";
+  dct:description "A description of the services available via the end-points, including their operations, parameters etc."@en ;
+  rdfs:label "data service endpoint description shape";
   .
