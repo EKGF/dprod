@@ -73,7 +73,7 @@
       },
       license: "mit",
       logos: [{
-        src: "./dprod.jpg",
+        src: "./assets/dprod.jpg",
         alt: "DPROD",
         width: 200,
       }],
@@ -98,29 +98,10 @@
         },
       ],
       localBiblio: {
-        OWL: {
-          title: "OWL 2 Web Ontology Language Quick Reference Guide (Second Edition)",
-          href: "http://www.w3.org/TR/2012/RECowl2-quick-reference-20121211/",
-          status: "W3C Recommendation 11 December 2012",
-          publisher: "W3C",
-        },
-        RDF: {
-          title: "RDF 1.1 Concepts and Abstract Syntax",
-          href: "http://www.w3.org/TR/rdf11-concepts/",
-          status: "W3C Recommendation, 25 February 2014",
-          publisher: "W3C",
-        },
-        DCAT: {
-          title: "Data Catalog Vocabulary (DCAT) - Version 3",
-          href: "https://www.w3.org/TR/vocab-dcat/",
-          status: "W3C Recommendation 24 August 2024",
-          publisher: "W3C",
-        },
-        "Dublin Core": {
-          title: "DCMI Metadata Terms",
-          href: "https://www.dublincore.org/specifications/dublin-core/dcmi-terms/",
-          status: "Issued 2020-01-20 by the Dublin Core™ Metadata Initiative.",
-          publisher: "Dublin Core™ Metadata Initiative",
+        "Data Mesh": {
+          title: "Data Mesh Architectures",
+          href: "https://en.wikipedia.org/wiki/Data_mesh",
+          publisher: "Wikipedia",
         },
       },
     };
@@ -481,51 +462,8 @@
   <h2>Conformance</h2>
 
   <p>
-    A data product is conformant with this specification if it satisfies the SHACL constraints provided in the file
-    <a href="dprod-dcatprofile.ttl">dprod-dcatprofile.ttl</a>.
-  </p>
-</section>
-
-<section>
-  <h2>References</h2>
-  <p>
-    <strong>[DCAT]</strong> Data Catalog Vocabulary (DCAT) - Version 3, W3C Recommendation 24 August 2024.
-    Available at <a href="https://www.w3.org/TR/vocab-dcat/.">https://www.w3.org/TR/vocab-dcat/.</a>
-    </p>
-    <p>
-    <strong>[Dublin Core]</strong> DCMI Metadata Terms, Issued 2020-01-20 by the Dublin Core™ Metadata Initiative.
-    Available at <a href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/.">https://www.dublincore.org/specifications/dublin-core/dcmi-terms/.</a>
-  </p>
-  <p><strong>[JSON-LD]</strong> JSON-LD 1.1, Gregg Kellogg, Markus Lanthaler, Editors. W3C Recommendation 11 January 2018.
-    Available at <a href="https://www.w3.org/TR/json-ld11/.">https://www.w3.org/TR/json-ld11/.</a>
-  </p>
-  <p><strong>[ODRL]</strong> Open Digital Rights Language (ODRL) Version 2.2, W3C Recommendation 15 September 2016.
-    Available at <a href="https://www.w3.org/TR/odrl/.">https://www.w3.org/TR/odrl/.</a>
-  </p>
-  <p><strong>[[OWL]]</strong> OWL 2 Web Ontology Language Quick Reference Guide (Second Edition), W3C
-    Recommendation 11 December 2012. Available at <a href="http://www.w3.org/TR/2012/RECowl2-quick-reference-20121211/.">http://www.w3.org/TR/2012/RECowl2-quick-reference-20121211/.</a>
-  </p>
-  <p><strong>[[\PROV]]</strong> PROV-Overview: An Overview of the PROV Family of Documents, W3C Recommendation 30 April
-    2013. Available at <a href="http://www.w3.org/TR/prov-overview/.">http://www.w3.org/TR/prov-overview/.</a>
-  </p>
-  <p><strong>[RDF Concepts]</strong> RDF 1.1 Concepts and Abstract Syntax. Richard Cyganiak, David Wood and Markus
-    Lanthaler, Editors. W3C Recommendation, 25 February 2014. Available at
-    <a href="http://www.w3.org/TR/rdf11-concepts/">http://www.w3.org/TR/rdf11-concepts/</a>
-  </p>
-  <p><strong>[RDF Schema]</strong> RDF Schema 1.1. Dan Brickley and R.V. Guha, Editors. W3C Recommendation, 25
-    February 2014. Available at http:// www.w3.org/TR/rdf-schema/.
-  </p>
-  <p><strong>[SHACL]</strong> Shapes Constraint Language (SHACL), Dimitris Kontokostas, Holger Knublauch, et al., Editors.
-    W3C Recommendation 20 July 2017. Available at <a href="https://www.w3.org/TR/shacl/.">https://www.w3.org/TR/shacl/.</a>
-  </p>
-  <p><strong>[Turtle]</strong> Turtle - Terse RDF Triple Language. Eric Prudhommeaux and Gavin Carothers, Editors. W3C
-    Recommendation 14 January 2014. Available at <a href="http://www.w3.org/TR/turtle/.">http://www.w3.org/TR/turtle/.</a>
-  </p>
-  <p><strong>[W3C Datatypes in RDF and OWL]</strong> XML Schema Datatypes in RDF and OWL, W3C Working Group Note 14 March
-    2006, Available at <a href="http://www.w3.org/TR/2006/NOTE-swbp-xsch-datatypes20060314/.">http://www.w3.org/TR/2006/NOTE-swbp-xsch-datatypes20060314/.</a>
-  </p>
-  <p><strong>[XML Schema Datatypes]</strong> XML Schema Part 2: Datatypes Second Edition. W3C Recommendation 28 October
-    2004. Available at <a href="http://www.w3.org/TR/xmlschema-2/.">http://www.w3.org/TR/xmlschema-2/.</a>
+    A data product is conformant with this specification if it satisfies the [[SHACL]] constraints provided in the file
+    <a href="dprod-shapes.ttl">dprod-shapes.ttl</a>.
   </p>
 </section>
 
@@ -536,49 +474,52 @@
   </p>
 </section>
 
-<section>
+<section id="symbols">
   <h2>Symbols</h2>
   <p>
     The following acronyms are used in this specification.
     <ul class="no-bullets">
       <li>
-        <strong>DCAT</strong> - Data Catalog Vocabulary
+        <strong>DCAT</strong> - Data Catalog Vocabulary [[vocab-dcat-3]]
       </li>
       <li>
         <strong>DPROD</strong> - Data Product Ontology
       </li>
       <li>
-        <strong>JSON-LD</strong> - Javascript Object Notation for Linked Data
+        <strong>JSON-LD</strong> - JavaScript Object Notation for Linked Data [[json-ld11]]
       </li>
       <li>
-        <strong>IRI</strong> - Internationalized Resource Identifier
+        <strong>IRI</strong> - Internationalized Resource Identifier [[IRI]]
       </li>
       <li>
-        <strong>ODRL</strong> - Open Digital Rights Language
+        <strong>ODRL</strong> - Open Digital Rights Language [[odrl-model]]
       </li>
       <li>
-        <strong>OWL</strong> - Web Ontology Language
+        <strong>OWL</strong> - Web Ontology Language [[owl2-quick-reference]]
       </li>
       <li>
-        <strong>PROV</strong> - Provenance Ontology
+        <strong>PROV</strong> - Provenance Ontology [[prov-overview]]
       </li>
       <li>
-        <strong>RDF</strong> - Resource Description Format
+        <strong>RDF</strong> - Resource Description Format [[rdf11-concepts]]
       </li>
       <li>
-        <strong>SHACL</strong> - Shapes Constraint Language
+        <strong>RDFS</strong> - RDF Schema [[rdf-schema]], [[swbp-xsch-datatypes]]
       </li>
       <li>
-        <strong>TTL</strong> - Turtle (commonly used serialization for RDF)
+        <strong>SHACL</strong> - Shapes Constraint Language ([[shacl]])
       </li>
       <li>
-        <strong>URI</strong> - Uniform Resource Identifier
+        <strong>TTL</strong> - Turtle (commonly used serialization for RDF) [[turtle]] [[rdf12-turtle]]
+      </li>
+      <li>
+        <strong>URI</strong> - Uniform Resource Identifier [[URI]]
       </li>
       <li>
         <strong>W3C</strong> - World Wide Web Consortium
       </li>
     </ul>
-   </p>
+  </p>
 </section>
 
 <section>
@@ -601,7 +542,7 @@
       <td>
         <code>http://www.w3.org/ns/dcat#</code>
       </td>
-      <td>[[\VOCAB-DCAT-3]]</td>
+      <td>[[vocab-dcat-3]]</td>
     </tr>
     <tr>
       <td>
@@ -610,7 +551,7 @@
       <td>
         <code>http://purl.org/dc/terms/</code>
       </td>
-      <td>[[\DCTERMS]]</td>
+      <td>[[dcterms]]</td>
     </tr>
     <tr>
       <td>
@@ -619,61 +560,61 @@
       <td>
         <code>http://www.w3.org/ns/odrl/2/</code>
       </td>
-      <td>[[\ODRL-VOCAB]]</td>
+      <td>[[odrl-model]]</td>
     </tr>
     <tr>
       <td>
         <code>owl</code>
       </td>
       <td>
-        <code><http://www.w3.org/2002/07/owl#></code>
+        <code>http://www.w3.org/2002/07/owl#</code>
       </td>
-      <td>[[\OWL]]</td>
+      <td>[[owl2-quick-reference]]</td>
     </tr>
     <tr>
       <td>
         <code>prov</code>
       </td>
       <td>
-        <code><http://www.w3.org/ns/prov#></code>
+        <code>http://www.w3.org/ns/prov#</code>
       </td>
-      <td>[[\PROV]]</td>
+      <td>[[prov-overview]]</td>
     </tr>
     <tr>
       <td>
         <code>rdf</code>
       </td>
       <td>
-        <code><http://www.w3.org/1999/02/22-rdf-syntax-ns#></code>
+        <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code>
       </td>
-      <td>[[RDF]]</td>
+      <td>[[rdf11-primer]]</td>
     </tr>
     <tr>
       <td>
         <code>rdfs</code>
       </td>
       <td>
-        <code><http://www.w3.org/2000/01/rdf-schema#></code>
+        <code>http://www.w3.org/2000/01/rdf-schema#</code>
       </td>
-      <td>[[\RDFS]]</td>
+      <td>[[rdf-schema]]</td>
     </tr>
     <tr>
       <td>
         <code>sh</code>
       </td>
       <td>
-        <code><http://www.w3.org/ns/shacl#></code>
+        <code>http://www.w3.org/ns/shacl#</code>
       </td>
-      <td>[[\SHACL]]</td>
+      <td>[[shacl]]</td>
     </tr>
     <tr>
       <td>
         <code>xsd</code>
       </td>
       <td>
-        <code><http://www.w3.org/2001/XMLSchema#></code>
+        <code>http://www.w3.org/2001/XMLSchema#</code>
       </td>
-      <td>[[\XSD]]</td>
+      <td>[[xmlschema-2]]</td>
     </tr>
     </tbody>
   </table>
@@ -682,19 +623,19 @@
 <section>
   <h2>Data Product (DPROD) Model</h2>
   <p>
-    <a href="https://en.wikipedia.org/wiki/Data_mesh">Data Mesh Architectures</a> use input and output ports to manage
+    <a href="https://en.wikipedia.org/wiki/Data_mesh">Data Mesh Architectures</a> [[Data Mesh]] use input and output ports to manage
     how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input
     ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or
     reporting etc.
   </p>
   <p>
-    In the Data Catalog Vocabulary (DCAT) framework, 
+    In the [[[vocab-dcat-3]]] framework, 
     a <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:DataService">Data Service</a> is a way 
     to describe services that provide access to data. 
     Data Services give standardized, machine-readable descriptions of how to access one or more 
     datasets or data processing functions.
   </p>
-  <p>
+  <p>   
     Data Services specify how to access and download the data. In DPROD, Data Services are connected to <a
     href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called <a
     href="#isaccessserviceof">isAccessServiceOf</a>; on the Distribution one can specify formats (like CSV or JSON etc)
@@ -715,9 +656,9 @@
     allows different organizations to share data securely and in a standardized way.
   </p>
   <figure id="ProfileModel">
-    <img alt="Information model for the Profile" src="./DPROD.drawio.svg">
+    <img alt="Information model for the Profile" src="./assets/DPROD.drawio.svg">
     <figcaption>
-      Overview of DPROD model and its relationship with DCAT classes
+      Overview of the DPROD model and its relationship with DCAT classes
     </figcaption>
   </figure>
 
@@ -796,25 +737,27 @@
   {% for cls in classes %}
   <section>
     <h3 id="{{cls.html_id()}}">{{cls.name}}</h3>
+    {% if cls.description is not none %}
     <p>{{cls.description}}</p>
+    {% endif %}
     {% if cls.comment is not none %}
     <p>{{cls.comment}}</p>
     {% endif %}
-    {% for prop in cls.properties %}
+    {% for prop in cls.properties.values() %}
     <section>
       <h4 id="{{prop.html_id()}}">{{prop.name}}</h4>
       <p>{{prop.description}}</p>
       <table class="def propdef">
       <tbody>
-        <tr><th>Identifier:</th><td><a href="{{prop.href()}}">{{prop.short_uri}}</a></td></tr>
+        <tr><th>Identifier:</th><td><a href="{{prop.href()}}">{{prop.axiom_iri_normalized}}</a></td></tr>
         {% if prop.label is not none and prop.label  != '' %}   
         <tr><th>Label:</th><td>{{prop.label}}</td></tr>
         {% endif %}
         {% if prop.comment is not none and prop.comment  != '' %}   
         <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
         {% endif %}
-        <tr><th>Domain:</th><td>{{prop.htmlDomain()}}</td></tr>
-        <tr><th>Range:</th><td>{{prop.htmlRange()}}</td></tr>
+        <tr><th>Domain:</th><td>{{prop.html_domain()}}</td></tr>
+        <tr><th>Range:</th><td>{{prop.html_range()}}</td></tr>
       </tbody>
       </table>
     </section>
