@@ -103,7 +103,7 @@ dprod-shapes:DatasetShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes:;
   rdfs:label "dataset shape" ;
-  dct:description "A collection of data, published or curated by a single agent, and available for access or download in one or more representations."@en ;
+  dct:description "A collection of data, published or curated by a single source, and available for access or download in one or more representations."@en ;
   sh:targetClass dcat:Dataset ;
   sh:property dprod-shapes:Dataset-label;
   sh:property dprod-shapes:Dataset-description;
