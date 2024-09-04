@@ -495,7 +495,22 @@ def main():
     
     examples = load_examples("./examples/")
     
-    classes = reorder_list(classes.values(), ['DataProduct', 'Port', 'DataService', 'Distribution', 'Dataset'])
+    # TODO: Create a special annotation predicate called something like `preferredSortOrder` that has a value 
+    # of type xsd:string and has values like '00001', '00002', etc. to allow for deviating from the default
+    # alphabetical order of classes and properties based on the value of `rdfs:label`.
+    # This would allow us to remove this DPROD specific list from the code.
+    classes = reorder_list(classes.values(), [
+        'DataProduct', 
+        'Port', 
+        'DataService', 
+        'Distribution', 
+        'Dataset',
+        'DataProductLifecycleStatus',
+        'InformationSensitivityClassification',
+        'Protocol',
+        'SecuritySchemaType',
+        'Enumeration'
+    ])
     
     if not os.path.exists('dist'):
         os.makedirs('dist')
