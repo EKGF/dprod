@@ -5,7 +5,7 @@ This folder contains the Ontology for Data Product Descriptions according to dat
 ## File Overview
 
 - [dprod-ontology.ttl](dprod-ontology.ttl): classes and properties definitions (new terms)
-- [dprod-dcatprofile.ttl](dprod-dcatprofile.ttl): shacl shapes file for using DPROD to describe data products (data model)
+- [dprod-shapes.ttl](dprod-shapes.ttl): shacl shapes file for using DPROD to describe data products (data model)
 
 
 ## Executing the Ontology Pipeline
