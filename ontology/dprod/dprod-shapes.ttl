@@ -1,4 +1,3 @@
-@prefix shacl: <http://www.w3.org/ns/shacl#> .
 # baseURI: https://ekgf.github.io/dprod/shapes/
 # imports: http://www.w3.org/ns/dcat#
 # imports: http://www.w3.org/ns/shacl#
@@ -36,7 +35,7 @@ dprod-shapes:
   dct:contributor <https://www.linkedin.com/in/matthias-jurisch> ;
   dct:contributor <https://www.linkedin.com/in/tonyseale> ;
   owl:imports dcat: ;
-  owl:imports shacl: ;
+  owl:imports sh: ;
   owl:imports dprod: ;
   owl:versionInfo "OMG Request For Comments Errata 2" ;
   sh:declare [
