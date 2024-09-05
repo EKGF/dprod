@@ -57,7 +57,7 @@ dprod-shapes:
 
 dprod-shapes:DataProductShape
     a sh:NodeShape;
-    dct:description "A data product is a rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
+    dct:description "A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
     rdfs:comment "A data product may have input and output ports, code and metadata"@en ;
     rdfs:isDefinedBy dprod-shapes:;
     rdfs:label "data product shape" ;
@@ -118,7 +118,7 @@ dprod-shapes:DatasetShape
 dprod-shapes:InformationSensitivityClassificationShape
   a sh:NodeShape ;
   rdfs:label "information sensitivity classification shape" ;
-  dct:description "The shape of Information Sensitivity Classification as defined in the DPROD schema."@en ;
+  dct:description "A classification of the information within a dataset to indicate the level of control and protection that must be applied."@en ;
   rdfs:isDefinedBy dprod-shapes: ;
   sh:targetClass dprod:InformationSensitivityClassification;
   .
@@ -126,7 +126,7 @@ dprod-shapes:InformationSensitivityClassificationShape
 dprod-shapes:DataProductLifecycleStatusShape
     a sh:NodeShape;
     rdfs:label "data product lifecycle status shape" ;
-    dct:description "The lifecycle of the data product as defined by EDM Council CDMC"@en ;
+    dct:description "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."@en ;
     sh:targetClass dprod:DataProductLifecycleStatus;
     rdfs:isDefinedBy dprod-shapes:;
   .
@@ -134,7 +134,7 @@ dprod-shapes:DataProductLifecycleStatusShape
 dprod-shapes:ProtocolShape
     a sh:NodeShape;
     rdfs:label "protocol shape" ;
-    dct:description "A protocol, possibly including a specific version, used for communicating with a service."@en ;
+    dct:description "A detailed specification, possibly including a specific version, for how to communicate with a service."@en ;
     rdfs:isDefinedBy dprod-shapes:;
     sh:targetClass dprod:Protocol;
 .
@@ -142,7 +142,7 @@ dprod-shapes:ProtocolShape
 dprod-shapes:SecuritySchemaTypeShape
     a sh:NodeShape;
     rdfs:label "security schema type shape" ;
-    dct:description "A security schema type used for authentication and communication."@en ;
+    dct:description "A classification encompassing a set of rules used for authentication and communication."@en ;
     rdfs:isDefinedBy dprod-shapes:;
     sh:targetClass dprod:SecuritySchemaType;
 .
@@ -180,7 +180,7 @@ dprod-shapes:DataProduct-dataProductOwner
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:dataProductOwner;
   sh:class prov:Agent;
-  dct:description "The agent that is overall accountable for the data product. This includes managing the data product along its lifecycle."@en ;
+  dct:description "The agent that is accountable overall for the data product, including managing it through its lifecycle."@en ;
   rdfs:label "data product owner shape";
 .
 
@@ -189,7 +189,7 @@ dprod-shapes:DataProduct-lifecycleStatus
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:lifecycleStatus;
   sh:class dprod:DataProductLifecycleStatus;
-  dct:description "The lifecycle status of the data product taken from a controlled list ( Ideation, Design, Build, Deploy, Consume )."@en ;
+  dct:description "The development status of the data product. "@en ;
   rdfs:label "data product lifecycle status shape";
 .
 
@@ -225,7 +225,7 @@ dprod-shapes:DataProduct-inputPort
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:inputPort;
   sh:class dcat:DataService;
-  dct:description "An input port describes a set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."@en ;
+  dct:description "A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."@en ;
   rdfs:label "data product input port shape";
 .
 
@@ -234,7 +234,7 @@ dprod-shapes:DataProduct-outputPort
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:outputPort;
   sh:class dcat:DataService;
-  dct:description "An output port describes a set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
+  dct:description "A set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
   rdfs:label "data product output port shape";
 .
 
@@ -312,7 +312,7 @@ dcat:Dataset-informationSensitivityClassification
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:informationSensitivityClassification;
   sh:class dprod:InformationSensitivityClassification;
-  dct:description "The relationship to a taxonomy that defines the different levels of control and protection that must be applied to the dataset. This is a more granular relationship of the classification of a dataset that includes other classification concepts  "@en ;
+  dct:description "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization."@en ;
   rdfs:label "dataset information sensitivity classification shape";
  .
 
@@ -355,7 +355,7 @@ dprod-shapes:DataService-isAccessServiceOf
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:isAccessServiceOf;
   sh:class dcat:Distribution;
-  dct:description "The dataset distribution that is being offered through this Data Service."@en ;
+  dct:description "The dataset distribution that is being offered through this data service."@en ;
   rdfs:label "data service is access service of shape" ;
   .
 
@@ -364,7 +364,7 @@ dprod-shapes:DataService-protocol
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:protocol;
   sh:class dcat:Protocol;
-  dct:description "A protocol (possibly one of many options) used to communicate with this Data Service."@en ;
+  dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
   rdfs:label "data service protocol shape" ;
   .
 
