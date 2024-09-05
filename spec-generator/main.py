@@ -63,7 +63,23 @@ def main():
     g_ontology = load_dprod_ontology()
     g_shapes = load_dprod_shapes()
     
-    jsonld_context = {
+    jsonld_context_ontology = {
+        "@context": {
+            "@version": 1.1,
+            "dprod": ontology_namespace_iri,
+            "xsd": XSD._NS,
+            "owl": OWL._NS,
+            "dcat": DCAT._NS,
+            "dct": DCTERMS._NS,
+            "prov": PROV._NS,
+            "rdfs": RDFS._NS,
+            "rdf": RDF._NS,
+            "sh": SH._NS,
+            "linkedin": LINKEDIN._NS,
+        }
+    }
+
+    jsonld_context_shapes = {
         "@context": {
             "@version": 1.1,
             "dprod": ontology_namespace_iri,
@@ -80,27 +96,22 @@ def main():
             "linkedin": LINKEDIN._NS,
         }
     }
-    
 
     with open('dist/dprod.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF JSON-LD - on its own: ./{f.name}")
-        f.write(g_ontology.serialize(format='json-ld', base=ontology_namespace_iri, indent=4, context=jsonld_context))
+        f.write(g_ontology.serialize(format='json-ld', base=ontology_namespace_iri, indent=4, context=jsonld_context_ontology))
 
     with open('dist/dprod-all.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF JSON-LD - all: ./{f.name}")
-        f.write(g.serialize(format='json-ld', base=ontology_namespace_iri, indent=4, context=jsonld_context))
+        f.write(g.serialize(format='json-ld', base=ontology_namespace_iri, indent=4, context=jsonld_context_shapes))
 
-    with open('dist/dprod.ttl', mode='x', encoding='utf-8') as f:
-        print(f"Generating RDF Turtle - on its own: ./{f.name}")
-        f.write(g_ontology.serialize(format='turtle', base=ontology_namespace_iri))
+    # with open('dist/dprod.ttl', mode='x', encoding='utf-8') as f:
+    #     print(f"Generating RDF Turtle - on its own: ./{f.name}")
+    #     f.write(g_ontology.serialize(format='turtle', base=ontology_namespace_iri))
 
     with open('dist/dprod-all.ttl', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF Turtle - all: ./{f.name}")
         f.write(g.serialize(format='turtle', base=ontology_namespace_iri))
-
-    # with open('dist/dprod.rdf', mode='x', encoding='utf-8') as f:
-    #     print(f"Generating RDF/XML - on its own: ./{f.name}")
-    #     f.write(g_ontology.serialize(format='xml', base=ontology_namespace_iri))
 
     with open('dist/dprod.rdf', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF/XML - on its own: ./{f.name}")
@@ -116,7 +127,7 @@ def main():
 
     with open('dist/dprod-shapes.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating SHACL Ontology JSON-LD - on its own: ./{f.name}")
-        f.write(g_shapes.serialize(format='json-ld', base=shapes_graph_ns_iri, indent=4, context=jsonld_context))
+        f.write(g_shapes.serialize(format='json-ld', base=shapes_graph_ns_iri, indent=4, context=jsonld_context_shapes))
 
     with open('dist/dprod-shapes.rdf', mode='x', encoding='utf-8') as f:
         print(f"Generating SHACL Ontology RDF/XML - on its own: ./{f.name}")
@@ -126,8 +137,10 @@ def main():
         print(f"Copying asset: {asset}")
         shutil.copy2(f'assets/{asset}', 'dist/assets')
 
+    print("Copying dprod.ttl")
+    shutil.copy2('ontology/dprod/dprod-ontology.ttl', 'dist/dprod.ttl')
     print("Copying dprod-shapes.ttl")
-    shutil.copy2('ontology/dprod/dprod-shapes.ttl', 'dist/dprod-shapes-original.ttl')
+    shutil.copy2('ontology/dprod/dprod-shapes.ttl', 'dist/dprod-shapes.ttl')
 
     print("Specification generated successfully!")
 
