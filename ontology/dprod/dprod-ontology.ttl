@@ -29,13 +29,13 @@ dprod:
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
   dct:modified "2024-08-31"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
-  dct:contributor <https://www.linkedin.com/in/natasavaritimou/> ;
-  dct:contributor <https://www.linkedin.com/in/peterivett/> ;
-  dct:contributor <https://www.linkedin.com/in/jgeluk/> ;
-  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/> ;
-  dct:contributor <https://www.linkedin.com/in/matthias-jurisch/> ;
-  dct:contributor <https://www.linkedin.com/in/tonyseale/> ;
-  owl:imports <http://www.w3.org/ns/dcat#> ;
+  dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
+  dct:contributor <https://www.linkedin.com/in/peterivett> ;
+  dct:contributor <https://www.linkedin.com/in/jgeluk> ;
+  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043> ;
+  dct:contributor <https://www.linkedin.com/in/matthias-jurisch> ;
+  dct:contributor <https://www.linkedin.com/in/tonyseale> ;
+  owl:imports dcat: ;
   owl:versionInfo "OMG Request For Comments Errata 2" ;
 .
 

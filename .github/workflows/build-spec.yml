@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip' # caching pip dependencies
-      - run: pip install -r requirements.txt ; python spec-generator.py
+      - run: pip install -r requirements.txt ; python spec-generator/main.py
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
