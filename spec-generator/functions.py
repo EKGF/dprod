@@ -6,7 +6,7 @@ import os
 import re
 
 import markdown
-from rdflib import Graph, DCAT, DCTERMS, SH, RDF, URIRef
+from rdflib import Graph, DCAT, DCTERMS, SH, RDF, URIRef, ODRL2
 from rdflib.namespace import NamespaceManager
 from rdflib.term import Node
 
@@ -15,16 +15,43 @@ import example
 
 
 def load_ontologies():
-    """Load the OWL ontology into an RDFlib graph"""
+    """Load the OWL ontology and the SHACL ontology and important reference ontologies into an RDFlib graph"""
     g = Graph()
     nm = NamespaceManager(g, bind_namespaces="rdflib")
     nm.bind("dprod", globals.DPROD)
-    nm.bind("dprod-shape", globals.DPROD_SHAPE)
+    nm.bind("dprod-shape", globals.DPROD_SHAPES)
     nm.bind("dcat", DCAT)
     nm.bind("dct", DCTERMS)
+    nm.bind("linkedin", globals.LINKEDIN)
     g.parse('./ontology/dprod/dprod-ontology.ttl', format='ttl')
     g.parse('./ontology/dprod/dprod-shapes.ttl', format='ttl')
     g.parse('https://www.w3.org/ns/dcat2.ttl', format='ttl')
+    return g
+
+
+def load_dprod_ontology():
+    """Load JUST the OWL ontology into an RDFlib graph"""
+    g = Graph()
+    nm = NamespaceManager(g, bind_namespaces="rdflib")
+    nm.bind("dprod", globals.DPROD)
+    nm.bind("dcat", DCAT)
+    nm.bind("dct", DCTERMS)
+    nm.bind("odrl", ODRL2)
+    nm.bind("linkedin", globals.LINKEDIN)
+    g.parse('./ontology/dprod/dprod-ontology.ttl', format='ttl')
+    return g
+
+def load_dprod_shapes():
+    """Load JUST the SHACL ontology into an RDFlib graph"""
+    g = Graph()
+    nm = NamespaceManager(g, bind_namespaces="rdflib")
+    nm.bind("dprod", globals.DPROD)
+    nm.bind("dprod-shapes", globals.DPROD_SHAPES)
+    nm.bind("dcat", DCAT)
+    nm.bind("dct", DCTERMS)
+    nm.bind("odrl", ODRL2)
+    nm.bind("linkedin", globals.LINKEDIN)
+    g.parse('./ontology/dprod/dprod-shapes.ttl', format='ttl')
     return g
 
 

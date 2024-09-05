@@ -1,12 +1,13 @@
-# baseURI: https://ekgf.github.io/dprod/dprod-shapes/
+@prefix shacl: <http://www.w3.org/ns/shacl#> .
+# baseURI: https://ekgf.github.io/dprod/shapes/
 # imports: http://www.w3.org/ns/dcat#
 # imports: http://www.w3.org/ns/shacl#
 # imports: https://ekgf.github.io/dprod/
 # prefix: dprod-shapes
 
 
-@base <https://ekgf.github.io/dprod-shapes/> .
-@prefix dprod-shapes: <https://ekgf.github.io/dprod-shapes/> .
+@base <https://ekgf.github.io/dprod/shapes/> .
+@prefix dprod-shapes: <https://ekgf.github.io/dprod/shapes/> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -28,15 +29,15 @@ dprod-shapes:
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
   dct:modified "2024-08-31"^^xsd:date ;
-  dct:contributor <https://www.linkedin.com/in/natasavaritimou/> ;
-  dct:contributor <https://www.linkedin.com/in/peterivett/> ;
-  dct:contributor <https://www.linkedin.com/in/jgeluk/> ;
-  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/> ;
-  dct:contributor <https://www.linkedin.com/in/matthias-jurisch/> ;
-  dct:contributor <https://www.linkedin.com/in/tonyseale/> ;
-  owl:imports <http://www.w3.org/ns/dcat#> ;
-  owl:imports <http://www.w3.org/ns/shacl#>;
-  owl:imports <https://ekgf.github.io/dprod/>;
+  dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
+  dct:contributor <https://www.linkedin.com/in/peterivett> ;
+  dct:contributor <https://www.linkedin.com/in/jgeluk> ;
+  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043> ;
+  dct:contributor <https://www.linkedin.com/in/matthias-jurisch> ;
+  dct:contributor <https://www.linkedin.com/in/tonyseale> ;
+  owl:imports dcat: ;
+  owl:imports shacl: ;
+  owl:imports dprod: ;
   owl:versionInfo "OMG Request For Comments Errata 2" ;
   sh:declare [
     sh:prefix "dprod" ;
@@ -44,7 +45,7 @@ dprod-shapes:
    ] ;
   sh:declare [
     sh:prefix "dprod-shapes" ;
-    sh:namespace "https://ekgf.github.io/dprod-shapes/" ;
+    sh:namespace "https://ekgf.github.io/dprod/shapes/" ;
   ] ;
   sh:declare [
     sh:prefix "dcat" ;
@@ -125,7 +126,7 @@ dprod-shapes:InformationSensitivityClassificationShape
 dprod-shapes:DataProductLifecycleStatusShape
     a sh:NodeShape;
     rdfs:label "data product lifecycle status shape" ;
-    dct:description "The shape of Data Product Lifecycle Status."@en ;
+    dct:description "The lifecycle of the data product as defined by EDM Council CDMC"@en ;
     sh:targetClass dprod:DataProductLifecycleStatus;
     rdfs:isDefinedBy dprod-shapes:;
   .

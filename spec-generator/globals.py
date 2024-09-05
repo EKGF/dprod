@@ -5,8 +5,11 @@ show_source = False
 
 ontology_namespace_iri = "https://ekgf.github.io/dprod/"
 DPROD = Namespace(ontology_namespace_iri)
-shapes_graph_ns_iri = "https://ekgf.github.io/dprod/dprod-shapes/"
-DPROD_SHAPE = Namespace(shapes_graph_ns_iri)
+shapes_graph_ns_iri = "https://ekgf.github.io/dprod/shapes/"
+DPROD_SHAPES = Namespace(shapes_graph_ns_iri)
+
+linkedin_ns_iri = "https://www.linkedin.com/in/"
+LINKEDIN = Namespace(linkedin_ns_iri)
 
 IGNORED_NODE_SHAPE_PREDICATES = (
     RDF.type,
