@@ -83,8 +83,7 @@ def replace_backticks(markdown_text):
         if code_type == 'text':
             return f'''<pre class="ekgfexample"><code class="ekgfexample">{code_content}\n</code></pre>'''
         else:
-            return f'''<pre class="nolinks hljs {code_type} ekgfexample">``` +
-            f```<code class="ekgfexample">{code_content}\n</code></pre>'''
+            return f'''<pre class="nolinks hljs {code_type} ekgfexample"><code class="ekgfexample">{code_content}\n</code></pre>'''
         # return f'<pre class="example hljs {code_type}">\n{code_content}\n</pre>'
 
     # Replace all code blocks
