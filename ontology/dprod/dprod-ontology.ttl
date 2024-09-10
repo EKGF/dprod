@@ -97,7 +97,7 @@ dprod:SecuritySchemaType
 
 
 dprod:dataProductOwner
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
 # a rdfs:subPropertyOf prov:wasAttributedTo ; # in line with DCAT
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataProduct ;
@@ -108,7 +108,7 @@ dprod:dataProductOwner
 .
 
 dprod:lifecycleStatus
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
 # a rdfs:subPropertyOf adms:status ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataProduct ;
@@ -119,7 +119,7 @@ dprod:lifecycleStatus
 .
 
 dprod:informationSensitivityClassification
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   dct:description
     "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization."@en ;
   rdfs:isDefinedBy dprod: ;
@@ -129,7 +129,7 @@ dprod:informationSensitivityClassification
 .
 
 dprod:purpose
-  a rdfs:Property, owl:DatatypeProperty ;
+  a rdf:Property, owl:DatatypeProperty ;
   dct:description "A description of the objectives and intended usage of the data product."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataProduct ;
@@ -138,7 +138,7 @@ dprod:purpose
 .
 
 dprod:domain
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   dct:description "The business or information area supported by the data product."@en ;
   rdfs:comment
     "The domain is intended to be a resource in its own right. This specification does not constrain the class to be used."@en ;
@@ -148,7 +148,7 @@ dprod:domain
 .
 
 dprod:inputPort
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod: ;
@@ -158,7 +158,7 @@ dprod:inputPort
 .
 
 dprod:outputPort
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:DataService ;
   rdfs:isDefinedBy dprod: ;
@@ -168,7 +168,7 @@ dprod:outputPort
 .
 
 dprod:inputDataset
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:Dataset ;
   rdfs:isDefinedBy dprod: ;
@@ -178,7 +178,7 @@ dprod:inputDataset
 .
 
 dprod:outputDataset
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   rdfs:domain dprod:DataProduct ;
   rdfs:range dcat:Dataset ;
   rdfs:isDefinedBy dprod: ;
@@ -188,7 +188,7 @@ dprod:outputDataset
 .
 
 dprod:isDistributionOf
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   owl:inverseOf dcat:distribution ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:Distribution ;
@@ -197,7 +197,7 @@ dprod:isDistributionOf
 .
 
 dprod:isAccessServiceOf
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   dct:description "The dataset distribution that is being offered through this data service."@en ;
   rdfs:isDefinedBy dprod: ;
   owl:inverseOf dcat:accessService ;
@@ -207,7 +207,7 @@ dprod:isAccessServiceOf
 .
 
 dprod:protocol
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:DataService ;
@@ -216,7 +216,7 @@ dprod:protocol
 .
 
 dprod:securitySchemaType
-  a rdfs:Property, owl:ObjectProperty ;
+  a rdf:Property, owl:ObjectProperty ;
   dct:description "The security schema type used for authentication and communication with this Data Service."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:DataService ;
