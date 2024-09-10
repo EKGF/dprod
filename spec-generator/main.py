@@ -67,15 +67,15 @@ def main():
         "@context": {
             "@version": 1.1,
             "dprod": ontology_namespace_iri,
-            "xsd": XSD._NS,
-            "owl": OWL._NS,
-            "dcat": DCAT._NS,
-            "dct": DCTERMS._NS,
-            "prov": PROV._NS,
-            "rdfs": RDFS._NS,
-            "rdf": RDF._NS,
-            "sh": SH._NS,
-            "linkedin": LINKEDIN._NS,
+            "xsd": str(XSD),
+            "owl": str(OWL),
+            "dcat": str(DCAT),
+            "dct": str(DCTERMS),
+            "prov": str(PROV),
+            "rdfs": str(RDFS),
+            "rdf": str(RDF),
+            "sh": str(SH),
+            "linkedin": str(LINKEDIN),
         }
     }
 
@@ -84,16 +84,16 @@ def main():
             "@version": 1.1,
             "dprod": ontology_namespace_iri,
             "dprod-shapes": shapes_graph_ns_iri,
-            "xsd": XSD._NS,
-            "owl": OWL._NS,
-            "dcat": DCAT._NS,
-            "dct": DCTERMS._NS,
-            "prov": PROV._NS,
-            "rdfs": RDFS._NS,
-            "rdf": RDF._NS,
-            "sh": SH._NS,
-            "odrl": ODRL2._NS,
-            "linkedin": LINKEDIN._NS,
+            "xsd": str(XSD),
+            "owl": str(OWL),
+            "dcat": str(DCAT),
+            "dct": str(DCTERMS),
+            "prov": str(PROV),
+            "rdfs": str(RDFS),
+            "rdf": str(RDF),
+            "sh": str(SH),
+            "odrl": str(ODRL2),
+            "linkedin": str(LINKEDIN),
         }
     }
 
@@ -136,6 +136,8 @@ def main():
     for asset in os.listdir('assets'):
         print(f"Copying asset: {asset}")
         shutil.copy2(f'assets/{asset}', 'dist/assets')
+        
+    shutil.copy2('assets/favicon.ico', 'dist')
 
     print("Copying dprod.ttl")
     shutil.copy2('ontology/dprod/dprod-ontology.ttl', 'dist/dprod.ttl')
