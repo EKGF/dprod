@@ -3,10 +3,12 @@
 <head>
   <title>EKGF DPROD Ontology</title>
   <meta charset='utf-8'>
+  <!--suppress JSUnresolvedLibraryURL -->
   <script src='https://ekgf.github.io/respec/builds/respec-w3c.js' async class='remove'></script>
   <script class='remove'>
     // All config options at https://respec.org/docs/
-    var respecConfig = {
+    // noinspection JSUnusedGlobalSymbols
+    const respecConfig = {
       // Working Groups ids at https://respec.org/w3c/groups/
       // group: "Semantic Data Products Working Group",
       latestVersion: "https://ekgf.github.io/dprod/",
@@ -126,6 +128,27 @@
           title: "Data Mesh Architectures",
           href: "https://en.wikipedia.org/wiki/Data_mesh",
           publisher: "Wikipedia",
+        },
+        dprod: {
+          title: "Data Product Ontology",
+          href: "https://ekgf.github.io/dprod/",
+          authors: [
+            "Tony Seale",
+            "Natasa Varytimou",
+            "Pete Rivett",
+            "Marcel Fröhlich",
+            "Andrea Gioia",
+            "Jacobus Geluk",
+            "Ben Whittam Smith",
+            "Steve Fisher",
+            "Oli Bage",
+            "Ben Clinch",
+            "Carl Mattocks",
+            "Carlos Tubbax",
+            "Charles Ivie",
+          ],
+          status: "base",
+          publisher: "EKGF"
         },
       },
     };
@@ -284,7 +307,7 @@
     </p>
     <p>
       This limited permission automatically terminates without notice if you breach any of these terms or conditions.
-      Upon termination, you will destroy immediately any copies of the specifications in your possession or control.
+      Upon termination, you will immediately destroy any copies of the specifications in your possession or control.
     </p>
   </div>
   <div>
@@ -385,7 +408,7 @@
   As more companies adopt decentralized data architectures, such as Data Mesh,
   the need for standardized methods to describe and manage data products consistently 
   across platforms has become critical. 
-  This is where the DPROD specification, built on W3C Linked Data standards, becomes essential. 
+  This is where the [[dprod]] specification, built on W3C Linked Data standards, becomes essential. 
   Without such a standard, organizations face significant challenges: 
   inconsistent metadata across diverse data products, limited discoverability, 
   and interoperability issues that hinder data integration from various sources. 
@@ -444,14 +467,19 @@
     <li>
       Harmonize Data Schemas: Using shared schemas helps unify different data formats.
       For instance, the <a href="https://ekgf.github.io/dprod/dprod.ttl">DPROD</a> specification provides a
+      <!--suppress HtmlUnknownAnchorTarget -->
       common set of rules for defining a <a href="#dataproduct">Data Product</a>.
       Users of DPROD can extend this schema as needed.
     </li>
   </ul>
 
-  The DPROD specification builds on DCAT by connecting
+  The [[dprod]]] specification builds on [[vocab-dcat-3]] by connecting
   <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to
-  DPROD <a href="#dataproduct">Data Products</a> using <a href="#inputport">input</a> and
+  <!--suppress HtmlUnknownAnchorTarget -->
+  DPROD <a href="#dataproduct">Data Products</a> using
+  <!--suppress HtmlUnknownAnchorTarget -->
+  <a href="#inputport">input</a> and
+  <!--suppress HtmlUnknownAnchorTarget -->
   <a href="#outputport">output</a> ports.
   These ports are used to publish and consume data from a Data Product.
   DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT data services</a>,
@@ -466,8 +494,9 @@
   <p><strong>The DPROD specification has four main aims:</strong></p>
   <ul class="blue-balls">
     <li>
-      To provide unambiguous and sharable semantics to answer the question: 'What is a <a href="#dataproduct">data
-      product</a>?'
+      To provide unambiguous and sharable semantics to answer the question:
+      <!--suppress HtmlUnknownAnchorTarget -->
+      'What is a <a href="#dataproduct">data product</a>?'
     </li>
     <li>
       Be simple for anyone to use, but expressive enough to power large data marketplaces
@@ -486,6 +515,7 @@
 
   <p>
     A data product is conformant with this specification if it satisfies the [[SHACL]] constraints provided in the file
+    <!--suppress HtmlUnknownTarget -->
     <a href="dprod-shapes.ttl">dprod-shapes.ttl</a>.
   </p>
 </section>
@@ -499,49 +529,49 @@
 
 <section id="symbols">
   <h2>Symbols</h2>
+  <p>The following acronyms are used in this specification.</p>
   <p>
-    The following acronyms are used in this specification.
-  <ul class="no-bullets">
-    <li>
-      <strong>DPROD</strong> - Data Product Ontology
-    </li>
-    <li>
-      <strong>DCAT</strong> - Data Catalog Vocabulary [[vocab-dcat-3]]
-    </li>
-    <li>
-      <strong>JSON-LD</strong> - JavaScript Object Notation for Linked Data [[json-ld11]]
-    </li>
-    <li>
-      <strong>IRI</strong> - Internationalized Resource Identifier [[IRI]]
-    </li>
-    <li>
-      <strong>ODRL</strong> - Open Digital Rights Language [[odrl-model]]
-    </li>
-    <li>
-      <strong>OWL</strong> - Web Ontology Language [[owl2-quick-reference]]
-    </li>
-    <li>
-      <strong>PROV</strong> - Provenance Ontology [[prov-overview]]
-    </li>
-    <li>
-      <strong>RDF</strong> - Resource Description Format [[rdf11-concepts]]
-    </li>
-    <li>
-      <strong>RDFS</strong> - RDF Schema [[rdf-schema]], [[swbp-xsch-datatypes]]
-    </li>
-    <li>
-      <strong>SHACL</strong> - Shapes Constraint Language ([[shacl]])
-    </li>
-    <li>
-      <strong>TTL</strong> - Turtle (commonly used serialization for RDF) [[turtle]] [[rdf12-turtle]]
-    </li>
-    <li>
-      <strong>URI</strong> - Uniform Resource Identifier [[URI]]
-    </li>
-    <li>
-      <strong>W3C</strong> - World Wide Web Consortium
-    </li>
-  </ul>
+    <ul class="no-bullets">
+      <li>
+        <strong>DPROD</strong> - Data Product Ontology [[dprod]]
+      </li>
+      <li>
+        <strong>DCAT</strong> - Data Catalog Vocabulary [[vocab-dcat-3]]
+      </li>
+      <li>
+        <strong>JSON-LD</strong> - JavaScript Object Notation for Linked Data [[json-ld11]]
+      </li>
+      <li>
+        <strong>IRI</strong> - Internationalized Resource Identifier [[IRI]]
+      </li>
+      <li>
+        <strong>ODRL</strong> - Open Digital Rights Language [[odrl-model]]
+      </li>
+      <li>
+        <strong>OWL</strong> - Web Ontology Language [[owl2-quick-reference]]
+      </li>
+      <li>
+        <strong>PROV</strong> - Provenance Ontology [[prov-overview]]
+      </li>
+      <li>
+        <strong>RDF</strong> - Resource Description Format [[rdf11-concepts]]
+      </li>
+      <li>
+        <strong>RDFS</strong> - RDF Schema [[rdf-schema]], [[swbp-xsch-datatypes]]
+      </li>
+      <li>
+        <strong>SHACL</strong> - Shapes Constraint Language ([[shacl]])
+      </li>
+      <li>
+        <strong>TTL</strong> - Turtle (commonly used serialization for RDF) [[turtle]] [[rdf12-turtle]]
+      </li>
+      <li>
+        <strong>URI</strong> - Uniform Resource Identifier [[URI]]
+      </li>
+      <li>
+        <strong>W3C</strong> - World Wide Web Consortium
+      </li>
+    </ul>
   </p>
 </section>
 
@@ -560,6 +590,15 @@
     <tbody>
     <tr>
       <td>
+        <code>dprod</code>
+      </td>
+      <td>
+        <code>https://ekgf.github.io/dprod/</code>
+      </td>
+      <td>[[dprod]]</td>
+    </tr>
+    <tr>
+      <td>
         <code>dcat</code>
       </td>
       <td>
@@ -572,6 +611,7 @@
         <code>dct</code>
       </td>
       <td>
+        <!--suppress HttpUrlsUsage -->
         <code>http://purl.org/dc/terms/</code>
       </td>
       <td>[[dcterms]]</td>
@@ -649,7 +689,7 @@
     <a href="https://en.wikipedia.org/wiki/Data_mesh">Data Mesh Architectures</a> [[Data Mesh]] use input and output ports to manage
     how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input
     ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or
-    reporting etc.
+    reporting, etc.
   </p>
   <p>
     In the [[[vocab-dcat-3]]] framework, 
@@ -659,17 +699,20 @@
     datasets or data processing functions.
   </p>
   <p>   
-    Data Services specify how to access and download the data. In DPROD, Data Services are connected to <a
-    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called <a
-    href="#isaccessserviceof">isAccessServiceOf</a>; on the Distribution one can specify formats (like CSV or JSON etc)
-    and provide metadata about the "physical model" of the data. Distributions link to <a
-    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">Datasets</a> and DCAT has a very rich vocabulary for
-    describing every aspect of a dataset. Finally, Datasets use the <a
-    href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> property to link to the
+    Data Services specify how to access and download the data. In DPROD, Data Services are connected to 
+    <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called 
+    <!--suppress HtmlUnknownAnchorTarget -->
+    <a href="#isaccessserviceof">isAccessServiceOf</a>; 
+    on the Distribution one can specify formats (like CSV or JSON etc.)
+    and provide metadata about the "physical model" of the data. Distributions link to
+    <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">Datasets</a> and DCAT has a very rich vocabulary for
+    describing every aspect of a dataset. Finally, Datasets use the 
+    <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> property to link to the
     "logical model" where one can specify one's own rich semantic metadata.
   </p>
   <p>
-    By linking Data Product ports to DCAT DataServices, DPROD can describe Data Products in a way that machines can read
+    By linking Data Product ports to DCAT DataServices ([[vocab-dcat-3]]), 
+    DPROD can describe Data Products in a way that machines can read
     across the organization. This makes it easier for data teams to build and manage their own data products
     independently, while still working well with the rest of the organization's data.
   </p>
@@ -679,6 +722,7 @@
     allows different organizations to share data securely and in a standardized way.
   </p>
   <figure id="ProfileModel">
+    <!--suppress HtmlUnknownTarget -->
     <img alt="Information model for the Profile" src="./assets/DPROD.drawio.svg">
     <figcaption>
       Overview of the DPROD model and its relationship with DCAT classes
@@ -696,11 +740,11 @@
         metadata
       </li>
       <li>
-        Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. This can be a HTTP
-        URL, a Database or a FileShare etc
+        Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. 
+        This can be an HTTP URL, a Database or a FileShare, etc.
       </li>
       <li>
-        Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc)
+        Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc.)
         which can conform to a physical model
       </li>
       <li>
@@ -709,8 +753,11 @@
     </ul>
   </p>
   <p>
-    As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>, the DPROD <a
-    href="#inputport">input</a> and <a href="#outputport">output</a> ports can specify connection details, they have <a
+    As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>,
+    <!--suppress HtmlUnknownAnchorTarget -->
+    the DPROD <a href="#inputport">input</a> and
+    <!--suppress HtmlUnknownAnchorTarget -->
+    <a href="#outputport">output</a> ports can specify connection details, they have <a
     href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a
     href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared schemas. In this
     example,
@@ -753,8 +800,9 @@
 
   <p class="note">
     The following sections are driven by the Shapes definitions for DPROD, which represent the properties 
-    expected to be used for instances of the above classes. As such they include properties defined by the DCAT specification
-    which DPROD extends. The prefix in the <i>identifier</i> for each entry indicates the ontology defining the property.
+    expected to be used for instances of the above classes. 
+    As such, they include properties defined by the DCAT specification which DPROD extends. 
+    The prefix in the <i>identifier</i> for each entry indicates the ontology defining the property.
   </p>
 
   {% for cls in classes %}
@@ -772,7 +820,13 @@
       <p>{{prop.description}}</p>
       <table class="def propdef">
       <tbody>
-        <tr><th>Identifier:</th><td><a href="{{prop.href()}}">{{prop.axiom_iri_normalized}}</a></td></tr>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="{{prop.href()}}">{{prop.axiom_iri_normalized}}</a>
+          </td>
+        </tr>
         {% if prop.label is not none and prop.label  != '' %}   
         <tr><th>Label:</th><td>{{prop.label}}</td></tr>
         {% endif %}
@@ -793,8 +847,9 @@
 
 <section class="Examples">
   <h2>Worked Examples</h2>
-  <p>This section contains some worked examples illustrating how to use DPROD for some common use cases.
-    All these examples are provided as accompanying machine readable files, from which this part of the specification is automatically generated (hence soem formatting variations).
+  <p>This section contains some worked examples illustrating how to use [[dprod]] for some common use cases.
+    All these examples are provided as accompanying machine-readable files, 
+    from which this part of the specification is automatically generated (hence soem formatting variations).
   </p>
 
   {% for example in examples %}
