@@ -1,6 +1,8 @@
 # DPROD Ontology
 
-Artifacts of the EKGF Data Product Workgroup
+Repository for the Data Products Ontology (DPROD), a proposed OMG standard, originally created by the EKGF Data Product Workgroup.
+The proposal is currently under industry review until December 2024, and until that time the main branch is locked.
+Any changes will occur on the develop branch so pull requests shoudl be targeted at that.
 
 - [Examples / Test Cases](examples/README.md)
 - [Ontologies](ontology/README.md)
