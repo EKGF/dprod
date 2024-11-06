@@ -2,7 +2,7 @@
   "@type": "Policy",
   "id": "56456df-dfg-34535345-5545",
   
-  "assigner": 'https://schema.org/person/AdamSmith",
+  "assigner": "https://schema.org/person/AdamSmith",
   "target": "https://data.org/data-product/equity-trade-xxx",
   
   "permission": [
