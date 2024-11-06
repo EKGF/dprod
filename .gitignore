@@ -55,7 +55,6 @@ out/
 *.tdn
 *.odn
 *.pandoc.docx
-.idea
 *.fdb_latexmk
 *.xdy
 .pdm-python
