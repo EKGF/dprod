@@ -1,21 +1,30 @@
 {
-  "@type": "Policy",
-  "id": "56456df-dfg-34535345-5545",
-  
+  "@type": "Offer",
+  "@context": [
+    {
+      "odrl": "http://www.w3.org/ns/odrl/2/",
+      "reg": "https://www.region.taxonomy/v/1/"
+    }
+  ],
+  "uid": "56456df-dfg-34535345-5545",
   "assigner": "https://schema.org/person/AdamSmith",
   "target": "https://data.org/data-product/equity-trade-xxx",
-  
+
   "permission": [
-      {
-       "action": "odrl:read",
-       "constraint": [
-          {
-            "@type": "Constraint",
-            "leftOperand": "spatial",
-            "operator": "odrl:isAnyOf",
-            "rightOperand": [region:EMEA, region:APAC],
-            "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
+    {
+      "action": "odrl:read",
+      "constraint": [
+        {
+          "@type": "odrl:Constraint",
+          "leftOperand": "odrl:spatial",
+          "operator": "odrl:isAnyOf",
+          "rightOperand": [
+            "reg:EMEA",
+            "reg:APAC"
+          ],
+          "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
         }
-    ]
+      ]
+    }
+  ]
 }
-        
