@@ -1,0 +1,110 @@
+[
+  {
+    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "id": "https://www.ekgf.org/data/data-product/permid-data-product",
+    "type": "DataProduct",
+    "title": "PermId Data Product",
+    "description": "LSEG is making available its Permanent Identifiers, or PermIDs, and the associated entity masters and metadata to the market. PermIDs are open, permanent and universal identifiers where underlying attributes capture the context of the identity they each represent.",
+    "dataProductOwner": "https://www.linkedin.com/in/olibage/",
+    "lifecycleStatus": "https://ekgf.github.io/dprod/data/lifecycle-status/Consume",
+    "outputPort": {
+      "type": "DataService",
+       "id": "https://www.ekgf.org/data/dataservice/permid-organization"
+      "title": "Organization Endpoint",
+      "endpointURL": "https://api-eit.refinitiv.com/permid/search?q= <how do we search by entity type???>",
+      "endPointDescription": "https://developers.lseg.com/en/api-catalog/open-perm-id/permid-entity-search",
+      "conformsTo": "https://swagger.io/specification/",
+      "securitySchemaType": "httpApiKey",
+      "isAccessServiceOf": {
+        "type": "Distribution",
+        "format": "https://www.iana.org/assignments/media-types/application/json",
+        "isDistributionOf": {
+          "type": "Dataset",
+          "title": "PermId Organization",
+          "id": "https://www.ekgf.org/data/dataset/permid-organization",
+          "conformsTo": "https://permid.org/ontology/organization/"
+        }
+      }
+    }
+  },
+  {
+    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "id": "https://www.ekgf.org/data/data-product/gleif-data-product",
+    "type": "DataProduct",
+    "title": "GLEIF Data Product",
+    "description": "GLEIF makes available the Global LEI Index. This is the only global online source that provides open, standardized and high quality legal entity reference data. By doing so, GLEIF enables people and businesses to make smarter, less costly and more reliable decisions about who to do business with.",
+    "dataProductOwner": "https://www.linkedin.com/in/peterivett/",
+    "lifecycleStatus": "https://ekgf.github.io/dprod/data/lifecycle-status/Consume",
+    "outputPort": [
+      {
+        "type": "DataService",
+        "id": "https://www.ekgf.org/data/dataservice/gleif-l1",
+        "title": "GLEIF L1 Endpoint",
+        "endpointURL": "https://data.world/gleif/lei-data/workspace/file?filename=L1Data.ttl <note need to check CURL with CT ttl>",
+        "endPointDescription": "https://data.world/gleif/lei-data/workspace/project-summary?agentid=gleif&datasetid=lei-data",
+        "isAccessServiceOf": {
+          "type": "Distribution",
+          "format": "https://www.iana.org/assignments/media-types/text/turtle",
+          "isDistributionOf": {
+            "type": "Dataset",
+            "title": "GLEIF L1 Organization",
+            "id": "https://www.ekgf.org/data/dataset/gleif-l1",
+            "conformsTo": "https://www.gleif.org/ontology/L1/"
+          }
+        }
+      },
+      {
+        "type": "DataService",
+        "title": "GLEIF L1 XML Download",
+        "endpointURL": "https://www.gleif.org/en/lei-data/gleif-golden-copy/download-the-golden-copy#.zip",
+        "endPointDescription": "https://data.world/gleif/lei-data/workspace/project-summary?agentid=gleif&datasetid=lei-data",
+        "isAccessServiceOf": {
+          "type": "Distribution",
+          "format": "https://www.iana.org/assignments/media-types/application/xml",
+          "isDistributionOf": {
+            "type": "Dataset",
+            "title": "GLEIF Level 1 LEI-CDF Golden Copy File",
+            "id": "https://www.ekgf.org/data/dataset/gleif-l1-xml-data-product",
+            "conformsTo": "https://www.gleif.org/en/about-lei/common-data-file-format/current-versions/level-1-data-lei-cdf-3-1-format"
+          }
+        }
+      }
+    ]
+  },
+
+    {
+    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "id": "https://www.ekgf.org/data/data-product/legal-entity-data-product",
+    "type": "DataProduct",
+    "title": "Legal Entity Data Product",
+    "description": "TODO",
+    "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
+    "lifecycleStatus": "https://ekgf.github.io/dprod/data/lifecycle-status/Consume",
+    "inputPort": [{
+                "type": "DataService",
+                "id": "https://www.ekgf.org/data/dataservice/gleif-l1"
+        } ,
+
+        {
+                "type": "DataService",
+                "id": "https://www.ekgf.org/data/dataservice/permid-organization"
+        }
+        ],
+    "outputPort": {
+      "type": "DataService",
+      "title": "Legal Entity Endpoint",
+      "endpointURL": "https://github.com/EKGF/dprod/tree/develop/examples/legal-entity <TODO setup folders etc>",
+      "endPointDescription": "https://github.com/EKGF/dprod/tree/develop/examples/legal-entity/readme.txt",
+      "isAccessServiceOf": {
+        "type": "Distribution",
+        "format": "https://www.iana.org/assignments/media-types/application/json",
+        "isDistributionOf": {
+          "type": "Dataset",
+          "title": "Legal Entity",
+          "id": "https://www.ekgf.org/data/dataset/legal-entity",
+          "conformsTo": "https://github.com/EKGF/dprod/tree/develop/examples/legal-entity/ontology.ttl",
+        }
+      }
+    }
+  }
+]
