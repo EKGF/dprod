@@ -64,7 +64,6 @@ def main():
     g_shapes = load_dprod_shapes()
     
     jsonld_context_ontology = {
-        "@context": {
             "@version": 1.1,
             "dprod": ontology_namespace_iri,
             "xsd": str(XSD),
@@ -75,12 +74,10 @@ def main():
             "rdfs": str(RDFS),
             "rdf": str(RDF),
             "sh": str(SH),
-            "linkedin": str(LINKEDIN),
-        }
+            "linkedin": str(LINKEDIN)
     }
 
     jsonld_context_shapes = {
-        "@context": {
             "@version": 1.1,
             "dprod": ontology_namespace_iri,
             "dprod-shapes": shapes_graph_ns_iri,
@@ -93,8 +90,7 @@ def main():
             "rdf": str(RDF),
             "sh": str(SH),
             "odrl": str(ODRL2),
-            "linkedin": str(LINKEDIN),
-        }
+            "linkedin": str(LINKEDIN)
     }
 
     with open('dist/dprod.jsonld', mode='x', encoding='utf-8') as f:
