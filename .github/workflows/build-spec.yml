@@ -38,7 +38,7 @@ jobs:
           echo "Running spec generator..."
           python spec-generator/main.py
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           # Upload the contents of the dist directory
           path: 'dist'
