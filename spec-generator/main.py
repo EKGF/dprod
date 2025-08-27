@@ -24,6 +24,36 @@ def add_to_context(g, node_shape_iri, node_shapes: dict):
         PropertyShape(node_shape=node_shape, shape_iri=property_shape_iri, g=g)
 
 
+def generate_jsonld_context(g_ontology):
+    """
+    Generate a proper JSON-LD context from the ontology.
+    This creates a context that maps term names to their full URIs.
+    """
+    context = {
+        "@version": 1.1,
+        "dprod": ontology_namespace_iri,
+        "xsd": str(XSD),
+        "owl": str(OWL),
+        "dcat": str(DCAT),
+        "dct": str(DCTERMS),
+        "prov": str(PROV),
+        "rdfs": str(RDFS),
+        "rdf": str(RDF),
+        "sh": str(SH),
+        "linkedin": str(LINKEDIN),
+    }
+    
+    # Extract all classes and properties from the ontology
+    for subject in g_ontology.subjects():
+        if str(subject).startswith(ontology_namespace_iri):
+            # Get the local name (term) from the URI
+            term = str(subject).replace(ontology_namespace_iri, "")
+            if term:  # Skip the base URI itself
+                context[term] = f"dprod:{term}"
+    
+    return context
+
+
 def main():
     print("Generating the specification...")
 
@@ -94,8 +124,21 @@ def main():
         "linkedin": str(LINKEDIN),
     }
 
+    # Generate proper JSON-LD context
+    proper_context = generate_jsonld_context(g_ontology)
+    
+    with open('dist/dprod-context.jsonld', mode='x', encoding='utf-8') as f:
+        print(f"Generating JSON-LD context: ./{f.name}")
+        import json
+        json.dump({"@context": proper_context}, f, indent=4)
+
     with open('dist/dprod.jsonld', mode='x', encoding='utf-8') as f:
-        print(f"Generating RDF JSON-LD - on its own: ./{f.name}")
+        print(f"Generating JSON-LD context (primary): ./{f.name}")
+        import json
+        json.dump({"@context": proper_context}, f, indent=4)
+
+    with open('dist/dprod-ontology.jsonld', mode='x', encoding='utf-8') as f:
+        print(f"Generating RDF JSON-LD Ontology - on its own: ./{f.name}")
         f.write(g_ontology.serialize(
             format='json-ld',
             base=ontology_namespace_iri,
