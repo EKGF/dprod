@@ -1,6 +1,7 @@
 jinja2>=3.0.2
 markdown>=3.3.4
-rdflib>=7.0.0
+rdflib>=7.1.4,<9
+pyld>=2,<3
 pip>=21.2.4
 wheel>=0.37.0
 six>=1.15.0
