@@ -19,6 +19,8 @@ concurrency:
 jobs:
   build:
     runs-on: macos-latest    
+    permissions:
+      contents: read
     steps:
       - name: Debug - Show event info
         run: |
@@ -29,7 +31,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
           cache: 'pip' # caching pip dependencies
       - name: Install dependencies and run generator
         run: |
@@ -38,7 +40,7 @@ jobs:
           echo "Running spec generator..."
           python spec-generator/main.py
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           # Upload the contents of the dist directory
           path: 'dist'
@@ -67,4 +69,4 @@ jobs:
           echo "Workflow run ID: ${{ github.run_id }}"
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
+        uses: actions/deploy-pages@v4
