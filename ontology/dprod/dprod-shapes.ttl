@@ -61,7 +61,7 @@ dprod-shapes:DataProductShape
     rdfs:isDefinedBy dprod-shapes:;
     rdfs:label "data product shape" ;
     sh:targetClass dprod:DataProduct;
-    sh:property dprod-shapes:DataProduct-label;
+    sh:property dprod-shapes:DataProduct-title;
     sh:property dprod-shapes:DataProduct-description;
     sh:property dprod-shapes:DataProduct-dataProductOwner;
     sh:property dprod-shapes:DataProduct-domain;
@@ -105,7 +105,7 @@ dprod-shapes:DatasetShape
   rdfs:label "dataset shape" ;
   dct:description "A collection of data, published or curated by a single source, and available for access or download in one or more representations."@en ;
   sh:targetClass dcat:Dataset ;
-  sh:property dprod-shapes:Dataset-label;
+  sh:property dprod-shapes:Dataset-title;
   sh:property dprod-shapes:Dataset-description;
   sh:property dprod-shapes:Dataset-type;
   sh:property dprod-shapes:Dataset-distribution ;
@@ -148,13 +148,13 @@ dprod-shapes:SecuritySchemaTypeShape
 
 #############################  dprod Property Shapes ################
 
-dprod-shapes:DataProduct-label
+dprod-shapes:DataProduct-title
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod-shapes:;
-  sh:path rdfs:label;
+  sh:path dct:title;
   sh:datatype xsd:string;
-  dct:description "The name given to the data product."@en ;
-  rdfs:label "data product label shape";
+  dct:description "The title given to the data product."@en ;
+  rdfs:label "data product title shape";
 .
 
 dprod-shapes:DataProduct-description
@@ -255,13 +255,13 @@ dprod-shapes:DataProduct-outputDataset
   rdfs:label "data product output dataset shape";
 .
 
-dprod-shapes:Dataset-label
+dprod-shapes:Dataset-title
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod-shapes:;
-  sh:path rdfs:label;
+  sh:path dct:title;
   sh:datatype xsd:string ;
-  dct:description "The name given to the dataset"@en ;
-  rdfs:label "dataset label shape" ;
+  dct:description "The title given to the dataset."@en ;
+  rdfs:label "dataset title shape" ;
  .
 
 dprod-shapes:Dataset-description
