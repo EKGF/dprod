@@ -64,18 +64,17 @@ def main():
     g_shapes = load_dprod_shapes()
     
     jsonld_context_ontology = {
-<<<<<<< HEAD
-            "@version": 1.1,
-            "dprod": ontology_namespace_iri,
-            "xsd": str(XSD),
-            "owl": str(OWL),
-            "dcat": str(DCAT),
-            "dct": str(DCTERMS),
-            "prov": str(PROV),
-            "rdfs": str(RDFS),
-            "rdf": str(RDF),
-            "sh": str(SH),
-            "linkedin": str(LINKEDIN)
+        "@version": 1.1,
+        "dprod": ontology_namespace_iri,
+        "xsd": str(XSD),
+        "owl": str(OWL),
+        "dcat": str(DCAT),
+        "dct": str(DCTERMS),
+        "prov": str(PROV),
+        "rdfs": str(RDFS),
+        "rdf": str(RDF),
+        "sh": str(SH),
+        "linkedin": str(LINKEDIN)
     }
 
     jsonld_context_shapes = {
