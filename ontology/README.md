@@ -1,6 +1,4 @@
 # Ontologies
 
-This folder contains two ontologies:
+This folder contains the [DPROD ontology](dprod/README.md) draft
 
-- The [DPROD ontology](dprod/README.md) draft
-- The [dpds-neat ontology](dpds-neat/README.md) draft
