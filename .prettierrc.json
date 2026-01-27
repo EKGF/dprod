@@ -1,0 +1,18 @@
+{
+  "printWidth": 70,
+  "proseWrap": "always",
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "printWidth": 70,
+        "proseWrap": "always",
+        "endOfLine": "lf"
+      }
+    }
+  ],
+  "plugins": [
+    "./.scripts/prettier-plugin-strip-nbsp.js"
+  ],
+  "endOfLine": "lf"
+}
