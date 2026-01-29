@@ -1,3 +1,8 @@
+# baseURI: https://ekgf.github.io/dprod/contracts/shapes
+# imports: https://ekgf.github.io/dprod/contracts
+# prefix: dprod
+
+@base <https://ekgf.github.io/dprod/contracts/shapes> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -8,14 +13,15 @@
 @prefix schema: <http://schema.org/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 
-################################################################
-# SHACL Shapes for DPROD Data Contract Ontology
-################################################################
-# Validation rules that complement the class definitions in drrod.ttl
+
+############################# SHACL Shapes for DPROD Data Contract Ontology #########################
+# Validation rules that complement the class definitions in dprod-contracts.ttl
 # These shapes replace OWL restrictions for better platform compatibility
-################################################################
+
 
 # Shape for DataOffer
 dprod:DataOfferShape
@@ -74,6 +80,8 @@ dprod:DataContractShape
   ] ;
 .
 
+
+############################# Promise Shapes #########################
 
 # Shape for Promise (base)
 dprod:PromiseShape
@@ -265,6 +273,9 @@ dprod:ProviderTerminationNoticePromiseShape
   ] ;
 .
 
+
+############################# Schedule Shapes #########################
+
 # Shape for Schedule (union class validation)
 dprod:ScheduleShape
   a sh:NodeShape ;
@@ -306,6 +317,9 @@ dprod:ICalScheduleShape
     sh:severity sh:Warning ;
   ] ;
 .
+
+
+############################# Temporal Shapes #########################
 
 # Shape for hasEffectivePeriod time intervals
 dprod:EffectivePeriodShape
@@ -363,6 +377,9 @@ dprod:NoticePeriodShape
   ] ;
 .
 
+
+############################# Status & Linkage Shapes #########################
+
 # Shape for contract status values
 dprod:ContractStatusConceptShape
   a sh:NodeShape ;
@@ -404,9 +421,8 @@ dprod:DataProductShape
   ] ;
 .
 
-################################################################
-# v9.0 SHACL Shapes - Service Level and Support Promises
-################################################################
+
+############################# Service Level & Support Shapes #########################
 
 # Shape for ProviderServiceLevelPromise
 dprod:ProviderServiceLevelPromiseShape
