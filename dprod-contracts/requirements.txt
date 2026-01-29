@@ -1,0 +1,4 @@
+rdflib>=7.0.0
+isodate>=0.7.0
+pyparsing>=3.2.0
+pyshacl>=0.25.0

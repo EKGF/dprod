@@ -1,0 +1,560 @@
+@prefix dprod: <https://ekgf.github.io/dprod/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix schema: <http://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+################################################################
+# SHACL Shapes for DPROD Data Contract Ontology
+################################################################
+# Validation rules that complement the class definitions in drrod.ttl
+# These shapes replace OWL restrictions for better platform compatibility
+################################################################
+
+# Shape for DataOffer
+dprod:DataOfferShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:DataOffer ;
+  sh:name "Data Offer Shape" ;
+  sh:description "Validation rules for data offers (provider's standing offers)" ;
+
+  # Must have at least one asset target
+  sh:property [
+    sh:path odrl:target ;
+    sh:minCount 1 ;
+    sh:class dcat:Resource ;
+    sh:name "offer target" ;
+    sh:description "An offer must govern at least one DCAT resource" ;
+  ] ;
+
+  # Must have an assigner (provider)
+  sh:property [
+    sh:path odrl:assigner ;
+    sh:minCount 1 ;
+    sh:name "offer assigner" ;
+    sh:description "An offer must specify the provider (assigner)" ;
+  ] ;
+.
+
+# Shape for DataContract
+dprod:DataContractShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:DataContract ;
+  sh:name "Data Contract Shape" ;
+  sh:description "Validation rules for data contracts (bilateral agreements)" ;
+
+  # Must have at least one asset target
+  sh:property [
+    sh:path odrl:target ;
+    sh:minCount 1 ;
+    sh:class dcat:Resource ;
+    sh:name "contract target" ;
+    sh:description "A contract must govern at least one DCAT resource" ;
+  ] ;
+
+  # Must have both assigner and assignee
+  sh:property [
+    sh:path odrl:assigner ;
+    sh:minCount 1 ;
+    sh:name "contract assigner" ;
+    sh:description "A contract must specify the provider (assigner)" ;
+  ] ;
+
+  sh:property [
+    sh:path odrl:assignee ;
+    sh:minCount 1 ;
+    sh:name "contract assignee" ;
+    sh:description "A contract must specify the consumer (assignee)" ;
+  ] ;
+.
+
+
+# Shape for Promise (base)
+dprod:PromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:Promise ;
+  sh:name "Promise Shape" ;
+  sh:description "Base validation for all promise types" ;
+
+  # Must have an action specified
+  sh:property [
+    sh:path odrl:action ;
+    sh:minCount 1 ;
+    sh:name "promise action" ;
+    sh:description "A promise must specify its action type" ;
+  ] ;
+
+  # Must NOT be a Duty, Permission, or Prohibition (disjoint)
+  sh:not [
+    sh:class odrl:Duty ;
+  ] ;
+  sh:not [
+    sh:class odrl:Permission ;
+  ] ;
+  sh:not [
+    sh:class odrl:Prohibition ;
+  ] ;
+.
+
+# Shape for ProviderPromise
+dprod:ProviderPromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ProviderPromise ;
+  sh:name "Provider Promise Shape" ;
+  sh:description "Validation for provider commitments" ;
+
+  # Inherits base Promise constraints
+  sh:node dprod:PromiseShape ;
+
+  # Must have a provider obligation action
+  sh:property [
+    sh:path odrl:action ;
+    sh:minCount 1 ;
+    sh:in (
+      dprod:deliverOnSchedule
+      dprod:maintainSchema
+      dprod:maintainQuality
+      dprod:meetServiceLevel
+      dprod:notifyChange
+      dprod:notifyTermination
+      dprod:provideSupport
+    ) ;
+    sh:name "provider action" ;
+    sh:description "Provider promises must use a provider obligation action (deliverOnSchedule, maintainSchema, maintainQuality, meetServiceLevel, notifyChange, notifyTermination, or provideSupport)" ;
+  ] ;
+.
+
+# Shape for ConsumerPromise
+dprod:ConsumerPromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ConsumerPromise ;
+  sh:name "Consumer Promise Shape" ;
+  sh:description "Validation for consumer commitments" ;
+
+  # Inherits base Promise constraints
+  sh:node dprod:PromiseShape ;
+
+  # Must have a consumer obligation action
+  sh:property [
+    sh:path odrl:action ;
+    sh:minCount 1 ;
+    sh:in (
+      dprod:complyWithTerms
+      dprod:deleteOnExpiry
+      dprod:reportUsage
+      dprod:provideAttribution
+      dprod:restrictPurpose
+    ) ;
+    sh:name "consumer action" ;
+    sh:description "Consumer promises must use a consumer obligation action (complyWithTerms, deleteOnExpiry, reportUsage, provideAttribution, or restrictPurpose)" ;
+  ] ;
+.
+
+# Shape for ProviderTimelinessPromise
+dprod:ProviderTimelinessPromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ProviderTimelinessPromise ;
+  sh:name "Provider Timeliness Promise Shape" ;
+  sh:description "Validation for time-based delivery commitments" ;
+
+  # Inherits ProviderPromise constraints
+  sh:node dprod:ProviderPromiseShape ;
+
+  # Must have deliverOnSchedule action
+  sh:property [
+    sh:path odrl:action ;
+    sh:hasValue dprod:deliverOnSchedule ;
+    sh:minCount 1 ;
+    sh:name "timeliness action" ;
+    sh:description "Timeliness promises must use the 'deliverOnSchedule' action" ;
+  ] ;
+
+  # Should have a schedule
+  sh:property [
+    sh:path dprod:hasSchedule ;
+    sh:minCount 1 ;
+    sh:node dprod:ScheduleShape ;
+    sh:name "delivery schedule" ;
+    sh:description "Timeliness promises should specify a delivery schedule" ;
+    sh:severity sh:Warning ;
+  ] ;
+.
+
+# Shape for ProviderSchemaPromise
+dprod:ProviderSchemaPromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ProviderSchemaPromise ;
+  sh:name "Provider Schema Promise Shape" ;
+  sh:description "Validation for provider schema conformance commitments" ;
+
+  # Inherits ProviderPromise constraints
+  sh:node dprod:ProviderPromiseShape ;
+
+  # Must have maintainSchema action
+  sh:property [
+    sh:path odrl:action ;
+    sh:hasValue dprod:maintainSchema ;
+    sh:minCount 1 ;
+    sh:name "schema action" ;
+    sh:description "Schema promises must use the 'maintainSchema' action" ;
+  ] ;
+
+  # Should reference a schema
+  sh:property [
+    sh:path dprod:requiresConformanceTo ;
+    sh:minCount 1 ;
+    sh:class dct:Standard ;
+    sh:name "schema reference" ;
+    sh:description "Schema promise should reference at least one schema/standard (SHACL shape, OWL ontology, or industry standard)" ;
+    sh:severity sh:Warning ;
+  ] ;
+.
+
+# Shape for ProviderChangeNotificationPromise
+dprod:ProviderChangeNotificationPromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ProviderChangeNotificationPromise ;
+  sh:name "Provider Change Notification Promise Shape" ;
+  sh:description "Validation for change/termination notification commitments" ;
+
+  # Inherits ProviderPromise constraints
+  sh:node dprod:ProviderPromiseShape ;
+
+  # Must have notifyChange action
+  sh:property [
+    sh:path odrl:action ;
+    sh:hasValue dprod:notifyChange ;
+    sh:minCount 1 ;
+    sh:name "change notification action" ;
+    sh:description "Change notification promises must use the 'notifyChange' action" ;
+  ] ;
+.
+
+# Shape for ProviderTerminationNoticePromise
+dprod:ProviderTerminationNoticePromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ProviderTerminationNoticePromise ;
+  sh:name "Provider Termination Notice Promise Shape" ;
+  sh:description "Validation for advance termination/change notice commitments" ;
+
+  # Inherits ProviderPromise constraints (not ChangeNotification, to allow different action)
+  sh:node dprod:ProviderPromiseShape ;
+
+  # Must use the notifyTermination action
+  sh:property [
+    sh:path odrl:action ;
+    sh:hasValue dprod:notifyTermination ;
+    sh:minCount 1 ;
+    sh:name "termination notice action" ;
+    sh:description "Termination notice promises must use the 'notifyTermination' action" ;
+  ] ;
+
+  # Must state the notice period
+  sh:property [
+    sh:path dprod:noticePeriod ;
+    sh:minCount 1 ;
+    sh:class time:Interval ;
+    sh:name "notice period" ;
+    sh:description "Specify the lead time interval consumers receive before termination or breaking changes" ;
+  ] ;
+.
+
+# Shape for Schedule (union class validation)
+dprod:ScheduleShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:Schedule ;
+  sh:name "Schedule Shape" ;
+  sh:description "Validates that schedules are either schema:Schedule or iCal format" ;
+
+  # Must be one of the two types
+  sh:or (
+    [ sh:class schema:Schedule ]
+    [ sh:class dprod:ICalSchedule ]
+  ) ;
+.
+
+# Shape for ICalSchedule
+dprod:ICalScheduleShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ICalSchedule ;
+  sh:name "iCal Schedule Shape" ;
+  sh:description "Validates iCalendar RRULE schedules" ;
+
+  # Must have exactly one icalRule
+  sh:property [
+    sh:path dprod:icalRule ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:name "iCal rule" ;
+    sh:description "Must have exactly one RRULE string" ;
+  ] ;
+
+  # Rule should follow iCal format (basic pattern check)
+  sh:property [
+    sh:path dprod:icalRule ;
+    sh:pattern "^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)" ;
+    sh:flags "i" ;
+    sh:name "iCal rule format" ;
+    sh:description "RRULE should start with FREQ=" ;
+    sh:severity sh:Warning ;
+  ] ;
+.
+
+# Shape for hasEffectivePeriod time intervals
+dprod:EffectivePeriodShape
+  a sh:NodeShape ;
+  sh:targetObjectsOf dprod:hasEffectivePeriod ;
+  sh:name "Effective Period Shape" ;
+  sh:description "Validates temporal intervals used for effective periods" ;
+
+  # Must be a time:Interval
+  sh:class time:Interval ;
+
+  # Should have a beginning
+  sh:property [
+    sh:path time:hasBeginning ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:name "period start" ;
+    sh:description "Effective period should specify a beginning" ;
+    sh:severity sh:Warning ;
+  ] ;
+
+  # May have an end
+  sh:property [
+    sh:path time:hasEnd ;
+    sh:maxCount 1 ;
+    sh:name "period end" ;
+  ] ;
+.
+
+# Shape for noticePeriod time intervals
+dprod:NoticePeriodShape
+  a sh:NodeShape ;
+  sh:targetObjectsOf dprod:noticePeriod ;
+  sh:name "Notice Period Shape" ;
+  sh:description "Validates notice period intervals for termination/change commitments" ;
+
+  # Must be a time:Interval
+  sh:class time:Interval ;
+
+  # Should specify beginning and end boundaries
+  sh:property [
+    sh:path time:hasBeginning ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:name "notice window start" ;
+    sh:severity sh:Warning ;
+  ] ;
+
+  sh:property [
+    sh:path time:hasEnd ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:name "notice window end" ;
+    sh:severity sh:Warning ;
+  ] ;
+.
+
+# Shape for contract status values
+dprod:ContractStatusConceptShape
+  a sh:NodeShape ;
+  sh:targetObjectsOf dprod:contractStatus ;
+  sh:name "Contract Status Concept Shape" ;
+  sh:description "Ensures contract status is from the correct scheme and class" ;
+
+  # Must be a dprod:ContractStatus (which is a subclass of skos:Concept)
+  sh:class dprod:ContractStatus ;
+
+  # Must be in the dprod:ContractStatusScheme scheme
+  sh:property [
+    sh:path skos:inScheme ;
+    sh:hasValue dprod:ContractStatusScheme ;
+    sh:minCount 1 ;
+  ] ;
+.
+
+# Shape for DataProduct linkage
+dprod:DataProductShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:DataProduct ;
+  sh:name "Data Product Shape" ;
+  sh:description "Validation for data product contract relationships" ;
+
+  # May have contracts
+  sh:property [
+    sh:path dprod:dataContract ;
+    sh:class dprod:DataContract ;
+    sh:name "data contract" ;
+  ] ;
+
+  # May link to offers via odrl:hasPolicy
+  sh:property [
+    sh:path odrl:hasPolicy ;
+    sh:class dprod:DataOffer ;
+    sh:name "data offer" ;
+    sh:description "Use odrl:hasPolicy to relate a product to published offers" ;
+  ] ;
+.
+
+################################################################
+# v9.0 SHACL Shapes - Service Level and Support Promises
+################################################################
+
+# Shape for ProviderServiceLevelPromise
+dprod:ProviderServiceLevelPromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ProviderServiceLevelPromise ;
+  sh:name "Provider Service Level Promise Shape" ;
+  sh:description "Validation for quantitative service level commitments" ;
+
+  # Inherits ProviderPromise constraints
+  sh:node dprod:ProviderPromiseShape ;
+
+  # Must have meetServiceLevel action
+  sh:property [
+    sh:path odrl:action ;
+    sh:hasValue dprod:meetServiceLevel ;
+    sh:minCount 1 ;
+    sh:name "service level action" ;
+    sh:description "Service level promises must use the 'meetServiceLevel' action" ;
+  ] ;
+
+  # Should have at least one service level target
+  sh:property [
+    sh:path dprod:hasServiceLevelTarget ;
+    sh:minCount 1 ;
+    sh:node dprod:ServiceLevelTargetShape ;
+    sh:name "service level target" ;
+    sh:description "Service level promises should specify at least one quantitative target" ;
+    sh:severity sh:Warning ;
+  ] ;
+.
+
+# Shape for ServiceLevelTarget
+dprod:ServiceLevelTargetShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ServiceLevelTarget ;
+  sh:name "Service Level Target Shape" ;
+  sh:description "Validation for quantitative SLA targets" ;
+
+  # Must have exactly one SLA metric
+  sh:property [
+    sh:path dprod:slaMetric ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class dprod:SLAMetric ;
+    sh:name "SLA metric" ;
+    sh:description "Must specify the type of metric being measured" ;
+  ] ;
+
+  # Must have exactly one target value
+  sh:property [
+    sh:path dprod:targetValue ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:decimal ;
+    sh:name "target value" ;
+    sh:description "Must specify the numeric target value" ;
+  ] ;
+
+  # Must have exactly one unit
+  sh:property [
+    sh:path dprod:unit ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:name "unit" ;
+    sh:description "Must specify the unit of measurement" ;
+  ] ;
+
+  # May have a measurement period
+  sh:property [
+    sh:path dprod:measurementPeriod ;
+    sh:maxCount 1 ;
+    sh:class time:TemporalEntity ;
+    sh:name "measurement period" ;
+    sh:description "Time window over which the metric is measured" ;
+  ] ;
+.
+
+# Shape for ProviderSupportPromise
+dprod:ProviderSupportPromiseShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:ProviderSupportPromise ;
+  sh:name "Provider Support Promise Shape" ;
+  sh:description "Validation for technical support commitments" ;
+
+  # Inherits ProviderPromise constraints
+  sh:node dprod:ProviderPromiseShape ;
+
+  # Must have provideSupport action
+  sh:property [
+    sh:path odrl:action ;
+    sh:hasValue dprod:provideSupport ;
+    sh:minCount 1 ;
+    sh:name "support action" ;
+    sh:description "Support promises must use the 'provideSupport' action" ;
+  ] ;
+
+  # Should have at least one support channel
+  sh:property [
+    sh:path dprod:hasSupportChannel ;
+    sh:minCount 1 ;
+    sh:node dprod:SupportChannelShape ;
+    sh:name "support channel" ;
+    sh:description "Support promises should specify at least one support channel" ;
+    sh:severity sh:Warning ;
+  ] ;
+.
+
+# Shape for SupportChannel
+dprod:SupportChannelShape
+  a sh:NodeShape ;
+  sh:targetClass dprod:SupportChannel ;
+  sh:name "Support Channel Shape" ;
+  sh:description "Validation for support channel specifications" ;
+
+  # Must have exactly one channel type
+  sh:property [
+    sh:path dprod:channelType ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:class dprod:SupportChannelType ;
+    sh:name "channel type" ;
+    sh:description "Must specify the type of support channel" ;
+  ] ;
+
+  # May have a channel URL
+  sh:property [
+    sh:path dprod:channelUrl ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:anyURI ;
+    sh:name "channel URL" ;
+    sh:description "URL or address for accessing the support channel" ;
+  ] ;
+
+  # May have a response time target
+  sh:property [
+    sh:path dprod:responseTimeTarget ;
+    sh:maxCount 1 ;
+    sh:class time:Duration ;
+    sh:name "response time target" ;
+    sh:description "Target response time for this channel" ;
+  ] ;
+
+  # May have a support scope
+  sh:property [
+    sh:path dprod:supportScope ;
+    sh:class dprod:SupportScope ;
+    sh:name "support scope" ;
+    sh:description "What this channel covers" ;
+  ] ;
+.

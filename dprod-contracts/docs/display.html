@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DPROD Ontology Interactive Map</title>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/dist/vis-network.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; margin: 0; padding: 20px; }
+    #mynetwork {
+      width: 100%;
+      height: 80vh;
+      border: 1px solid #ddd;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .legend { margin-bottom: 10px; padding: 10px; background: white; border-radius: 4px; display: inline-block; }
+    .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  </style>
+</head>
+<body>
+
+  <h2>🧠 DPROD Ontology Explorer</h2>
+  <div class="legend">
+    <span class="dot" style="background:#97C2FC;"></span>Core
+    <span class="dot" style="background:#FB7E81; margin-left:15px;"></span>Promises
+    <span class="dot" style="background:#7BE141; margin-left:15px;"></span>Actions
+    <span class="dot" style="background:#FFC04C; margin-left:15px;"></span>Status
+  </div>
+
+  <div id="mynetwork"></div>
+
+  <script type="text/javascript">
+    // 1. Define the Nodes (Classes)
+    // We categorize them by group for color coding
+    var nodes = new vis.DataSet([
+      // Core Entities
+      {id: 1, label: 'dprod:DataProduct', group: 'core', shape: 'box'},
+      {id: 2, label: 'dprod:DataContract', group: 'core', shape: 'box', title: 'Bilateral agreement (binding)'},
+      {id: 3, label: 'dprod:DataOffer', group: 'core', shape: 'box', title: 'Provider proposal (not binding)'},
+
+      // Status
+      {id: 4, label: 'dprod:ContractStatus', group: 'status'},
+
+      // Promises (The "Heart" of DPROD)
+      {id: 5, label: 'dprod:Promise', group: 'promise'},
+      {id: 6, label: 'dprod:ProviderPromise', group: 'promise'},
+      {id: 7, label: 'dprod:ConsumerPromise', group: 'promise'},
+
+      // Specific Provider Promises
+      {id: 8, label: 'dprod:ProviderTimelinessPromise', group: 'promise'},
+      {id: 9, label: 'dprod:ProviderSchemaPromise', group: 'promise'},
+      {id: 10, label: 'dprod:ProviderChangeNotificationPromise', group: 'promise'},
+
+      // Actions (What is actually being promised)
+      {id: 11, label: 'dprod:DataAccessAction', group: 'action'},
+      {id: 12, label: 'dprod:DataTransformationAction', group: 'action'},
+      {id: 13, label: 'dprod:ProviderObligationAction', group: 'action'},
+      {id: 14, label: 'dprod:ConsumerObligationAction', group: 'action'},
+
+      // External Standards (simplified)
+      {id: 100, label: 'odrl:Agreement', group: 'external', color: '#ddd'},
+      {id: 101, label: 'odrl:Offer', group: 'external', color: '#ddd'},
+      {id: 102, label: 'odrl:Rule', group: 'external', color: '#ddd'}
+    ]);
+
+    // 2. Define the Edges (Relationships)
+    // Arrows define the direction of the relationship
+    var edges = new vis.DataSet([
+      // Inheritance (SubclassOf) - Dashed lines
+      {from: 2, to: 100, label: 'subClassOf', dashes: true, arrows: 'to'},
+      {from: 3, to: 101, label: 'subClassOf', dashes: true, arrows: 'to'},
+      {from: 5, to: 102, label: 'subClassOf', dashes: true, arrows: 'to'},
+      {from: 6, to: 5, label: 'subClassOf', dashes: true, arrows: 'to'},
+      {from: 7, to: 5, label: 'subClassOf', dashes: true, arrows: 'to'},
+      {from: 8, to: 6, label: 'subClassOf', dashes: true, arrows: 'to'},
+      {from: 9, to: 6, label: 'subClassOf', dashes: true, arrows: 'to'},
+      {from: 10, to: 6, label: 'subClassOf', dashes: true, arrows: 'to'},
+
+      // Functional Properties (How they connect) - Solid lines
+      {from: 1, to: 2, label: 'dprod:dataContract', arrows: 'to', width: 2},
+      {from: 2, to: 4, label: 'dprod:contractStatus', arrows: 'to'},
+      {from: 3, to: 4, label: 'dprod:contractStatus', arrows: 'to'},
+
+      // The Promise Links
+      {from: 2, to: 5, label: 'dprod:hasPromise', arrows: 'to'},
+      {from: 3, to: 5, label: 'dprod:hasPromise', arrows: 'to'},
+
+      // Specific Promise Links
+      {from: 2, to: 6, label: 'dprod:providerPromise', arrows: 'to', color: {color:'blue'}},
+      {from: 2, to: 7, label: 'dprod:consumerPromise', arrows: 'to', color: {color:'green'}},
+
+      // Linking Promises to Actions
+      {from: 6, to: 13, label: 'relates to', dashes: true, color: {color:'gray'}},
+      {from: 7, to: 14, label: 'relates to', dashes: true, color: {color:'gray'}},
+      {from: 7, to: 11, label: 'controls access', dashes: true},
+      {from: 7, to: 12, label: 'controls transform', dashes: true}
+    ]);
+
+    // 3. Visualization Configuration
+    var container = document.getElementById('mynetwork');
+    var data = { nodes: nodes, edges: edges };
+    var options = {
+      nodes: {
+        font: { size: 14, strokeWidth: 4, strokeColor: '#fff' },
+        shadow: true
+      },
+      edges: {
+        font: { align: 'middle', size: 10 },
+        smooth: { type: 'dynamic' }
+      },
+      physics: {
+        stabilization: false,
+        barnesHut: { gravitationalConstant: -3000 }
+      },
+      groups: {
+        core: { color: { background: '#97C2FC', border: '#2B7CE9' } },
+        promise: { color: { background: '#FB7E81', border: '#FA0A10' } },
+        action: { color: { background: '#7BE141', border: '#41A906' } },
+        status: { color: { background: '#FFC04C', border: '#FF9900' } }
+      }
+    };
+
+    var network = new vis.Network(container, data, options);
+  </script>
+</body>
+</html>
