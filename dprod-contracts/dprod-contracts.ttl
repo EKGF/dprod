@@ -1,1052 +1,1071 @@
-@prefix dprod:  <https://ekgf.github.io/dprod/> .
-@prefix dcat:   <http://www.w3.org/ns/dcat#> .
-@prefix dct:    <http://purl.org/dc/terms/> .
-@prefix odrl:   <http://www.w3.org/ns/odrl/2/> .
-@prefix prov:   <http://www.w3.org/ns/prov#> .
-@prefix org:    <http://www.w3.org/ns/org#> .
-@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
-@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl:    <http://www.w3.org/2002/07/owl#> .
-@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
-@prefix time:   <http://www.w3.org/2006/time#> .
-@prefix adms:   <http://www.w3.org/ns/adms#> .
+# baseURI: https://ekgf.github.io/dprod/contracts
+# imports: http://www.w3.org/ns/dcat#
+# imports: http://www.w3.org/ns/odrl/2/
+# imports: http://www.w3.org/ns/prov#
+# imports: http://www.w3.org/ns/org#
+# imports: http://www.w3.org/2006/time#
+# prefix: dprod
+
+@base <https://ekgf.github.io/dprod/contracts> .
+@prefix dprod: <https://ekgf.github.io/dprod/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix adms: <http://www.w3.org/ns/adms#> .
 @prefix schema: <http://schema.org/> .
 
-
-# ==============================================================================
-# ONTOLOGY DECLARATION
-# ==============================================================================
+# Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL
+dct:description a owl:AnnotationProperty .
+dct:creator a owl:AnnotationProperty .
+dct:created a owl:AnnotationProperty .
+dct:modified a owl:AnnotationProperty .
 
 <https://ekgf.github.io/dprod/contracts>
-    a owl:Ontology ;
-    rdfs:label "DPROD Data Contracts Ontology"@en ;
-    dct:title "DPROD Data Contracts Ontology"@en ;
-    dct:description "A semantic web ontology for formalizing bilateral data agreements between providers and consumers using W3C standards (RDF, OWL, SHACL, ODRL, DCAT)."@en ;
-    dct:creator "EKGF DPROD Working Group" ;
-    dct:created "2025-10-30"^^xsd:date ;
-    dct:modified "2025-01-08"^^xsd:date ;
-    owl:versionInfo "9.0.0" ;
-    owl:versionIRI <https://ekgf.github.io/dprod/contracts/9.0.0> ;
-    owl:imports <http://www.w3.org/ns/dcat#> ,
-                <http://www.w3.org/ns/odrl/2/> ,
-                <http://www.w3.org/ns/prov#> ,
-                <http://www.w3.org/ns/org#> ,
-                <http://www.w3.org/2006/time#> ;
-    rdfs:seeAlso <https://ekgf.github.io/dprod> .
+  a owl:Ontology ;
+  dct:title "DPROD Data Contracts Ontology"@en ;
+  rdfs:label "DPROD data contracts ontology"@en ;
+  dct:description "A semantic web ontology for formalizing bilateral data agreements between providers and consumers using W3C standards (RDF, OWL, SHACL, ODRL, DCAT)."@en ;
+  dct:creator "EKGF DPROD Working Group" ;
+  dct:created "2025-10-30"^^xsd:date ;
+  dct:modified "2025-01-08"^^xsd:date ;
+  owl:versionInfo "9.0.0" ;
+  owl:versionIRI <https://ekgf.github.io/dprod/contracts/9.0.0> ;
+  owl:imports dcat:, odrl:, prov:, org:, time: ;
+  rdfs:seeAlso <https://ekgf.github.io/dprod> ;
+.
 
 
-# ==============================================================================
-# CORE CLASSES - Contract & Offer Classes
-# ==============================================================================
+############################# Contract & Offer Classes #########################
 
 dprod:DataContract
-    a owl:Class ;
-    rdfs:label "Data Contract"@en ;
-    skos:definition "Bilateral agreement establishing binding obligations between data provider (assigner) and consumer (assignee), formed when a consumer accepts a DataOffer."@en ;
-    rdfs:subClassOf odrl:Agreement ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Extends odrl:Agreement to represent accepted terms. Both parties are bound by their respective promises. Use odrl:assigner for provider and odrl:assignee for consumer."@en ;
-    skos:example "An executed agreement for daily customer data updates, with provider committed to 6am delivery and consumer bound by usage restrictions"@en .
+  a owl:Class, rdfs:Class ;
+  dct:description
+    "Bilateral agreement establishing binding obligations between data provider (assigner) and consumer (assignee), formed when a consumer accepts a DataOffer."@en ;
+  rdfs:comment "Extends odrl:Agreement to represent accepted terms. Both parties are bound by their respective promises. Use odrl:assigner for provider and odrl:assignee for consumer."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data contract" ;
+  rdfs:subClassOf odrl:Agreement ;
+.
 
 dprod:DataOffer
-    a owl:Class ;
-    rdfs:label "Data Offer"@en ;
-    skos:definition "Provider's standing offer containing proposed terms, promises, and constraints available for consumer acceptance. Becomes binding upon acceptance to form a DataContract."@en ;
-    rdfs:subClassOf odrl:Offer ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Represents the provider's proposed terms, published for discovery. Not binding until accepted. Use odrl:assigner to specify the offering party."@en ;
-    skos:example "A published offer for daily customer data updates via REST API with 6am refresh schedule, including timeliness and schema promises"@en .
+  a owl:Class, rdfs:Class ;
+  dct:description
+    "Provider's standing offer containing proposed terms, promises, and constraints available for consumer acceptance. Becomes binding upon acceptance to form a DataContract."@en ;
+  rdfs:comment "Represents the provider's proposed terms, published for discovery. Not binding until accepted. Use odrl:assigner to specify the offering party."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data offer" ;
+  rdfs:subClassOf odrl:Offer ;
+.
 
 
-# ==============================================================================
-# CORE CLASSES - Promise Classes
-# ==============================================================================
+############################# Promise Classes #########################
 
 dprod:Promise
-    a owl:Class ;
-    rdfs:label "Promise"@en ;
-    skos:definition "Commitment from one party to another in a data contract"@en ;
-    rdfs:subClassOf odrl:Rule ;
-    owl:disjointWith odrl:Duty, odrl:Permission, odrl:Prohibition ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note """Base class for all commitments - service levels, quality guarantees, usage compliance, etc.
-        Use odrl:action to specify the type of commitment using DPROD actions.
-        Provider actions: dprod:deliverOnSchedule, dprod:maintainSchema, dprod:maintainQuality, dprod:notifyChange, dprod:notifyTermination, dprod:provideSupport.
-        Consumer actions: dprod:complyWithTerms, dprod:deleteOnExpiry, dprod:reportUsage, dprod:provideAttribution, dprod:restrictPurpose.
-        """@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Commitment from one party to another in a data contract"@en ;
+  rdfs:comment
+    "Base class for all commitments - service levels, quality guarantees, usage compliance, etc. Use odrl:action to specify the type of commitment using DPROD actions."@en ;
+  rdfs:comment
+    "Provider actions: dprod:deliverOnSchedule, dprod:maintainSchema, dprod:maintainQuality, dprod:notifyChange, dprod:notifyTermination, dprod:provideSupport. Consumer actions: dprod:complyWithTerms, dprod:deleteOnExpiry, dprod:reportUsage, dprod:provideAttribution, dprod:restrictPurpose."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "promise" ;
+  rdfs:subClassOf odrl:Rule ;
+  owl:disjointWith odrl:Duty, odrl:Permission, odrl:Prohibition ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ProviderPromise
-    a owl:Class ;
-    rdfs:label "Provider Promise"@en ;
-    skos:definition "Promise made by data providers about service delivery or data quality"@en ;
-    rdfs:subClassOf dprod:Promise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Use for commitments about data provision, service levels, quality guarantees, and operational responsibilities. Use provider obligation actions: dprod:deliverOnSchedule, dprod:maintainSchema, dprod:maintainQuality, dprod:notifyChange, dprod:notifyTermination, dprod:provideSupport."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Promise made by data providers about service delivery or data quality"@en ;
+  rdfs:comment "Use for commitments about data provision, service levels, quality guarantees, and operational responsibilities. Use provider obligation actions: dprod:deliverOnSchedule, dprod:maintainSchema, dprod:maintainQuality, dprod:notifyChange, dprod:notifyTermination, dprod:provideSupport."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider promise" ;
+  rdfs:subClassOf dprod:Promise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ConsumerPromise
-    a owl:Class ;
-    rdfs:label "Consumer Promise"@en ;
-    skos:definition "Promise made by data consumer to abide by usage terms, compliance requirements, and license agreements"@en ;
-    rdfs:subClassOf dprod:Promise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Use for commitments about usage compliance, attribution, redistribution limits, and confidentiality. Use consumer obligation actions: dprod:complyWithTerms, dprod:deleteOnExpiry, dprod:reportUsage, dprod:provideAttribution, dprod:restrictPurpose."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Promise made by data consumer to abide by usage terms, compliance requirements, and license agreements"@en ;
+  rdfs:comment "Use for commitments about usage compliance, attribution, redistribution limits, and confidentiality. Use consumer obligation actions: dprod:complyWithTerms, dprod:deleteOnExpiry, dprod:reportUsage, dprod:provideAttribution, dprod:restrictPurpose."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "consumer promise" ;
+  rdfs:subClassOf dprod:Promise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ProviderTimelinessPromise
-    a owl:Class ;
-    rdfs:label "Provider Timeliness Promise"@en ;
-    skos:definition "Timeliness promise made by data providers about time-based delivery commitments"@en ;
-    rdfs:subClassOf dprod:ProviderPromise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Specialized promise for time-based service delivery commitments. Use dprod:deliverOnSchedule action. This will often refer to a recurring schedule via dprod:hasSchedule."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Timeliness promise made by data providers about time-based delivery commitments"@en ;
+  rdfs:comment "Specialized promise for time-based service delivery commitments. Use dprod:deliverOnSchedule action. This will often refer to a recurring schedule via dprod:hasSchedule."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider timeliness promise" ;
+  rdfs:subClassOf dprod:ProviderPromise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ProviderSchemaPromise
-    a owl:Class ;
-    rdfs:label "Provider Schema Promise"@en ;
-    skos:definition "Promise made by data providers about schema conformance for a specific dataset or resource"@en ;
-    rdfs:subClassOf dprod:ProviderPromise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Use dprod:maintainSchema action. Use odrl:target to identify the specific dataset/distribution and dprod:requiresConformanceTo to reference the schema (SHACL shape, OWL ontology, etc.) it must conform to. This creates a contractual binding between a resource and a schema specification. The targeted resource should declare dct:conformsTo with the same schema. Typically specifies a constrained view or subset of the full dataset schema. The promised schema defines what consumers can rely upon, which may be more stable than the source schema."@en ;
-    skos:example "A promise with odrl:target pointing to :customerDataset and dprod:requiresConformanceTo pointing to CustomerDataShape.ttl commits the provider to deliver that specific dataset conforming to that shape."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Promise made by data providers about schema conformance for a specific dataset or resource"@en ;
+  rdfs:comment
+    "Use dprod:maintainSchema action. Use odrl:target to identify the specific dataset/distribution and dprod:requiresConformanceTo to reference the schema (SHACL shape, OWL ontology, etc.) it must conform to. This creates a contractual binding between a resource and a schema specification. The targeted resource should declare dct:conformsTo with the same schema. Typically specifies a constrained view or subset of the full dataset schema. The promised schema defines what consumers can rely upon, which may be more stable than the source schema."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider schema promise" ;
+  rdfs:subClassOf dprod:ProviderPromise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ProviderChangeNotificationPromise
-    a owl:Class ;
-    rdfs:label "Provider Change Notification Promise"@en ;
-    skos:definition "Change notification promise made by data providers about service delivery changes"@en ;
-    rdfs:subClassOf dprod:ProviderPromise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Use dprod:notifyChange action. Use for commitments that require notifying consumers about impending changes. Subclasses capture specific notice expectations such as termination lead time."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Change notification promise made by data providers about service delivery changes"@en ;
+  rdfs:comment "Use dprod:notifyChange action. Use for commitments that require notifying consumers about impending changes. Subclasses capture specific notice expectations such as termination lead time."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider change notification promise" ;
+  rdfs:subClassOf dprod:ProviderPromise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ProviderTerminationNoticePromise
-    a owl:Class ;
-    rdfs:label "Provider Termination Notice Promise"@en ;
-    skos:definition "Promise made by data providers to give advance notice before terminating a contract or introducing breaking changes."@en ;
-    rdfs:subClassOf dprod:ProviderChangeNotificationPromise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Use dprod:notifyTermination action. Capture required notice periods using dprod:noticePeriod. This distinguishes advance termination notifications from other change alerts."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Promise made by data providers to give advance notice before terminating a contract or introducing breaking changes."@en ;
+  rdfs:comment "Use dprod:notifyTermination action. Capture required notice periods using dprod:noticePeriod. This distinguishes advance termination notifications from other change alerts."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider termination notice promise" ;
+  rdfs:subClassOf dprod:ProviderChangeNotificationPromise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ProviderServiceLevelPromise
-    a owl:Class ;
-    rdfs:label "Provider Service Level Promise"@en ;
-    skos:definition "Promise with quantitative service level targets such as availability, latency, and throughput."@en ;
-    rdfs:subClassOf dprod:ProviderPromise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Use dprod:meetServiceLevel action. Attach quantitative targets via dprod:hasServiceLevelTarget. Each target specifies a metric, value, unit, and optional measurement period."@en ;
-    skos:example "A promise guaranteeing 99.9% monthly availability and p95 response time under 500ms."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Promise with quantitative service level targets such as availability, latency, and throughput."@en ;
+  rdfs:comment "Use dprod:meetServiceLevel action. Attach quantitative targets via dprod:hasServiceLevelTarget. Each target specifies a metric, value, unit, and optional measurement period."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider service level promise" ;
+  rdfs:subClassOf dprod:ProviderPromise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ProviderSupportPromise
-    a owl:Class ;
-    rdfs:label "Provider Support Promise"@en ;
-    skos:definition "Promise about technical support availability including channels, scope, and response times."@en ;
-    rdfs:subClassOf dprod:ProviderPromise ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Use dprod:provideSupport action. Specify support channels via dprod:hasSupportChannel with channel type, URL, scope, and response time targets."@en ;
-    skos:example "A promise providing Slack support with 4-hour response time and ticket system for issue resolution."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Promise about technical support availability including channels, scope, and response times."@en ;
+  rdfs:comment "Use dprod:provideSupport action. Specify support channels via dprod:hasSupportChannel with channel type, URL, scope, and response time targets."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider support promise" ;
+  rdfs:subClassOf dprod:ProviderPromise ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# CORE CLASSES - SLA Target and Support Channel Classes
-# ==============================================================================
+############################# SLA Target & Support Channel Classes #########################
 
 dprod:ServiceLevelTarget
-    a owl:Class ;
-    rdfs:label "Service Level Target"@en ;
-    skos:definition "A quantitative target for a specific service level metric."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Captures metric type (dprod:slaMetric), numeric target (dprod:targetValue), unit of measurement (dprod:unit), and optional measurement period (dprod:measurementPeriod)."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "A quantitative target for a specific service level metric."@en ;
+  rdfs:comment "Captures metric type (dprod:slaMetric), numeric target (dprod:targetValue), unit of measurement (dprod:unit), and optional measurement period (dprod:measurementPeriod)."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "service level target" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:SupportChannel
-    a owl:Class ;
-    rdfs:label "Support Channel"@en ;
-    skos:definition "A communication channel for obtaining technical support."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Specify channel type, URL, support scope, and response time target."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "A communication channel for obtaining technical support."@en ;
+  rdfs:comment "Specify channel type, URL, support scope, and response time target."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "support channel" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# CORE CLASSES - Schedule Classes
-# ==============================================================================
+############################# Schedule Classes #########################
 
 dprod:Schedule
-    a owl:Class ;
-    rdfs:label "Schedule"@en ;
-    skos:definition "Flexible schedule specification supporting multiple temporal formats"@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "Instances should be either schema:Schedule or dprod:ICalSchedule. Validation enforced by SHACL. For validity periods, use dprod:hasEffectivePeriod with time:Interval."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Flexible schedule specification supporting multiple temporal formats"@en ;
+  rdfs:comment "Instances should be either schema:Schedule or dprod:ICalSchedule. Validation enforced by SHACL. For validity periods, use dprod:hasEffectivePeriod with time:Interval."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "schedule" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:ICalSchedule
-    a owl:Class ;
-    rdfs:label "iCal Schedule"@en ;
-    skos:definition "Schedule expressed using iCalendar RRULE format"@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:note "For complex recurring schedules using standard iCal RRULE syntax. Validation enforced by SHACL: must have exactly one dprod:icalRule."@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Schedule expressed using iCalendar RRULE format"@en ;
+  rdfs:comment "For complex recurring schedules using standard iCal RRULE syntax. Validation enforced by SHACL: must have exactly one dprod:icalRule."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "iCal schedule" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# ODRL ACTIONS - Data Access
-# ==============================================================================
+############################# ODRL Actions - Data Access #########################
 
 dprod:DataAccessAction
-    a skos:Concept ;
-    rdfs:label "Data Access Action"@en ;
-    skos:prefLabel "Data Access Action"@en ;
-    skos:definition "Actions that allow consumers to access and retrieve data from the provider."@en ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:narrower dprod:query, dprod:download, dprod:stream, dprod:access .
+  a skos:Concept ;
+  dct:description "Actions that allow consumers to access and retrieve data from the provider."@en ;
+  skos:prefLabel "Data Access Action"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data access action" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+  skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
+  skos:narrower dprod:query, dprod:download, dprod:stream, dprod:access ;
+.
 
 dprod:query
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Query"@en ;
-    skos:prefLabel "query"@en ;
-    skos:definition "Execute queries against a data service to retrieve specific data subsets."@en ;
-    odrl:includedIn odrl:read ;
-    skos:broader dprod:DataAccessAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Execute queries against a data service to retrieve specific data subsets."@en ;
+  skos:prefLabel "query"@en ;
+  odrl:includedIn odrl:read ;
+  skos:broader dprod:DataAccessAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "query" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:download
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Download"@en ;
-    skos:prefLabel "download"@en ;
-    skos:definition "Download data assets for local storage and offline use."@en ;
-    odrl:includedIn odrl:reproduce ;
-    skos:broader dprod:DataAccessAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Download data assets for local storage and offline use."@en ;
+  skos:prefLabel "download"@en ;
+  odrl:includedIn odrl:reproduce ;
+  skos:broader dprod:DataAccessAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "download" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:stream
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Stream"@en ;
-    skos:prefLabel "stream"@en ;
-    skos:definition "Receive real-time data feeds or continuous data streams."@en ;
-    odrl:includedIn odrl:stream ;
-    skos:broader dprod:DataAccessAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Receive real-time data feeds or continuous data streams."@en ;
+  skos:prefLabel "stream"@en ;
+  odrl:includedIn odrl:stream ;
+  skos:broader dprod:DataAccessAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "stream" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:access
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Access"@en ;
-    skos:prefLabel "access"@en ;
-    skos:definition "General access to a data asset without specifying the access method."@en ;
-    odrl:includedIn odrl:use ;
-    skos:broader dprod:DataAccessAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "General access to a data asset without specifying the access method."@en ;
+  skos:prefLabel "access"@en ;
+  odrl:includedIn odrl:use ;
+  skos:broader dprod:DataAccessAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "access" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# ODRL ACTIONS - Data Transformation
-# ==============================================================================
+############################# ODRL Actions - Data Transformation #########################
 
 dprod:DataTransformationAction
-    a skos:Concept ;
-    rdfs:label "Data Transformation Action"@en ;
-    skos:prefLabel "Data Transformation Action"@en ;
-    skos:definition "Actions that allow consumers to transform, derive, or modify data."@en ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:narrower dprod:deriveInsights, dprod:aggregate, dprod:anonymize, dprod:enrich .
+  a skos:Concept ;
+  dct:description "Actions that allow consumers to transform, derive, or modify data."@en ;
+  skos:prefLabel "Data Transformation Action"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data transformation action" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+  skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
+  skos:narrower dprod:deriveInsights, dprod:aggregate, dprod:anonymize, dprod:enrich ;
+.
 
 dprod:deriveInsights
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Derive Insights"@en ;
-    skos:prefLabel "derive insights"@en ;
-    skos:definition "Create analytics, reports, or insights derived from the data asset."@en ;
-    odrl:includedIn odrl:derive ;
-    skos:broader dprod:DataTransformationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Create analytics, reports, or insights derived from the data asset."@en ;
+  skos:prefLabel "derive insights"@en ;
+  odrl:includedIn odrl:derive ;
+  skos:broader dprod:DataTransformationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "derive insights" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:aggregate
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Aggregate"@en ;
-    skos:prefLabel "aggregate"@en ;
-    skos:definition "Combine data with other data sources to create aggregated datasets."@en ;
-    odrl:includedIn odrl:aggregate ;
-    skos:broader dprod:DataTransformationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Combine data with other data sources to create aggregated datasets."@en ;
+  skos:prefLabel "aggregate"@en ;
+  odrl:includedIn odrl:aggregate ;
+  skos:broader dprod:DataTransformationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "aggregate" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:anonymize
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Anonymize"@en ;
-    skos:prefLabel "anonymize"@en ;
-    skos:definition "Remove personally identifiable information before further use or distribution."@en ;
-    odrl:includedIn odrl:anonymize ;
-    skos:broader dprod:DataTransformationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Remove personally identifiable information before further use or distribution."@en ;
+  skos:prefLabel "anonymize"@en ;
+  odrl:includedIn odrl:anonymize ;
+  skos:broader dprod:DataTransformationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "anonymize" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:enrich
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Enrich"@en ;
-    skos:prefLabel "enrich"@en ;
-    skos:definition "Add value, annotations, or additional attributes to data assets."@en ;
-    odrl:includedIn odrl:modify ;
-    skos:broader dprod:DataTransformationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Add value, annotations, or additional attributes to data assets."@en ;
+  skos:prefLabel "enrich"@en ;
+  odrl:includedIn odrl:modify ;
+  skos:broader dprod:DataTransformationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "enrich" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# ODRL ACTIONS - Distribution
-# ==============================================================================
+############################# ODRL Actions - Distribution #########################
 
 dprod:DistributionAction
-    a skos:Concept ;
-    rdfs:label "Distribution Action"@en ;
-    skos:prefLabel "Distribution Action"@en ;
-    skos:definition "Actions that allow consumers to distribute or share data with others."@en ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:narrower dprod:redistribute, dprod:republish, dprod:shareInternally .
+  a skos:Concept ;
+  dct:description "Actions that allow consumers to distribute or share data with others."@en ;
+  skos:prefLabel "Distribution Action"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "distribution action" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+  skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
+  skos:narrower dprod:redistribute, dprod:republish, dprod:shareInternally ;
+.
 
 dprod:redistribute
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Redistribute"@en ;
-    skos:prefLabel "redistribute"@en ;
-    skos:definition "Share data assets with third parties outside the organization."@en ;
-    odrl:includedIn odrl:distribute ;
-    skos:broader dprod:DistributionAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Share data assets with third parties outside the organization."@en ;
+  skos:prefLabel "redistribute"@en ;
+  odrl:includedIn odrl:distribute ;
+  skos:broader dprod:DistributionAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "redistribute" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:republish
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Republish"@en ;
-    skos:prefLabel "republish"@en ;
-    skos:definition "Publish derived datasets or data products based on the original data."@en ;
-    odrl:includedIn odrl:reproduce ;
-    skos:broader dprod:DistributionAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Publish derived datasets or data products based on the original data."@en ;
+  skos:prefLabel "republish"@en ;
+  odrl:includedIn odrl:reproduce ;
+  skos:broader dprod:DistributionAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "republish" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:shareInternally
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Share Internally"@en ;
-    skos:prefLabel "share internally"@en ;
-    skos:definition "Share data assets within the organization or organizational unit."@en ;
-    odrl:includedIn odrl:distribute ;
-    skos:broader dprod:DistributionAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Share data assets within the organization or organizational unit."@en ;
+  skos:prefLabel "share internally"@en ;
+  odrl:includedIn odrl:distribute ;
+  skos:broader dprod:DistributionAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "share internally" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# ODRL ACTIONS - Provider Obligations
-# ==============================================================================
+############################# ODRL Actions - Provider Obligations #########################
 
 dprod:ProviderObligationAction
-    a skos:Concept ;
-    rdfs:label "Provider Obligation Action"@en ;
-    skos:prefLabel "Provider Obligation Action"@en ;
-    skos:definition "Actions representing obligations the provider commits to fulfill."@en ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:narrower dprod:deliverOnSchedule, dprod:maintainSchema, dprod:maintainQuality,
-                  dprod:meetServiceLevel, dprod:notifyChange, dprod:notifyTermination, dprod:provideSupport .
+  a skos:Concept ;
+  dct:description "Actions representing obligations the provider commits to fulfill."@en ;
+  skos:prefLabel "Provider Obligation Action"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provider obligation action" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+  skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
+  skos:narrower dprod:deliverOnSchedule, dprod:maintainSchema, dprod:maintainQuality,
+    dprod:meetServiceLevel, dprod:notifyChange, dprod:notifyTermination, dprod:provideSupport ;
+.
 
 dprod:deliverOnSchedule
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Deliver on Schedule"@en ;
-    skos:prefLabel "deliver on schedule"@en ;
-    skos:definition "Deliver data according to the agreed schedule specified in the contract."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ProviderObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Deliver data according to the agreed schedule specified in the contract."@en ;
+  skos:prefLabel "deliver on schedule"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ProviderObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "deliver on schedule" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:maintainSchema
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Maintain Schema"@en ;
-    skos:prefLabel "maintain schema"@en ;
-    skos:definition "Maintain schema conformance as specified in the contract."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ProviderObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Maintain schema conformance as specified in the contract."@en ;
+  skos:prefLabel "maintain schema"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ProviderObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "maintain schema" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:maintainQuality
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Maintain Quality"@en ;
-    skos:prefLabel "maintain quality"@en ;
-    skos:definition "Maintain data quality standards as specified in the contract."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ProviderObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Maintain data quality standards as specified in the contract."@en ;
+  skos:prefLabel "maintain quality"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ProviderObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "maintain quality" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:meetServiceLevel
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Meet Service Level"@en ;
-    skos:prefLabel "meet service level"@en ;
-    skos:definition "Meet the quantitative service level targets specified in the contract."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ProviderObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Meet the quantitative service level targets specified in the contract."@en ;
+  skos:prefLabel "meet service level"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ProviderObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "meet service level" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:notifyChange
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Notify Change"@en ;
-    skos:prefLabel "notify change"@en ;
-    skos:definition "Notify consumers of breaking changes, schema updates, or service modifications."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ProviderObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Notify consumers of breaking changes, schema updates, or service modifications."@en ;
+  skos:prefLabel "notify change"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ProviderObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "notify change" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:notifyTermination
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Notify Termination"@en ;
-    skos:prefLabel "notify termination"@en ;
-    skos:definition "Provide advance notice before terminating the contract or discontinuing the service."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ProviderObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Provide advance notice before terminating the contract or discontinuing the service."@en ;
+  skos:prefLabel "notify termination"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ProviderObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "notify termination" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:provideSupport
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Provide Support"@en ;
-    skos:prefLabel "provide support"@en ;
-    skos:definition "Provide technical support for data access and integration issues."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ProviderObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Provide technical support for data access and integration issues."@en ;
+  skos:prefLabel "provide support"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ProviderObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provide support" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# ODRL ACTIONS - Consumer Obligations
-# ==============================================================================
+############################# ODRL Actions - Consumer Obligations #########################
 
 dprod:ConsumerObligationAction
-    a skos:Concept ;
-    rdfs:label "Consumer Obligation Action"@en ;
-    skos:prefLabel "Consumer Obligation Action"@en ;
-    skos:definition "Actions representing obligations the consumer commits to fulfill."@en ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> ;
-    skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:narrower dprod:complyWithTerms, dprod:deleteOnExpiry, dprod:reportUsage,
-                  dprod:provideAttribution, dprod:restrictPurpose .
+  a skos:Concept ;
+  dct:description "Actions representing obligations the consumer commits to fulfill."@en ;
+  skos:prefLabel "Consumer Obligation Action"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "consumer obligation action" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+  skos:topConceptOf <https://ekgf.github.io/dprod/profile> ;
+  skos:narrower dprod:complyWithTerms, dprod:deleteOnExpiry, dprod:reportUsage,
+    dprod:provideAttribution, dprod:restrictPurpose ;
+.
 
 dprod:complyWithTerms
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Comply with Terms"@en ;
-    skos:prefLabel "comply with terms"@en ;
-    skos:definition "Accept and comply with all usage terms specified in the contract."@en ;
-    odrl:includedIn odrl:acceptTracking ;
-    skos:broader dprod:ConsumerObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Accept and comply with all usage terms specified in the contract."@en ;
+  skos:prefLabel "comply with terms"@en ;
+  odrl:includedIn odrl:acceptTracking ;
+  skos:broader dprod:ConsumerObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "comply with terms" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:deleteOnExpiry
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Delete on Expiry"@en ;
-    skos:prefLabel "delete on expiry"@en ;
-    skos:definition "Delete all copies of the data when the contract expires or is terminated."@en ;
-    odrl:includedIn odrl:delete ;
-    skos:broader dprod:ConsumerObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Delete all copies of the data when the contract expires or is terminated."@en ;
+  skos:prefLabel "delete on expiry"@en ;
+  odrl:includedIn odrl:delete ;
+  skos:broader dprod:ConsumerObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "delete on expiry" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:reportUsage
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Report Usage"@en ;
-    skos:prefLabel "report usage"@en ;
-    skos:definition "Report usage metrics and access patterns to the data provider."@en ;
-    odrl:includedIn odrl:inform ;
-    skos:broader dprod:ConsumerObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Report usage metrics and access patterns to the data provider."@en ;
+  skos:prefLabel "report usage"@en ;
+  odrl:includedIn odrl:inform ;
+  skos:broader dprod:ConsumerObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "report usage" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:provideAttribution
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Provide Attribution"@en ;
-    skos:prefLabel "provide attribution"@en ;
-    skos:definition "Provide proper attribution to the data source in any derived works or publications."@en ;
-    odrl:includedIn odrl:attribute ;
-    skos:broader dprod:ConsumerObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Provide proper attribution to the data source in any derived works or publications."@en ;
+  skos:prefLabel "provide attribution"@en ;
+  odrl:includedIn odrl:attribute ;
+  skos:broader dprod:ConsumerObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "provide attribution" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 dprod:restrictPurpose
-    a odrl:Action, skos:Concept ;
-    rdfs:label "Restrict Purpose"@en ;
-    skos:prefLabel "restrict purpose"@en ;
-    skos:definition "Restrict data usage to the declared purpose specified in the contract."@en ;
-    odrl:includedIn odrl:use ;
-    skos:broader dprod:ConsumerObligationAction ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:inScheme <https://ekgf.github.io/dprod/profile> .
+  a odrl:Action, skos:Concept ;
+  dct:description "Restrict data usage to the declared purpose specified in the contract."@en ;
+  skos:prefLabel "restrict purpose"@en ;
+  odrl:includedIn odrl:use ;
+  skos:broader dprod:ConsumerObligationAction ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "restrict purpose" ;
+  skos:inScheme <https://ekgf.github.io/dprod/profile> ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Promise Linking
-# ==============================================================================
+#############################  Promise Linking Properties ################
 
 dprod:hasPromise
-    a owl:ObjectProperty ;
-    rdfs:label "has promise"@en ;
-    rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
-    rdfs:range dprod:Promise ;
-    dct:description "Links a contract to any binding commitment (promise), whether undertaken by provider or consumer. Use specific subproperties (providerPromise, consumerPromise) when the commitment direction is known."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
+  rdfs:range dprod:Promise ;
+  dct:description "Links a contract to any binding commitment (promise), whether undertaken by provider or consumer. Use specific subproperties (providerPromise, consumerPromise) when the commitment direction is known."@en ;
+  rdfs:label "has promise" ;
+.
 
 dprod:providerPromise
-    a owl:ObjectProperty ;
-    rdfs:label "provider promise"@en ;
-    rdfs:subPropertyOf dprod:hasPromise ;
-    rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
-    rdfs:range dprod:ProviderPromise ;
-    dct:description "Affirmative obligations undertaken by the data provider, including warranties about data quality, service level commitments (SLAs), delivery timeliness, schema stability, and change notification requirements. Represents what the provider commits to deliver or maintain."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf dprod:hasPromise ;
+  rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
+  rdfs:range dprod:ProviderPromise ;
+  dct:description "Affirmative obligations undertaken by the data provider, including warranties about data quality, service level commitments (SLAs), delivery timeliness, schema stability, and change notification requirements. Represents what the provider commits to deliver or maintain."@en ;
+  rdfs:label "provider promise" ;
+.
 
 dprod:consumerPromise
-    a owl:ObjectProperty ;
-    rdfs:label "consumer promise"@en ;
-    rdfs:subPropertyOf dprod:hasPromise ;
-    rdfs:domain dprod:DataContract ;
-    rdfs:range dprod:ConsumerPromise ;
-    dct:description "Restrictive covenants and use obligations binding the consumer, including permitted/prohibited uses, compliance requirements, attribution obligations, redistribution limits, and confidentiality terms. Represents what the consumer agrees to do or refrain from doing."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf dprod:hasPromise ;
+  rdfs:domain dprod:DataContract ;
+  rdfs:range dprod:ConsumerPromise ;
+  dct:description "Restrictive covenants and use obligations binding the consumer, including permitted/prohibited uses, compliance requirements, attribution obligations, redistribution limits, and confidentiality terms. Represents what the consumer agrees to do or refrain from doing."@en ;
+  rdfs:label "consumer promise" ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Data Product Linking
-# ==============================================================================
+#############################  Data Product Linking Properties ################
 
 dprod:dataContract
-    a owl:ObjectProperty ;
-    rdfs:label "data contract"@en ;
-    rdfs:domain dprod:DataProduct ;
-    rdfs:range dprod:DataContract ;
-    rdfs:subPropertyOf odrl:hasPolicy ;
-    dct:description "Contract(s) governing a data product's inputs, outputs, or access services."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dprod:DataContract ;
+  rdfs:subPropertyOf odrl:hasPolicy ;
+  dct:description "Contract(s) governing a data product's inputs, outputs, or access services."@en ;
+  rdfs:label "data contract" ;
+.
 
 dprod:contractStatus
-    a owl:ObjectProperty, owl:FunctionalProperty ;
-    rdfs:label "contract status"@en ;
-    skos:definition "Current lifecycle status of a data contract or offer"@en ;
-    rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
-    rdfs:range dprod:ContractStatus ;
-    rdfs:subPropertyOf adms:status ;
-    dct:description "Lifecycle status indicating whether the contract or offer is Pending, Active, Expired, or Cancelled. Values must be instances of dprod:ContractStatus from the dprod:ContractStatusScheme."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Functional property - each contract/offer has at most one status value at any given time."@en .
+  a rdf:Property, owl:ObjectProperty, owl:FunctionalProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
+  rdfs:range dprod:ContractStatus ;
+  rdfs:subPropertyOf adms:status ;
+  dct:description
+    "Lifecycle status indicating whether the contract or offer is Pending, Active, Expired, or Cancelled. Values must be instances of dprod:ContractStatus from the dprod:ContractStatusScheme."@en ;
+  rdfs:comment "Functional property - each contract/offer has at most one status value at any given time."@en ;
+  rdfs:label "contract status" ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Contract Versioning & Provenance
-# ==============================================================================
+#############################  Contract Versioning & Provenance Properties ################
 
 dprod:supersedes
-    a owl:ObjectProperty ;
-    rdfs:label "supersedes"@en ;
-    skos:definition "This contract supersedes and replaces a previous contract"@en ;
-    rdfs:subPropertyOf prov:wasRevisionOf, dct:replaces ;
-    rdfs:domain dprod:DataContract ;
-    rdfs:range dprod:DataContract ;
-    dct:description "Links a contract to the previous version it supersedes. Use for contract renewals where the new contract completely replaces the old one. The superseded contract typically transitions to Expired or Cancelled status."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Enables version tracking: Contract v2.0 supersedes Contract v1.0. Useful for understanding contract evolution and maintaining audit trails."@en ;
-    skos:example """
-        # Contract renewal:
-        :contract2025 a dprod:DataContract ;
-            dprod:supersedes :contract2024 ;
-            dcat:version "2.0" ;
-            rdfs:comment "Annual renewal with updated SLAs" .
-
-        :contract2024 dprod:contractStatus dprod:ContractStatusExpired .
-    """@en .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf prov:wasRevisionOf, dct:replaces ;
+  rdfs:domain dprod:DataContract ;
+  rdfs:range dprod:DataContract ;
+  dct:description "Links a contract to the previous version it supersedes. Use for contract renewals where the new contract completely replaces the old one. The superseded contract typically transitions to Expired or Cancelled status."@en ;
+  rdfs:comment "Enables version tracking: Contract v2.0 supersedes Contract v1.0. Useful for understanding contract evolution and maintaining audit trails."@en ;
+  rdfs:label "supersedes" ;
+.
 
 dprod:amends
-    a owl:ObjectProperty ;
-    rdfs:label "amends"@en ;
-    skos:definition "This contract amends or extends an existing active contract"@en ;
-    rdfs:subPropertyOf prov:wasRevisionOf ;
-    rdfs:domain dprod:DataContract ;
-    rdfs:range dprod:DataContract ;
-    dct:description "Links an amendment/addendum to the base contract it modifies. Use when both contracts remain active simultaneously - the amendment adds to or modifies specific terms without replacing the entire base contract."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Enables tracking of contract amendments and addendums. Multiple amendments can reference the same base contract. Both the base contract and amendments can be Active simultaneously."@en ;
-    skos:example """
-        # Base contract with multiple amendments:
-        :baseContract a dprod:DataContract ;
-            dcat:version "1.0" ;
-            dprod:contractStatus dprod:ContractStatusActive .
-
-        :amendment1 a dprod:DataContract ;
-            dprod:amends :baseContract ;
-            dcat:version "1.1-amendment" ;
-            rdfs:comment "Adds GDPR compliance requirements" ;
-            dprod:contractStatus dprod:ContractStatusActive .
-
-        :amendment2 a dprod:DataContract ;
-            dprod:amends :baseContract ;
-            dcat:version "1.2-amendment" ;
-            rdfs:comment "Adds new dataset to scope" ;
-            dprod:contractStatus dprod:ContractStatusActive .
-    """@en .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf prov:wasRevisionOf ;
+  rdfs:domain dprod:DataContract ;
+  rdfs:range dprod:DataContract ;
+  dct:description "Links an amendment/addendum to the base contract it modifies. Use when both contracts remain active simultaneously - the amendment adds to or modifies specific terms without replacing the entire base contract."@en ;
+  rdfs:comment "Enables tracking of contract amendments and addendums. Multiple amendments can reference the same base contract. Both the base contract and amendments can be Active simultaneously."@en ;
+  rdfs:label "amends" ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Temporal Properties
-# ==============================================================================
+#############################  Temporal Properties ################
 
 dprod:hasEffectivePeriod
-    a owl:ObjectProperty ;
-    rdfs:label "has effective period"@en ;
-    skos:definition "Effective period (convenience property aligned with dcterms:temporal)"@en ;
-    rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract dprod:Promise ) ] ;
-    rdfs:range time:Interval ;
-    rdfs:subPropertyOf dct:temporal ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "For structured time intervals only. Use time:hasBeginning and time:hasEnd on the Interval. For textual period expressions, use dcterms:temporal directly on the offer or contract."@en .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract dprod:Promise ) ] ;
+  rdfs:range time:Interval ;
+  rdfs:subPropertyOf dct:temporal ;
+  dct:description "Effective period (convenience property aligned with dcterms:temporal)"@en ;
+  rdfs:comment "For structured time intervals only. Use time:hasBeginning and time:hasEnd on the Interval. For textual period expressions, use dcterms:temporal directly on the offer or contract."@en ;
+  rdfs:label "has effective period" ;
+.
 
 dprod:noticePeriod
-    a owl:ObjectProperty ;
-    rdfs:label "notice period"@en ;
-    skos:definition "Advance notice interval that must elapse before a termination or breaking change takes effect."@en ;
-    rdfs:domain dprod:ProviderTerminationNoticePromise ;
-    rdfs:range time:Interval ;
-    rdfs:subPropertyOf dct:temporal ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Describe lead time requirements by providing time:hasBeginning and time:hasEnd values on the interval (e.g., 90-day notice)."@en .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ProviderTerminationNoticePromise ;
+  rdfs:range time:Interval ;
+  rdfs:subPropertyOf dct:temporal ;
+  dct:description
+    "Advance notice interval that must elapse before a termination or breaking change takes effect."@en ;
+  rdfs:comment "Describe lead time requirements by providing time:hasBeginning and time:hasEnd values on the interval (e.g., 90-day notice)."@en ;
+  rdfs:label "notice period" ;
+.
 
 dprod:hasSchedule
-    a owl:ObjectProperty ;
-    rdfs:label "has schedule"@en ;
-    skos:definition "Schedule specification for provider promises with flexible format support"@en ;
-    rdfs:domain dprod:ProviderTimelinessPromise ;
-    rdfs:range dprod:Schedule ;
-    rdfs:subPropertyOf dct:temporal ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Accepts time:TemporalEntity, schema:Schedule, or dprod:ICalSchedule formats"@en .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ProviderTimelinessPromise ;
+  rdfs:range dprod:Schedule ;
+  rdfs:subPropertyOf dct:temporal ;
+  dct:description "Schedule specification for provider promises with flexible format support"@en ;
+  rdfs:comment "Accepts time:TemporalEntity, schema:Schedule, or dprod:ICalSchedule formats"@en ;
+  rdfs:label "has schedule" ;
+.
 
 dprod:requiresConformanceTo
-    a owl:ObjectProperty ;
-    rdfs:label "requires conformance to"@en ;
-    skos:definition "Schema, model, or standard that the targeted resource must conform to"@en ;
-    rdfs:domain dprod:ProviderSchemaPromise ;
-    rdfs:range dct:Standard ;
-    dct:description "Specifies the schema/standard that the resource identified by odrl:target must conform to. Use alongside odrl:target to bind a specific dataset/distribution to a schema requirement. The targeted resource should declare dct:conformsTo with the same schema. Typically references SHACL shapes, OWL ontologies, or industry standards (e.g., FIBO, schema.org profiles)."@en ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Works in conjunction with odrl:target. The promise targets a specific dataset (via odrl:target) and requires it to conform to a schema (via dprod:requiresConformanceTo). The referenced schema becomes a contractual commitment."@en ;
-    skos:example """
-        # Promise binds specific dataset to schema:
-        :schemaPromise a dprod:ProviderSchemaPromise ;
-            odrl:action dprod:maintainSchema ;
-            odrl:target :customerDataset ;
-            dprod:requiresConformanceTo <https://example.com/schema/CustomerData> .
-    """@en .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ProviderSchemaPromise ;
+  rdfs:range dct:Standard ;
+  dct:description
+    "Specifies the schema/standard that the resource identified by odrl:target must conform to. Use alongside odrl:target to bind a specific dataset/distribution to a schema requirement. The targeted resource should declare dct:conformsTo with the same schema. Typically references SHACL shapes, OWL ontologies, or industry standards (e.g., FIBO, schema.org profiles)."@en ;
+  rdfs:comment
+    "Works in conjunction with odrl:target. The promise targets a specific dataset (via odrl:target) and requires it to conform to a schema (via dprod:requiresConformanceTo). The referenced schema becomes a contractual commitment."@en ;
+  rdfs:label "requires conformance to" ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Service Level Properties
-# ==============================================================================
+#############################  Service Level Properties ################
 
 dprod:hasServiceLevelTarget
-    a owl:ObjectProperty ;
-    rdfs:label "has service level target"@en ;
-    skos:definition "Links a service level promise to its quantitative targets"@en ;
-    rdfs:domain dprod:ProviderServiceLevelPromise ;
-    rdfs:range dprod:ServiceLevelTarget ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ProviderServiceLevelPromise ;
+  rdfs:range dprod:ServiceLevelTarget ;
+  dct:description "Links a service level promise to its quantitative targets"@en ;
+  rdfs:label "has service level target" ;
+.
 
 dprod:slaMetric
-    a owl:ObjectProperty ;
-    rdfs:label "SLA metric"@en ;
-    skos:definition "The type of service level metric being measured"@en ;
-    rdfs:domain dprod:ServiceLevelTarget ;
-    rdfs:range dprod:SLAMetric ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ServiceLevelTarget ;
+  rdfs:range dprod:SLAMetric ;
+  dct:description "The type of service level metric being measured"@en ;
+  rdfs:label "SLA metric" ;
+.
 
 dprod:targetValue
-    a owl:DatatypeProperty ;
-    rdfs:label "target value"@en ;
-    skos:definition "The numeric target value for this metric"@en ;
-    rdfs:domain dprod:ServiceLevelTarget ;
-    rdfs:range xsd:decimal ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:DatatypeProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ServiceLevelTarget ;
+  rdfs:range xsd:decimal ;
+  dct:description "The numeric target value for this metric"@en ;
+  rdfs:label "target value" ;
+.
 
 dprod:unit
-    a owl:DatatypeProperty ;
-    rdfs:label "unit"@en ;
-    skos:definition "Unit of measurement (percentage, milliseconds, requests/second, etc.)"@en ;
-    rdfs:domain dprod:ServiceLevelTarget ;
-    rdfs:range xsd:string ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:DatatypeProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ServiceLevelTarget ;
+  rdfs:range xsd:string ;
+  dct:description "Unit of measurement (percentage, milliseconds, requests/second, etc.)"@en ;
+  rdfs:label "unit" ;
+.
 
 dprod:measurementPeriod
-    a owl:ObjectProperty ;
-    rdfs:label "measurement period"@en ;
-    skos:definition "The time window over which the metric is measured"@en ;
-    rdfs:domain dprod:ServiceLevelTarget ;
-    rdfs:range time:TemporalEntity ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ServiceLevelTarget ;
+  rdfs:range time:TemporalEntity ;
+  dct:description "The time window over which the metric is measured"@en ;
+  rdfs:label "measurement period" ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Support Channel Properties
-# ==============================================================================
+#############################  Support Channel Properties ################
 
 dprod:hasSupportChannel
-    a owl:ObjectProperty ;
-    rdfs:label "has support channel"@en ;
-    skos:definition "Links a support promise to available support channels"@en ;
-    rdfs:domain dprod:ProviderSupportPromise ;
-    rdfs:range dprod:SupportChannel ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ProviderSupportPromise ;
+  rdfs:range dprod:SupportChannel ;
+  dct:description "Links a support promise to available support channels"@en ;
+  rdfs:label "has support channel" ;
+.
 
 dprod:channelType
-    a owl:ObjectProperty ;
-    rdfs:label "channel type"@en ;
-    skos:definition "The type of support channel (email, Slack, ticket system, etc.)"@en ;
-    rdfs:domain dprod:SupportChannel ;
-    rdfs:range dprod:SupportChannelType ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:SupportChannel ;
+  rdfs:range dprod:SupportChannelType ;
+  dct:description "The type of support channel (email, Slack, ticket system, etc.)"@en ;
+  rdfs:label "channel type" ;
+.
 
 dprod:channelUrl
-    a owl:DatatypeProperty ;
-    rdfs:label "channel URL"@en ;
-    skos:definition "URL or address for accessing this support channel"@en ;
-    rdfs:domain dprod:SupportChannel ;
-    rdfs:range xsd:anyURI ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:DatatypeProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:SupportChannel ;
+  rdfs:range xsd:anyURI ;
+  dct:description "URL or address for accessing this support channel"@en ;
+  rdfs:label "channel URL" ;
+.
 
 dprod:responseTimeTarget
-    a owl:ObjectProperty ;
-    rdfs:label "response time target"@en ;
-    skos:definition "Target response time for this support channel"@en ;
-    rdfs:domain dprod:SupportChannel ;
-    rdfs:range time:Duration ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:SupportChannel ;
+  rdfs:range time:Duration ;
+  dct:description "Target response time for this support channel"@en ;
+  rdfs:label "response time target" ;
+.
 
 dprod:supportScope
-    a owl:ObjectProperty ;
-    rdfs:label "support scope"@en ;
-    skos:definition "What this channel covers (issues, questions, announcements)"@en ;
-    rdfs:domain dprod:SupportChannel ;
-    rdfs:range dprod:SupportScope ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:SupportChannel ;
+  rdfs:range dprod:SupportScope ;
+  dct:description "What this channel covers (issues, questions, announcements)"@en ;
+  rdfs:label "support scope" ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Pricing
-# ==============================================================================
+#############################  Pricing Properties ################
 
 dprod:hasPricing
-    a owl:ObjectProperty ;
-    rdfs:label "has pricing"@en ;
-    skos:definition "Pricing terms for data access under this contract"@en ;
-    rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
-    rdfs:range schema:PriceSpecification ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Use schema:PriceSpecification subclasses for different pricing models (per-unit, subscription, tiered). Optional - typically only used for external marketplace scenarios."@en .
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain [ owl:unionOf ( dprod:DataOffer dprod:DataContract ) ] ;
+  rdfs:range schema:PriceSpecification ;
+  dct:description "Pricing terms for data access under this contract"@en ;
+  rdfs:comment "Use schema:PriceSpecification subclasses for different pricing models (per-unit, subscription, tiered). Optional - typically only used for external marketplace scenarios."@en ;
+  rdfs:label "has pricing" ;
+.
 
 
-# ==============================================================================
-# PROPERTIES - Schedule Properties
-# ==============================================================================
+#############################  Schedule Properties ################
 
 dprod:icalRule
-    a owl:DatatypeProperty ;
-    rdfs:label "iCal rule"@en ;
-    skos:definition "iCalendar RRULE specification for recurring schedules"@en ;
-    rdfs:domain dprod:ICalSchedule ;
-    rdfs:range xsd:string ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Standard RFC 5545 RRULE format, e.g., 'FREQ=DAILY;BYHOUR=6;BYMINUTE=0'"@en .
+  a rdf:Property, owl:DatatypeProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ICalSchedule ;
+  rdfs:range xsd:string ;
+  dct:description "iCalendar RRULE specification for recurring schedules"@en ;
+  rdfs:comment "Standard RFC 5545 RRULE format, e.g., 'FREQ=DAILY;BYHOUR=6;BYMINUTE=0'"@en ;
+  rdfs:label "iCal rule" ;
+.
 
 
-# ==============================================================================
-# CONTRACT STATUS VOCABULARY
-# ==============================================================================
+############################# Contract Status Vocabulary #########################
 
 dprod:ContractStatusScheme
-    a skos:ConceptScheme ;
-    rdfs:label "DPROD Contract Status"@en ;
-    skos:definition "Vocabulary for data contract and offer lifecycle status values"@en ;
-    skos:hasTopConcept
-        dprod:ContractStatusPending,
-        dprod:ContractStatusActive,
-        dprod:ContractStatusExpired,
-        dprod:ContractStatusCancelled ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Status concepts apply to both DataOffer (Pending, Expired, Cancelled) and DataContract (Active, Expired, Cancelled)"@en .
+  a skos:ConceptScheme ;
+  dct:description "Vocabulary for data contract and offer lifecycle status values"@en ;
+  rdfs:comment "Status concepts apply to both DataOffer (Pending, Expired, Cancelled) and DataContract (Active, Expired, Cancelled)"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "DPROD contract status" ;
+  skos:hasTopConcept
+    dprod:ContractStatusPending,
+    dprod:ContractStatusActive,
+    dprod:ContractStatusExpired,
+    dprod:ContractStatusCancelled ;
+.
 
 dprod:ContractStatus
-    a owl:Class ;
-    rdfs:label "Contract Status"@en ;
-    skos:definition "Status value for data contracts and offers"@en ;
-    rdfs:subClassOf skos:Concept ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Subclass of skos:Concept providing specific typing for contract lifecycle status values"@en .
+  a owl:Class, rdfs:Class ;
+  dct:description "Status value for data contracts and offers"@en ;
+  rdfs:comment "Subclass of skos:Concept providing specific typing for contract lifecycle status values"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "contract status" ;
+  rdfs:subClassOf skos:Concept ;
+.
 
 dprod:ContractStatusPending
-    a dprod:ContractStatus ;
-    rdfs:label "Pending"@en ;
-    skos:prefLabel "Pending"@en ;
-    skos:definition "Offer is published and available for review, but not yet accepted by any consumer."@en ;
-    skos:inScheme dprod:ContractStatusScheme ;
-    skos:topConceptOf dprod:ContractStatusScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Applies to DataOffer only. Provider commitments are proposed but not yet binding. Once accepted, status becomes Active."@en .
+  a dprod:ContractStatus ;
+  dct:description "Offer is published and available for review, but not yet accepted by any consumer."@en ;
+  rdfs:comment "Applies to DataOffer only. Provider commitments are proposed but not yet binding. Once accepted, status becomes Active."@en ;
+  skos:prefLabel "Pending"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "pending" ;
+  skos:inScheme dprod:ContractStatusScheme ;
+  skos:topConceptOf dprod:ContractStatusScheme ;
+.
 
 dprod:ContractStatusActive
-    a dprod:ContractStatus ;
-    rdfs:label "Active"@en ;
-    skos:prefLabel "Active"@en ;
-    skos:definition "Data contract is in operation"@en ;
-    skos:inScheme dprod:ContractStatusScheme ;
-    skos:topConceptOf dprod:ContractStatusScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Contract is in effect. Provider commitments are in operation."@en .
+  a dprod:ContractStatus ;
+  dct:description "Data contract is in operation"@en ;
+  rdfs:comment "Contract is in effect. Provider commitments are in operation."@en ;
+  skos:prefLabel "Active"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "active" ;
+  skos:inScheme dprod:ContractStatusScheme ;
+  skos:topConceptOf dprod:ContractStatusScheme ;
+.
 
 dprod:ContractStatusExpired
-    a dprod:ContractStatus ;
-    rdfs:label "Expired"@en ;
-    skos:prefLabel "Expired"@en ;
-    skos:definition "Contract or offer has reached its natural end date as specified in the effective period."@en ;
-    skos:inScheme dprod:ContractStatusScheme ;
-    skos:topConceptOf dprod:ContractStatusScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Contract reached its scheduled termination date. Provider commitments are no longer in effect. Distinct from cancellation (early termination)."@en .
+  a dprod:ContractStatus ;
+  dct:description "Contract or offer has reached its natural end date as specified in the effective period."@en ;
+  rdfs:comment "Contract reached its scheduled termination date. Provider commitments are no longer in effect. Distinct from cancellation (early termination)."@en ;
+  skos:prefLabel "Expired"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "expired" ;
+  skos:inScheme dprod:ContractStatusScheme ;
+  skos:topConceptOf dprod:ContractStatusScheme ;
+.
 
 dprod:ContractStatusCancelled
-    a dprod:ContractStatus ;
-    rdfs:label "Cancelled"@en ;
-    skos:prefLabel "Cancelled"@en ;
-    skos:definition "Data contract has been cancelled before its planned retirement"@en ;
-    skos:inScheme dprod:ContractStatusScheme ;
-    skos:topConceptOf dprod:ContractStatusScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> ;
-    skos:note "Contract has been cancelled. Provider commitments are no longer valid."@en .
+  a dprod:ContractStatus ;
+  dct:description "Data contract has been cancelled before its planned retirement"@en ;
+  rdfs:comment "Contract has been cancelled. Provider commitments are no longer valid."@en ;
+  skos:prefLabel "Cancelled"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "cancelled" ;
+  skos:inScheme dprod:ContractStatusScheme ;
+  skos:topConceptOf dprod:ContractStatusScheme ;
+.
 
 
-# ==============================================================================
-# SLA METRIC VOCABULARY
-# ==============================================================================
+############################# SLA Metric Vocabulary #########################
 
 dprod:SLAMetricScheme
-    a skos:ConceptScheme ;
-    rdfs:label "DPROD SLA Metrics"@en ;
-    skos:definition "Vocabulary for service level agreement metrics"@en ;
-    skos:hasTopConcept dprod:Availability, dprod:Latency, dprod:Throughput,
-                       dprod:ErrorRate, dprod:ResponseTime ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a skos:ConceptScheme ;
+  dct:description "Vocabulary for service level agreement metrics"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "DPROD SLA metrics" ;
+  skos:hasTopConcept dprod:Availability, dprod:Latency, dprod:Throughput,
+    dprod:ErrorRate, dprod:ResponseTime ;
+.
 
 dprod:SLAMetric
-    a owl:Class ;
-    rdfs:label "SLA Metric"@en ;
-    skos:definition "Type of service level metric"@en ;
-    rdfs:subClassOf skos:Concept ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a owl:Class, rdfs:Class ;
+  dct:description "Type of service level metric"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "SLA metric" ;
+  rdfs:subClassOf skos:Concept ;
+.
 
 dprod:Availability
-    a dprod:SLAMetric ;
-    rdfs:label "Availability"@en ;
-    skos:prefLabel "Availability"@en ;
-    skos:definition "Percentage of time the service is operational and accessible"@en ;
-    skos:inScheme dprod:SLAMetricScheme ;
-    skos:topConceptOf dprod:SLAMetricScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SLAMetric ;
+  dct:description "Percentage of time the service is operational and accessible"@en ;
+  skos:prefLabel "Availability"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "availability" ;
+  skos:inScheme dprod:SLAMetricScheme ;
+  skos:topConceptOf dprod:SLAMetricScheme ;
+.
 
 dprod:Latency
-    a dprod:SLAMetric ;
-    rdfs:label "Latency"@en ;
-    skos:prefLabel "Latency"@en ;
-    skos:definition "Time delay in data delivery or processing"@en ;
-    skos:inScheme dprod:SLAMetricScheme ;
-    skos:topConceptOf dprod:SLAMetricScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SLAMetric ;
+  dct:description "Time delay in data delivery or processing"@en ;
+  skos:prefLabel "Latency"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "latency" ;
+  skos:inScheme dprod:SLAMetricScheme ;
+  skos:topConceptOf dprod:SLAMetricScheme ;
+.
 
 dprod:Throughput
-    a dprod:SLAMetric ;
-    rdfs:label "Throughput"@en ;
-    skos:prefLabel "Throughput"@en ;
-    skos:definition "Volume of data processed per unit time"@en ;
-    skos:inScheme dprod:SLAMetricScheme ;
-    skos:topConceptOf dprod:SLAMetricScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SLAMetric ;
+  dct:description "Volume of data processed per unit time"@en ;
+  skos:prefLabel "Throughput"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "throughput" ;
+  skos:inScheme dprod:SLAMetricScheme ;
+  skos:topConceptOf dprod:SLAMetricScheme ;
+.
 
 dprod:ErrorRate
-    a dprod:SLAMetric ;
-    rdfs:label "Error Rate"@en ;
-    skos:prefLabel "Error Rate"@en ;
-    skos:definition "Percentage of failed requests or invalid records"@en ;
-    skos:inScheme dprod:SLAMetricScheme ;
-    skos:topConceptOf dprod:SLAMetricScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SLAMetric ;
+  dct:description "Percentage of failed requests or invalid records"@en ;
+  skos:prefLabel "Error Rate"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "error rate" ;
+  skos:inScheme dprod:SLAMetricScheme ;
+  skos:topConceptOf dprod:SLAMetricScheme ;
+.
 
 dprod:ResponseTime
-    a dprod:SLAMetric ;
-    rdfs:label "Response Time"@en ;
-    skos:prefLabel "Response Time"@en ;
-    skos:definition "Time to respond to a request (may specify percentile: p50, p95, p99)"@en ;
-    skos:inScheme dprod:SLAMetricScheme ;
-    skos:topConceptOf dprod:SLAMetricScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SLAMetric ;
+  dct:description "Time to respond to a request (may specify percentile: p50, p95, p99)"@en ;
+  skos:prefLabel "Response Time"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "response time" ;
+  skos:inScheme dprod:SLAMetricScheme ;
+  skos:topConceptOf dprod:SLAMetricScheme ;
+.
 
 
-# ==============================================================================
-# SUPPORT CHANNEL TYPE VOCABULARY
-# ==============================================================================
+############################# Support Channel Type Vocabulary #########################
 
 dprod:SupportChannelTypeScheme
-    a skos:ConceptScheme ;
-    rdfs:label "Support Channel Types"@en ;
-    skos:definition "Types of support channels available for data contracts"@en ;
-    skos:hasTopConcept dprod:EmailSupport, dprod:SlackSupport, dprod:TeamsSupport,
-                       dprod:TicketSupport, dprod:DocumentationSupport ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a skos:ConceptScheme ;
+  dct:description "Types of support channels available for data contracts"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "support channel types" ;
+  skos:hasTopConcept dprod:EmailSupport, dprod:SlackSupport, dprod:TeamsSupport,
+    dprod:TicketSupport, dprod:DocumentationSupport ;
+.
 
 dprod:SupportChannelType
-    a owl:Class ;
-    rdfs:label "Support Channel Type"@en ;
-    skos:definition "Type of support channel"@en ;
-    rdfs:subClassOf skos:Concept ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a owl:Class, rdfs:Class ;
+  dct:description "Type of support channel"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "support channel type" ;
+  rdfs:subClassOf skos:Concept ;
+.
 
 dprod:EmailSupport
-    a dprod:SupportChannelType ;
-    rdfs:label "Email"@en ;
-    skos:prefLabel "Email"@en ;
-    skos:definition "Support via email"@en ;
-    skos:inScheme dprod:SupportChannelTypeScheme ;
-    skos:topConceptOf dprod:SupportChannelTypeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportChannelType ;
+  dct:description "Support via email"@en ;
+  skos:prefLabel "Email"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "email" ;
+  skos:inScheme dprod:SupportChannelTypeScheme ;
+  skos:topConceptOf dprod:SupportChannelTypeScheme ;
+.
 
 dprod:SlackSupport
-    a dprod:SupportChannelType ;
-    rdfs:label "Slack"@en ;
-    skos:prefLabel "Slack"@en ;
-    skos:definition "Support via Slack channel"@en ;
-    skos:inScheme dprod:SupportChannelTypeScheme ;
-    skos:topConceptOf dprod:SupportChannelTypeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportChannelType ;
+  dct:description "Support via Slack channel"@en ;
+  skos:prefLabel "Slack"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "Slack" ;
+  skos:inScheme dprod:SupportChannelTypeScheme ;
+  skos:topConceptOf dprod:SupportChannelTypeScheme ;
+.
 
 dprod:TeamsSupport
-    a dprod:SupportChannelType ;
-    rdfs:label "Microsoft Teams"@en ;
-    skos:prefLabel "Microsoft Teams"@en ;
-    skos:definition "Support via Microsoft Teams channel"@en ;
-    skos:inScheme dprod:SupportChannelTypeScheme ;
-    skos:topConceptOf dprod:SupportChannelTypeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportChannelType ;
+  dct:description "Support via Microsoft Teams channel"@en ;
+  skos:prefLabel "Microsoft Teams"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "Microsoft Teams" ;
+  skos:inScheme dprod:SupportChannelTypeScheme ;
+  skos:topConceptOf dprod:SupportChannelTypeScheme ;
+.
 
 dprod:TicketSupport
-    a dprod:SupportChannelType ;
-    rdfs:label "Ticket System"@en ;
-    skos:prefLabel "Ticket System"@en ;
-    skos:definition "Support via ticketing system (JIRA, ServiceNow, etc.)"@en ;
-    skos:inScheme dprod:SupportChannelTypeScheme ;
-    skos:topConceptOf dprod:SupportChannelTypeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportChannelType ;
+  dct:description "Support via ticketing system (JIRA, ServiceNow, etc.)"@en ;
+  skos:prefLabel "Ticket System"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "ticket system" ;
+  skos:inScheme dprod:SupportChannelTypeScheme ;
+  skos:topConceptOf dprod:SupportChannelTypeScheme ;
+.
 
 dprod:DocumentationSupport
-    a dprod:SupportChannelType ;
-    rdfs:label "Documentation"@en ;
-    skos:prefLabel "Documentation"@en ;
-    skos:definition "Self-service support via documentation and FAQs"@en ;
-    skos:inScheme dprod:SupportChannelTypeScheme ;
-    skos:topConceptOf dprod:SupportChannelTypeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportChannelType ;
+  dct:description "Self-service support via documentation and FAQs"@en ;
+  skos:prefLabel "Documentation"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "documentation" ;
+  skos:inScheme dprod:SupportChannelTypeScheme ;
+  skos:topConceptOf dprod:SupportChannelTypeScheme ;
+.
 
 
-# ==============================================================================
-# SUPPORT SCOPE VOCABULARY
-# ==============================================================================
+############################# Support Scope Vocabulary #########################
 
 dprod:SupportScopeScheme
-    a skos:ConceptScheme ;
-    rdfs:label "Support Scopes"@en ;
-    skos:definition "Scopes of support coverage for channels"@en ;
-    skos:hasTopConcept dprod:InteractiveSupport, dprod:IssueResolution,
-                       dprod:Announcements, dprod:SelfService ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a skos:ConceptScheme ;
+  dct:description "Scopes of support coverage for channels"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "support scopes" ;
+  skos:hasTopConcept dprod:InteractiveSupport, dprod:IssueResolution,
+    dprod:Announcements, dprod:SelfService ;
+.
 
 dprod:SupportScope
-    a owl:Class ;
-    rdfs:label "Support Scope"@en ;
-    skos:definition "Scope of support coverage"@en ;
-    rdfs:subClassOf skos:Concept ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a owl:Class, rdfs:Class ;
+  dct:description "Scope of support coverage"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "support scope" ;
+  rdfs:subClassOf skos:Concept ;
+.
 
 dprod:InteractiveSupport
-    a dprod:SupportScope ;
-    rdfs:label "Interactive"@en ;
-    skos:prefLabel "Interactive"@en ;
-    skos:definition "Real-time Q&A and troubleshooting support"@en ;
-    skos:inScheme dprod:SupportScopeScheme ;
-    skos:topConceptOf dprod:SupportScopeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportScope ;
+  dct:description "Real-time Q&A and troubleshooting support"@en ;
+  skos:prefLabel "Interactive"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "interactive" ;
+  skos:inScheme dprod:SupportScopeScheme ;
+  skos:topConceptOf dprod:SupportScopeScheme ;
+.
 
 dprod:IssueResolution
-    a dprod:SupportScope ;
-    rdfs:label "Issue Resolution"@en ;
-    skos:prefLabel "Issue Resolution"@en ;
-    skos:definition "Bug reports and incident handling"@en ;
-    skos:inScheme dprod:SupportScopeScheme ;
-    skos:topConceptOf dprod:SupportScopeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportScope ;
+  dct:description "Bug reports and incident handling"@en ;
+  skos:prefLabel "Issue Resolution"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "issue resolution" ;
+  skos:inScheme dprod:SupportScopeScheme ;
+  skos:topConceptOf dprod:SupportScopeScheme ;
+.
 
 dprod:Announcements
-    a dprod:SupportScope ;
-    rdfs:label "Announcements"@en ;
-    skos:prefLabel "Announcements"@en ;
-    skos:definition "One-way notifications about changes and updates"@en ;
-    skos:inScheme dprod:SupportScopeScheme ;
-    skos:topConceptOf dprod:SupportScopeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportScope ;
+  dct:description "One-way notifications about changes and updates"@en ;
+  skos:prefLabel "Announcements"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "announcements" ;
+  skos:inScheme dprod:SupportScopeScheme ;
+  skos:topConceptOf dprod:SupportScopeScheme ;
+.
 
 dprod:SelfService
-    a dprod:SupportScope ;
-    rdfs:label "Self Service"@en ;
-    skos:prefLabel "Self Service"@en ;
-    skos:definition "Documentation and FAQ resources"@en ;
-    skos:inScheme dprod:SupportScopeScheme ;
-    skos:topConceptOf dprod:SupportScopeScheme ;
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod> .
+  a dprod:SupportScope ;
+  dct:description "Documentation and FAQ resources"@en ;
+  skos:prefLabel "Self Service"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "self service" ;
+  skos:inScheme dprod:SupportScopeScheme ;
+  skos:topConceptOf dprod:SupportScopeScheme ;
+.
 
 
-# ==============================================================================
-# ODRL PROFILE DECLARATION
-# ==============================================================================
+############################# ODRL Profile Declaration #########################
 
 <https://ekgf.github.io/dprod/profile>
-    a odrl:Profile, skos:ConceptScheme ;
-    rdfs:label "DPROD ODRL Profile"@en ;
-    skos:definition "ODRL profile for DPROD Data Contract Ontology defining custom actions and promise-based commitments"@en ;
-    dct:description "Extends ODRL Core with promise-based patterns for bilateral data contracts, distinguishing provider obligations from consumer restrictions"@en ;
-    dct:creator "EKGF DPROD Working Group" ;
-    dct:created "2025-10-30"^^xsd:date ;
-    dct:modified "2025-12-18"^^xsd:date ;
-    owl:versionInfo "9.0.0" ;
-    rdfs:seeAlso <https://ekgf.github.io/dprod> ;
-    skos:note """This profile defines:
+  a odrl:Profile, skos:ConceptScheme ;
+  dct:description "Extends ODRL Core with promise-based patterns for bilateral data contracts, distinguishing provider obligations from consumer restrictions"@en ;
+  rdfs:comment "ODRL profile for DPROD Data Contract Ontology defining custom actions and promise-based commitments"@en ;
+  dct:creator "EKGF DPROD Working Group" ;
+  dct:created "2025-10-30"^^xsd:date ;
+  dct:modified "2025-12-18"^^xsd:date ;
+  owl:versionInfo "9.0.0" ;
+  rdfs:label "DPROD ODRL profile" ;
+  rdfs:seeAlso <https://ekgf.github.io/dprod> ;
+  rdfs:comment """This profile defines:
 
     Core Classes:
     - dprod:DataOffer: Provider's standing offer (extends odrl:Offer) - not binding until accepted
@@ -1088,17 +1107,16 @@ dprod:SelfService
     - dprod:restrictPurpose (includedIn odrl:use): Restrict to declared purpose
 
     Policies using this profile should declare: odrl:profile <https://ekgf.github.io/dprod/profile>
-    """@en .
+    """@en ;
+.
 
 
-# ==============================================================================
-# USAGE PATTERNS DOCUMENTATION
-# ==============================================================================
+############################# Usage Patterns Documentation #########################
 
 <https://ekgf.github.io/dprod#UsagePattern>
-    a skos:ConceptScheme ;
-    rdfs:label "DPROD Usage Patterns"@en ;
-    skos:note """
+  a skos:ConceptScheme ;
+  rdfs:label "DPROD usage patterns" ;
+  rdfs:comment """
     DPROD v8.0 Usage for Data Providers:
 
     1. Create DataOffer with odrl:assigner (provider's standing offer)
@@ -1129,4 +1147,5 @@ dprod:SelfService
       Example: Adding new compliance requirements to existing agreement
 
     Suitable for both internal organizational data sharing and external data marketplaces.
-    """@en .
+    """@en ;
+.
