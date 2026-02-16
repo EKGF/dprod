@@ -1,0 +1,1083 @@
+# =============================================================================
+# DPROD-Contracts to Adalbert Translation
+# =============================================================================
+# Translates the 8 dprod-contracts examples into Adalbert syntax.
+#
+# Key translation principles:
+#   - dprod:DataContract / dprod:DataOffer -> adalbert:DataContract (subClassOf odrl:Offer)
+#   - dprod:Promise / dprod:ProviderPromise -> odrl:Duty with adalbert:subject = provider
+#   - dprod:ConsumerPromise -> odrl:Permission, odrl:Prohibition, or odrl:Duty
+#   - dprod:contractStatus -> adalbert:state
+#   - dprod:hasEffectivePeriod -> adalbert:effectiveDate + adalbert:expirationDate
+#   - dprod:hasSchedule / icalRule -> adalbert:recurrence (direct RRULE string)
+#   - dprod:noticePeriod -> adalbert:deadline (as xsd:duration)
+#   - dprod:supersedes -> prov:wasRevisionOf
+#
+# Adalbert uses ODRL vocabulary directly for standard constructs (Permission,
+# Prohibition, Duty, Constraint) and extends only where ODRL has gaps (State,
+# deadline, recurrence, subject/object party roles, DataContract).
+#
+# Scope note: Adalbert intentionally does not address pricing. dprod-contracts
+# has dprod:hasPricing with schema:PriceSpecification for marketplace scenarios;
+# Adalbert focuses on rights, obligations, and constraints. Example 8 translates
+# access tiers as permissions with subscriptionTier constraints, but pricing
+# metadata remains outside Adalbert's scope.
+#
+# Every policy declares:
+#   odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+#                <https://vocabulary.bigbank/adalbert/due/> ;
+#
+# Target inheritance: odrl:target at policy level is inherited by all rules
+# unless a rule overrides with its own odrl:target.
+# =============================================================================
+
+@prefix odrl:         <http://www.w3.org/ns/odrl/2/> .
+@prefix adalbert:     <https://vocabulary.bigbank/adalbert/> .
+@prefix adalbert-due: <https://vocabulary.bigbank/adalbert/due/> .
+@prefix xsd:          <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:         <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov:         <http://www.w3.org/ns/prov#> .
+@prefix dcat:         <http://www.w3.org/ns/dcat#> .
+@prefix dct:          <http://purl.org/dc/terms/> .
+@prefix sh:           <http://www.w3.org/ns/shacl#> .
+@prefix ex:           <https://example.com/> .
+
+
+# =============================================================================
+# PARTIES
+# =============================================================================
+
+ex:sales-team a odrl:Party ;
+    rdfs:label "Sales Data Team" .
+
+ex:revenue-team a odrl:Party ;
+    rdfs:label "Revenue Data Team" .
+
+ex:clickstream-team a odrl:Party ;
+    rdfs:label "Clickstream Data Team" .
+
+ex:ml-team a odrl:Party ;
+    rdfs:label "ML Engineering Team" .
+
+ex:segments-team a odrl:Party ;
+    rdfs:label "Customer Segments Team" .
+
+ex:marketing a odrl:Party ;
+    rdfs:label "Marketing Division" .
+
+ex:api-platform a odrl:Party ;
+    rdfs:label "API Platform Team" .
+
+ex:quality-team a odrl:Party ;
+    rdfs:label "Data Quality Team" .
+
+ex:support-team a odrl:Party ;
+    rdfs:label "Support Operations Team" .
+
+ex:marketplace-provider a odrl:Party ;
+    rdfs:label "Data Marketplace Provider" .
+
+
+# =============================================================================
+# ASSETS
+# =============================================================================
+
+ex:sales-data a odrl:Asset ;
+    rdfs:label "Sales Transaction Data" .
+
+ex:revenue-data a odrl:Asset ;
+    rdfs:label "Revenue Reporting Data" .
+
+ex:revenue-schema a odrl:Asset ;
+    rdfs:label "Revenue Data Schema v3" .
+
+ex:revenue-changes a odrl:Asset ;
+    rdfs:label "Revenue Schema Change Notifications" .
+
+ex:clickstream-data a odrl:Asset ;
+    rdfs:label "Clickstream Event Data" .
+
+ex:attribution-report a odrl:Asset ;
+    rdfs:label "Attribution Report" .
+
+ex:segments-data a odrl:Asset ;
+    rdfs:label "Customer Segments Data" .
+
+ex:segments-schema a odrl:Asset ;
+    rdfs:label "Customer Segments Schema" .
+
+ex:segments-changes a odrl:Asset ;
+    rdfs:label "Segments Schema Change Notifications" .
+
+ex:segments-usage a odrl:Asset ;
+    rdfs:label "Segments Usage Statistics" .
+
+ex:api-data a odrl:Asset ;
+    rdfs:label "API Service Data" .
+
+ex:api-schema a odrl:Asset ;
+    rdfs:label "API Schema v2" .
+
+ex:product-catalog a odrl:Asset ;
+    rdfs:label "Product Catalog Data" .
+
+ex:product-schema a odrl:Asset ;
+    rdfs:label "Product Catalog Schema" .
+
+ex:product-quality-report a odrl:Asset ;
+    rdfs:label "Product Quality Report" .
+
+ex:crm-data a odrl:Asset ;
+    rdfs:label "CRM Integration Data" .
+
+ex:crm-changes a odrl:Asset ;
+    rdfs:label "CRM Change Notifications" .
+
+ex:geo-data a odrl:Asset ;
+    rdfs:label "Geospatial Analytics Data" .
+
+ex:geo-schema a odrl:Asset ;
+    rdfs:label "Geospatial Data Schema" .
+
+ex:geo-sample a odrl:Asset ;
+    rdfs:label "Geospatial Sample Dataset" .
+
+
+# =============================================================================
+# EXAMPLE 1: Minimal Data Contract (Sales Data)
+# =============================================================================
+# DPROD original: dprod:DataContract with contractStatus Active, a single
+# provider promise (deliverOnSchedule), and basic consumer access.
+#
+# Translation:
+#   dprod:DataContract           -> adalbert:DataContract
+#   dprod:contractStatus Active  -> adalbert:state adalbert:Active
+#   dprod:deliverOnSchedule      -> odrl:Duty with adalbert-due:deliver
+#   dprod:access (consumer)      -> odrl:Permission with odrl:use
+# =============================================================================
+
+ex:contract-sales-minimal a adalbert:DataContract ;
+    rdfs:label "Sales Data Contract (Minimal)" ;
+    dct:description "Minimal data contract providing daily sales data access." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:sales-team ;
+    odrl:target ex:sales-data ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+
+    # Provider duty: daily delivery at 08:00 with 1-hour window
+    # DPROD: dprod:providerPromise [ a dprod:ProviderTimelinessPromise ;
+    #            dprod:hasSchedule [ dprod:icalRule "FREQ=DAILY;BYHOUR=8" ] ]
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily sales data delivery" ;
+        adalbert:subject ex:sales-team ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=DAILY;BYHOUR=8;BYMINUTE=0" ;
+        adalbert:deadline "PT1H"^^xsd:duration
+    ] ;
+
+    # Consumer permission: general use
+    # DPROD: dprod:consumerPromise [ dprod:access ]
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Sales data access" ;
+        odrl:action odrl:use
+    ] .
+
+
+# =============================================================================
+# EXAMPLE 2: Provider Promises (Revenue Data)
+# =============================================================================
+# DPROD original: dprod:DataContract with three provider promises:
+#   - ProviderTimelinessPromise (deliverOnSchedule, hourly)
+#   - ProviderSchemaPromise (maintainSchema)
+#   - ProviderTerminationNoticePromise (notifyTermination, 90-day notice)
+#
+# Translation:
+#   ProviderTimelinessPromise   -> odrl:Duty + adalbert-due:deliver + recurrence
+#   ProviderSchemaPromise       -> odrl:Duty + adalbert-due:conformTo
+#   ProviderTerminationNotice   -> odrl:Duty + adalbert-due:notify + deadline
+#   All provider promises use adalbert:subject to identify the duty bearer.
+# =============================================================================
+
+ex:contract-revenue-promises a adalbert:DataContract ;
+    rdfs:label "Revenue Data Contract (Provider Promises)" ;
+    dct:description "Revenue reporting data with timeliness, schema, and termination promises." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:revenue-team ;
+    odrl:target ex:revenue-data ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # Provider duty: hourly delivery with 15-minute window
+    # DPROD: dprod:ProviderTimelinessPromise with FREQ=HOURLY schedule
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Hourly revenue data delivery" ;
+        adalbert:subject ex:revenue-team ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=HOURLY" ;
+        adalbert:deadline "PT15M"^^xsd:duration
+    ] ;
+
+    # Provider duty: schema conformance
+    # DPROD: dprod:ProviderSchemaPromise with dprod:maintainSchema
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Revenue schema conformance" ;
+        adalbert:subject ex:revenue-team ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target ex:revenue-schema
+    ] ;
+
+    # Provider duty: 90-day termination notice
+    # DPROD: dprod:ProviderTerminationNoticePromise with dprod:noticePeriod P90D
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Termination notice (90 days)" ;
+        adalbert:subject ex:revenue-team ;
+        odrl:action adalbert-due:notify ;
+        odrl:target ex:revenue-changes ;
+        adalbert:deadline "P90D"^^xsd:duration
+    ] ;
+
+    # Consumer: read access (implied by DPROD data contract)
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Revenue data read access" ;
+        odrl:action odrl:read
+    ] .
+
+
+# =============================================================================
+# EXAMPLE 3: Consumer Promises (Clickstream ML)
+# =============================================================================
+# DPROD original: dprod:DataContract with consumer promises:
+#   - query (access method)
+#   - deriveInsights (ML use case)
+#   - provideAttribution (consumer obligation)
+#   - deleteOnExpiry (consumer obligation)
+#   - restrictPurpose: no redistribution (prohibition)
+#
+# Translation:
+#   dprod:query           -> odrl:Permission with adalbert-due:query
+#   dprod:deriveInsights  -> odrl:Permission with odrl:derive
+#   dprod:provideAttribution -> odrl:Duty with adalbert-due:report (attribution)
+#   dprod:deleteOnExpiry  -> odrl:Duty with odrl:delete
+#   dprod:restrictPurpose -> odrl:Prohibition on odrl:distribute
+#
+# In an Offer, consumer duties omit adalbert:subject (filled upon subscription).
+# Consumer permissions omit odrl:assignee (filled upon subscription).
+# =============================================================================
+
+ex:contract-clickstream-ml a adalbert:DataContract ;
+    rdfs:label "Clickstream ML Contract (Consumer Promises)" ;
+    dct:description "Clickstream data for ML insights with attribution, deletion, and redistribution constraints." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:clickstream-team ;
+    odrl:target ex:clickstream-data ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-02-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2027-01-31T23:59:59Z"^^xsd:dateTime ;
+
+    # Consumer permission: query access
+    # DPROD: dprod:consumerPromise [ dprod:query ]
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Query access" ;
+        odrl:action adalbert-due:query
+    ] ;
+
+    # Consumer permission: derive insights (ML purpose constraint)
+    # DPROD: dprod:consumerPromise [ dprod:deriveInsights ]
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Derive ML insights" ;
+        odrl:action odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:analytics
+        ]
+    ] ;
+
+    # Consumer duty: provide attribution (monthly)
+    # DPROD: dprod:consumerPromise [ dprod:provideAttribution ]
+    # No adalbert:subject in Offer -- filled upon subscription
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly attribution report" ;
+        odrl:action adalbert-due:report ;
+        odrl:target ex:attribution-report ;
+        adalbert:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
+        adalbert:deadline "P5D"^^xsd:duration
+    ] ;
+
+    # Consumer duty: delete data on contract expiry
+    # DPROD: dprod:consumerPromise [ dprod:deleteOnExpiry ]
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Delete data on expiry" ;
+        odrl:action odrl:delete ;
+        adalbert:deadline "P30D"^^xsd:duration
+    ] ;
+
+    # Prohibition: no redistribution
+    # DPROD: dprod:consumerPromise [ dprod:restrictPurpose "no redistribution" ]
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No redistribution" ;
+        odrl:action odrl:distribute
+    ] .
+
+
+# =============================================================================
+# EXAMPLE 4: Full Lifecycle (Customer Segments)
+# =============================================================================
+# DPROD original: Full lifecycle with dprod:DataOffer + dprod:DataContract +
+# versioning (dprod:supersedes) + all promise types:
+#   - ProviderTimelinessPromise (daily delivery)
+#   - ProviderSchemaPromise (schema conformance)
+#   - ProviderChangeNotificationPromise (14-day notice)
+#   - ProviderTerminationNoticePromise (60-day notice)
+#   - Consumer: access, derive, reportUsage, deleteOnExpiry, no redistribute
+#
+# Translation:
+#   dprod:DataOffer -> adalbert:DataContract (Adalbert unifies offer/contract)
+#   dprod:supersedes -> prov:wasRevisionOf
+#   dprod:contractStatus Pending -> adalbert:state adalbert:Pending
+#   dprod:contractStatus Active  -> adalbert:state adalbert:Active
+#   dprod:contractStatus Expired -> adalbert:state adalbert:Fulfilled
+#
+# This example shows both the retired v1 and active v2, plus a subscription.
+# =============================================================================
+
+# --- V1: Retired (Fulfilled) ---
+
+ex:contract-segments-v1 a adalbert:DataContract ;
+    rdfs:label "Customer Segments v1 (retired)" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:segments-team ;
+    odrl:target ex:segments-data ;
+    adalbert:state adalbert:Fulfilled ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:use
+    ] .
+
+# --- V2: Active ---
+
+ex:contract-segments-v2 a adalbert:DataContract ;
+    rdfs:label "Customer Segments v2" ;
+    dct:description "Full lifecycle contract with all provider and consumer promise types." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:segments-team ;
+    odrl:target ex:segments-data ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+    prov:wasRevisionOf ex:contract-segments-v1 ;
+
+    # ----- PROVIDER DUTIES -----
+
+    # Daily delivery at 06:00 with 30-minute window
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily segments delivery" ;
+        adalbert:subject ex:segments-team ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        adalbert:deadline "PT30M"^^xsd:duration
+    ] ;
+
+    # Schema conformance
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema conformance" ;
+        adalbert:subject ex:segments-team ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target ex:segments-schema
+    ] ;
+
+    # 14-day change notification
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema change notification (14 days)" ;
+        adalbert:subject ex:segments-team ;
+        odrl:action adalbert-due:notify ;
+        odrl:target ex:segments-changes ;
+        adalbert:deadline "P14D"^^xsd:duration
+    ] ;
+
+    # 60-day termination notice
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Termination notice (60 days)" ;
+        adalbert:subject ex:segments-team ;
+        odrl:action adalbert-due:notify ;
+        adalbert:deadline "P60D"^^xsd:duration
+    ] ;
+
+    # ----- CONSUMER PERMISSIONS -----
+
+    # Read access
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Segments read access" ;
+        odrl:action odrl:read
+    ] ;
+
+    # Derive insights
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Derive from segments" ;
+        odrl:action odrl:derive
+    ] ;
+
+    # ----- CONSUMER DUTIES -----
+
+    # Monthly usage reporting
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly usage reporting" ;
+        odrl:action adalbert-due:report ;
+        odrl:target ex:segments-usage ;
+        adalbert:recurrence "FREQ=MONTHLY;BYMONTHDAY=5" ;
+        adalbert:deadline "P5D"^^xsd:duration
+    ] ;
+
+    # Delete on expiry
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Delete data on contract expiry" ;
+        odrl:action odrl:delete ;
+        adalbert:deadline "P30D"^^xsd:duration
+    ] ;
+
+    # ----- PROHIBITION -----
+
+    # No redistribution
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No redistribution" ;
+        odrl:action odrl:distribute
+    ] .
+
+# --- Subscription: Marketing subscribes to v2 ---
+
+ex:subscription-marketing-segments a adalbert:Subscription ;
+    rdfs:label "Marketing Segments Subscription 2026" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    adalbert:subscribesTo ex:contract-segments-v2 ;
+    odrl:assigner ex:segments-team ;
+    odrl:assignee ex:marketing ;
+    odrl:target ex:segments-data ;
+    adalbert:effectiveDate "2026-02-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # Provider duties (with adalbert:subject + adalbert:object)
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily segments delivery" ;
+        adalbert:subject ex:segments-team ;
+        adalbert:object ex:marketing ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        adalbert:deadline "PT30M"^^xsd:duration
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema conformance" ;
+        adalbert:subject ex:segments-team ;
+        adalbert:object ex:marketing ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target ex:segments-schema
+    ] ;
+
+    # Consumer duty (assignee is duty bearer in subscription)
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly usage reporting" ;
+        adalbert:subject ex:marketing ;
+        adalbert:object ex:segments-team ;
+        odrl:action adalbert-due:report ;
+        odrl:target ex:segments-usage ;
+        adalbert:recurrence "FREQ=MONTHLY;BYMONTHDAY=5" ;
+        adalbert:deadline "P5D"^^xsd:duration
+    ] ;
+
+    # Consumer permissions
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee ex:marketing ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee ex:marketing ;
+        odrl:action odrl:derive
+    ] ;
+
+    # Prohibition
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assignee ex:marketing ;
+        odrl:action odrl:distribute
+    ] .
+
+
+# =============================================================================
+# EXAMPLE 5: Service Level Promise (API with SLAs)
+# =============================================================================
+# DPROD original: dprod:ProviderServiceLevelPromise with SLA targets:
+#   - availability >= 99.9%
+#   - latency (p99) <= 200ms
+#   - throughput >= 1000 req/s
+#
+# Translation:
+#   dprod:meetServiceLevel -> odrl:Duty + adalbert-due:conformTo + constraints
+#   SLA metrics are expressed as odrl:Constraint on the conformTo duty.
+#   Each metric is a separate constraint combined with odrl:and.
+#
+# Adalbert expresses SLAs as conformance duties with measurable constraints,
+# not as a separate promise class.
+# =============================================================================
+
+ex:contract-api-sla a adalbert:DataContract ;
+    rdfs:label "API Service Level Contract" ;
+    dct:description "API data contract with availability, latency, and throughput SLAs." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:api-platform ;
+    odrl:target ex:api-data ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # Provider duty: schema conformance
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "API schema conformance" ;
+        adalbert:subject ex:api-platform ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target ex:api-schema
+    ] ;
+
+    # Provider duty: SLA conformance (availability + latency + throughput)
+    # DPROD: dprod:ProviderServiceLevelPromise with dprod:meetServiceLevel
+    # Adalbert: single conformTo duty with compound constraint
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Service level conformance" ;
+        adalbert:subject ex:api-platform ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:constraint [
+            a odrl:LogicalConstraint ;
+            odrl:and (
+                [
+                    a odrl:Constraint ;
+                    rdfs:label "Availability >= 99.9%" ;
+                    odrl:leftOperand adalbert-due:availability ;
+                    odrl:operator odrl:gteq ;
+                    odrl:rightOperand "99.9"^^xsd:decimal
+                ]
+                [
+                    a odrl:Constraint ;
+                    rdfs:label "P99 latency <= 200ms" ;
+                    odrl:leftOperand adalbert-due:latency ;
+                    odrl:operator odrl:lteq ;
+                    odrl:rightOperand "PT0.2S"^^xsd:duration
+                ]
+                [
+                    a odrl:Constraint ;
+                    rdfs:label "Throughput >= 1000 req/s" ;
+                    odrl:leftOperand adalbert-due:throughput ;
+                    odrl:operator odrl:gteq ;
+                    odrl:rightOperand "1000"^^xsd:integer
+                ]
+            )
+        ]
+    ] ;
+
+    # Provider duty: 14-day change notification
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "API change notification (14 days)" ;
+        adalbert:subject ex:api-platform ;
+        odrl:action adalbert-due:notify ;
+        adalbert:deadline "P14D"^^xsd:duration
+    ] ;
+
+    # Consumer: read
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "API read access" ;
+        odrl:action odrl:read
+    ] ;
+
+    # Consumer: query
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "API query access" ;
+        odrl:action adalbert-due:query
+    ] ;
+
+    # No external distribution
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No redistribution" ;
+        odrl:action odrl:distribute
+    ] .
+
+
+# =============================================================================
+# EXAMPLE 6: Data Quality Promise (Product Catalog)
+# =============================================================================
+# DPROD original: dprod:DataContract with dprod:ProviderQualityPromise
+# specifying quality metrics (completeness, accuracy, freshness).
+#
+# Translation:
+#   dprod:maintainQuality -> odrl:Duty + adalbert-due:conformTo with quality
+#   constraints.  Each quality dimension is an odrl:Constraint.
+#   Adalbert has no separate quality promise class; quality SLAs are
+#   conformTo duties with measurable constraints, same pattern as SLAs.
+# =============================================================================
+
+ex:contract-product-quality a adalbert:DataContract ;
+    rdfs:label "Product Catalog Quality Contract" ;
+    dct:description "Product catalog with data quality guarantees: completeness, accuracy, and freshness." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:quality-team ;
+    odrl:target ex:product-catalog ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+
+    # Provider duty: daily delivery
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily product catalog delivery" ;
+        adalbert:subject ex:quality-team ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=DAILY;BYHOUR=5;BYMINUTE=0" ;
+        adalbert:deadline "PT1H"^^xsd:duration
+    ] ;
+
+    # Provider duty: schema conformance
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Product catalog schema conformance" ;
+        adalbert:subject ex:quality-team ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target ex:product-schema
+    ] ;
+
+    # Provider duty: data quality conformance
+    # DPROD: dprod:ProviderQualityPromise with dprod:maintainQuality
+    # Adalbert: conformTo duty with compound quality constraint
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Data quality conformance" ;
+        adalbert:subject ex:quality-team ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target ex:product-quality-report ;
+        odrl:constraint [
+            a odrl:LogicalConstraint ;
+            odrl:and (
+                [
+                    a odrl:Constraint ;
+                    rdfs:label "Completeness >= 99.5%" ;
+                    odrl:leftOperand adalbert-due:completeness ;
+                    odrl:operator odrl:gteq ;
+                    odrl:rightOperand "99.5"^^xsd:decimal
+                ]
+                [
+                    a odrl:Constraint ;
+                    rdfs:label "Accuracy >= 99.0%" ;
+                    odrl:leftOperand adalbert-due:accuracy ;
+                    odrl:operator odrl:gteq ;
+                    odrl:rightOperand "99.0"^^xsd:decimal
+                ]
+                [
+                    a odrl:Constraint ;
+                    rdfs:label "Freshness: data no older than 24 hours" ;
+                    odrl:leftOperand adalbert-due:timeliness ;
+                    odrl:operator odrl:lteq ;
+                    odrl:rightOperand "PT24H"^^xsd:duration
+                ]
+            )
+        ]
+    ] ;
+
+    # Consumer: read
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Product catalog read access" ;
+        odrl:action odrl:read
+    ] ;
+
+    # Consumer: query
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Product catalog query access" ;
+        odrl:action adalbert-due:query
+    ] ;
+
+    # No modification by consumer
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No modification" ;
+        odrl:action odrl:modify
+    ] .
+
+
+# =============================================================================
+# EXAMPLE 7: Support Promise (Multi-Channel CRM)
+# =============================================================================
+# DPROD original: dprod:ProviderSupportPromise with multi-channel support:
+#   - email support (response within 4 hours)
+#   - chat support (response within 30 minutes)
+#   - phone support (business hours)
+#
+# Translation:
+#   dprod:provideSupport -> not directly mappable. Adalbert is lighter.
+#   Express as odrl:Duty with adalbert-due:notify for each support channel,
+#   using constraints to specify channel type and response time deadlines.
+#
+#   Each support channel becomes a separate notify duty with a deadline
+#   representing the response time SLA.
+# =============================================================================
+
+ex:contract-crm-support a adalbert:DataContract ;
+    rdfs:label "CRM Integration Support Contract" ;
+    dct:description "CRM data integration with multi-channel support: email, chat, and phone." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:support-team ;
+    odrl:target ex:crm-data ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # Provider duty: daily delivery
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily CRM data delivery" ;
+        adalbert:subject ex:support-team ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+        adalbert:deadline "PT30M"^^xsd:duration
+    ] ;
+
+    # Provider duty: schema change notification
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "CRM schema change notification" ;
+        adalbert:subject ex:support-team ;
+        odrl:action adalbert-due:notify ;
+        odrl:target ex:crm-changes ;
+        adalbert:deadline "P14D"^^xsd:duration
+    ] ;
+
+    # Support channel: email (4-hour response)
+    # DPROD: dprod:ProviderSupportPromise [ dprod:channel "email" ;
+    #            dprod:responseTime "PT4H" ]
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Email support response" ;
+        adalbert:subject ex:support-team ;
+        odrl:action adalbert-due:notify ;
+        adalbert:deadline "PT4H"^^xsd:duration ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:channel ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "email"
+        ]
+    ] ;
+
+    # Support channel: chat (30-minute response)
+    # DPROD: dprod:ProviderSupportPromise [ dprod:channel "chat" ;
+    #            dprod:responseTime "PT30M" ]
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Chat support response" ;
+        adalbert:subject ex:support-team ;
+        odrl:action adalbert-due:notify ;
+        adalbert:deadline "PT30M"^^xsd:duration ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:channel ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "chat"
+        ]
+    ] ;
+
+    # Support channel: phone (business hours, 1-hour response)
+    # DPROD: dprod:ProviderSupportPromise [ dprod:channel "phone" ;
+    #            dprod:responseTime "PT1H" ; dprod:availability "business hours" ]
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Phone support response (business hours)" ;
+        adalbert:subject ex:support-team ;
+        odrl:action adalbert-due:notify ;
+        adalbert:deadline "PT1H"^^xsd:duration ;
+        odrl:constraint [
+            a odrl:LogicalConstraint ;
+            odrl:and (
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand adalbert-due:channel ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand "phone"
+                ]
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand adalbert-due:serviceWindow ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand "business-hours"
+                ]
+            )
+        ]
+    ] ;
+
+    # Consumer: read
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "CRM data read access" ;
+        odrl:action odrl:read
+    ] ;
+
+    # Consumer: modify (integration updates)
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "CRM data modification" ;
+        odrl:action odrl:modify ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:internalRecipient
+        ]
+    ] ;
+
+    # No external distribution
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No external distribution" ;
+        odrl:action odrl:distribute
+    ] .
+
+
+# =============================================================================
+# EXAMPLE 8: Marketplace Offer with Pricing (Geospatial Data)
+# =============================================================================
+# DPROD original: dprod:DataOffer published on a marketplace with:
+#   - pricing tier (expressed as constraint on access)
+#   - free sample tier (no constraint)
+#   - premium tier (paid, with derive + aggregate + internal sharing)
+#   - provider promises (timeliness, schema, SLA)
+#
+# Translation:
+#   dprod:DataOffer -> adalbert:DataContract (Adalbert unifies these)
+#   Pricing tiers -> separate permissions with constraints
+#   dprod:download -> odrl:Permission with odrl:read (or odrl:reproduce)
+#   dprod:stream -> odrl:Permission with odrl:read
+#   dprod:aggregate -> odrl:Permission with odrl:aggregate
+#   dprod:shareInternally -> odrl:Permission with odrl:distribute + internal constraint
+#   dprod:enrich -> odrl:Permission with odrl:modify
+#
+# Adalbert does not model pricing directly. Access tiers are expressed
+# as permissions with constraints on access level or subscription tier.
+# =============================================================================
+
+ex:contract-geo-marketplace a adalbert:DataContract ;
+    rdfs:label "Geospatial Analytics Marketplace Offer" ;
+    dct:description "Marketplace data offer with free sample and premium tiers for geospatial analytics." ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner ex:marketplace-provider ;
+    odrl:target ex:geo-data ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+
+    # ----- PROVIDER DUTIES -----
+
+    # Daily delivery
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily geospatial data delivery" ;
+        adalbert:subject ex:marketplace-provider ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=DAILY;BYHOUR=4;BYMINUTE=0" ;
+        adalbert:deadline "PT1H"^^xsd:duration
+    ] ;
+
+    # Schema conformance
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Geospatial schema conformance" ;
+        adalbert:subject ex:marketplace-provider ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target ex:geo-schema
+    ] ;
+
+    # SLA: 99.5% availability
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Availability SLA" ;
+        adalbert:subject ex:marketplace-provider ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:availability ;
+            odrl:operator odrl:gteq ;
+            odrl:rightOperand "99.5"^^xsd:decimal
+        ]
+    ] ;
+
+    # ----- FREE TIER PERMISSIONS -----
+    # DPROD: dprod:download on sample dataset (no pricing constraint)
+
+    # Free: read sample data
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Free tier: sample read access" ;
+        odrl:action odrl:read ;
+        odrl:target ex:geo-sample
+    ] ;
+
+    # ----- PREMIUM TIER PERMISSIONS -----
+    # DPROD: dprod:stream, dprod:aggregate, dprod:enrich, dprod:shareInternally
+    # Adalbert: permissions with subscription tier constraint
+
+    # Premium: read (streaming access to full dataset)
+    # DPROD: dprod:stream
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Premium: streaming read access" ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:subscriptionTier ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "premium"
+        ]
+    ] ;
+
+    # Premium: derive insights
+    # DPROD: dprod:deriveInsights
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Premium: derive insights" ;
+        odrl:action odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:subscriptionTier ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "premium"
+        ]
+    ] ;
+
+    # Premium: aggregate
+    # DPROD: dprod:aggregate
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Premium: aggregate" ;
+        odrl:action odrl:aggregate ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:subscriptionTier ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "premium"
+        ]
+    ] ;
+
+    # Premium: enrich (modify with additional data)
+    # DPROD: dprod:enrich
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Premium: enrich data" ;
+        odrl:action odrl:modify ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:subscriptionTier ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "premium"
+        ]
+    ] ;
+
+    # Premium: internal sharing only
+    # DPROD: dprod:shareInternally
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Premium: internal distribution" ;
+        odrl:action odrl:distribute ;
+        odrl:constraint [
+            a odrl:LogicalConstraint ;
+            odrl:and (
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand adalbert-due:subscriptionTier ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand "premium"
+                ]
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand adalbert-due:recipientType ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand adalbert-due:internalRecipient
+                ]
+            )
+        ]
+    ] ;
+
+    # ----- CONSUMER DUTIES -----
+
+    # Usage reporting (all tiers)
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Quarterly usage reporting" ;
+        odrl:action adalbert-due:report ;
+        adalbert:recurrence "FREQ=MONTHLY;INTERVAL=3;BYMONTHDAY=1" ;
+        adalbert:deadline "P10D"^^xsd:duration
+    ] ;
+
+    # ----- PROHIBITIONS -----
+
+    # No external redistribution
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No external redistribution" ;
+        odrl:action odrl:distribute ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:externalRecipient
+        ]
+    ] ;
+
+    # No anonymization and resale
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No anonymize-and-resell" ;
+        odrl:action odrl:anonymize
+    ] .
+
+
+# =============================================================================
+# END OF DPROD TRANSLATION
+# =============================================================================

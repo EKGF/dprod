@@ -1,0 +1,88 @@
+# =============================================================================
+# Adalbert Profile Declaration (DXPROF)
+# Version: 0.7
+# Date: 2026-02-04
+# =============================================================================
+# W3C Profiles Vocabulary metadata for Adalbert.
+# Adalbert is a proper ODRL 2.2 profile — it uses ODRL terms and adds
+# only genuinely new extensions.
+# =============================================================================
+
+@prefix adalbert:    <https://vocabulary.bigbank/adalbert/> .
+@prefix prof:    <http://www.w3.org/ns/dx/prof/> .
+@prefix role:    <http://www.w3.org/ns/dx/prof/role/> .
+@prefix dct:     <http://purl.org/dc/terms/> .
+@prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+# =============================================================================
+# BASE SPECIFICATION
+# =============================================================================
+
+odrl:core a dct:Standard ;
+    dct:title "ODRL Information Model 2.2"@en ;
+    dct:identifier <http://www.w3.org/TR/odrl-model/> .
+
+# =============================================================================
+# Adalbert CORE PROFILE
+# =============================================================================
+
+<https://vocabulary.bigbank/adalbert/> a prof:Profile ;
+    dct:title "Adalbert Core"@en ;
+    dct:description """
+        Proper ODRL 2.2 profile for deterministic data governance.
+        Uses ODRL terms for standard constructs; adds lifecycle state,
+        deadline, recurrence, data contracts, hierarchy extensions,
+        operand resolution, runtime references, and logical negation.
+    """@en ;
+    prof:isProfileOf odrl:core ;
+    prof:hasToken "adalbert"^^xsd:token ;
+    odrl:conflict odrl:prohibit ;
+
+    prof:hasResource [
+        a prof:ResourceDescriptor ;
+        dct:title "Adalbert Specification"@en ;
+        prof:hasRole role:specification ;
+        prof:hasArtifact <https://vocabulary.bigbank/adalbert/docs/README.md>
+    ] , [
+        a prof:ResourceDescriptor ;
+        dct:title "Adalbert Formal Semantics"@en ;
+        prof:hasRole role:specification ;
+        prof:hasArtifact <https://vocabulary.bigbank/adalbert/docs/Adalbert_Semantics.md>
+    ] , [
+        a prof:ResourceDescriptor ;
+        dct:title "Adalbert Core Ontology"@en ;
+        prof:hasRole role:vocabulary ;
+        dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
+        prof:hasArtifact <https://vocabulary.bigbank/adalbert/ontology/adalbert-core.ttl>
+    ] , [
+        a prof:ResourceDescriptor ;
+        dct:title "Adalbert SHACL Shapes"@en ;
+        prof:hasRole role:validation ;
+        dct:conformsTo <http://www.w3.org/ns/shacl#> ;
+        prof:hasArtifact <https://vocabulary.bigbank/adalbert/ontology/adalbert-shacl.ttl>
+    ] .
+
+# =============================================================================
+# DATA USE PROFILE
+# =============================================================================
+
+<https://vocabulary.bigbank/adalbert/due/> a prof:Profile ;
+    dct:title "Adalbert Data Use (DUE)"@en ;
+    dct:description "Complete data governance vocabulary: operands, actions, concept values."@en ;
+    prof:isProfileOf <https://vocabulary.bigbank/adalbert/> ;
+    prof:isTransitiveProfileOf odrl:core ;
+    prof:hasToken "adalbert-due"^^xsd:token ;
+
+    prof:hasResource [
+        a prof:ResourceDescriptor ;
+        dct:title "Adalbert DUE Vocabulary"@en ;
+        prof:hasRole role:vocabulary ;
+        dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
+        prof:hasArtifact <https://vocabulary.bigbank/adalbert/profiles/adalbert-due.ttl>
+    ] .
+
+# =============================================================================
+# END
+# =============================================================================

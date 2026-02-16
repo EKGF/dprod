@@ -1,0 +1,306 @@
+# =============================================================================
+# Adalbert Core Ontology — ODRL 2.2 Profile Extension
+# Version: 0.7
+# Date: 2026-02-04
+# =============================================================================
+# Adalbert is a proper ODRL 2.2 profile. It uses ODRL terms wherever ODRL
+# defines them and only adds terms for genuinely new capabilities:
+#
+#   - Duty lifecycle (State + state property)
+#   - Deadline on duties
+#   - Recurrence on duties (RFC 5545 RRULE)
+#   - Duty party roles (subject, object)
+#   - Data contracts and subscriptions (domain subtypes)
+#   - Asset/party hierarchy (partOf, memberOf)
+#   - Structured operand resolution (resolutionPath)
+#   - Runtime references (RuntimeReference, currentAgent, currentDateTime)
+#   - Logical negation (not)
+#
+# Everything else — Rule types, Policy types, Constraint types, operators,
+# core properties — comes from ODRL 2.2 directly.
+# =============================================================================
+
+@prefix adalbert:    <https://vocabulary.bigbank/adalbert/> .
+@prefix rl2:     <https://vocabulary.bigbank/rl2/> .
+@prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+# =============================================================================
+# ONTOLOGY DECLARATION
+# =============================================================================
+
+<https://vocabulary.bigbank/adalbert/> a owl:Ontology ;
+    dcterms:title "Adalbert Core Ontology"@en ;
+    dcterms:description """
+        Adalbert: a proper ODRL 2.2 profile for deterministic data governance.
+
+        Uses ODRL terms for all standard constructs (Rule types, Policy types,
+        Constraint types, operators, core properties). Adds only:
+        - Explicit duty lifecycle (Pending -> Active -> Fulfilled/Violated)
+        - Deadline property on odrl:Duty
+        - Recurrence property on odrl:Duty (RFC 5545 RRULE)
+        - Duty party roles (subject = duty bearer, object = affected party)
+        - Data contract and subscription subtypes
+        - Asset/party hierarchy properties
+        - Structured operand resolution via resolutionPath
+        - Runtime references for dynamic right-operand values
+        - Logical negation (not) on LogicalConstraint
+
+        Adalbert policies are valid ODRL 2.2 policies. Any ODRL processor can
+        partially understand them; Adalbert-aware processors handle the
+        extensions.
+    """@en ;
+    dcterms:created "2026-02-02"^^xsd:date ;
+    dcterms:modified "2026-02-06"^^xsd:date ;
+    owl:versionInfo "0.7" ;
+    owl:versionIRI <https://vocabulary.bigbank/adalbert/0.7> ;
+    rdfs:seeAlso <https://vocabulary.bigbank/rl2/> ,
+                 <http://www.w3.org/ns/odrl/2/> .
+
+# =============================================================================
+# PROFILE CONSTRAINTS (documentation of ODRL usage)
+# =============================================================================
+# Adalbert fixes odrl:conflict to odrl:prohibit (declared at profile level in adalbert-prof.ttl).
+# Adalbert does not use: odrl:Ticket, odrl:Request, odrl:AssetCollection,
+# odrl:PartyCollection, odrl:remedy, odrl:consequence, odrl:xone.
+
+# =============================================================================
+# LIFECYCLE STATE (genuinely new)
+# =============================================================================
+
+adalbert:State a owl:Class ;
+    rdfs:label "State"@en ;
+    skos:definition "Unified lifecycle state for duties and contracts."@en ;
+    owl:oneOf (adalbert:Pending adalbert:Active adalbert:Fulfilled adalbert:Violated) ;
+    rdfs:comment """
+        Four states cover both duty and contract lifecycles.
+
+        On duties (evaluated during Eval):
+        - Pending: condition not yet satisfied
+        - Active: condition met, action required
+        - Fulfilled: action performed
+        - Violated: deadline passed without performance
+
+        On contracts/subscriptions (administrative, not evaluated at request time):
+        - Pending: not yet in force
+        - Active: in force
+        - Fulfilled: obligations complete
+        - Violated: breached
+
+        Unified by design: the same four transitions apply to both domains,
+        and a single state property avoids proliferating parallel enums.
+        The formal semantics (§4.1) tracks only duty state during evaluation;
+        contract state is managed by external administrative processes.
+    """@en .
+
+adalbert:Pending a adalbert:State ;
+    rdfs:label "Pending"@en ;
+    skos:definition "Condition not yet satisfied; not yet in force."@en .
+
+adalbert:Active a adalbert:State ;
+    rdfs:label "Active"@en ;
+    skos:definition "Condition satisfied, action required; in force."@en .
+
+adalbert:Fulfilled a adalbert:State ;
+    rdfs:label "Fulfilled"@en ;
+    skos:definition "Action performed; obligations complete."@en .
+
+adalbert:Violated a adalbert:State ;
+    rdfs:label "Violated"@en ;
+    skos:definition "Deadline passed without performance; breached."@en .
+
+adalbert:state a owl:ObjectProperty ;
+    rdfs:label "state"@en ;
+    skos:definition "Current lifecycle state."@en ;
+    rdfs:domain [ owl:unionOf (odrl:Duty adalbert:DataContract adalbert:Subscription) ] ;
+    rdfs:range adalbert:State .
+
+# =============================================================================
+# DEADLINE (genuinely new)
+# =============================================================================
+
+adalbert:deadline a owl:DatatypeProperty ;
+    rdfs:label "deadline"@en ;
+    skos:definition "Time constraint for duty fulfillment."@en ;
+    rdfs:domain odrl:Duty ;
+    rdfs:comment """
+        Supports multiple forms:
+        - xsd:dateTime: absolute deadline (e.g., 2026-12-31T23:59:59Z)
+        - xsd:duration: relative to activation (e.g., P30D, PT24H)
+
+        For duration: deadline = activationTime + duration.
+        No rdfs:range declared because the range is a union of datatypes;
+        SHACL enforces the allowed types.
+    """@en .
+
+# =============================================================================
+# RECURRENCE (genuinely new)
+# =============================================================================
+
+adalbert:recurrence a owl:DatatypeProperty ;
+    rdfs:label "recurrence"@en ;
+    skos:definition "RFC 5545 RRULE defining when duty instances are generated."@en ;
+    rdfs:domain odrl:Duty ;
+    rdfs:range xsd:string ;
+    rdfs:comment """
+        An RFC 5545 RRULE string (e.g., FREQ=DAILY;BYHOUR=6;BYMINUTE=0).
+        Defines the schedule on which duty instances are created.
+        Each instance follows the standard duty lifecycle independently.
+        The deadline property defines the per-instance fulfillment window.
+        Any iCal-compliant library can parse the value.
+    """@en .
+
+# =============================================================================
+# CONTRACT CLASSES (genuinely new — domain subtypes)
+# =============================================================================
+
+adalbert:DataContract a owl:Class ;
+    rdfs:label "Data Contract"@en ;
+    skos:definition "Policy offer defining data access terms."@en ;
+    rdfs:subClassOf odrl:Offer ;
+    rdfs:comment """
+        A DataContract is an Offer from a data provider.
+        It defines permissions, duties, and prohibitions for data access.
+
+        When accepted (subscribed), becomes a Subscription (Agreement).
+    """@en .
+
+adalbert:Subscription a owl:Class ;
+    rdfs:label "Subscription"@en ;
+    skos:definition "Activated data contract binding provider and consumer."@en ;
+    rdfs:subClassOf odrl:Agreement ;
+    owl:disjointWith adalbert:DataContract ;
+    rdfs:comment """
+        A Subscription is an activated DataContract.
+        - assigner: data provider (from contract)
+        - assignee: data consumer (subscriber)
+
+        Bilateral: both parties may have active duties.
+    """@en .
+
+# =============================================================================
+# CONTRACT PROPERTIES (genuinely new)
+# =============================================================================
+
+adalbert:subscribesTo a owl:ObjectProperty ;
+    rdfs:label "subscribes to"@en ;
+    skos:definition "The contract this subscription activates."@en ;
+    rdfs:domain adalbert:Subscription ;
+    rdfs:range adalbert:DataContract .
+
+adalbert:effectiveDate a owl:DatatypeProperty ;
+    rdfs:label "effective date"@en ;
+    skos:definition "When the contract/subscription becomes effective."@en ;
+    rdfs:domain [ owl:unionOf (adalbert:DataContract adalbert:Subscription) ] ;
+    rdfs:range xsd:dateTime .
+
+adalbert:expirationDate a owl:DatatypeProperty ;
+    rdfs:label "expiration date"@en ;
+    skos:definition "When the contract/subscription expires."@en ;
+    rdfs:domain [ owl:unionOf (adalbert:DataContract adalbert:Subscription) ] ;
+    rdfs:range xsd:dateTime .
+
+# =============================================================================
+# HIERARCHY EXTENSIONS (genuinely new)
+# =============================================================================
+
+adalbert:partOf a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:label "part of"@en ;
+    skos:definition "Asset contained in larger asset."@en ;
+    rdfs:subPropertyOf odrl:partOf ;
+    rdfs:domain odrl:Asset ;
+    rdfs:range odrl:Asset ;
+    rdfs:comment "Transitive asset hierarchy. Bridges to ODRL via rdfs:subPropertyOf odrl:partOf — ODRL processors with RDFS reasoning can interpret Adalbert hierarchies. Transitivity and typed domains are Adalbert additions not inherited by the base property."@en .
+
+adalbert:memberOf a owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:label "member of"@en ;
+    skos:definition "Party member of group/organization."@en ;
+    rdfs:subPropertyOf odrl:partOf ;
+    rdfs:domain odrl:Party ;
+    rdfs:range odrl:Party ;
+    rdfs:comment "Transitive party hierarchy. Bridges to ODRL via rdfs:subPropertyOf odrl:partOf — ODRL processors with RDFS reasoning can interpret Adalbert hierarchies. Transitivity and typed domains are Adalbert additions not inherited by the base property."@en .
+
+# =============================================================================
+# DUTY PARTY ROLES (genuinely new)
+# =============================================================================
+
+adalbert:subject a owl:ObjectProperty ;
+    rdfs:label "subject"@en ;
+    skos:definition "Party bearing the duty (must perform the action)."@en ;
+    rdfs:subPropertyOf odrl:assignee ;
+    rdfs:domain odrl:Duty ;
+    rdfs:range odrl:Party ;
+    rdfs:comment "The duty bearer. Bridges to ODRL via rdfs:subPropertyOf odrl:assignee (itself a sub-property of odrl:function). Aligns with md:subject (W3C Market Data) and rl2:subject."@en .
+
+adalbert:object a owl:ObjectProperty ;
+    rdfs:label "object"@en ;
+    skos:definition "Party affected by the duty action."@en ;
+    rdfs:subPropertyOf odrl:function ;
+    rdfs:domain odrl:Duty ;
+    rdfs:range odrl:Party ;
+    rdfs:comment "The party affected by or receiving the result of the duty action (e.g., who is notified, who receives the report). Bridges to ODRL via rdfs:subPropertyOf odrl:function. Generic alternative to ODRL Common Vocabulary party functions (informedParty, compensatedParty, etc.) — use those when the specific semantics fits, use adalbert:object for consistency or when no specific function applies. Aligns with md:object (W3C Market Data) and rl2:counterparty."@en .
+
+# =============================================================================
+# OPERAND RESOLUTION (genuinely new)
+# =============================================================================
+
+adalbert:resolutionPath a owl:DatatypeProperty ;
+    rdfs:label "resolution path"@en ;
+    skos:definition "Dot-separated path from canonical root to value."@en ;
+    rdfs:domain odrl:LeftOperand ;
+    rdfs:range xsd:string ;
+    rdfs:comment """
+        Path must start with a canonical root: agent, asset, context.
+        Examples: agent.role, asset.classification, context.purpose.
+        Resolution: resolve(path, Env) -> Value
+    """@en .
+
+# =============================================================================
+# RUNTIME REFERENCES (genuinely new)
+# =============================================================================
+
+adalbert:RuntimeReference a owl:Class ;
+    rdfs:label "Runtime Reference"@en ;
+    skos:definition "Value resolved at evaluation time."@en .
+
+adalbert:currentAgent a adalbert:RuntimeReference, odrl:Party ;
+    rdfs:label "current agent"@en ;
+    skos:definition "The requesting agent."@en ;
+    rdfs:comment """
+        Reserved for constraint identity comparisons. Runtime resolution
+        in right-operand position requires RL2 (rl2:rightOperandRef).
+        Typed as both RuntimeReference and odrl:Party for ODRL processor
+        compatibility. For rules applying to any requesting agent, omit
+        odrl:assignee (standard ODRL); do not use currentAgent as assignee.
+    """@en .
+
+adalbert:currentDateTime a odrl:LeftOperand, adalbert:RuntimeReference ;
+    rdfs:label "current date time"@en ;
+    skos:definition "Evaluation timestamp."@en ;
+    rdfs:seeAlso odrl:dateTime ;
+    rdfs:comment "Equivalent to odrl:dateTime in constraint evaluation. Dual-typed as RuntimeReference to enable resolution at evaluation time."@en .
+
+# =============================================================================
+# LOGICAL NEGATION (genuinely new — ODRL lacks this)
+# =============================================================================
+
+adalbert:not a owl:ObjectProperty ;
+    rdfs:label "not"@en ;
+    skos:definition "Logical negation on a constraint."@en ;
+    rdfs:domain odrl:LogicalConstraint ;
+    rdfs:range [ owl:unionOf (odrl:Constraint odrl:LogicalConstraint) ] ;
+    rdfs:comment """
+        ODRL defines odrl:and and odrl:or on LogicalConstraint but lacks
+        negation. Adalbert adds adalbert:not following the same pattern:
+          _:lc a odrl:LogicalConstraint ;
+              adalbert:not _:c1 .
+    """@en .
+
+# =============================================================================
+# END OF ONTOLOGY
+# =============================================================================

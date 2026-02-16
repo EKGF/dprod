@@ -1,0 +1,552 @@
+# =============================================================================
+# Adalbert SHACL Shapes
+# Version: 0.7
+# Date: 2026-02-04
+# =============================================================================
+# Validation shapes for Adalbert policies.
+# All shapes target ODRL classes and use ODRL properties.
+# Adalbert-specific extensions are validated where they appear on ODRL types.
+# =============================================================================
+
+@prefix adalbert:    <https://vocabulary.bigbank/adalbert/> .
+@prefix adalbert-due: <https://vocabulary.bigbank/adalbert/due/> .
+@prefix adalbertsh:  <https://vocabulary.bigbank/adalbert/shapes/> .
+@prefix odrl:    <http://www.w3.org/ns/odrl/2/> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+
+# =============================================================================
+# REUSABLE PROPERTY GROUPS
+# =============================================================================
+
+adalbertsh:StatePropertyGroup
+    sh:path adalbert:state ;
+    sh:maxCount 1 ;
+    sh:in (adalbert:Pending adalbert:Active adalbert:Fulfilled adalbert:Violated) ;
+    sh:message "State must be Pending, Active, Fulfilled, or Violated." .
+
+adalbertsh:ProfilePropertyGroup
+    sh:path odrl:profile ;
+    sh:minCount 1 ;
+    sh:hasValue <https://vocabulary.bigbank/adalbert/> ;
+    sh:message "Adalbert policies must declare odrl:profile <https://vocabulary.bigbank/adalbert/>." .
+
+adalbertsh:NonEmptyClausesConstraint a sh:NodeShape ;
+    sh:or (
+        [ sh:property [ sh:path odrl:permission ; sh:minCount 1 ] ]
+        [ sh:property [ sh:path odrl:prohibition ; sh:minCount 1 ] ]
+        [ sh:property [ sh:path odrl:obligation ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "Policy must have at least one permission, prohibition, or obligation." .
+
+# =============================================================================
+# POLICY SHAPE — profile and conflict declaration
+# =============================================================================
+
+adalbertsh:PolicyShape a sh:NodeShape ;
+    sh:targetClass odrl:Policy ;
+    sh:name "Policy Shape" ;
+
+    sh:property [
+        sh:path odrl:profile ;
+        sh:minCount 1 ;
+        sh:hasValue <https://vocabulary.bigbank/adalbert/> ;
+        sh:message "Adalbert policies must declare odrl:profile <https://vocabulary.bigbank/adalbert/>."
+    ] .
+
+# =============================================================================
+# SET SHAPE
+# =============================================================================
+
+adalbertsh:SetShape a sh:NodeShape ;
+    sh:targetClass odrl:Set ;
+    sh:name "Set Shape" ;
+
+    sh:property adalbertsh:ProfilePropertyGroup ;
+
+    sh:node adalbertsh:NonEmptyClausesConstraint ;
+
+    # odrl:target is optional on Sets (formal semantics: Asset?).
+    # When present, inherited by rules that omit their own target.
+    sh:property [
+        sh:path odrl:target ;
+        sh:message "Set policy may declare a policy-level target (inherited by rules)."
+    ] .
+
+# =============================================================================
+# OFFER SHAPE
+# =============================================================================
+
+adalbertsh:OfferShape a sh:NodeShape ;
+    sh:targetClass odrl:Offer ;
+    sh:name "Offer Shape" ;
+
+    sh:property adalbertsh:ProfilePropertyGroup ;
+
+    sh:node adalbertsh:NonEmptyClausesConstraint ;
+
+    # Offer requires assigner
+    sh:property [
+        sh:path odrl:assigner ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Offer must have exactly one assigner."
+    ] .
+
+# =============================================================================
+# AGREEMENT SHAPE
+# =============================================================================
+
+adalbertsh:AgreementShape a sh:NodeShape ;
+    sh:targetClass odrl:Agreement ;
+    sh:name "Agreement Shape" ;
+
+    sh:property adalbertsh:ProfilePropertyGroup ;
+
+    sh:node adalbertsh:NonEmptyClausesConstraint ;
+
+    sh:property [
+        sh:path odrl:assigner ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Agreement must have exactly one assigner."
+    ] ;
+
+    sh:property [
+        sh:path odrl:assignee ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Agreement must have exactly one assignee."
+    ] .
+
+# =============================================================================
+# PERMISSION SHAPE
+# =============================================================================
+
+adalbertsh:PermissionShape a sh:NodeShape ;
+    sh:targetClass odrl:Permission ;
+    sh:name "Permission Shape" ;
+
+    sh:property [
+        sh:path odrl:action ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Permission must have exactly one action."
+    ] ;
+
+    sh:property [
+        sh:path odrl:target ;
+        sh:maxCount 1 ;
+        sh:message "Permission may have at most one target (inherits from policy if absent)."
+    ] .
+
+# =============================================================================
+# PROHIBITION SHAPE
+# =============================================================================
+
+adalbertsh:ProhibitionShape a sh:NodeShape ;
+    sh:targetClass odrl:Prohibition ;
+    sh:name "Prohibition Shape" ;
+
+    sh:property [
+        sh:path odrl:action ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Prohibition must have exactly one action."
+    ] ;
+
+    sh:property [
+        sh:path odrl:target ;
+        sh:maxCount 1 ;
+        sh:message "Prohibition may have at most one target (inherits from policy if absent)."
+    ] .
+
+# =============================================================================
+# DUTY SHAPE
+# =============================================================================
+
+adalbertsh:DutyShape a sh:NodeShape ;
+    sh:targetClass odrl:Duty ;
+    sh:name "Duty Shape" ;
+
+    sh:property [
+        sh:path odrl:action ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Duty must have exactly one action."
+    ] ;
+
+    sh:property [
+        sh:path adalbert:deadline ;
+        sh:maxCount 1 ;
+        sh:or (
+            [ sh:datatype xsd:dateTime ]
+            [ sh:datatype xsd:duration ]
+        ) ;
+        sh:message "Deadline must be xsd:dateTime or xsd:duration."
+    ] ;
+
+    sh:property [
+        sh:path adalbert:recurrence ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)" ;
+        sh:message "Recurrence must be a valid RFC 5545 RRULE starting with FREQ=."
+    ] ;
+
+    sh:property [
+        sh:path adalbert:subject ;
+        sh:maxCount 1 ;
+        sh:class odrl:Party ;
+        sh:message "Duty subject must be a single odrl:Party."
+    ] ;
+
+    sh:property [
+        sh:path adalbert:object ;
+        sh:maxCount 1 ;
+        sh:class odrl:Party ;
+        sh:message "Duty object must be a single odrl:Party."
+    ] ;
+
+    sh:property adalbertsh:StatePropertyGroup .
+
+# =============================================================================
+# CONSTRAINT SHAPE
+# =============================================================================
+
+adalbertsh:ConstraintShape a sh:NodeShape ;
+    sh:targetClass odrl:Constraint ;
+    sh:name "Constraint Shape" ;
+
+    sh:property [
+        sh:path odrl:leftOperand ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Constraint must have exactly one leftOperand."
+    ] ;
+
+    sh:property [
+        sh:path odrl:operator ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Constraint must have exactly one operator."
+    ] ;
+
+    sh:property [
+        sh:path odrl:rightOperand ;
+        sh:minCount 1 ;
+        sh:message "Constraint must have a rightOperand."
+    ] .
+
+# =============================================================================
+# LOGICAL CONSTRAINT SHAPE
+# =============================================================================
+
+adalbertsh:LogicalConstraintShape a sh:NodeShape ;
+    sh:targetClass odrl:LogicalConstraint ;
+    sh:name "Logical Constraint Shape" ;
+
+    # Must have exactly one of: odrl:and, odrl:or, adalbert:not
+    sh:xone (
+        [ sh:property [ sh:path odrl:and ; sh:minCount 1 ; sh:maxCount 1 ] ]
+        [ sh:property [ sh:path odrl:or ; sh:minCount 1 ; sh:maxCount 1 ] ]
+        [ sh:property [ sh:path adalbert:not ; sh:minCount 1 ; sh:maxCount 1 ] ]
+    ) ;
+    sh:message "LogicalConstraint must have exactly one of: odrl:and, odrl:or, or adalbert:not." .
+
+# =============================================================================
+# DATA CONTRACT SHAPE
+# =============================================================================
+
+adalbertsh:DataContractShape a sh:NodeShape ;
+    sh:targetClass adalbert:DataContract ;
+    sh:name "Data Contract Shape" ;
+
+    sh:property adalbertsh:ProfilePropertyGroup ;
+
+    sh:node adalbertsh:NonEmptyClausesConstraint ;
+
+    sh:property [
+        sh:path odrl:assigner ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "DataContract must have exactly one assigner."
+    ] ;
+
+    sh:property adalbertsh:StatePropertyGroup ;
+
+    sh:property [
+        sh:path adalbert:effectiveDate ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime
+    ] ;
+
+    sh:property [
+        sh:path adalbert:expirationDate ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime
+    ] .
+
+# =============================================================================
+# SUBSCRIPTION SHAPE
+# =============================================================================
+
+adalbertsh:SubscriptionShape a sh:NodeShape ;
+    sh:targetClass adalbert:Subscription ;
+    sh:name "Subscription Shape" ;
+
+    sh:property adalbertsh:ProfilePropertyGroup ;
+
+    sh:node adalbertsh:NonEmptyClausesConstraint ;
+
+    # Explicit party constraints — Subscription is subClassOf Agreement,
+    # but without RDFS entailment AgreementShape won't target Subscription
+    # instances. Duplicate the party requirements here.
+    sh:property [
+        sh:path odrl:assigner ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Subscription must have exactly one assigner (data provider)."
+    ] ;
+
+    sh:property [
+        sh:path odrl:assignee ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Subscription must have exactly one assignee (data consumer)."
+    ] ;
+
+    sh:property [
+        sh:path adalbert:subscribesTo ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class adalbert:DataContract ;
+        sh:message "Subscription must reference exactly one DataContract."
+    ] ;
+
+    sh:property adalbertsh:StatePropertyGroup ;
+
+    sh:property [
+        sh:path adalbert:effectiveDate ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime
+    ] ;
+
+    sh:property [
+        sh:path adalbert:expirationDate ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime
+    ] .
+
+# =============================================================================
+# LEFT OPERAND SHAPE
+# =============================================================================
+# sh:minCount 0: resolutionPath is optional in the shape because ODRL's
+# built-in left operands (odrl:dateTime, etc.) don't have it. Adalbert
+# profile operands MUST provide it — enforced by convention and DUE.
+#
+# The sh:pattern validates the root prefix only. Full path grammar enforcement
+# (identifier syntax, depth constraints, traversal rejection) is a runtime
+# concern per Adalbert_Semantics.md §6.2, not expressible in SHACL.
+
+adalbertsh:LeftOperandShape a sh:NodeShape ;
+    sh:targetClass odrl:LeftOperand ;
+    sh:name "Left Operand Shape" ;
+
+    sh:property [
+        sh:path adalbert:resolutionPath ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^(agent|asset|context)\\." ;
+        sh:message "resolutionPath must start with agent., asset., or context."
+    ] .
+
+# =============================================================================
+# DUE OPERAND SHAPE — enforce resolutionPath on all DUE operands
+# =============================================================================
+# Unlike generic LeftOperandShape (which allows absent resolutionPath for ODRL
+# built-in operands like odrl:dateTime), DUE operands MUST declare a path.
+#
+# Validation model: this shape validates the DUE vocabulary itself, not
+# individual policies. The sh:targetNode list references operand IRIs
+# defined in adalbert-due.ttl. To validate, load both the DUE vocabulary
+# and this shapes graph:
+#   shacl validate --shapes adalbert-shacl.ttl --data adalbert-due.ttl
+# Policy-level validation (constraint structure, cardinality) is handled
+# by ConstraintShape and LeftOperandShape above.
+
+adalbertsh:DUEOperandShape a sh:NodeShape ;
+    sh:name "DUE Operand Shape" ;
+    sh:description "DUE operands must declare a resolution path." ;
+    sh:targetNode
+        odrl:purpose ,
+        adalbert-due:classification ,
+        adalbert-due:sensitivity ,
+        adalbert-due:assetClass ,
+        adalbert-due:market ,
+        adalbert-due:isBenchmark ,
+        adalbert-due:jurisdiction ,
+        adalbert-due:residency ,
+        adalbert-due:retentionPeriod ,
+        adalbert-due:expiry ,
+        adalbert-due:processingMode ,
+        adalbert-due:auditRequired ,
+        adalbert-due:role ,
+        adalbert-due:organization ,
+        adalbert-due:costCenter ,
+        adalbert-due:project ,
+        adalbert-due:recipientType ,
+        adalbert-due:environment ,
+        adalbert-due:network ,
+        adalbert-due:timeliness ,
+        adalbert-due:delayMinutes ,
+        adalbert-due:legalBasis ,
+        adalbert-due:consentId ,
+        adalbert-due:accessPattern ,
+        adalbert-due:volumeLimit ,
+        adalbert-due:rateLimit ,
+        adalbert-due:derivationType ;
+
+    sh:property [
+        sh:path adalbert:resolutionPath ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^(agent|asset|context)\\." ;
+        sh:message "DUE operands must have exactly one resolutionPath starting with agent., asset., or context."
+    ] .
+
+# =============================================================================
+# PROFILE SHAPE — reject RL2-only and unsupported ODRL constructs
+# =============================================================================
+# Each shape targets nodes that use a rejected feature and declares a
+# constraint that always fails: sh:maxCount 0 on the targeted property
+# (for property-based rejections) or on rdf:type (for class-based
+# rejections, since any typed node has rdf:type >= 1).
+
+adalbertsh:RejectXoneShape a sh:NodeShape ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:select """
+            PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+            SELECT ?this WHERE {
+                ?this odrl:xone ?list .
+            }
+        """
+    ] ;
+    sh:property [
+        sh:path odrl:xone ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support xone operator."
+    ] .
+
+adalbertsh:RejectRemedyShape a sh:NodeShape ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:select """
+            PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+            SELECT ?this WHERE {
+                ?this odrl:remedy ?r .
+            }
+        """
+    ] ;
+    sh:property [
+        sh:path odrl:remedy ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:remedy. Deferred to RL2."
+    ] .
+
+adalbertsh:RejectConsequenceShape a sh:NodeShape ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:select """
+            PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+            SELECT ?this WHERE {
+                ?this odrl:consequence ?c .
+            }
+        """
+    ] ;
+    sh:property [
+        sh:path odrl:consequence ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:consequence. Deferred to RL2."
+    ] .
+
+adalbertsh:RejectTicketShape a sh:NodeShape ;
+    sh:targetClass odrl:Ticket ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:Ticket."
+    ] .
+
+adalbertsh:RejectRequestShape a sh:NodeShape ;
+    sh:targetClass odrl:Request ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:Request."
+    ] .
+
+adalbertsh:RejectAssetCollectionShape a sh:NodeShape ;
+    sh:targetClass odrl:AssetCollection ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:AssetCollection. Use adalbert:partOf hierarchy instead."
+    ] .
+
+adalbertsh:RejectPartyCollectionShape a sh:NodeShape ;
+    sh:targetClass odrl:PartyCollection ;
+    sh:property [
+        sh:path rdf:type ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:PartyCollection. Use adalbert:memberOf hierarchy instead."
+    ] .
+
+adalbertsh:RejectInheritAllowedShape a sh:NodeShape ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:select """
+            PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+            SELECT ?this WHERE {
+                ?this odrl:inheritAllowed ?v .
+            }
+        """
+    ] ;
+    sh:property [
+        sh:path odrl:inheritAllowed ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:inheritAllowed."
+    ] .
+
+adalbertsh:RejectInheritFromShape a sh:NodeShape ;
+    sh:target [
+        a sh:SPARQLTarget ;
+        sh:select """
+            PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+            SELECT ?this WHERE {
+                ?this odrl:inheritFrom ?p .
+            }
+        """
+    ] ;
+    sh:property [
+        sh:path odrl:inheritFrom ;
+        sh:maxCount 0 ;
+        sh:severity sh:Violation ;
+        sh:message "Adalbert does not support odrl:inheritFrom."
+    ] .
+
+# =============================================================================
+# END OF SHAPES
+# =============================================================================

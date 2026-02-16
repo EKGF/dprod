@@ -1,0 +1,732 @@
+# =============================================================================
+# Adalbert Baseline Test Data
+# =============================================================================
+# Comprehensive test dataset: 5 organizations, 8 assets, 8 DataContracts,
+# 2 Subscriptions, 6+ Duty instances with lifecycle state tracking.
+#
+# Covers all Adalbert patterns:
+#   - Recurring delivery with deadline
+#   - Schema conformance
+#   - Quality SLA (conformTo + constraint)
+#   - Change notification with lead time
+#   - Consumer reporting duty
+#   - Display / non-display / derivation permissions
+#   - Purpose, classification, environment constraints
+#   - Asset hierarchy (partOf) and party hierarchy (memberOf)
+#   - Contract versioning (prov:wasRevisionOf)
+#   - Subscription with bilateral duties
+# =============================================================================
+
+@prefix odrl:         <http://www.w3.org/ns/odrl/2/> .
+@prefix adalbert:     <https://vocabulary.bigbank/adalbert/> .
+@prefix adalbert-due: <https://vocabulary.bigbank/adalbert/due/> .
+@prefix xsd:          <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:         <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov:         <http://www.w3.org/ns/prov#> .
+
+# =============================================================================
+# ORGANIZATIONS (5 parties)
+# =============================================================================
+
+<https://data.bigbank/agents/data-platform> a odrl:Party ;
+    rdfs:label "Data Platform Team" .
+
+<https://data.bigbank/agents/trading-data> a odrl:Party ;
+    rdfs:label "Trading Data Team" ;
+    adalbert:memberOf <https://data.bigbank/agents/trading-division> .
+
+<https://data.bigbank/agents/trading-division> a odrl:Party ;
+    rdfs:label "Trading Division" .
+
+<https://data.bigbank/agents/analytics> a odrl:Party ;
+    rdfs:label "Analytics Team" ;
+    adalbert:memberOf <https://data.bigbank/agents/trading-division> .
+
+<https://data.bigbank/agents/finance> a odrl:Party ;
+    rdfs:label "Finance Team" .
+
+<https://data.bigbank/agents/hr> a odrl:Party ;
+    rdfs:label "HR Team" .
+
+# =============================================================================
+# ASSETS (8 assets with hierarchy)
+# =============================================================================
+
+<https://data.bigbank/assets/market-data-lake> a odrl:Asset ;
+    rdfs:label "Market Data Lake" .
+
+<https://data.bigbank/assets/market-prices> a odrl:Asset ;
+    rdfs:label "Market Price Data" ;
+    adalbert:partOf <https://data.bigbank/assets/market-data-lake> .
+
+<https://data.bigbank/assets/customer-data> a odrl:Asset ;
+    rdfs:label "Customer Data" .
+
+<https://data.bigbank/assets/reference-data> a odrl:Asset ;
+    rdfs:label "Reference Data" .
+
+<https://data.bigbank/assets/country-codes> a odrl:Asset ;
+    rdfs:label "Country Reference Table" ;
+    adalbert:partOf <https://data.bigbank/assets/reference-data> .
+
+<https://data.bigbank/assets/transaction-files> a odrl:Asset ;
+    rdfs:label "Transaction Files" .
+
+<https://data.bigbank/assets/employee-directory> a odrl:Asset ;
+    rdfs:label "Employee Directory" .
+
+<https://data.bigbank/assets/risk-metrics> a odrl:Asset ;
+    rdfs:label "Risk Metrics" .
+
+<https://data.bigbank/assets/audit-logs> a odrl:Asset ;
+    rdfs:label "Audit Log Archive" .
+
+<https://data.bigbank/assets/multi-asset-bundle> a odrl:Asset ;
+    rdfs:label "Multi-Asset Data Bundle" .
+
+# Ancillary assets (targets for duties)
+<https://data.bigbank/assets/customer-api-schema> a odrl:Asset ;
+    rdfs:label "Customer API Schema v2" .
+
+<https://data.bigbank/assets/market-data-schema> a odrl:Asset ;
+    rdfs:label "Market Data Schema" .
+
+<https://data.bigbank/assets/risk-metrics-schema> a odrl:Asset ;
+    rdfs:label "Risk Metrics Schema" .
+
+<https://data.bigbank/assets/schema-changes> a odrl:Asset ;
+    rdfs:label "Schema Change Notifications" .
+
+<https://data.bigbank/assets/usage-stats> a odrl:Asset ;
+    rdfs:label "Usage Statistics" .
+
+<https://data.bigbank/assets/monthly-report> a odrl:Asset ;
+    rdfs:label "Monthly Transaction Report" .
+
+# =============================================================================
+# CONTRACT 1: Customer API v2 (Daily delivery + recurrence + deadline + schema)
+# =============================================================================
+
+<https://data.bigbank/offers/customer-api-v1> a adalbert:DataContract ;
+    rdfs:label "Customer API v1 (retired)" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/data-platform> ;
+    odrl:target <https://data.bigbank/assets/customer-data> ;
+    adalbert:state adalbert:Fulfilled ;
+
+    # Retained from original contract (superseded by v2)
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:use
+    ] .
+
+<https://data.bigbank/offers/customer-api-v2> a adalbert:DataContract ;
+    rdfs:label "Customer API v2" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/data-platform> ;
+    odrl:target <https://data.bigbank/assets/customer-data> ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    prov:wasRevisionOf <https://data.bigbank/offers/customer-api-v1> ;
+
+    # Provider: daily delivery at 07:00 with 30-min window
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily customer data delivery" ;
+        adalbert:subject <https://data.bigbank/agents/data-platform> ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+        adalbert:deadline "PT30M"^^xsd:duration
+    ] ;
+
+    # Provider: schema conformance
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema conformance" ;
+        adalbert:subject <https://data.bigbank/agents/data-platform> ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target <https://data.bigbank/assets/customer-api-schema>
+    ] ;
+
+    # Consumer: read
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read
+    ] ;
+
+    # Consumer: derive
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:derivationType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:nonSubstitutive
+        ]
+    ] ;
+
+    # Consumer: monthly reporting
+    odrl:obligation [
+        a odrl:Duty ;
+        odrl:action adalbert-due:report ;
+        odrl:target <https://data.bigbank/assets/usage-stats> ;
+        adalbert:deadline "P30D"^^xsd:duration
+    ] ;
+
+    # No distribution
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute
+    ] .
+
+# =============================================================================
+# CONTRACT 2: Market Data Feed (High-frequency, display + nonDisplay)
+# =============================================================================
+
+<https://data.bigbank/offers/market-data-feed> a adalbert:DataContract ;
+    rdfs:label "Market Data Feed" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/trading-data> ;
+    odrl:target <https://data.bigbank/assets/market-prices> ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # Provider: 15-minute delivery frequency
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "15-minute market data delivery" ;
+        adalbert:subject <https://data.bigbank/agents/trading-data> ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+        adalbert:deadline "PT5M"^^xsd:duration
+    ] ;
+
+    # Provider: schema conformance
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Market data schema conformance" ;
+        adalbert:subject <https://data.bigbank/agents/trading-data> ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target <https://data.bigbank/assets/market-data-schema>
+    ] ;
+
+    # Consumer: display
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Display access" ;
+        odrl:action odrl:display
+    ] ;
+
+    # Consumer: non-display (internal only)
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Non-display use" ;
+        odrl:action adalbert-due:nonDisplay ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:internal
+        ]
+    ] ;
+
+    # No external distribution
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute
+    ] .
+
+# =============================================================================
+# CONTRACT 3: Country Reference SQL (Simple read-only, no recurrence)
+# =============================================================================
+
+<https://data.bigbank/offers/country-ref> a adalbert:DataContract ;
+    rdfs:label "Country Reference Data" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/data-platform> ;
+    odrl:target <https://data.bigbank/assets/country-codes> ;
+    adalbert:state adalbert:Active ;
+
+    # Consumer: read only
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read
+    ] ;
+
+    # Consumer: query
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action adalbert-due:query
+    ] ;
+
+    # No modification
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:modify
+    ] .
+
+# =============================================================================
+# CONTRACT 4: Transaction Files (Monthly delivery, consumer reporting)
+# =============================================================================
+
+<https://data.bigbank/offers/transaction-files> a adalbert:DataContract ;
+    rdfs:label "Transaction Files" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/finance> ;
+    odrl:target <https://data.bigbank/assets/transaction-files> ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+
+    # Provider: monthly file delivery
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly transaction file delivery" ;
+        adalbert:subject <https://data.bigbank/agents/finance> ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
+        adalbert:deadline "P3D"^^xsd:duration
+    ] ;
+
+    # Consumer: read
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read
+    ] ;
+
+    # Consumer: monthly report submission
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly reconciliation report" ;
+        odrl:action adalbert-due:report ;
+        odrl:target <https://data.bigbank/assets/monthly-report> ;
+        adalbert:recurrence "FREQ=MONTHLY;BYMONTHDAY=15" ;
+        adalbert:deadline "P5D"^^xsd:duration
+    ] ;
+
+    # No export outside system
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action adalbert-due:export
+    ] .
+
+# =============================================================================
+# CONTRACT 5: Employee Directory (Change notification, prohibition on distribute)
+# =============================================================================
+
+<https://data.bigbank/offers/employee-directory> a adalbert:DataContract ;
+    rdfs:label "Employee Directory" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/hr> ;
+    odrl:target <https://data.bigbank/assets/employee-directory> ;
+    adalbert:state adalbert:Active ;
+
+    # Provider: 90-day schema change notification
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema change notification (90 days)" ;
+        adalbert:subject <https://data.bigbank/agents/hr> ;
+        odrl:action adalbert-due:notify ;
+        odrl:target <https://data.bigbank/assets/schema-changes> ;
+        adalbert:deadline "P90D"^^xsd:duration
+    ] ;
+
+    # Consumer: read for operations purpose
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:operations
+        ]
+    ] ;
+
+    # No external distribution
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute
+    ] ;
+
+    # No model training
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:processingMode ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:modelTraining
+        ]
+    ] .
+
+# =============================================================================
+# CONTRACT 6: Risk Metrics (Quality SLA via conformTo + constraint)
+# =============================================================================
+# This pattern replaces DCON's ProviderQualityPromise.
+
+<https://data.bigbank/offers/risk-metrics> a adalbert:DataContract ;
+    rdfs:label "Risk Metrics" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/data-platform> ;
+    odrl:target <https://data.bigbank/assets/risk-metrics> ;
+    adalbert:state adalbert:Active ;
+
+    # Provider: real-time delivery
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Real-time risk metrics delivery" ;
+        adalbert:subject <https://data.bigbank/agents/data-platform> ;
+        odrl:action adalbert-due:deliver ;
+        adalbert:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
+        adalbert:deadline "PT30S"^^xsd:duration
+    ] ;
+
+    # Provider: quality SLA — schema conformance with timeliness constraint
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Quality SLA: real-time conformance" ;
+        adalbert:subject <https://data.bigbank/agents/data-platform> ;
+        odrl:action adalbert-due:conformTo ;
+        odrl:target <https://data.bigbank/assets/risk-metrics-schema> ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:timeliness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:realtime
+        ]
+    ] ;
+
+    # Provider: change notification (14 days)
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema change notification" ;
+        adalbert:subject <https://data.bigbank/agents/data-platform> ;
+        odrl:action adalbert-due:notify ;
+        odrl:target <https://data.bigbank/assets/schema-changes> ;
+        adalbert:deadline "P14D"^^xsd:duration
+    ] ;
+
+    # Consumer: display and non-display
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:display
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action adalbert-due:nonDisplay
+    ] .
+
+# =============================================================================
+# CONTRACT 7: Audit Logs (Read-only, retention, purpose restriction)
+# =============================================================================
+
+<https://data.bigbank/offers/audit-logs> a adalbert:DataContract ;
+    rdfs:label "Audit Log Archive" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/data-platform> ;
+    odrl:target <https://data.bigbank/assets/audit-logs> ;
+    adalbert:state adalbert:Active ;
+
+    # Consumer: read for compliance only
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:compliance
+        ]
+    ] ;
+
+    # Retention: delete after 7 years
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "7-year retention limit" ;
+        odrl:action odrl:delete ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:retentionPeriod ;
+            odrl:operator odrl:gt ;
+            odrl:rightOperand "P7Y"^^xsd:duration
+        ]
+    ] ;
+
+    # No modification
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:modify
+    ] ;
+
+    # No export
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action adalbert-due:export
+    ] .
+
+# =============================================================================
+# CONTRACT 8: Multi-Asset Bundle (Multiple targets, multiple permissions)
+# =============================================================================
+
+<https://data.bigbank/offers/multi-asset> a adalbert:DataContract ;
+    rdfs:label "Multi-Asset Data Bundle" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    odrl:assigner <https://data.bigbank/agents/data-platform> ;
+    odrl:target <https://data.bigbank/assets/market-prices> ,
+               <https://data.bigbank/assets/reference-data> ,
+               <https://data.bigbank/assets/risk-metrics> ;
+    adalbert:state adalbert:Active ;
+    adalbert:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # Read all targets
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:target <https://data.bigbank/assets/market-prices>
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:target <https://data.bigbank/assets/reference-data>
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:target <https://data.bigbank/assets/risk-metrics>
+    ] ;
+
+    # Aggregate across targets
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:aggregate ;
+        odrl:target <https://data.bigbank/assets/multi-asset-bundle> ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:environment ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:production
+        ]
+    ] ;
+
+    # Non-display with internal-only constraint
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action adalbert-due:nonDisplay ;
+        odrl:target <https://data.bigbank/assets/multi-asset-bundle> ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:internal
+        ]
+    ] ;
+
+    # No distribution of any target
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute ;
+        odrl:target <https://data.bigbank/assets/market-prices>
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute ;
+        odrl:target <https://data.bigbank/assets/reference-data>
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute ;
+        odrl:target <https://data.bigbank/assets/risk-metrics>
+    ] .
+
+
+# =============================================================================
+# SUBSCRIPTION 1: Analytics subscribes to Customer API v2
+# =============================================================================
+
+<https://data.bigbank/agreements/analytics-customer-2026> a adalbert:Subscription ;
+    rdfs:label "Analytics Customer Data 2026" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    adalbert:subscribesTo <https://data.bigbank/offers/customer-api-v2> ;
+    odrl:assigner <https://data.bigbank/agents/data-platform> ;
+    odrl:assignee <https://data.bigbank/agents/analytics> ;
+    odrl:target <https://data.bigbank/assets/customer-data> ;
+    adalbert:effectiveDate "2026-02-01T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # ----- Subject duties (provider) -----
+
+    odrl:obligation <https://data.bigbank/duties/cust-delivery-2026-001> ;
+    odrl:obligation <https://data.bigbank/duties/cust-schema-2026-001> ;
+
+    # ----- Assignee permissions -----
+    # Target inherited from policy (customer-data)
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://data.bigbank/agents/analytics> ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://data.bigbank/agents/analytics> ;
+        odrl:action odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:derivationType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:nonSubstitutive
+        ]
+    ] ;
+
+    # ----- Subject duties (consumer) -----
+
+    odrl:obligation <https://data.bigbank/duties/cust-report-2026-001> ;
+
+    # ----- Prohibitions -----
+    # Target inherited from policy (customer-data)
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assignee <https://data.bigbank/agents/analytics> ;
+        odrl:action odrl:distribute
+    ] .
+
+
+# =============================================================================
+# SUBSCRIPTION 2: Trading subscribes to Market Data Feed
+# =============================================================================
+
+<https://data.bigbank/agreements/trading-market-data-2026> a adalbert:Subscription ;
+    rdfs:label "Trading Market Data 2026" ;
+    odrl:profile <https://vocabulary.bigbank/adalbert/> ,
+                 <https://vocabulary.bigbank/adalbert/due/> ;
+    adalbert:subscribesTo <https://data.bigbank/offers/market-data-feed> ;
+    odrl:assigner <https://data.bigbank/agents/trading-data> ;
+    odrl:assignee <https://data.bigbank/agents/analytics> ;
+    odrl:target <https://data.bigbank/assets/market-prices> ;
+    adalbert:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    adalbert:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # ----- Subject duties (provider) -----
+
+    odrl:obligation <https://data.bigbank/duties/mkt-delivery-2026-001> ;
+    odrl:obligation <https://data.bigbank/duties/mkt-schema-2026-001> ;
+
+    # ----- Assignee permissions -----
+    # Target inherited from policy (market-prices)
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://data.bigbank/agents/analytics> ;
+        odrl:action odrl:display
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://data.bigbank/agents/analytics> ;
+        odrl:action adalbert-due:nonDisplay ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand adalbert-due:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand adalbert-due:internal
+        ]
+    ] ;
+
+    # ----- Prohibitions -----
+    # Target inherited from policy (market-prices)
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assignee <https://data.bigbank/agents/analytics> ;
+        odrl:action odrl:distribute
+    ] .
+
+
+# =============================================================================
+# DUTY INSTANCES (with lifecycle state tracking)
+# =============================================================================
+
+# --- Customer API duties ---
+
+<https://data.bigbank/duties/cust-delivery-2026-001> a odrl:Duty ;
+    rdfs:label "Customer data delivery (2026-02-04)" ;
+    adalbert:subject <https://data.bigbank/agents/data-platform> ;
+    adalbert:object <https://data.bigbank/agents/analytics> ;
+    odrl:action adalbert-due:deliver ;
+    odrl:target <https://data.bigbank/assets/customer-data> ;
+    adalbert:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+    adalbert:deadline "PT30M"^^xsd:duration ;
+    adalbert:state adalbert:Fulfilled .
+
+<https://data.bigbank/duties/cust-schema-2026-001> a odrl:Duty ;
+    rdfs:label "Customer API schema conformance" ;
+    adalbert:subject <https://data.bigbank/agents/data-platform> ;
+    adalbert:object <https://data.bigbank/agents/analytics> ;
+    odrl:action adalbert-due:conformTo ;
+    odrl:target <https://data.bigbank/assets/customer-api-schema> ;
+    adalbert:state adalbert:Active .
+
+<https://data.bigbank/duties/cust-report-2026-001> a odrl:Duty ;
+    rdfs:label "Analytics usage report (February)" ;
+    adalbert:subject <https://data.bigbank/agents/analytics> ;
+    adalbert:object <https://data.bigbank/agents/data-platform> ;
+    odrl:action adalbert-due:report ;
+    odrl:target <https://data.bigbank/assets/usage-stats> ;
+    adalbert:deadline "P30D"^^xsd:duration ;
+    adalbert:state adalbert:Active .
+
+# --- Market Data duties ---
+
+<https://data.bigbank/duties/mkt-delivery-2026-001> a odrl:Duty ;
+    rdfs:label "Market data delivery (latest interval)" ;
+    adalbert:subject <https://data.bigbank/agents/trading-data> ;
+    adalbert:object <https://data.bigbank/agents/analytics> ;
+    odrl:action adalbert-due:deliver ;
+    odrl:target <https://data.bigbank/assets/market-prices> ;
+    adalbert:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    adalbert:deadline "PT5M"^^xsd:duration ;
+    adalbert:state adalbert:Fulfilled .
+
+<https://data.bigbank/duties/mkt-schema-2026-001> a odrl:Duty ;
+    rdfs:label "Market data schema conformance" ;
+    adalbert:subject <https://data.bigbank/agents/trading-data> ;
+    adalbert:object <https://data.bigbank/agents/analytics> ;
+    odrl:action adalbert-due:conformTo ;
+    odrl:target <https://data.bigbank/assets/market-data-schema> ;
+    adalbert:state adalbert:Active .
+
+# --- A violated duty example ---
+
+<https://data.bigbank/duties/mkt-delivery-2026-late> a odrl:Duty ;
+    rdfs:label "Market data delivery (missed interval)" ;
+    adalbert:subject <https://data.bigbank/agents/trading-data> ;
+    odrl:action adalbert-due:deliver ;
+    odrl:target <https://data.bigbank/assets/market-prices> ;
+    adalbert:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    adalbert:deadline "PT5M"^^xsd:duration ;
+    adalbert:state adalbert:Violated .
+
+# =============================================================================
+# END OF BASELINE
+# =============================================================================
