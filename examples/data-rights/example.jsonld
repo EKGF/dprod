@@ -7,14 +7,14 @@
     }
   ],
   "uid": "56456df-dfg-34535345-5545",
-  "assigner": "https://schema.org/person/AdamSmith",
-  "target": "https://data.org/data-product/equity-trade-xxx",
 
   "permission": [
     {
-      "action": "odrl:use",
+      "target": "https://data.org/data-product/equity-trade-xxx",
+      "assigner": "https://schema.org/person/AdamSmith",
       "assignee": {
         "@type": "odrl:PartyCollection",
+        "source": "https://example.org/DataDepartment",
         "refinement": [
           {
             "@type": "odrl:Constraint",
@@ -26,7 +26,8 @@
             ]
           }
         ]
-      }
+      },
+      "action": "odrl:use"
     }
   ]
 }
