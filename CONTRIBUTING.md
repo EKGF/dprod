@@ -23,6 +23,10 @@ OMG balloting process.
   (e.g., `DPROD-16`).
 - **Isolate changes**: Only commit changes related to the specific issue
   on that branch. Keep commits concise and focused.
+- **No pull requests for issue branches**: Do not create a pull request
+  for your issue branch. Issue branches are included in a ballot branch
+  by the ballot administrator, and only the ballot branch gets a pull
+  request.
 
 ## 2. Keeping Your Branch Up-to-Date
 
