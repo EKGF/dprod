@@ -1,5 +1,5 @@
 {
-  "@type": "Offer",
+  "@type": "Agreement",
   "@context": [
     {
       "odrl": "http://www.w3.org/ns/odrl/2/",
@@ -12,19 +12,21 @@
 
   "permission": [
     {
-      "action": "odrl:read",
-      "constraint": [
-        {
-          "@type": "odrl:Constraint",
-          "leftOperand": "odrl:spatial",
-          "operator": "odrl:isAnyOf",
-          "rightOperand": [
-            "reg:EMEA",
-            "reg:APAC"
-          ],
-          "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
-        }
-      ]
+      "action": "odrl:use",
+      "assignee": {
+        "@type": "odrl:PartyCollection",
+        "refinement": [
+          {
+            "@type": "odrl:Constraint",
+            "leftOperand": "odrl:spatial",
+            "operator": "odrl:isAnyOf",
+            "rightOperand": [
+              "reg:EMEA",
+              "reg:APAC"
+            ]
+          }
+        ]
+      }
     }
   ]
 }
