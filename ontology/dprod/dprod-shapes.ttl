@@ -125,7 +125,7 @@ dprod-shapes:InformationSensitivityClassificationShape
 dprod-shapes:DataProductLifecycleStatusShape
     a sh:NodeShape;
     rdfs:label "data product lifecycle status shape" ;
-    dct:description "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."@en ;
+    dct:description "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume, Retire)."@en ;
     sh:targetClass dprod:DataProductLifecycleStatus;
     rdfs:isDefinedBy dprod-shapes:;
   .
