@@ -1,3 +1,4 @@
+import json
 import shutil
 
 from rdflib import XSD, OWL, PROV, RDFS
@@ -103,6 +104,11 @@ def main():
             context=jsonld_context_ontology,
             auto_compact=True
         ))
+
+    with open('dist/dprod-context.jsonld', mode='x', encoding='utf-8') as f:
+        print(f"Generating JSON-LD context: ./{f.name}")
+        json.dump({"@context": jsonld_context_ontology}, f, indent=4)
+        f.write('\n')
 
     with open('dist/dprod-all.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF JSON-LD - all: ./{f.name}")

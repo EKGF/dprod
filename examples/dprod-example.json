@@ -1,6 +1,6 @@
 [
   {
-    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "@context": "https://ekgf.github.io/dprod/dprod-context.jsonld",
     "id": "https://www.ekgf.org/data/data-product/permid-data-product",
     "type": "DataProduct",
     "title": "PermId Data Product",
@@ -28,7 +28,7 @@
     }
   },
   {
-    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "@context": "https://ekgf.github.io/dprod/dprod-context.jsonld",
     "id": "https://www.ekgf.org/data/data-product/gleif-data-product",
     "type": "DataProduct",
     "title": "GLEIF Data Product",
@@ -73,7 +73,7 @@
   },
 
     {
-    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "@context": "https://ekgf.github.io/dprod/dprod-context.jsonld",
     "id": "https://www.ekgf.org/data/data-product/legal-entity-data-product",
     "type": "DataProduct",
     "title": "Legal Entity Data Product",

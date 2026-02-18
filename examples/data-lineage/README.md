@@ -25,7 +25,7 @@ connect to each other through their input and output ports:
 
 ```json
 {
-  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+  "@context": "https://ekgf.github.io/dprod/dprod-context.jsonld",
   "dataProducts": [
     {
       "id": "https://y.com/data-product/company-finance",
