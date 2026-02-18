@@ -1,7 +1,7 @@
 [
   
   {
-  "@context": "https://www.omg.org/spec/DPROD/dprod.jsonld",
+  "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
   "id": "https://y.com/derived-quality-measurementA",
   "@type": "QualityMeasurement",
   "value": 1,
@@ -17,7 +17,7 @@
 ,
 
 {
-  "@context": "https://www.omg.org/spec/DPROD/dprod.jsonld",
+  "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
   "@id": "https://y.com/quality-measurement-B",
   "@type": "QualityMeasurement",
   "value": "false",
@@ -32,7 +32,7 @@
 }
 ,
   {
-    "@context": "https://www.omg.org/spec/DPROD/dprod.jsonld",
+    "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
     "id": "https://y.com/products/uk-bonds",
     "type": "DataProduct",
     "outputPort": {

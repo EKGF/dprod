@@ -25,7 +25,7 @@ connect to each other through their input and output ports:
 
 ```json
 {
-  "@context": "https://www.omg.org/spec/DPROD/dprod.jsonld",
+  "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
   "dataProducts": [
     {
       "id": "https://y.com/data-product/company-finance",

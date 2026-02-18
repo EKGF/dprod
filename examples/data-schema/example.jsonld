@@ -1,5 +1,5 @@
 {
-"@context": "https://www.omg.org/spec/DPROD/dprod.jsonld",
+"@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
 "id": "https://y.com/products/equity-trade-xxx",
 "@type": "DataProduct",
 "title": "Equity Trade XXX",
