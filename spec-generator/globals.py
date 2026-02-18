@@ -13,6 +13,7 @@ LINKEDIN = Namespace(linkedin_ns_iri)
 
 IGNORED_NODE_SHAPE_PREDICATES = (
     RDF.type,
+    RDFS.label,
     RDFS.isDefinedBy,
     SKOS.altLabel,
     SKOS.changeNote,
