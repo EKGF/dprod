@@ -78,7 +78,7 @@ Below is an example of a Data Product with an associated Data Product Agreement 
       },
       "ex:iSubjectToAgreement": {
         "@id": "ex:VVSimpleAgreement",
-        "@type": "ex:DataProductagreement"
+        "@type": "ex:DataProductAgreement"
       }
     }
   ],
