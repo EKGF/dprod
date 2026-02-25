@@ -221,5 +221,5 @@ dprod:securitySchemaType
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:DataService ;
 # rdfs:range rdf:resource ; # better let user decide whether they want SecuritySchemaType class or own class or skos
-  rdf:label "security schema type" ;
+  rdfs:label "security schema type" ;
 .
