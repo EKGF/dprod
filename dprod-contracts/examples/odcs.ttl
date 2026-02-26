@@ -1,0 +1,629 @@
+# =============================================================================
+# ODCS v3.1.0 to DPROD Contracts Translation
+# =============================================================================
+# Shows each ODCS YAML pattern alongside its DPROD Contracts equivalent.
+#
+# Source: Open Data Contract Standard (ODCS) v3.1.0
+#         https://github.com/bitol-io/open-data-contract-standard
+#
+# Each section shows:
+#   1. The ODCS YAML (in comments)
+#   2. The DPROD Contracts Turtle equivalent
+#
+# DPROD Contracts focuses on rights, obligations, and constraints.
+# ODCS sections with no policy equivalent (schema, servers, pricing)
+# are noted at the end.
+# =============================================================================
+
+@prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix prov:     <http://www.w3.org/ns/prov#> .
+@prefix ex:       <https://example.org/> .
+
+
+# =============================================================================
+# 1. CONTRACT FUNDAMENTALS
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   kind: DataContract
+#   apiVersion: v3.1.0
+#   id: 53581432-6c55-4ba2-a65f-72344a91553a
+#   status: active
+#   version: 1.1.0
+#   domain: seller
+#   dataProduct: my quantum
+#   tenant: ClimateQuantumInc
+#   description:
+#     purpose: Views built on top of the seller tables.
+#     limitations: Data based on seller perspective, no buyer information
+#     usage: Predict sales over time
+#   contractCreatedTs: "2022-11-15T02:59:43+00:00"
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+
+ex:seller-data-team a odrl:Party ;
+    rdfs:label "Seller Data Team" ;
+    dprod:memberOf ex:climate-quantum-inc .
+
+ex:climate-quantum-inc a odrl:Party ;
+    rdfs:label "Climate Quantum Inc" .
+
+ex:seller-data a odrl:Asset ;
+    rdfs:label "Seller Data Product" ;
+    dct:description "Views built on top of the seller tables." .
+
+ex:contract-seller-quantum a dprod:DataContract ;
+    rdfs:label "Seller Data Contract (My Quantum)" ;
+    dct:description "Views built on top of the seller tables. Predict sales over time." ;
+    dct:hasVersion "1.1.0" ;
+    dct:created "2022-11-15T02:59:43+00:00"^^xsd:dateTime ;
+    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
+                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:assigner ex:seller-data-team ;
+    odrl:target ex:seller-data ;
+    dprod:state dprod:Active ;
+
+
+# =============================================================================
+# 2. DELIVERY SLA (Frequency + Time of Availability)
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   slaProperties:
+#     - property: frequency
+#       value: 1
+#       valueExt: 1
+#       unit: d
+#       element: tab1.txn_ref_dt
+#     - property: timeOfAvailability
+#       value: 09:00-08:00
+#       element: tab1.txn_ref_dt
+#       driver: regulatory
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily data delivery by 09:00" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action dprod-due:deliver ;
+        dprod:recurrence "FREQ=DAILY;BYHOUR=9;BYMINUTE=0" ;
+        dprod:deadline "PT1H"^^xsd:duration ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:regulatory
+        ]
+    ] ;
+
+
+# =============================================================================
+# 3. LATENCY SLA
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   slaProperties:
+#     - property: latency
+#       value: 4
+#       unit: d
+#       element: tab1.txn_ref_dt
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Data latency SLA (max 4 days)" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action dprod-due:conformTo ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:timeliness ;
+            odrl:operator odrl:lteq ;
+            odrl:rightOperand "P4D"^^xsd:duration
+        ]
+    ] ;
+
+
+# =============================================================================
+# 4. LIFECYCLE DATES (General Availability, End of Support, End of Life)
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   slaProperties:
+#     - property: generalAvailability
+#       value: "2022-05-12T09:30:10-08:00"
+#     - property: endOfSupport
+#       value: "2032-05-12T09:30:10-08:00"
+#     - property: endOfLife
+#       value: "2042-05-12T09:30:10-08:00"
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   generalAvailability -> dprod:effectiveDate
+#   endOfSupport        -> dprod:expirationDate
+#   endOfLife is not directly modeled; the contract simply expires.
+
+    dprod:effectiveDate "2022-05-12T09:30:10-08:00"^^xsd:dateTime ;
+    dprod:expirationDate "2032-05-12T09:30:10-08:00"^^xsd:dateTime ;
+
+
+# =============================================================================
+# 5. DATA QUALITY — Completeness (No Nulls)
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   schema:
+#     - name: tbl
+#       properties:
+#         - name: txn_ref_dt
+#           quality:
+#             - metric: nullValues
+#               mustBe: 0
+#               description: column should not contain null values
+#               dimension: completeness
+#               type: library
+#               severity: error
+#               businessImpact: operational
+#               schedule: 0 20 * * *
+#               scheduler: cron
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   The quality rule becomes a conformance duty with a completeness constraint.
+#   ODCS severity/businessImpact are operational metadata, not policy.
+#   ODCS schedule (cron) maps to dprod:recurrence (RFC 5545 RRULE).
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "No null values in transaction date" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action dprod-due:conformTo ;
+        odrl:target ex:tbl-core-payments ;
+        dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:completeness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "100"^^xsd:decimal
+        ]
+    ] ;
+
+
+# =============================================================================
+# 6. DATA QUALITY — Volume (Row Count)
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   schema:
+#     - name: tbl
+#       quality:
+#         - metric: rowCount
+#           mustBeGreaterThan: 1000000
+#           type: library
+#           description: Ensure row count is within expected volume range
+#           dimension: completeness
+#           method: reconciliation
+#           severity: error
+#           businessImpact: operational
+#           schedule: 0 20 * * *
+#           scheduler: cron
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   mustBeGreaterThan -> odrl:operator odrl:gt
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Row count above 1M" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action dprod-due:conformTo ;
+        odrl:target ex:tbl-core-payments ;
+        dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:volumeCount ;
+            odrl:operator odrl:gt ;
+            odrl:rightOperand "1000000"^^xsd:integer
+        ]
+    ] ;
+
+
+# =============================================================================
+# 7. RETENTION
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   slaProperties:
+#     - property: retention
+#       value: 3
+#       unit: y
+#       element: tab1.txn_ref_dt
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   Retention becomes a delete duty: "must delete when retention exceeds 3 years."
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Data retention limit (3 years)" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action odrl:delete ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:retentionPeriod ;
+            odrl:operator odrl:gt ;
+            odrl:rightOperand "P3Y"^^xsd:duration
+        ]
+    ] ;
+
+
+# =============================================================================
+# 8. SUPPORT CHANNELS
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   support:
+#     - channel: '#product-help'
+#       tool: slack
+#     - channel: datacontract-ann
+#       tool: email
+#       url: mailto:datacontract-ann@bitol.io
+#     - channel: Feedback
+#       description: General Product Feedback (Public)
+#       url: https://product-feedback.com
+#     - channel: 'product-issues'
+#       tool: teams
+#       scope: issues
+#       customProperties:
+#         - property: servicehours
+#           value: 9-5 CET
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   Each support channel becomes a notification duty.
+#   Service hours become a serviceWindow constraint.
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Slack support (#product-help)" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action dprod-due:notify ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:channel ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "slack"
+        ]
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Email support (datacontract-ann)" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action dprod-due:notify ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:channel ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "email"
+        ]
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Teams issue support (9-5 CET)" ;
+        dprod:subject ex:seller-data-team ;
+        odrl:action dprod-due:notify ;
+        odrl:constraint [
+            a odrl:LogicalConstraint ;
+            odrl:and (
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand dprod-due:channel ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand "teams"
+                ]
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand dprod-due:serviceWindow ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand "business-hours"
+                ]
+            )
+        ]
+    ] ;
+
+
+# =============================================================================
+# 9. ROLES AND ACCESS CONTROL
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   roles:
+#     - role: microstrategy_user_opr
+#       access: read
+#       firstLevelApprovers: Reporting Manager
+#       secondLevelApprovers: 'mandolorian'
+#     - role: bq_queryman_user_opr
+#       access: read
+#       firstLevelApprovers: Reporting Manager
+#       secondLevelApprovers: na
+#     - role: risk_data_access_opr
+#       access: read
+#       firstLevelApprovers: Reporting Manager
+#       secondLevelApprovers: 'dathvador'
+#     - role: bq_unica_user_opr
+#       access: write
+#       firstLevelApprovers: Reporting Manager
+#       secondLevelApprovers: 'mickey'
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   Each role becomes an odrl:Permission with the appropriate action.
+#   Approver chains are workflow metadata, not modeled in policy.
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "MicroStrategy read access" ;
+        odrl:assignee ex:microstrategy-users ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "BigQuery read access" ;
+        odrl:assignee ex:bq-queryman-users ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Risk data read access" ;
+        odrl:assignee ex:risk-data-users ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "BigQuery Unica write access" ;
+        odrl:assignee ex:bq-unica-users ;
+        odrl:action odrl:modify
+    ] ;
+
+
+# =============================================================================
+# 10. CLASSIFICATION → PROHIBITION
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   schema:
+#     - name: tbl
+#       properties:
+#         - name: rcvr_id
+#           classification: restricted
+#         - name: rcvr_cntry_code
+#           classification: public
+#         - name: txn_ref_dt
+#           classification: public
+#     - name: receivers
+#       properties:
+#         - name: id
+#           classification: restricted
+#         - name: receiver_name
+#           classification: restricted
+#         - name: country_code
+#           classification: public
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   ODCS classification is just a label — it doesn't enforce anything.
+#   DPROD Contracts turns classification into an enforceable prohibition:
+#   restricted data must not be distributed externally.
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No external distribution of restricted data" ;
+        odrl:action odrl:distribute ;
+        odrl:constraint [
+            a odrl:LogicalConstraint ;
+            odrl:and (
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand dprod-due:classification ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand dprod-due:restricted
+                ]
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand dprod-due:recipientType ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand dprod-due:externalRecipient
+                ]
+            )
+        ]
+    ] ;
+
+
+# =============================================================================
+# 11. LIMITATIONS → PURPOSE PROHIBITION
+# =============================================================================
+#
+# ODCS YAML:
+# ─────────────────────────────────────────────────
+#   description:
+#     limitations: Data based on seller perspective, no buyer information
+# ─────────────────────────────────────────────────
+#
+# DPROD Contracts:
+#   ODCS limitations are free text — unenforceable.
+#   DPROD Contracts turns limitations into machine-evaluable prohibitions.
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No use as buyer data source" ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "buyer-analytics"
+        ]
+    ] ;
+
+
+# =============================================================================
+# 12. WHAT DPROD CONTRACTS CAN EXPRESS THAT ODCS CANNOT
+# =============================================================================
+#
+# These rules have no ODCS YAML equivalent.
+# They demonstrate capabilities unique to the ODRL-based approach.
+#
+# DPROD Contracts:
+
+    # --- No ML training on this data ---
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No ML model training" ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:processingMode ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:modelTraining
+        ]
+    ] ;
+
+    # --- Production and staging environments only ---
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "Production and staging only" ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:environment ;
+            odrl:operator odrl:isNoneOf ;
+            odrl:rightOperand (dprod-due:production dprod-due:staging)
+        ]
+    ] ;
+
+    # --- Consumer must report usage monthly ---
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly usage reporting" ;
+        odrl:action dprod-due:report ;
+        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=5" ;
+        dprod:deadline "P5D"^^xsd:duration
+    ] .
+
+
+# =============================================================================
+# PARTIES (referenced above)
+# =============================================================================
+
+ex:microstrategy-users a odrl:Party ;
+    rdfs:label "MicroStrategy Users" .
+
+ex:bq-queryman-users a odrl:Party ;
+    rdfs:label "BigQuery Query Users" .
+
+ex:risk-data-users a odrl:Party ;
+    rdfs:label "Risk Data Access Users" .
+
+ex:bq-unica-users a odrl:Party ;
+    rdfs:label "BigQuery Unica Users" .
+
+ex:tbl-core-payments a odrl:Asset ;
+    rdfs:label "Core Payment Metrics" ;
+    dprod:partOf ex:seller-data .
+
+ex:receivers-master a odrl:Asset ;
+    rdfs:label "Receivers Master Data" ;
+    dprod:partOf ex:seller-data .
+
+
+# =============================================================================
+# ODCS SECTIONS WITH NO POLICY EQUIVALENT
+# =============================================================================
+#
+# These ODCS sections describe infrastructure, schema, or pricing — not
+# rights and obligations. They live in separate artifacts in DPROD:
+#
+# ─────────────────────────────────────────────────
+#   # Schema (tables, columns, types, partitions, relationships)
+#   schema:
+#     - name: tbl
+#       physicalName: tbl_1
+#       physicalType: table
+#       properties:
+#         - name: txn_ref_dt
+#           logicalType: date
+#           physicalType: date
+#           ...
+#   -> Use DCAT distributions + SHACL shapes
+#
+#   # Infrastructure
+#   servers:
+#     - server: my-postgres
+#       type: postgres
+#       host: localhost
+#       port: 5432
+#       database: pypl-edw
+#       schema: pp_access_views
+#   -> Deployment metadata, not policy
+#
+#   # Pricing
+#   price:
+#     priceAmount: 9.95
+#     priceCurrency: USD
+#     priceUnit: megabyte
+#   -> DPROD Contracts focuses on rights/obligations, not pricing
+#
+#   # Team members (informational)
+#   team:
+#     name: my-team
+#     members:
+#       - username: daustin
+#         role: Owner
+#         dateIn: "2022-10-01"
+#   -> Owner maps to odrl:assigner; other members are informational
+#
+#   # Tags
+#   tags:
+#     - transactions
+#   -> Use DCAT keywords
+#
+#   # Custom properties
+#   customProperties:
+#     - property: refRulesetName
+#       value: gcsc.ruleset.name
+#   -> Application-specific, not policy
+#
+#   # Approval workflows
+#   roles[].firstLevelApprovers: Reporting Manager
+#   roles[].secondLevelApprovers: 'mandolorian'
+#   -> Workflow metadata, not policy evaluation
+# ─────────────────────────────────────────────────
+
+
+# =============================================================================
+# END OF ODCS TRANSLATION
+# =============================================================================
