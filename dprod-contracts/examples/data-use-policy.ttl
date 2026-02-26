@@ -1,0 +1,194 @@
+# =============================================================================
+# Example: Internal Data Access Policy
+# =============================================================================
+# Shows role-based access with purpose constraints and consent tracking,
+# using ODRL terms for all standard constructs.
+# Target inheritance: policy-level odrl:target is inherited by rules unless
+# overridden at rule level.
+# =============================================================================
+
+@prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+############################# Parties (Hierarchy) #########################
+
+<https://example.org/agents/hr-analytics> a odrl:Party ;
+    rdfs:label "HR Analytics Team" ;
+    dprod:memberOf <https://example.org/agents/hr-division> .
+
+<https://example.org/agents/hr-division> a odrl:Party ;
+    rdfs:label "Human Resources Division" .
+
+<https://example.org/agents/compliance-team> a odrl:Party ;
+    rdfs:label "Compliance Team" .
+
+
+############################# Assets (Hierarchy) #########################
+
+<https://example.org/assets/employee-compensation> a odrl:Asset ;
+    rdfs:label "Employee Compensation Data" ;
+    dprod:partOf <https://example.org/assets/employee-data> .
+
+<https://example.org/assets/employee-performance> a odrl:Asset ;
+    rdfs:label "Employee Performance Reviews" ;
+    dprod:partOf <https://example.org/assets/employee-data> .
+
+<https://example.org/assets/employee-data> a odrl:Asset ;
+    rdfs:label "Employee Data Lake" .
+
+<https://example.org/assets/access-log> a odrl:Asset ;
+    rdfs:label "Access Log" .
+
+
+############################# Policy Set: HR Data Access Controls #########################
+# This is a Set (no parties) — applies to anyone matching the conditions.
+# Target inheritance: rules inherit employee-data target unless overridden.
+
+<https://example.org/policies/hr-data-access> a odrl:Set ;
+    rdfs:label "HR Data Access Policy" ;
+    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
+                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:target <https://example.org/assets/employee-data> ;
+
+    # ===== RULE 1: HR Analytics can read for analytics purposes =====
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "HR analytics read access" ;
+        odrl:assignee <https://example.org/agents/hr-analytics> ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:analytics
+        ]
+    ] ;
+
+    # ===== RULE 2: Compliance can read for compliance purposes =====
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Compliance audit access" ;
+        odrl:assignee <https://example.org/agents/compliance-team> ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:compliance
+        ]
+    ] ;
+
+    # ===== RULE 3: Anyone reading must log access =====
+    # Target differs from policy — access-log, not employee-data
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Mandatory audit logging" ;
+        odrl:action dprod-due:log ;
+        odrl:target <https://example.org/assets/access-log> ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:classification ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:confidential
+        ] ;
+        dprod:deadline "PT1H"^^xsd:duration
+    ] ;
+
+    # ===== RULE 4: No external distribution =====
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No external sharing" ;
+        odrl:action odrl:distribute
+    ] ;
+
+    # ===== RULE 5: No use for model training =====
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No ML training" ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:processingMode ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:modelTraining
+        ]
+    ] ;
+
+    # ===== RULE 6: Production only =====
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "Production and staging only" ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:environment ;
+            odrl:operator odrl:isNoneOf ;
+            odrl:rightOperand (dprod-due:production dprod-due:staging)
+        ]
+    ] .
+
+
+############################# Policy Set: Compensation Data (Stricter) #########################
+# More restrictive policy for sensitive compensation data.
+# Target inheritance: rules inherit employee-compensation target.
+
+<https://example.org/policies/compensation-access> a odrl:Set ;
+    rdfs:label "Compensation Data Access Policy" ;
+    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
+                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:target <https://example.org/assets/employee-compensation> ;
+
+    # Only HR Division (not just analytics sub-team)
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "HR Division compensation access" ;
+        odrl:assignee <https://example.org/agents/hr-division> ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:LogicalConstraint ;
+            odrl:and (
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand odrl:purpose ;
+                    odrl:operator odrl:isAnyOf ;
+                    odrl:rightOperand (dprod-due:compliance dprod-due:operations)
+                ]
+                [
+                    a odrl:Constraint ;
+                    odrl:leftOperand dprod-due:legalBasis ;
+                    odrl:operator odrl:eq ;
+                    odrl:rightOperand dprod-due:legitimateInterest
+                ]
+            )
+        ]
+    ] ;
+
+    # Retention limit: delete after 7 years
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Retention limit" ;
+        odrl:action odrl:delete ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:retentionPeriod ;
+            odrl:operator odrl:gt ;
+            odrl:rightOperand "P7Y"^^xsd:duration
+        ]
+    ] ;
+
+    # Mandatory anonymization for any analytics
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Anonymization required" ;
+        odrl:action odrl:anonymize ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:analytics
+        ]
+    ] .

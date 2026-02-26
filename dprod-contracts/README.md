@@ -1,49 +1,172 @@
-# DPROD Data Contracts Ontology
+# DPROD Data Contracts: Deterministic Policy Language for Data Governance
 
-A semantic web ontology for formalizing **Data Contracts** - bilateral agreements between data providers and consumers using W3C standards.
+**An ODRL 2.2 profile with deterministic evaluation semantics for data governance.**
 
-## Overview
+---
 
-DPROD Data Contracts models:
-- **DataContract** - Binding agreement between provider and consumer
-- **DataOffer** - Provider's proposal for data access
-- **Provider Promises** - Timeliness, schema conformance, change notification
-- **Consumer Promises** - Usage restrictions, retention policies
+## What This Is
 
-Built on: RDF, OWL, SHACL, ODRL, DCAT
+DPROD Contracts is a proper ODRL 2.2 profile. It uses ODRL terms for all standard constructs (Permission, Duty, Prohibition, Agreement, etc.) and only adds extensions where ODRL 2.2 leaves behavior undefined:
 
-## Files
+1. **Explicit lifecycle**: Pending -> Active -> Fulfilled/Violated (unified for duties and contracts)
+2. **Bilateral agreements**: Both assigner and assignee may have duties
+3. **Deterministic evaluation**: Total functions, no undefined states
+4. **Formal verification target**: Amenable to Dafny, Why3, Coq
+5. **Structured operand resolution**: `resolutionPath` from canonical roots (agent, asset, context)
+6. **Recurring duties**: `recurrence` via RFC 5545 RRULE for scheduled obligations
 
-| File | Purpose |
-|------|---------|
-| `dprod-contracts.ttl` | Core ontology (classes, properties) |
-| `dprod-contracts-shapes.ttl` | SHACL validation shapes |
-| `dprod-contract-examples.ttl` | Example instances |
+DPROD Contracts is **specification-first**. The semantics document defines what any conformant implementation must do. Every DPROD policy is a valid ODRL 2.2 policy.
+
+---
 
 ## Quick Start
 
-```bash
-# Install dependencies
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+See [examples/](examples/) for complete working policies:
 
-# Validate examples against shapes
-pyshacl -s dprod-contracts-shapes.ttl -df turtle dprod-contract-examples.ttl
+- [data-contract.ttl](examples/data-contract.ttl) -- DataContract, Subscription, bilateral duties
+- [data-use-policy.ttl](examples/data-use-policy.ttl) -- Role-based access, purpose constraints
+
+---
+
+## What DPROD Contracts Adds to ODRL 2.2
+
+| Extension | ODRL 2.2 | What DPROD Adds |
+|-----------|----------|-----------------|
+| Duty lifecycle | Undefined | Pending -> Active -> Fulfilled/Violated |
+| Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
+| Conflict resolution | Configurable | Fixed: Prohibition > Permission |
+| Evaluation order | Undefined | Deterministic left-to-right |
+| Operand resolution | Implicit | Explicit `resolutionPath` from canonical roots |
+| Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
+| Contract types | -- | `DataContract` (subclass of Offer), `Subscription` (subclass of Agreement) |
+
+**Note**: DPROD Contracts is an ODRL profile, not a parallel vocabulary. Standard ODRL processors can parse DPROD policies; DPROD-aware processors additionally enforce lifecycle, bilateral duties, and deterministic evaluation.
+
+---
+
+## Design Principles
+
+### 1. Specification Precedes Implementation
+
+The [formal semantics](docs/formal-semantics.md) is the normative reference.
+
+### 2. Total Functions
+
+Every evaluation terminates with a defined result:
+
+```
+Eval : Request x PolicySet x State -> Decision x DutySet
 ```
 
-## Documentation
+### 3. Bilateral Agreements
 
-- [DATA-CONTRACTS.md](DATA-CONTRACTS.md) - Full specification and usage patterns
-- [CLAUDE.md](CLAUDE.md) - Design philosophy and development guide
-- [AGENTS.md](AGENTS.md) - Contribution guidelines
+Agreements return duties for **both** parties:
 
-## Related
+```
+Result = {
+    decision: Permit | Deny | NotApplicable,
+    assignerDuties: Set<Duty>,   // Provider obligations (SLAs)
+    assigneeDuties: Set<Duty>,   // Consumer obligations
+    violations: Set<Duty>
+}
+```
 
-- [DPROD (Data Product Ontology)](https://ekgf.github.io/dprod/) - Parent ontology
-- [DCAT](https://www.w3.org/TR/vocab-dcat-3/) - W3C Data Catalog Vocabulary
-- [ODRL](https://www.w3.org/TR/odrl-model/) - Open Digital Rights Language
+### 4. Unified Lifecycle State
 
-## License
+Duties and contracts share four states:
 
-MIT
+```
+         condition true
+Pending ──────────────> Active
+                         │  │
+          action done    │  │  deadline passed
+                         ▼  ▼
+                   Fulfilled  Violated
+```
+
+An `odrl:Duty` progresses through `dprod:State` values. A `dprod:DataContract` shares the same state machine.
+
+### 5. Structured Operand Resolution
+
+Operands resolve via `resolutionPath` -- dot-separated paths from canonical roots:
+
+```
+agent.role, agent.organization, agent.costCenter
+asset.classification, asset.market, asset.isBenchmark
+context.purpose, context.environment, context.legalBasis
+```
+
+---
+
+## Repository Structure
+
+```
+dprod-contracts/
+├── dprod-contracts.ttl              # Core ontology (ODRL profile extension)
+├── dprod-contracts-shapes.ttl       # SHACL validation shapes
+├── dprod-contracts-prof.ttl         # DXPROF profile declaration
+├── dprod-due.ttl                    # Data use vocabulary (all operands + actions)
+├── examples/
+│   ├── data-contract.ttl            # Complete contract example (with recurrence)
+│   ├── data-use-policy.ttl          # Access control example
+│   └── baseline.ttl                 # Comprehensive test data (8 contracts, 2 subscriptions)
+└── docs/
+    ├── overview.md                  # What is DPROD Contracts? (start here)
+    ├── specification.md             # Technical vocabulary reference
+    ├── term-mapping.md              # Business term -> property mapping + DCON migration
+    ├── formal-semantics.md          # Formal semantics (normative)
+    ├── contracts-guide.md           # Data contract authoring guide
+    └── policy-writers-guide.md      # Data use policy authoring guide
+```
+
+---
+
+## Historical Context: DCON
+
+DPROD Contracts builds on the earlier DCON work. DCON's promise hierarchy dissolves into standard `odrl:Duty` patterns with DUE actions (`deliver`, `notify`, `conformTo`, `report`). Recurring obligations use `dprod:recurrence` (RFC 5545 RRULE) instead of DCON's scheduling constraints.
+
+| DCON | DPROD Contracts | Status |
+|------|-----------------|--------|
+| `dcon:DataContract` | `dprod:DataContract` | Absorbed into core |
+| `dcon:DataContractSubscription` | `dprod:Subscription` | Absorbed into core |
+| `dcon:Promise` hierarchy | `odrl:Duty` + DUE actions | Dissolved |
+| `dcon:promisedDeliveryTime` | `dprod:recurrence` + `dprod:deadline` | Scheduling + window |
+
+See [term-mapping.md](docs/term-mapping.md) for complete DCON -> DPROD property mapping, and [contracts-guide.md](docs/contracts-guide.md) for the contracts authoring guide.
+
+> **Promise terminology.** If you prefer DCON-style "promise" naming (ProviderPromise, QualityPromise, etc.), this can be reintroduced as syntactic sugar. A promise is a Duty where `dprod:subject` equals the policy's `odrl:assigner`. Two options: **(1)** LinkML authoring sugar -- a `promise` class that expands to a standard Duty, no ontology change; **(2)** OWL thin alias -- `dprod:Promise rdfs:subClassOf odrl:Duty` with a SHACL constraint, making promises queryable in SPARQL.
+
+---
+
+## Namespaces
+
+| Prefix | Namespace | Role |
+|--------|-----------|------|
+| `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
+| `dprod:` | `https://ekgf.github.io/dprod/contracts/` | Extensions only (State, deadline, recurrence, DataContract, Subscription, resolutionPath, hierarchy) |
+| `dprod-due:` | `https://ekgf.github.io/dprod/due/` | Data use vocabulary (operands, domain-specific actions, concept values); ODRL Common Vocabulary actions used directly |
+
+---
+
+## Conformance
+
+An implementation conforms to DPROD Contracts if:
+
+1. It accepts policies that validate against `dprod-contracts-shapes.ttl`
+2. It uses `odrl:Permission`, `odrl:Duty`, `odrl:Prohibition`, `odrl:Agreement` for standard constructs
+3. Its evaluation function produces identical results for identical inputs
+4. All functions are total (no undefined behavior)
+5. State transitions match the operational semantics
+6. Agreement evaluation returns duties for both assigner and assignee
+
+---
+
+## References
+
+- [ODRL 2.2 Information Model](https://www.w3.org/TR/odrl-model/)
+- [W3C Market Data Profile](https://www.w3.org/2021/md-odrl-profile/v1/)
+- [W3C ODRL Profile Best Practices](https://www.w3.org/community/reports/odrl/CG-FINAL-profile-bp-20240808.html)
+
+---
+
+**Version**: 0.7 | **Date**: 2026-02-04

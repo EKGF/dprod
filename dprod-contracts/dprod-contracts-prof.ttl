@@ -1,0 +1,68 @@
+# baseURI: https://ekgf.github.io/dprod/contracts/
+# prefix: dprod
+
+@prefix dprod: <https://ekgf.github.io/dprod/> .
+@prefix prof: <http://www.w3.org/ns/dx/prof/> .
+@prefix role: <http://www.w3.org/ns/dx/prof/role/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+############################# Base Specification #########################
+
+odrl:core
+  a dct:Standard ;
+  dct:title "ODRL Information Model 2.2"@en ;
+  dct:identifier <http://www.w3.org/TR/odrl-model/> ;
+.
+
+
+############################# DPROD Contracts Profile #########################
+
+<https://ekgf.github.io/dprod/contracts/>
+  a prof:Profile ;
+  dct:title "DPROD Data Contracts"@en ;
+  dct:description
+    """Proper ODRL 2.2 profile for deterministic data governance.
+    Uses ODRL terms for standard constructs; adds lifecycle state,
+    deadline, recurrence, data contracts, hierarchy extensions,
+    operand resolution, runtime references, and logical negation."""@en ;
+  prof:isProfileOf odrl:core ;
+  prof:hasToken "dprod-contracts"^^xsd:token ;
+  odrl:conflict odrl:prohibit ;
+  prof:hasResource [
+    a prof:ResourceDescriptor ;
+    dct:title "DPROD Contracts Ontology"@en ;
+    prof:hasRole role:vocabulary ;
+    dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
+    prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-contracts.ttl>
+  ] , [
+    a prof:ResourceDescriptor ;
+    dct:title "DPROD Contracts SHACL Shapes"@en ;
+    prof:hasRole role:validation ;
+    dct:conformsTo <http://www.w3.org/ns/shacl#> ;
+    prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-contracts-shapes.ttl>
+  ] ;
+.
+
+
+############################# Data Use Profile #########################
+
+<https://ekgf.github.io/dprod/due/>
+  a prof:Profile ;
+  dct:title "DPROD Data Use (DUE)"@en ;
+  dct:description
+    "Complete data governance vocabulary: operands, actions, concept values."@en ;
+  prof:isProfileOf <https://ekgf.github.io/dprod/contracts/> ;
+  prof:isTransitiveProfileOf odrl:core ;
+  prof:hasToken "dprod-due"^^xsd:token ;
+  prof:hasResource [
+    a prof:ResourceDescriptor ;
+    dct:title "DPROD DUE Vocabulary"@en ;
+    prof:hasRole role:vocabulary ;
+    dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
+    prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-due.ttl>
+  ] ;
+.

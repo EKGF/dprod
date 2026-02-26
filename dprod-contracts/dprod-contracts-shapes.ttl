@@ -1,576 +1,536 @@
-# baseURI: https://ekgf.github.io/dprod/contracts/shapes
-# imports: https://ekgf.github.io/dprod/contracts
-# prefix: dprod
+# baseURI: https://ekgf.github.io/dprod/contracts/shapes/
+# imports: https://ekgf.github.io/dprod/contracts/
+# imports: http://www.w3.org/ns/shacl#
+# prefix: dprod-shapes
 
-@base <https://ekgf.github.io/dprod/contracts/shapes> .
+@base <https://ekgf.github.io/dprod/contracts/shapes/> .
+@prefix dprod-shapes: <https://ekgf.github.io/dprod/contracts/shapes/> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix time: <http://www.w3.org/2006/time#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix schema: <http://schema.org/> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-
-############################# SHACL Shapes for DPROD Data Contract Ontology #########################
-# Validation rules that complement the class definitions in dprod-contracts.ttl
-# These shapes replace OWL restrictions for better platform compatibility
-
-
-# Shape for DataOffer
-dprod:DataOfferShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:DataOffer ;
-  sh:name "Data Offer Shape" ;
-  sh:description "Validation rules for data offers (provider's standing offers)" ;
-
-  # Must have at least one asset target
-  sh:property [
-    sh:path odrl:target ;
-    sh:minCount 1 ;
-    sh:class dcat:Resource ;
-    sh:name "offer target" ;
-    sh:description "An offer must govern at least one DCAT resource" ;
+dprod-shapes:
+  a owl:Ontology ;
+  dct:title "Shapes for DPROD Data Contracts"@en ;
+  rdfs:label "DPROD contracts shapes"@en ;
+  dct:description "SHACL validation shapes for DPROD data contract policies."@en ;
+  rdfs:comment
+    "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
+  dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dct:modified "2026-02-26"^^xsd:date ;
+  owl:imports <https://ekgf.github.io/dprod/contracts/> ;
+  owl:imports sh: ;
+  owl:versionInfo "0.7" ;
+  sh:declare [
+    sh:prefix "dprod" ;
+    sh:namespace "https://ekgf.github.io/dprod/" ;
   ] ;
-
-  # Must have an assigner (provider)
-  sh:property [
-    sh:path odrl:assigner ;
-    sh:minCount 1 ;
-    sh:name "offer assigner" ;
-    sh:description "An offer must specify the provider (assigner)" ;
+  sh:declare [
+    sh:prefix "dprod-shapes" ;
+    sh:namespace "https://ekgf.github.io/dprod/contracts/shapes/" ;
+  ] ;
+  sh:declare [
+    sh:prefix "odrl" ;
+    sh:namespace "http://www.w3.org/ns/odrl/2/" ;
   ] ;
 .
 
-# Shape for DataContract
-dprod:DataContractShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:DataContract ;
-  sh:name "Data Contract Shape" ;
-  sh:description "Validation rules for data contracts (bilateral agreements)" ;
 
-  # Must have at least one asset target
+############################# Reusable Property Groups #########################
+
+
+dprod-shapes:StatePropertyGroup
+  sh:path dprod:state ;
+  sh:maxCount 1 ;
+  sh:in (dprod:Pending dprod:Active dprod:Fulfilled dprod:Violated) ;
+  sh:message "State must be Pending, Active, Fulfilled, or Violated." ;
+.
+
+dprod-shapes:ProfilePropertyGroup
+  sh:path odrl:profile ;
+  sh:minCount 1 ;
+  sh:hasValue <https://ekgf.github.io/dprod/contracts/> ;
+  sh:message "DPROD contract policies must declare odrl:profile <https://ekgf.github.io/dprod/contracts/>." ;
+.
+
+dprod-shapes:NonEmptyClausesConstraint
+  a sh:NodeShape ;
+  sh:or (
+    [ sh:property [ sh:path odrl:permission ; sh:minCount 1 ] ]
+    [ sh:property [ sh:path odrl:prohibition ; sh:minCount 1 ] ]
+    [ sh:property [ sh:path odrl:obligation ; sh:minCount 1 ] ]
+  ) ;
+  sh:message "Policy must have at least one permission, prohibition, or obligation." ;
+.
+
+
+############################# Policy Shapes #########################
+
+
+dprod-shapes:PolicyShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "policy shape" ;
+  sh:targetClass odrl:Policy ;
+  sh:name "Policy Shape" ;
+  sh:property [
+    sh:path odrl:profile ;
+    sh:minCount 1 ;
+    sh:hasValue <https://ekgf.github.io/dprod/contracts/> ;
+    sh:message "DPROD contract policies must declare odrl:profile <https://ekgf.github.io/dprod/contracts/>."
+  ] ;
+.
+
+dprod-shapes:SetShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "set shape" ;
+  sh:targetClass odrl:Set ;
+  sh:name "Set Shape" ;
+  sh:property dprod-shapes:ProfilePropertyGroup ;
+  sh:node dprod-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:target ;
-    sh:minCount 1 ;
-    sh:class dcat:Resource ;
-    sh:name "contract target" ;
-    sh:description "A contract must govern at least one DCAT resource" ;
+    sh:message "Set policy may declare a policy-level target (inherited by rules)."
   ] ;
+.
 
-  # Must have both assigner and assignee
+dprod-shapes:OfferShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "offer shape" ;
+  sh:targetClass odrl:Offer ;
+  sh:name "Offer Shape" ;
+  sh:property dprod-shapes:ProfilePropertyGroup ;
+  sh:node dprod-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:assigner ;
     sh:minCount 1 ;
-    sh:name "contract assigner" ;
-    sh:description "A contract must specify the provider (assigner)" ;
+    sh:maxCount 1 ;
+    sh:message "Offer must have exactly one assigner."
   ] ;
+.
 
+dprod-shapes:AgreementShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "agreement shape" ;
+  sh:targetClass odrl:Agreement ;
+  sh:name "Agreement Shape" ;
+  sh:property dprod-shapes:ProfilePropertyGroup ;
+  sh:node dprod-shapes:NonEmptyClausesConstraint ;
+  sh:property [
+    sh:path odrl:assigner ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Agreement must have exactly one assigner."
+  ] ;
   sh:property [
     sh:path odrl:assignee ;
     sh:minCount 1 ;
-    sh:name "contract assignee" ;
-    sh:description "A contract must specify the consumer (assignee)" ;
+    sh:maxCount 1 ;
+    sh:message "Agreement must have exactly one assignee."
   ] ;
 .
 
 
-############################# Promise Shapes #########################
+############################# Rule Shapes #########################
 
-# Shape for Promise (base)
-dprod:PromiseShape
+
+dprod-shapes:PermissionShape
   a sh:NodeShape ;
-  sh:targetClass dprod:Promise ;
-  sh:name "Promise Shape" ;
-  sh:description "Base validation for all promise types" ;
-
-  # Must have an action specified
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "permission shape" ;
+  sh:targetClass odrl:Permission ;
+  sh:name "Permission Shape" ;
   sh:property [
     sh:path odrl:action ;
-    sh:minCount 1 ;
-    sh:name "promise action" ;
-    sh:description "A promise must specify its action type" ;
-  ] ;
-
-  # Must NOT be a Duty, Permission, or Prohibition (disjoint)
-  sh:not [
-    sh:class odrl:Duty ;
-  ] ;
-  sh:not [
-    sh:class odrl:Permission ;
-  ] ;
-  sh:not [
-    sh:class odrl:Prohibition ;
-  ] ;
-.
-
-# Shape for ProviderPromise
-dprod:ProviderPromiseShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:ProviderPromise ;
-  sh:name "Provider Promise Shape" ;
-  sh:description "Validation for provider commitments" ;
-
-  # Inherits base Promise constraints
-  sh:node dprod:PromiseShape ;
-
-  # Must have a provider obligation action
-  sh:property [
-    sh:path odrl:action ;
-    sh:minCount 1 ;
-    sh:in (
-      dprod:deliverOnSchedule
-      dprod:maintainSchema
-      dprod:maintainQuality
-      dprod:meetServiceLevel
-      dprod:notifyChange
-      dprod:notifyTermination
-      dprod:provideSupport
-    ) ;
-    sh:name "provider action" ;
-    sh:description "Provider promises must use a provider obligation action (deliverOnSchedule, maintainSchema, maintainQuality, meetServiceLevel, notifyChange, notifyTermination, or provideSupport)" ;
-  ] ;
-.
-
-# Shape for ConsumerPromise
-dprod:ConsumerPromiseShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:ConsumerPromise ;
-  sh:name "Consumer Promise Shape" ;
-  sh:description "Validation for consumer commitments" ;
-
-  # Inherits base Promise constraints
-  sh:node dprod:PromiseShape ;
-
-  # Must have a consumer obligation action
-  sh:property [
-    sh:path odrl:action ;
-    sh:minCount 1 ;
-    sh:in (
-      dprod:complyWithTerms
-      dprod:deleteOnExpiry
-      dprod:reportUsage
-      dprod:provideAttribution
-      dprod:restrictPurpose
-    ) ;
-    sh:name "consumer action" ;
-    sh:description "Consumer promises must use a consumer obligation action (complyWithTerms, deleteOnExpiry, reportUsage, provideAttribution, or restrictPurpose)" ;
-  ] ;
-.
-
-# Shape for ProviderTimelinessPromise
-dprod:ProviderTimelinessPromiseShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:ProviderTimelinessPromise ;
-  sh:name "Provider Timeliness Promise Shape" ;
-  sh:description "Validation for time-based delivery commitments" ;
-
-  # Inherits ProviderPromise constraints
-  sh:node dprod:ProviderPromiseShape ;
-
-  # Must have deliverOnSchedule action
-  sh:property [
-    sh:path odrl:action ;
-    sh:hasValue dprod:deliverOnSchedule ;
-    sh:minCount 1 ;
-    sh:name "timeliness action" ;
-    sh:description "Timeliness promises must use the 'deliverOnSchedule' action" ;
-  ] ;
-
-  # Should have a schedule
-  sh:property [
-    sh:path dprod:hasSchedule ;
-    sh:minCount 1 ;
-    sh:node dprod:ScheduleShape ;
-    sh:name "delivery schedule" ;
-    sh:description "Timeliness promises should specify a delivery schedule" ;
-    sh:severity sh:Warning ;
-  ] ;
-.
-
-# Shape for ProviderSchemaPromise
-dprod:ProviderSchemaPromiseShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:ProviderSchemaPromise ;
-  sh:name "Provider Schema Promise Shape" ;
-  sh:description "Validation for provider schema conformance commitments" ;
-
-  # Inherits ProviderPromise constraints
-  sh:node dprod:ProviderPromiseShape ;
-
-  # Must have maintainSchema action
-  sh:property [
-    sh:path odrl:action ;
-    sh:hasValue dprod:maintainSchema ;
-    sh:minCount 1 ;
-    sh:name "schema action" ;
-    sh:description "Schema promises must use the 'maintainSchema' action" ;
-  ] ;
-
-  # Should reference a schema
-  sh:property [
-    sh:path dprod:requiresConformanceTo ;
-    sh:minCount 1 ;
-    sh:class dct:Standard ;
-    sh:name "schema reference" ;
-    sh:description "Schema promise should reference at least one schema/standard (SHACL shape, OWL ontology, or industry standard)" ;
-    sh:severity sh:Warning ;
-  ] ;
-.
-
-# Shape for ProviderChangeNotificationPromise
-dprod:ProviderChangeNotificationPromiseShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:ProviderChangeNotificationPromise ;
-  sh:name "Provider Change Notification Promise Shape" ;
-  sh:description "Validation for change/termination notification commitments" ;
-
-  # Inherits ProviderPromise constraints
-  sh:node dprod:ProviderPromiseShape ;
-
-  # Must have notifyChange action
-  sh:property [
-    sh:path odrl:action ;
-    sh:hasValue dprod:notifyChange ;
-    sh:minCount 1 ;
-    sh:name "change notification action" ;
-    sh:description "Change notification promises must use the 'notifyChange' action" ;
-  ] ;
-.
-
-# Shape for ProviderTerminationNoticePromise
-dprod:ProviderTerminationNoticePromiseShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:ProviderTerminationNoticePromise ;
-  sh:name "Provider Termination Notice Promise Shape" ;
-  sh:description "Validation for advance termination/change notice commitments" ;
-
-  # Inherits ProviderPromise constraints (not ChangeNotification, to allow different action)
-  sh:node dprod:ProviderPromiseShape ;
-
-  # Must use the notifyTermination action
-  sh:property [
-    sh:path odrl:action ;
-    sh:hasValue dprod:notifyTermination ;
-    sh:minCount 1 ;
-    sh:name "termination notice action" ;
-    sh:description "Termination notice promises must use the 'notifyTermination' action" ;
-  ] ;
-
-  # Must state the notice period
-  sh:property [
-    sh:path dprod:noticePeriod ;
-    sh:minCount 1 ;
-    sh:class time:Interval ;
-    sh:name "notice period" ;
-    sh:description "Specify the lead time interval consumers receive before termination or breaking changes" ;
-  ] ;
-.
-
-
-############################# Schedule Shapes #########################
-
-# Shape for Schedule (union class validation)
-dprod:ScheduleShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:Schedule ;
-  sh:name "Schedule Shape" ;
-  sh:description "Validates that schedules are either schema:Schedule or iCal format" ;
-
-  # Must be one of the two types
-  sh:or (
-    [ sh:class schema:Schedule ]
-    [ sh:class dprod:ICalSchedule ]
-  ) ;
-.
-
-# Shape for ICalSchedule
-dprod:ICalScheduleShape
-  a sh:NodeShape ;
-  sh:targetClass dprod:ICalSchedule ;
-  sh:name "iCal Schedule Shape" ;
-  sh:description "Validates iCalendar RRULE schedules" ;
-
-  # Must have exactly one icalRule
-  sh:property [
-    sh:path dprod:icalRule ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:datatype xsd:string ;
-    sh:name "iCal rule" ;
-    sh:description "Must have exactly one RRULE string" ;
+    sh:message "Permission must have exactly one action."
   ] ;
-
-  # Rule should follow iCal format (basic pattern check)
   sh:property [
-    sh:path dprod:icalRule ;
+    sh:path odrl:target ;
+    sh:maxCount 1 ;
+    sh:message "Permission may have at most one target (inherits from policy if absent)."
+  ] ;
+.
+
+dprod-shapes:ProhibitionShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "prohibition shape" ;
+  sh:targetClass odrl:Prohibition ;
+  sh:name "Prohibition Shape" ;
+  sh:property [
+    sh:path odrl:action ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Prohibition must have exactly one action."
+  ] ;
+  sh:property [
+    sh:path odrl:target ;
+    sh:maxCount 1 ;
+    sh:message "Prohibition may have at most one target (inherits from policy if absent)."
+  ] ;
+.
+
+dprod-shapes:DutyShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "duty shape" ;
+  sh:targetClass odrl:Duty ;
+  sh:name "Duty Shape" ;
+  sh:property [
+    sh:path odrl:action ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Duty must have exactly one action."
+  ] ;
+  sh:property [
+    sh:path dprod:deadline ;
+    sh:maxCount 1 ;
+    sh:or (
+      [ sh:datatype xsd:dateTime ]
+      [ sh:datatype xsd:duration ]
+    ) ;
+    sh:message "Deadline must be xsd:dateTime or xsd:duration."
+  ] ;
+  sh:property [
+    sh:path dprod:recurrence ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
     sh:pattern "^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)" ;
-    sh:flags "i" ;
-    sh:name "iCal rule format" ;
-    sh:description "RRULE should start with FREQ=" ;
-    sh:severity sh:Warning ;
+    sh:message "Recurrence must be a valid RFC 5545 RRULE starting with FREQ=."
   ] ;
+  sh:property [
+    sh:path dprod:subject ;
+    sh:maxCount 1 ;
+    sh:class odrl:Party ;
+    sh:message "Duty subject must be a single odrl:Party."
+  ] ;
+  sh:property [
+    sh:path dprod:object ;
+    sh:maxCount 1 ;
+    sh:class odrl:Party ;
+    sh:message "Duty object must be a single odrl:Party."
+  ] ;
+  sh:property dprod-shapes:StatePropertyGroup ;
 .
 
 
-############################# Temporal Shapes #########################
+############################# Constraint Shapes #########################
 
-# Shape for hasEffectivePeriod time intervals
-dprod:EffectivePeriodShape
+
+dprod-shapes:ConstraintShape
   a sh:NodeShape ;
-  sh:targetObjectsOf dprod:hasEffectivePeriod ;
-  sh:name "Effective Period Shape" ;
-  sh:description "Validates temporal intervals used for effective periods" ;
-
-  # Must be a time:Interval
-  sh:class time:Interval ;
-
-  # Should have a beginning
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "constraint shape" ;
+  sh:targetClass odrl:Constraint ;
+  sh:name "Constraint Shape" ;
   sh:property [
-    sh:path time:hasBeginning ;
+    sh:path odrl:leftOperand ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:name "period start" ;
-    sh:description "Effective period should specify a beginning" ;
-    sh:severity sh:Warning ;
+    sh:message "Constraint must have exactly one leftOperand."
   ] ;
-
-  # May have an end
   sh:property [
-    sh:path time:hasEnd ;
+    sh:path odrl:operator ;
+    sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:name "period end" ;
+    sh:message "Constraint must have exactly one operator."
+  ] ;
+  sh:property [
+    sh:path odrl:rightOperand ;
+    sh:minCount 1 ;
+    sh:message "Constraint must have a rightOperand."
   ] ;
 .
 
-# Shape for noticePeriod time intervals
-dprod:NoticePeriodShape
+dprod-shapes:LogicalConstraintShape
   a sh:NodeShape ;
-  sh:targetObjectsOf dprod:noticePeriod ;
-  sh:name "Notice Period Shape" ;
-  sh:description "Validates notice period intervals for termination/change commitments" ;
-
-  # Must be a time:Interval
-  sh:class time:Interval ;
-
-  # Should specify beginning and end boundaries
-  sh:property [
-    sh:path time:hasBeginning ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:name "notice window start" ;
-    sh:severity sh:Warning ;
-  ] ;
-
-  sh:property [
-    sh:path time:hasEnd ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:name "notice window end" ;
-    sh:severity sh:Warning ;
-  ] ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "logical constraint shape" ;
+  sh:targetClass odrl:LogicalConstraint ;
+  sh:name "Logical Constraint Shape" ;
+  sh:xone (
+    [ sh:property [ sh:path odrl:and ; sh:minCount 1 ; sh:maxCount 1 ] ]
+    [ sh:property [ sh:path odrl:or ; sh:minCount 1 ; sh:maxCount 1 ] ]
+    [ sh:property [ sh:path dprod:not ; sh:minCount 1 ; sh:maxCount 1 ] ]
+  ) ;
+  sh:message "LogicalConstraint must have exactly one of: odrl:and, odrl:or, or dprod:not." ;
 .
 
 
-############################# Status & Linkage Shapes #########################
+############################# Contract Shapes #########################
 
-# Shape for contract status values
-dprod:ContractStatusConceptShape
+
+dprod-shapes:DataContractShape
   a sh:NodeShape ;
-  sh:targetObjectsOf dprod:contractStatus ;
-  sh:name "Contract Status Concept Shape" ;
-  sh:description "Ensures contract status is from the correct scheme and class" ;
-
-  # Must be a dprod:ContractStatus (which is a subclass of skos:Concept)
-  sh:class dprod:ContractStatus ;
-
-  # Must be in the dprod:ContractStatusScheme scheme
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "data contract shape" ;
+  sh:targetClass dprod:DataContract ;
+  sh:name "Data Contract Shape" ;
+  sh:property dprod-shapes:ProfilePropertyGroup ;
+  sh:node dprod-shapes:NonEmptyClausesConstraint ;
   sh:property [
-    sh:path skos:inScheme ;
-    sh:hasValue dprod:ContractStatusScheme ;
+    sh:path odrl:assigner ;
     sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "DataContract must have exactly one assigner."
+  ] ;
+  sh:property dprod-shapes:StatePropertyGroup ;
+  sh:property [
+    sh:path dprod:effectiveDate ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime
+  ] ;
+  sh:property [
+    sh:path dprod:expirationDate ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime
   ] ;
 .
 
-# Shape for DataProduct linkage
-dprod:DataProductShape
+dprod-shapes:SubscriptionShape
   a sh:NodeShape ;
-  sh:targetClass dprod:DataProduct ;
-  sh:name "Data Product Shape" ;
-  sh:description "Validation for data product contract relationships" ;
-
-  # May have contracts
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "subscription shape" ;
+  sh:targetClass dprod:Subscription ;
+  sh:name "Subscription Shape" ;
+  sh:property dprod-shapes:ProfilePropertyGroup ;
+  sh:node dprod-shapes:NonEmptyClausesConstraint ;
   sh:property [
-    sh:path dprod:dataContract ;
+    sh:path odrl:assigner ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Subscription must have exactly one assigner (data provider)."
+  ] ;
+  sh:property [
+    sh:path odrl:assignee ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Subscription must have exactly one assignee (data consumer)."
+  ] ;
+  sh:property [
+    sh:path dprod:subscribesTo ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
     sh:class dprod:DataContract ;
-    sh:name "data contract" ;
+    sh:message "Subscription must reference exactly one DataContract."
   ] ;
-
-  # May link to offers via odrl:hasPolicy
+  sh:property dprod-shapes:StatePropertyGroup ;
   sh:property [
-    sh:path odrl:hasPolicy ;
-    sh:class dprod:DataOffer ;
-    sh:name "data offer" ;
-    sh:description "Use odrl:hasPolicy to relate a product to published offers" ;
+    sh:path dprod:effectiveDate ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime
+  ] ;
+  sh:property [
+    sh:path dprod:expirationDate ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime
   ] ;
 .
 
 
-############################# Service Level & Support Shapes #########################
+############################# Operand Shapes #########################
 
-# Shape for ProviderServiceLevelPromise
-dprod:ProviderServiceLevelPromiseShape
+
+dprod-shapes:LeftOperandShape
   a sh:NodeShape ;
-  sh:targetClass dprod:ProviderServiceLevelPromise ;
-  sh:name "Provider Service Level Promise Shape" ;
-  sh:description "Validation for quantitative service level commitments" ;
-
-  # Inherits ProviderPromise constraints
-  sh:node dprod:ProviderPromiseShape ;
-
-  # Must have meetServiceLevel action
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "left operand shape" ;
+  sh:targetClass odrl:LeftOperand ;
+  sh:name "Left Operand Shape" ;
   sh:property [
-    sh:path odrl:action ;
-    sh:hasValue dprod:meetServiceLevel ;
-    sh:minCount 1 ;
-    sh:name "service level action" ;
-    sh:description "Service level promises must use the 'meetServiceLevel' action" ;
-  ] ;
-
-  # Should have at least one service level target
-  sh:property [
-    sh:path dprod:hasServiceLevelTarget ;
-    sh:minCount 1 ;
-    sh:node dprod:ServiceLevelTargetShape ;
-    sh:name "service level target" ;
-    sh:description "Service level promises should specify at least one quantitative target" ;
-    sh:severity sh:Warning ;
+    sh:path dprod:resolutionPath ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:pattern "^(agent|asset|context)\\." ;
+    sh:message "resolutionPath must start with agent., asset., or context."
   ] ;
 .
 
-# Shape for ServiceLevelTarget
-dprod:ServiceLevelTargetShape
+dprod-shapes:DUEOperandShape
   a sh:NodeShape ;
-  sh:targetClass dprod:ServiceLevelTarget ;
-  sh:name "Service Level Target Shape" ;
-  sh:description "Validation for quantitative SLA targets" ;
-
-  # Must have exactly one SLA metric
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "DUE operand shape" ;
+  dct:description "DUE operands must declare a resolution path."@en ;
+  sh:name "DUE Operand Shape" ;
+  sh:targetNode
+    odrl:purpose ,
+    dprod-due:classification ,
+    dprod-due:sensitivity ,
+    dprod-due:assetClass ,
+    dprod-due:market ,
+    dprod-due:isBenchmark ,
+    dprod-due:jurisdiction ,
+    dprod-due:residency ,
+    dprod-due:retentionPeriod ,
+    dprod-due:expiry ,
+    dprod-due:processingMode ,
+    dprod-due:auditRequired ,
+    dprod-due:role ,
+    dprod-due:organization ,
+    dprod-due:costCenter ,
+    dprod-due:project ,
+    dprod-due:recipientType ,
+    dprod-due:environment ,
+    dprod-due:network ,
+    dprod-due:timeliness ,
+    dprod-due:delayMinutes ,
+    dprod-due:legalBasis ,
+    dprod-due:consentId ,
+    dprod-due:accessPattern ,
+    dprod-due:volumeLimit ,
+    dprod-due:rateLimit ,
+    dprod-due:derivationType ;
   sh:property [
-    sh:path dprod:slaMetric ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:class dprod:SLAMetric ;
-    sh:name "SLA metric" ;
-    sh:description "Must specify the type of metric being measured" ;
-  ] ;
-
-  # Must have exactly one target value
-  sh:property [
-    sh:path dprod:targetValue ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:datatype xsd:decimal ;
-    sh:name "target value" ;
-    sh:description "Must specify the numeric target value" ;
-  ] ;
-
-  # Must have exactly one unit
-  sh:property [
-    sh:path dprod:unit ;
+    sh:path dprod:resolutionPath ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
     sh:datatype xsd:string ;
-    sh:name "unit" ;
-    sh:description "Must specify the unit of measurement" ;
-  ] ;
-
-  # May have a measurement period
-  sh:property [
-    sh:path dprod:measurementPeriod ;
-    sh:maxCount 1 ;
-    sh:class time:TemporalEntity ;
-    sh:name "measurement period" ;
-    sh:description "Time window over which the metric is measured" ;
+    sh:pattern "^(agent|asset|context)\\." ;
+    sh:message "DUE operands must have exactly one resolutionPath starting with agent., asset., or context."
   ] ;
 .
 
-# Shape for ProviderSupportPromise
-dprod:ProviderSupportPromiseShape
+
+############################# Rejection Shapes #########################
+# Reject unsupported ODRL constructs
+
+
+dprod-shapes:RejectXoneShape
   a sh:NodeShape ;
-  sh:targetClass dprod:ProviderSupportPromise ;
-  sh:name "Provider Support Promise Shape" ;
-  sh:description "Validation for technical support commitments" ;
-
-  # Inherits ProviderPromise constraints
-  sh:node dprod:ProviderPromiseShape ;
-
-  # Must have provideSupport action
-  sh:property [
-    sh:path odrl:action ;
-    sh:hasValue dprod:provideSupport ;
-    sh:minCount 1 ;
-    sh:name "support action" ;
-    sh:description "Support promises must use the 'provideSupport' action" ;
+  sh:target [
+    a sh:SPARQLTarget ;
+    sh:select """
+      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+      SELECT ?this WHERE { ?this odrl:xone ?list . }
+    """
   ] ;
-
-  # Should have at least one support channel
   sh:property [
-    sh:path dprod:hasSupportChannel ;
-    sh:minCount 1 ;
-    sh:node dprod:SupportChannelShape ;
-    sh:name "support channel" ;
-    sh:description "Support promises should specify at least one support channel" ;
-    sh:severity sh:Warning ;
+    sh:path odrl:xone ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support xone operator."
   ] ;
 .
 
-# Shape for SupportChannel
-dprod:SupportChannelShape
+dprod-shapes:RejectRemedyShape
   a sh:NodeShape ;
-  sh:targetClass dprod:SupportChannel ;
-  sh:name "Support Channel Shape" ;
-  sh:description "Validation for support channel specifications" ;
-
-  # Must have exactly one channel type
-  sh:property [
-    sh:path dprod:channelType ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:class dprod:SupportChannelType ;
-    sh:name "channel type" ;
-    sh:description "Must specify the type of support channel" ;
+  sh:target [
+    a sh:SPARQLTarget ;
+    sh:select """
+      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+      SELECT ?this WHERE { ?this odrl:remedy ?r . }
+    """
   ] ;
-
-  # May have a channel URL
   sh:property [
-    sh:path dprod:channelUrl ;
-    sh:maxCount 1 ;
-    sh:datatype xsd:anyURI ;
-    sh:name "channel URL" ;
-    sh:description "URL or address for accessing the support channel" ;
+    sh:path odrl:remedy ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:remedy."
   ] ;
+.
 
-  # May have a response time target
-  sh:property [
-    sh:path dprod:responseTimeTarget ;
-    sh:maxCount 1 ;
-    sh:class time:Duration ;
-    sh:name "response time target" ;
-    sh:description "Target response time for this channel" ;
+dprod-shapes:RejectConsequenceShape
+  a sh:NodeShape ;
+  sh:target [
+    a sh:SPARQLTarget ;
+    sh:select """
+      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+      SELECT ?this WHERE { ?this odrl:consequence ?c . }
+    """
   ] ;
-
-  # May have a support scope
   sh:property [
-    sh:path dprod:supportScope ;
-    sh:class dprod:SupportScope ;
-    sh:name "support scope" ;
-    sh:description "What this channel covers" ;
+    sh:path odrl:consequence ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:consequence."
+  ] ;
+.
+
+dprod-shapes:RejectTicketShape
+  a sh:NodeShape ;
+  sh:targetClass odrl:Ticket ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:Ticket."
+  ] ;
+.
+
+dprod-shapes:RejectRequestShape
+  a sh:NodeShape ;
+  sh:targetClass odrl:Request ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:Request."
+  ] ;
+.
+
+dprod-shapes:RejectAssetCollectionShape
+  a sh:NodeShape ;
+  sh:targetClass odrl:AssetCollection ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:AssetCollection. Use dprod:partOf hierarchy instead."
+  ] ;
+.
+
+dprod-shapes:RejectPartyCollectionShape
+  a sh:NodeShape ;
+  sh:targetClass odrl:PartyCollection ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:PartyCollection. Use dprod:memberOf hierarchy instead."
+  ] ;
+.
+
+dprod-shapes:RejectInheritAllowedShape
+  a sh:NodeShape ;
+  sh:target [
+    a sh:SPARQLTarget ;
+    sh:select """
+      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+      SELECT ?this WHERE { ?this odrl:inheritAllowed ?v . }
+    """
+  ] ;
+  sh:property [
+    sh:path odrl:inheritAllowed ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:inheritAllowed."
+  ] ;
+.
+
+dprod-shapes:RejectInheritFromShape
+  a sh:NodeShape ;
+  sh:target [
+    a sh:SPARQLTarget ;
+    sh:select """
+      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
+      SELECT ?this WHERE { ?this odrl:inheritFrom ?p . }
+    """
+  ] ;
+  sh:property [
+    sh:path odrl:inheritFrom ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "DPROD contracts do not support odrl:inheritFrom."
   ] ;
 .

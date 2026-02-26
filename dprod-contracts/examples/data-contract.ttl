@@ -1,0 +1,219 @@
+# =============================================================================
+# Example: Data Contract and Subscription
+# =============================================================================
+# Demonstrates bilateral agreement with subject/object duty party roles,
+# target inheritance, and ODRL terms for all standard constructs.
+# =============================================================================
+
+@prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov:     <http://www.w3.org/ns/prov#> .
+
+
+############################# Parties #########################
+
+<https://example.org/agents/data-platform-team> a odrl:Party ;
+    rdfs:label "Data Platform Team" .
+
+<https://example.org/agents/quant-research> a odrl:Party ;
+    rdfs:label "Quantitative Research" ;
+    dprod:memberOf <https://example.org/agents/trading-division> .
+
+<https://example.org/agents/trading-division> a odrl:Party ;
+    rdfs:label "Trading Division" .
+
+
+############################# Assets #########################
+
+<https://example.org/assets/market-prices> a odrl:Asset ;
+    rdfs:label "Market Price Data" ;
+    dprod:partOf <https://example.org/assets/market-data-lake> .
+
+<https://example.org/assets/market-data-lake> a odrl:Asset ;
+    rdfs:label "Market Data Lake" .
+
+<https://example.org/assets/data-ready-notification> a odrl:Asset ;
+    rdfs:label "Data Ready Notification" .
+
+<https://example.org/assets/schema-changes> a odrl:Asset ;
+    rdfs:label "Schema Changes" .
+
+<https://example.org/assets/usage-stats> a odrl:Asset ;
+    rdfs:label "Usage Statistics" .
+
+
+############################# Data Contract (Offer) #########################
+# Template offer from the data provider.
+# Subscribers accept this to create a Subscription (Agreement).
+# Target inheritance: odrl:target at policy level is inherited by rules
+# unless overridden.
+
+<https://example.org/offers/market-prices-v2> a dprod:DataContract ;
+    rdfs:label "Market Price Data Contract v2" ;
+    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
+                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:assigner <https://example.org/agents/data-platform-team> ;
+    odrl:target <https://example.org/assets/market-prices> ;
+    dprod:state dprod:Active ;
+    dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    prov:wasRevisionOf <https://example.org/offers/market-prices-v1> ;
+
+    # ----- PROVIDER COMMITMENTS (Subject Duties) -----
+
+    # SLA: Daily delivery by 6:30 AM (recurrence handles scheduling)
+    # Target inherited from policy (market-prices)
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily data delivery" ;
+        dprod:subject <https://example.org/agents/data-platform-team> ;
+        odrl:action dprod-due:deliver ;
+        dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        dprod:deadline "PT30M"^^xsd:duration
+    ] ;
+
+    # SLA: 14-day notice for schema changes
+    # Target differs from policy — schema-changes, not market-prices
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema change notification" ;
+        dprod:subject <https://example.org/agents/data-platform-team> ;
+        odrl:action dprod-due:notify ;
+        odrl:target <https://example.org/assets/schema-changes> ;
+        dprod:deadline "P14D"^^xsd:duration
+    ] ;
+
+    # ----- CONSUMER RIGHTS (Permissions — assignee omitted in Offer) -----
+    # Target inherited from policy (market-prices)
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Display access" ;
+        odrl:action odrl:display
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Non-display use" ;
+        odrl:action dprod-due:nonDisplay ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand dprod-due:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand dprod-due:internal
+        ]
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Derivation rights" ;
+        odrl:action odrl:derive
+    ] ;
+
+    # ----- CONSUMER OBLIGATIONS (Duties — subject omitted in Offer) -----
+
+    # Monthly usage reporting
+    # Target differs from policy — usage-stats, not market-prices
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Usage reporting" ;
+        odrl:action dprod-due:report ;
+        odrl:target <https://example.org/assets/usage-stats> ;
+        dprod:deadline "P30D"^^xsd:duration
+    ] ;
+
+    # ----- RESTRICTIONS (Prohibitions) -----
+    # Target inherited from policy (market-prices)
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        rdfs:label "No redistribution" ;
+        odrl:action odrl:distribute
+    ] .
+
+
+############################# Subscription (Agreement) #########################
+# Quant Research has subscribed to the data contract.
+# Bilateral agreement with duties on BOTH parties.
+# Target inherited from policy (market-prices) unless overridden.
+
+<https://example.org/agreements/quant-market-data-2026> a dprod:Subscription ;
+    rdfs:label "Quant Research Market Data 2026" ;
+    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
+                 <https://ekgf.github.io/dprod/due/> ;
+    dprod:subscribesTo <https://example.org/offers/market-prices-v2> ;
+    odrl:assigner <https://example.org/agents/data-platform-team> ;
+    odrl:assignee <https://example.org/agents/quant-research> ;
+    odrl:target <https://example.org/assets/market-prices> ;
+    dprod:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    # ===== SUBJECT DUTIES (Data Team's Obligations) =====
+
+    odrl:obligation <https://example.org/duties/delivery-2026-001> ;
+    odrl:obligation <https://example.org/duties/notify-2026-001> ;
+
+    # ===== ASSIGNEE PERMISSIONS (Quant's Rights) =====
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://example.org/agents/quant-research> ;
+        odrl:action odrl:display
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://example.org/agents/quant-research> ;
+        odrl:action dprod-due:nonDisplay
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://example.org/agents/quant-research> ;
+        odrl:action odrl:derive
+    ] ;
+
+    # ===== SUBJECT DUTIES (Quant's Obligations) =====
+
+    odrl:obligation <https://example.org/duties/report-2026-001> ;
+
+    # ===== PROHIBITIONS =====
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assignee <https://example.org/agents/quant-research> ;
+        odrl:action odrl:distribute
+    ] .
+
+
+############################# Duty Instances (with lifecycle state) #########################
+
+<https://example.org/duties/delivery-2026-001> a odrl:Duty ;
+    rdfs:label "Daily delivery duty (2026-01-15)" ;
+    dprod:subject <https://example.org/agents/data-platform-team> ;
+    dprod:object <https://example.org/agents/quant-research> ;
+    odrl:action dprod-due:deliver ;
+    odrl:target <https://example.org/assets/market-prices> ;
+    dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+    dprod:deadline "PT30M"^^xsd:duration ;
+    dprod:state dprod:Fulfilled .
+
+<https://example.org/duties/notify-2026-001> a odrl:Duty ;
+    rdfs:label "Schema notification duty" ;
+    dprod:subject <https://example.org/agents/data-platform-team> ;
+    dprod:object <https://example.org/agents/quant-research> ;
+    odrl:action dprod-due:notify ;
+    odrl:target <https://example.org/assets/schema-changes> ;
+    dprod:deadline "P14D"^^xsd:duration ;
+    dprod:state dprod:Pending .
+
+<https://example.org/duties/report-2026-001> a odrl:Duty ;
+    rdfs:label "January usage report" ;
+    dprod:subject <https://example.org/agents/quant-research> ;
+    dprod:object <https://example.org/agents/data-platform-team> ;
+    odrl:action dprod-due:report ;
+    odrl:target <https://example.org/assets/usage-stats> ;
+    dprod:deadline "P30D"^^xsd:duration ;
+    dprod:state dprod:Active .
