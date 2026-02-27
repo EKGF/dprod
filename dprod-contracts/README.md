@@ -119,22 +119,6 @@ dprod-contracts/
     └── policy-writers-guide.md      # Data use policy authoring guide
 ```
 
----
-
-## Historical Context: DCON
-
-DPROD Contracts builds on the earlier DCON work. DCON's promise hierarchy dissolves into standard `odrl:Duty` patterns with DUE actions (`deliver`, `notify`, `conformTo`, `report`). Recurring obligations use `dprod:recurrence` (RFC 5545 RRULE) instead of DCON's scheduling constraints.
-
-| DCON | DPROD Contracts | Status |
-|------|-----------------|--------|
-| `dcon:DataContract` | `dprod:DataContract` | Absorbed into core |
-| `dcon:DataContractSubscription` | `dprod:Subscription` | Absorbed into core |
-| `dcon:Promise` hierarchy | `odrl:Duty` + DUE actions | Dissolved |
-| `dcon:promisedDeliveryTime` | `dprod:recurrence` + `dprod:deadline` | Scheduling + window |
-
-See [term-mapping.md](docs/term-mapping.md) for complete DCON -> DPROD property mapping, and [contracts-guide.md](docs/contracts-guide.md) for the contracts authoring guide.
-
-> **Promise terminology.** If you prefer DCON-style "promise" naming (ProviderPromise, QualityPromise, etc.), this can be reintroduced as syntactic sugar. A promise is a Duty where `dprod:subject` equals the policy's `odrl:assigner`. Two options: **(1)** LinkML authoring sugar -- a `promise` class that expands to a standard Duty, no ontology change; **(2)** OWL thin alias -- `dprod:Promise rdfs:subClassOf odrl:Duty` with a SHACL constraint, making promises queryable in SPARQL.
 
 ---
 
@@ -143,8 +127,7 @@ See [term-mapping.md](docs/term-mapping.md) for complete DCON -> DPROD property 
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.github.io/dprod/contracts/` | Extensions only (State, deadline, recurrence, DataContract, Subscription, resolutionPath, hierarchy) |
-| `dprod-due:` | `https://ekgf.github.io/dprod/due/` | Data use vocabulary (operands, domain-specific actions, concept values); ODRL Common Vocabulary actions used directly |
+| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions (State, deadline, recurrence, DataContract, Subscription, resolutionPath, hierarchy) + data use vocabulary (operands, domain-specific actions, concept values) |
 
 ---
 

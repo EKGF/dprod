@@ -9,7 +9,6 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 
@@ -50,8 +49,7 @@
 
 <https://example.org/policies/hr-data-access> a odrl:Set ;
     rdfs:label "HR Data Access Policy" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:target <https://example.org/assets/employee-data> ;
 
     # ===== RULE 1: HR Analytics can read for analytics purposes =====
@@ -64,7 +62,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:analytics
+            odrl:rightOperand dprod:analytics
         ]
     ] ;
 
@@ -78,7 +76,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:compliance
+            odrl:rightOperand dprod:compliance
         ]
     ] ;
 
@@ -87,13 +85,13 @@
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Mandatory audit logging" ;
-        odrl:action dprod-due:log ;
+        odrl:action dprod:log ;
         odrl:target <https://example.org/assets/access-log> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:classification ;
+            odrl:leftOperand dprod:classification ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:confidential
+            odrl:rightOperand dprod:confidential
         ] ;
         dprod:deadline "PT1H"^^xsd:duration
     ] ;
@@ -112,9 +110,9 @@
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:processingMode ;
+            odrl:leftOperand dprod:processingMode ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:modelTraining
+            odrl:rightOperand dprod:modelTraining
         ]
     ] ;
 
@@ -125,9 +123,9 @@
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:environment ;
+            odrl:leftOperand dprod:environment ;
             odrl:operator odrl:isNoneOf ;
-            odrl:rightOperand (dprod-due:production dprod-due:staging)
+            odrl:rightOperand (dprod:production dprod:staging)
         ]
     ] .
 
@@ -138,8 +136,7 @@
 
 <https://example.org/policies/compensation-access> a odrl:Set ;
     rdfs:label "Compensation Data Access Policy" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:target <https://example.org/assets/employee-compensation> ;
 
     # Only HR Division (not just analytics sub-team)
@@ -155,13 +152,13 @@
                     a odrl:Constraint ;
                     odrl:leftOperand odrl:purpose ;
                     odrl:operator odrl:isAnyOf ;
-                    odrl:rightOperand (dprod-due:compliance dprod-due:operations)
+                    odrl:rightOperand (dprod:compliance dprod:operations)
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod-due:legalBasis ;
+                    odrl:leftOperand dprod:legalBasis ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod-due:legitimateInterest
+                    odrl:rightOperand dprod:legitimateInterest
                 ]
             )
         ]
@@ -174,7 +171,7 @@
         odrl:action odrl:delete ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:retentionPeriod ;
+            odrl:leftOperand dprod:retentionPeriod ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "P7Y"^^xsd:duration
         ]
@@ -189,6 +186,6 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:analytics
+            odrl:rightOperand dprod:analytics
         ]
     ] .

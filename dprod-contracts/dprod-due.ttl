@@ -1,10 +1,9 @@
-# baseURI: https://ekgf.github.io/dprod/due/
+# baseURI: https://ekgf.github.io/dprod/
 # imports: https://ekgf.github.io/dprod/contracts/
-# prefix: dprod-due
+# prefix: dprod
 
-@base <https://ekgf.github.io/dprod/due/> .
+@base <https://ekgf.github.io/dprod/> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -14,7 +13,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix org: <http://www.w3.org/ns/org#> .
 
-dprod-due:
+dprod:
   a owl:Ontology ;
   dct:title "DPROD Data Use Profile (DUE)"@en ;
   rdfs:label "DPROD data use profile"@en ;
@@ -48,7 +47,7 @@ dprod-due:
 
 ############################# Concept Scheme #########################
 
-dprod-due:scheme
+dprod:scheme
   a skos:ConceptScheme ;
   rdfs:label "DPROD DUE vocabulary" ;
   dct:description "Concept scheme for the DPROD Data Use vocabulary."@en ;
@@ -62,30 +61,30 @@ odrl:purpose
   rdfs:comment "Purpose values are skos:Concept instances. Add skos:broader links when a purpose hierarchy is needed."@en ;
 .
 
-dprod-due:analytics
+dprod:analytics
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "analytics" ;
   dct:description "General analytical use."@en ;
 .
 
-dprod-due:research
+dprod:research
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "research" ;
   dct:description "Research and development."@en ;
 .
 
-dprod-due:compliance
+dprod:compliance
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "compliance" ;
   dct:description "Regulatory compliance."@en ;
 .
 
-dprod-due:operations
+dprod:operations
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "operations" ;
   dct:description "Operational use."@en ;
 .
@@ -93,63 +92,63 @@ dprod-due:operations
 
 ############################# Classification Operands #########################
 
-dprod-due:classification
+dprod:classification
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "classification" ;
   dct:description "Data classification level."@en ;
   dprod:resolutionPath "asset.classification" ;
 .
 
-dprod-due:sensitivity
+dprod:sensitivity
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "sensitivity" ;
   dct:description "Data sensitivity type."@en ;
   dprod:resolutionPath "asset.sensitivity" ;
 .
 
-dprod-due:public
+dprod:public
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "public" ;
 .
 
-dprod-due:internal
+dprod:internal
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "internal" ;
 .
 
-dprod-due:confidential
+dprod:confidential
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "confidential" ;
 .
 
-dprod-due:restricted
+dprod:restricted
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "restricted" ;
 .
 
-dprod-due:pii
+dprod:pii
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "PII" ;
   dct:description "Personally Identifiable Information."@en ;
 .
 
-dprod-due:mnpi
+dprod:mnpi
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "MNPI" ;
   dct:description "Material Non-Public Information."@en ;
 .
 
-dprod-due:phi
+dprod:phi
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "PHI" ;
   dct:description "Protected Health Information."@en ;
 .
@@ -157,27 +156,27 @@ dprod-due:phi
 
 ############################# Asset Metadata Operands #########################
 
-dprod-due:assetClass
+dprod:assetClass
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "asset class" ;
   dct:description "Financial instrument or data classification."@en ;
   dprod:resolutionPath "asset.class" ;
   rdfs:comment "E.g., equity, fixed-income, fx, commodity, reference."@en ;
 .
 
-dprod-due:market
+dprod:market
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "market" ;
   dct:description "Trading venue or market of origin."@en ;
   dprod:resolutionPath "asset.market" ;
   rdfs:comment "E.g., NYSE, LSE, CME, OTC."@en ;
 .
 
-dprod-due:isBenchmark
+dprod:isBenchmark
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "is benchmark" ;
   dct:description "Whether asset is a benchmark or index."@en ;
   dprod:resolutionPath "asset.isBenchmark" ;
@@ -187,17 +186,17 @@ dprod-due:isBenchmark
 
 ############################# Jurisdiction Operands #########################
 
-dprod-due:jurisdiction
+dprod:jurisdiction
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "jurisdiction" ;
   dct:description "Legal jurisdiction governing data use."@en ;
   dprod:resolutionPath "context.jurisdiction" ;
 .
 
-dprod-due:residency
+dprod:residency
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "residency" ;
   dct:description "Data residency location."@en ;
   dprod:resolutionPath "asset.residency" ;
@@ -206,17 +205,17 @@ dprod-due:residency
 
 ############################# Temporal Operands #########################
 
-dprod-due:retentionPeriod
+dprod:retentionPeriod
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "retention period" ;
   dct:description "Maximum time data may be retained."@en ;
   dprod:resolutionPath "asset.retentionPeriod" ;
 .
 
-dprod-due:expiry
+dprod:expiry
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "expiry" ;
   dct:description "Expiration date of the policy."@en ;
   dprod:resolutionPath "asset.expiry" ;
@@ -225,44 +224,44 @@ dprod-due:expiry
 
 ############################# Processing Operands #########################
 
-dprod-due:processingMode
+dprod:processingMode
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "processing mode" ;
   dct:description "How data is processed."@en ;
   dprod:resolutionPath "context.processingMode" ;
 .
 
-dprod-due:human
+dprod:human
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "human" ;
 .
 
-dprod-due:automated
+dprod:automated
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "automated" ;
 .
 
-dprod-due:modelTraining
+dprod:modelTraining
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "model training" ;
 .
 
-dprod-due:inference
+dprod:inference
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "inference" ;
 .
 
 
 ############################# Audit Operands #########################
 
-dprod-due:auditRequired
+dprod:auditRequired
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "audit required" ;
   dct:description "Whether audit logging is required."@en ;
   dprod:resolutionPath "asset.auditRequired" ;
@@ -271,72 +270,72 @@ dprod-due:auditRequired
 
 ############################# Identity Operands #########################
 
-dprod-due:role
+dprod:role
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "role" ;
   dct:description "Role of the requesting agent."@en ;
   dprod:resolutionPath "agent.role" ;
 .
 
-dprod-due:organization
+dprod:organization
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "organization" ;
   dct:description "Organization of the requesting agent."@en ;
   dprod:resolutionPath "agent.organization" ;
   rdfs:comment "Hierarchy via org:subOrganizationOf."@en ;
 .
 
-dprod-due:costCenter
+dprod:costCenter
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "cost center" ;
   dct:description "Cost center of the requesting agent."@en ;
   dprod:resolutionPath "agent.costCenter" ;
 .
 
-dprod-due:project
+dprod:project
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "project" ;
   dct:description "Project context of the request."@en ;
   dprod:resolutionPath "context.project" ;
 .
 
-dprod-due:recipientType
+dprod:recipientType
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "recipient type" ;
   dct:description "Type of data recipient."@en ;
   dprod:resolutionPath "agent.recipientType" ;
   rdfs:comment "E.g., internal, external, professional, retail."@en ;
 .
 
-dprod-due:internalRecipient
+dprod:internalRecipient
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "internal recipient" ;
   dct:description "Recipient within the same organization."@en ;
 .
 
-dprod-due:externalRecipient
+dprod:externalRecipient
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "external recipient" ;
   dct:description "Recipient outside the organization."@en ;
 .
 
-dprod-due:professional
+dprod:professional
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "professional" ;
   dct:description "Licensed professional user."@en ;
 .
 
-dprod-due:retail
+dprod:retail
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "retail" ;
   dct:description "Retail/individual user."@en ;
 .
@@ -344,88 +343,88 @@ dprod-due:retail
 
 ############################# Environment Operands #########################
 
-dprod-due:environment
+dprod:environment
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "environment" ;
   dct:description "Execution environment."@en ;
   dprod:resolutionPath "context.environment" ;
 .
 
-dprod-due:production
+dprod:production
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "production" ;
 .
 
-dprod-due:staging
+dprod:staging
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "staging" ;
 .
 
-dprod-due:development
+dprod:development
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "development" ;
 .
 
-dprod-due:sandbox
+dprod:sandbox
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "sandbox" ;
 .
 
-dprod-due:network
+dprod:network
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "network" ;
   dct:description "Network zone of the request."@en ;
   dprod:resolutionPath "context.network" ;
 .
 
-dprod-due:internalNetwork
+dprod:internalNetwork
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "internal network" ;
 .
 
-dprod-due:externalNetwork
+dprod:externalNetwork
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "external network" ;
 .
 
-dprod-due:cloudNetwork
+dprod:cloudNetwork
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "cloud network" ;
 .
 
 
 ############################# Service Level Operands #########################
 
-dprod-due:availability
+dprod:availability
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "availability" ;
   dct:description "Service availability percentage."@en ;
   dprod:resolutionPath "context.availability" ;
   rdfs:comment "Typically measured as uptime percentage over a period (e.g., 99.9%)."@en ;
 .
 
-dprod-due:latency
+dprod:latency
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "latency" ;
   dct:description "Response latency at a given percentile."@en ;
   dprod:resolutionPath "context.latency" ;
   rdfs:comment "Measured as duration (e.g., P99 latency <= PT0.2S)."@en ;
 .
 
-dprod-due:throughput
+dprod:throughput
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "throughput" ;
   dct:description "Request throughput capacity."@en ;
   dprod:resolutionPath "context.throughput" ;
@@ -435,18 +434,18 @@ dprod-due:throughput
 
 ############################# Data Quality Operands #########################
 
-dprod-due:completeness
+dprod:completeness
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "completeness" ;
   dct:description "Data completeness percentage."@en ;
   dprod:resolutionPath "asset.completeness" ;
   rdfs:comment "Percentage of non-null required fields."@en ;
 .
 
-dprod-due:accuracy
+dprod:accuracy
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "accuracy" ;
   dct:description "Data accuracy percentage."@en ;
   dprod:resolutionPath "asset.accuracy" ;
@@ -456,53 +455,53 @@ dprod-due:accuracy
 
 ############################# Timeliness Operands #########################
 
-dprod-due:timeliness
+dprod:timeliness
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "timeliness" ;
   dct:description "Required data freshness category."@en ;
   dprod:resolutionPath "asset.timeliness" ;
 .
 
-dprod-due:delayMinutes
+dprod:delayMinutes
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "delay minutes" ;
   dct:description "Maximum acceptable delay in minutes."@en ;
   dprod:resolutionPath "asset.delayMinutes" ;
 .
 
-dprod-due:realtime
+dprod:realtime
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "real-time" ;
   dct:description "Data with minimal latency (sub-second)."@en ;
 .
 
-dprod-due:nearRealtime
+dprod:nearRealtime
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "near real-time" ;
   dct:description "Data with short delay (seconds to minutes)."@en ;
 .
 
-dprod-due:delayed
+dprod:delayed
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "delayed" ;
   dct:description "Data with significant delay (15+ minutes)."@en ;
 .
 
-dprod-due:endOfDay
+dprod:endOfDay
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "end of day" ;
   dct:description "Data available after market close."@en ;
 .
 
-dprod-due:historical
+dprod:historical
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "historical" ;
   dct:description "Historical/archived data."@en ;
 .
@@ -510,53 +509,53 @@ dprod-due:historical
 
 ############################# Consent and Legal Basis #########################
 
-dprod-due:legalBasis
+dprod:legalBasis
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "legal basis" ;
   dct:description "Legal basis for processing."@en ;
   dprod:resolutionPath "context.legalBasis" ;
 .
 
-dprod-due:consent
+dprod:consent
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "consent" ;
 .
 
-dprod-due:contract
+dprod:contract
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "contract" ;
 .
 
-dprod-due:legalObligation
+dprod:legalObligation
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "legal obligation" ;
 .
 
-dprod-due:vitalInterest
+dprod:vitalInterest
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "vital interest" ;
 .
 
-dprod-due:publicTask
+dprod:publicTask
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "public task" ;
 .
 
-dprod-due:legitimateInterest
+dprod:legitimateInterest
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "legitimate interest" ;
 .
 
-dprod-due:consentId
+dprod:consentId
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "consent ID" ;
   dct:description "Reference to consent record."@en ;
   dprod:resolutionPath "context.consentId" ;
@@ -565,49 +564,49 @@ dprod-due:consentId
 
 ############################# Access Pattern Operands #########################
 
-dprod-due:accessPattern
+dprod:accessPattern
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "access pattern" ;
   dct:description "Type of data access."@en ;
   dprod:resolutionPath "context.accessPattern" ;
 .
 
-dprod-due:batch
+dprod:batch
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "batch" ;
 .
 
-dprod-due:streaming
+dprod:streaming
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "streaming" ;
 .
 
-dprod-due:interactive
+dprod:interactive
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "interactive" ;
 .
 
-dprod-due:api
+dprod:api
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "API" ;
 .
 
-dprod-due:volumeLimit
+dprod:volumeLimit
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "volume limit" ;
   dct:description "Maximum data volume per request."@en ;
   dprod:resolutionPath "context.volumeLimit" ;
 .
 
-dprod-due:rateLimit
+dprod:rateLimit
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "rate limit" ;
   dct:description "Maximum requests per time period."@en ;
   dprod:resolutionPath "context.rateLimit" ;
@@ -616,18 +615,18 @@ dprod-due:rateLimit
 
 ############################# Channel Operands #########################
 
-dprod-due:channel
+dprod:channel
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "channel" ;
   dct:description "Communication or delivery channel."@en ;
   dprod:resolutionPath "context.channel" ;
   rdfs:comment "E.g., email, chat, phone, api, sftp."@en ;
 .
 
-dprod-due:serviceWindow
+dprod:serviceWindow
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "service window" ;
   dct:description "Time window during which a service is available."@en ;
   dprod:resolutionPath "context.serviceWindow" ;
@@ -637,9 +636,9 @@ dprod-due:serviceWindow
 
 ############################# Subscription Operands #########################
 
-dprod-due:subscriptionTier
+dprod:subscriptionTier
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "subscription tier" ;
   dct:description "Access tier or subscription level."@en ;
   dprod:resolutionPath "context.subscriptionTier" ;
@@ -649,31 +648,31 @@ dprod-due:subscriptionTier
 
 ############################# Derivation Operands #########################
 
-dprod-due:derivationType
+dprod:derivationType
   a odrl:LeftOperand, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "derivation type" ;
   dct:description "Type of derivation being performed."@en ;
   dprod:resolutionPath "context.derivationType" ;
 .
 
-dprod-due:commingled
+dprod:commingled
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "commingled" ;
   dct:description "Derived data mixed with other sources."@en ;
 .
 
-dprod-due:nonSubstitutive
+dprod:nonSubstitutive
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "non-substitutive" ;
   dct:description "Derived data cannot substitute for original."@en ;
 .
 
-dprod-due:newProduct
+dprod:newProduct
   a skos:Concept ;
-  skos:inScheme dprod-due:scheme ;
+  skos:inScheme dprod:scheme ;
   rdfs:label "new product" ;
   dct:description "Substantially transformed into new product."@en ;
 .
@@ -684,18 +683,18 @@ dprod-due:newProduct
 # odrl:distribute, odrl:delete, odrl:modify, odrl:aggregate,
 # odrl:anonymize, odrl:derive) are used directly.
 
-dprod-due:nonDisplay
+dprod:nonDisplay
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "non-display" ;
   dct:description "Use data for automated/programmatic purposes."@en ;
   odrl:includedIn odrl:use ;
   rdfs:comment "Algorithmic use: models, automation, calculations."@en ;
 .
 
-dprod-due:conformTo
+dprod:conformTo
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "conform to" ;
   dct:description "Conform to a schema or specification."@en ;
   rdfs:comment
@@ -707,34 +706,34 @@ dprod-due:conformTo
   rdfs:seeAlso dct:conformsTo ;
 .
 
-dprod-due:log
+dprod:log
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "log" ;
   dct:description "Log access to the asset."@en ;
   odrl:includedIn odrl:inform ;
 .
 
-dprod-due:notify
+dprod:notify
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "notify" ;
   dct:description "Notify relevant parties."@en ;
   odrl:includedIn odrl:inform ;
 .
 
-dprod-due:report
+dprod:report
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "report" ;
   dct:description "Submit usage reports."@en ;
   odrl:includedIn odrl:inform ;
   rdfs:comment "Typically an assignee duty: report usage to data owner."@en ;
 .
 
-dprod-due:deliver
+dprod:deliver
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "deliver" ;
   dct:description "Deliver data to consumer."@en ;
   odrl:includedIn odrl:distribute ;
@@ -744,60 +743,60 @@ dprod-due:deliver
 
 ############################# Specialized Actions #########################
 
-dprod-due:calculateIndex
+dprod:calculateIndex
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "calculate index" ;
   dct:description "Use data for index/benchmark calculation."@en ;
   odrl:includedIn odrl:derive ;
 .
 
-dprod-due:algorithmicTrading
+dprod:algorithmicTrading
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "algorithmic trading" ;
   dct:description "Use data for automated trading decisions."@en ;
-  odrl:includedIn dprod-due:nonDisplay ;
+  odrl:includedIn dprod:nonDisplay ;
 .
 
 
 ############################# Data Manipulation Actions #########################
 
-dprod-due:query
+dprod:query
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "query" ;
   dct:description "Query/select data."@en ;
   odrl:includedIn odrl:read ;
 .
 
-dprod-due:export
+dprod:export
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "export" ;
   dct:description "Export data outside the system."@en ;
   odrl:includedIn odrl:distribute ;
 .
 
-dprod-due:copy
+dprod:copy
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "copy" ;
   dct:description "Copy data to another location."@en ;
   odrl:includedIn odrl:reproduce ;
 .
 
-dprod-due:link
+dprod:link
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "link" ;
   dct:description "Link/join with other datasets."@en ;
   odrl:includedIn odrl:aggregate ;
 .
 
-dprod-due:profile
+dprod:profile
   a odrl:Action, skos:Concept ;
-  rdfs:isDefinedBy dprod-due: ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "profile" ;
   dct:description "Create profiles from data."@en ;
   odrl:includedIn odrl:derive ;

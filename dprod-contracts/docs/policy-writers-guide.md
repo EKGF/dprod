@@ -30,13 +30,11 @@ A minimal data use policy:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/contracts/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:target ex:customerData ;
 
     odrl:permission [
@@ -48,7 +46,7 @@ ex:policy a odrl:Set ;
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:analytics
+            odrl:rightOperand dprod:analytics
         ]
     ] ;
 
@@ -79,7 +77,7 @@ odrl:permission [
         a odrl:Constraint ;
         odrl:leftOperand odrl:purpose ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod-due:compliance
+        odrl:rightOperand dprod:compliance
     ]
 ] .
 ```
@@ -95,9 +93,9 @@ odrl:permission [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:classification ;
+        odrl:leftOperand dprod:classification ;
         odrl:operator odrl:isAnyOf ;
-        odrl:rightOperand (dprod-due:public dprod-due:internal)
+        odrl:rightOperand (dprod:public dprod:internal)
     ]
 ] .
 ```
@@ -113,7 +111,7 @@ odrl:permission [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:role ;
+        odrl:leftOperand dprod:role ;
         odrl:operator odrl:eq ;
         odrl:rightOperand "data-analyst"
     ]
@@ -166,15 +164,15 @@ odrl:prohibition [
         odrl:and (
             [
                 a odrl:Constraint ;
-                odrl:leftOperand dprod-due:sensitivity ;
+                odrl:leftOperand dprod:sensitivity ;
                 odrl:operator odrl:eq ;
-                odrl:rightOperand dprod-due:pii
+                odrl:rightOperand dprod:pii
             ]
             [
                 a odrl:Constraint ;
-                odrl:leftOperand dprod-due:processingMode ;
+                odrl:leftOperand dprod:processingMode ;
                 odrl:operator odrl:eq ;
-                odrl:rightOperand dprod-due:modelTraining
+                odrl:rightOperand dprod:modelTraining
             ]
         )
     ]
@@ -192,9 +190,9 @@ odrl:prohibition [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:derivationType ;
+        odrl:leftOperand dprod:derivationType ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod-due:commingled
+        odrl:rightOperand dprod:commingled
     ]
 ] .
 ```
@@ -218,7 +216,7 @@ odrl:constraint [
     a odrl:Constraint ;
     odrl:leftOperand odrl:purpose ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod-due:analytics
+    odrl:rightOperand dprod:analytics
 ] .
 ```
 
@@ -227,9 +225,9 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod-due:classification ;
+    odrl:leftOperand dprod:classification ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod-due:confidential
+    odrl:rightOperand dprod:confidential
 ] .
 ```
 
@@ -238,7 +236,7 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod-due:jurisdiction ;
+    odrl:leftOperand dprod:jurisdiction ;
     odrl:operator odrl:isAnyOf ;
     odrl:rightOperand ("US" "UK" "EU")
 ] .
@@ -249,7 +247,7 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod-due:retentionPeriod ;
+    odrl:leftOperand dprod:retentionPeriod ;
     odrl:operator odrl:lteq ;
     odrl:rightOperand "P7Y"^^xsd:duration
 ] .
@@ -260,9 +258,9 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod-due:environment ;
+    odrl:leftOperand dprod:environment ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod-due:production
+    odrl:rightOperand dprod:production
 ] .
 ```
 
@@ -276,43 +274,43 @@ All operands are `odrl:LeftOperand` with `dprod:resolutionPath`.
 
 | Operand | Resolution Path | Values / Type |
 |---------|----------------|---------------|
-| `dprod-due:role` | `agent.role` | String |
-| `dprod-due:organization` | `agent.organization` | IRI |
-| `dprod-due:costCenter` | `agent.costCenter` | String |
-| `dprod-due:recipientType` | `agent.recipientType` | `internal`, etc. |
+| `dprod:role` | `agent.role` | String |
+| `dprod:organization` | `agent.organization` | IRI |
+| `dprod:costCenter` | `agent.costCenter` | String |
+| `dprod:recipientType` | `agent.recipientType` | `internal`, etc. |
 
 ### Asset Operands (resolved from target asset)
 
 | Operand | Resolution Path | Values / Type |
 |---------|----------------|---------------|
-| `dprod-due:classification` | `asset.classification` | `public`, `internal`, `confidential`, `restricted` |
-| `dprod-due:sensitivity` | `asset.sensitivity` | `pii`, `mnpi`, `phi` |
-| `dprod-due:assetClass` | `asset.class` | String (equity, fx, etc.) |
-| `dprod-due:market` | `asset.market` | String (NYSE, LSE, etc.) |
-| `dprod-due:isBenchmark` | `asset.isBenchmark` | Boolean |
-| `dprod-due:residency` | `asset.residency` | String (country) |
-| `dprod-due:retentionPeriod` | `asset.retentionPeriod` | `xsd:duration` |
-| `dprod-due:expiry` | `asset.expiry` | `xsd:dateTime` |
-| `dprod-due:timeliness` | `asset.timeliness` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
-| `dprod-due:delayMinutes` | `asset.delayMinutes` | Integer |
-| `dprod-due:auditRequired` | `asset.auditRequired` | Boolean |
+| `dprod:classification` | `asset.classification` | `public`, `internal`, `confidential`, `restricted` |
+| `dprod:sensitivity` | `asset.sensitivity` | `pii`, `mnpi`, `phi` |
+| `dprod:assetClass` | `asset.class` | String (equity, fx, etc.) |
+| `dprod:market` | `asset.market` | String (NYSE, LSE, etc.) |
+| `dprod:isBenchmark` | `asset.isBenchmark` | Boolean |
+| `dprod:residency` | `asset.residency` | String (country) |
+| `dprod:retentionPeriod` | `asset.retentionPeriod` | `xsd:duration` |
+| `dprod:expiry` | `asset.expiry` | `xsd:dateTime` |
+| `dprod:timeliness` | `asset.timeliness` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
+| `dprod:delayMinutes` | `asset.delayMinutes` | Integer |
+| `dprod:auditRequired` | `asset.auditRequired` | Boolean |
 
 ### Context Operands (resolved from request context)
 
 | Operand | Resolution Path | Values / Type |
 |---------|----------------|---------------|
 | `odrl:purpose` | `context.purpose` | `analytics`, `research`, `compliance`, `operations` |
-| `dprod-due:jurisdiction` | `context.jurisdiction` | String (country) |
-| `dprod-due:environment` | `context.environment` | `production`, `staging`, `development`, `sandbox` |
-| `dprod-due:network` | `context.network` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
-| `dprod-due:processingMode` | `context.processingMode` | `human`, `automated`, `modelTraining`, `inference` |
-| `dprod-due:legalBasis` | `context.legalBasis` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
-| `dprod-due:consentId` | `context.consentId` | String |
-| `dprod-due:accessPattern` | `context.accessPattern` | `batch`, `streaming`, `interactive`, `api` |
-| `dprod-due:volumeLimit` | `context.volumeLimit` | Integer |
-| `dprod-due:rateLimit` | `context.rateLimit` | Integer |
-| `dprod-due:derivationType` | `context.derivationType` | `commingled`, `nonSubstitutive`, `newProduct` |
-| `dprod-due:project` | `context.project` | String |
+| `dprod:jurisdiction` | `context.jurisdiction` | String (country) |
+| `dprod:environment` | `context.environment` | `production`, `staging`, `development`, `sandbox` |
+| `dprod:network` | `context.network` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
+| `dprod:processingMode` | `context.processingMode` | `human`, `automated`, `modelTraining`, `inference` |
+| `dprod:legalBasis` | `context.legalBasis` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
+| `dprod:consentId` | `context.consentId` | String |
+| `dprod:accessPattern` | `context.accessPattern` | `batch`, `streaming`, `interactive`, `api` |
+| `dprod:volumeLimit` | `context.volumeLimit` | Integer |
+| `dprod:rateLimit` | `context.rateLimit` | Integer |
+| `dprod:derivationType` | `context.derivationType` | `commingled`, `nonSubstitutive`, `newProduct` |
+| `dprod:project` | `context.project` | String |
 
 ---
 
@@ -336,19 +334,19 @@ All operands are `odrl:LeftOperand` with `dprod:resolutionPath`.
 
 | Action | Definition | Parent |
 |--------|------------|--------|
-| `dprod-due:nonDisplay` | Automated/programmatic use | `use` |
-| `dprod-due:conformTo` | Conform to schema/spec | None |
-| `dprod-due:log` | Log access | `inform` |
-| `dprod-due:notify` | Notify parties | `inform` |
-| `dprod-due:report` | Submit reports | `inform` |
-| `dprod-due:deliver` | Deliver data | `distribute` |
-| `dprod-due:query` | Query/select | `read` |
-| `dprod-due:export` | Export outside system | `distribute` |
-| `dprod-due:copy` | Copy to another location | `reproduce` |
-| `dprod-due:link` | Link/join datasets | `aggregate` |
-| `dprod-due:profile` | Create profiles | `derive` |
-| `dprod-due:calculateIndex` | Index calculation | `derive` |
-| `dprod-due:algorithmicTrading` | Automated trading | `nonDisplay` |
+| `dprod:nonDisplay` | Automated/programmatic use | `use` |
+| `dprod:conformTo` | Conform to schema/spec | None |
+| `dprod:log` | Log access | `inform` |
+| `dprod:notify` | Notify parties | `inform` |
+| `dprod:report` | Submit reports | `inform` |
+| `dprod:deliver` | Deliver data | `distribute` |
+| `dprod:query` | Query/select | `read` |
+| `dprod:export` | Export outside system | `distribute` |
+| `dprod:copy` | Copy to another location | `reproduce` |
+| `dprod:link` | Link/join datasets | `aggregate` |
+| `dprod:profile` | Create profiles | `derive` |
+| `dprod:calculateIndex` | Index calculation | `derive` |
+| `dprod:algorithmicTrading` | Automated trading | `nonDisplay` |
 
 Action hierarchy uses `odrl:includedIn`. A permission on `odrl:use` implicitly permits all actions below it.
 
@@ -368,13 +366,13 @@ odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:compliance
+            odrl:rightOperand dprod:compliance
         ]
         [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:legalBasis ;
+            odrl:leftOperand dprod:legalBasis ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:legitimateInterest
+            odrl:rightOperand dprod:legitimateInterest
         ]
     )
 ] .
@@ -392,13 +390,13 @@ odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:compliance
+            odrl:rightOperand dprod:compliance
         ]
         [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:operations
+            odrl:rightOperand dprod:operations
         ]
     )
 ] .
@@ -413,9 +411,9 @@ odrl:constraint [
     a odrl:LogicalConstraint ;
     dprod:not [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:environment ;
+        odrl:leftOperand dprod:environment ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod-due:production
+        odrl:rightOperand dprod:production
     ]
 ] .
 ```
@@ -432,8 +430,7 @@ A `LogicalConstraint` must have exactly one of `odrl:and`, `odrl:or`, or `dprod:
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:target ex:data ;
 
     odrl:permission [
@@ -447,13 +444,13 @@ ex:policy a odrl:Set ;
                     a odrl:Constraint ;
                     odrl:leftOperand odrl:purpose ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod-due:analytics
+                    odrl:rightOperand dprod:analytics
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod-due:recipientType ;
+                    odrl:leftOperand dprod:recipientType ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod-due:internal
+                    odrl:rightOperand dprod:internal
                 ]
             )
         ]
@@ -475,7 +472,7 @@ odrl:permission [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:jurisdiction ;
+        odrl:leftOperand dprod:jurisdiction ;
         odrl:operator odrl:isAnyOf ;
         odrl:rightOperand ("US" "UK")
     ]
@@ -491,7 +488,7 @@ odrl:obligation [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:retentionPeriod ;
+        odrl:leftOperand dprod:retentionPeriod ;
         odrl:operator odrl:gt ;
         odrl:rightOperand "P5Y"^^xsd:duration
     ]
@@ -503,13 +500,13 @@ odrl:obligation [
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    odrl:action dprod-due:log ;
+    odrl:action dprod:log ;
     odrl:target ex:accessLog ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:classification ;
+        odrl:leftOperand dprod:classification ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod-due:confidential
+        odrl:rightOperand dprod:confidential
     ] ;
     dprod:deadline "PT1H"^^xsd:duration
 ] .
@@ -519,7 +516,7 @@ odrl:obligation [
 
 ## 10. Policy Review Checklist
 
-1. Every policy declares `odrl:profile <https://ekgf.github.io/dprod/contracts/>` and `<https://ekgf.github.io/dprod/due/>`
+1. Every policy declares `odrl:profile <https://ekgf.github.io/dprod/>`
 2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
 3. Policy has at least one `odrl:target`
 4. Each permission and prohibition has exactly one `odrl:action` and one effective `odrl:target` -- either declared on the rule or inherited from the policy-level target (rule-level `odrl:target` may be omitted when a policy-level target exists)

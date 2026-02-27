@@ -24,9 +24,8 @@ This document is a vocabulary reference for implementers. It defines every class
 
 ```turtle
 @prefix odrl:        <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:       <https://ekgf.github.io/dprod/contracts/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
 @prefix dprod-shapes: <https://ekgf.github.io/dprod/contracts/shapes/> .
-@prefix dprod-due:   <https://ekgf.github.io/dprod/due/> .
 @prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:         <http://www.w3.org/2002/07/owl#> .
@@ -104,8 +103,7 @@ Active  -> Violated  (deadline passed without performance)
 
 ```turtle
 ex:contract a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:state dprod:Active ;
@@ -142,8 +140,7 @@ ex:contract a dprod:DataContract ;
 
 ```turtle
 ex:subscription a dprod:Subscription ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     dprod:subscribesTo ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;
@@ -345,22 +342,22 @@ The DUE profile (`dprod-due.ttl`) provides the complete data governance vocabula
 | Category | Operands | Resolution Root |
 |----------|----------|-----------------|
 | **Purpose** | `odrl:purpose` | `context.purpose` |
-| **Classification** | `dprod-due:classification`, `dprod-due:sensitivity` | `asset.*` |
-| **Asset metadata** | `dprod-due:assetClass`, `dprod-due:market`, `dprod-due:isBenchmark` | `asset.*` |
-| **Jurisdiction** | `dprod-due:jurisdiction`, `dprod-due:residency` | `context.*`, `asset.*` |
-| **Temporal** | `dprod-due:retentionPeriod`, `dprod-due:expiry` | `asset.*` |
-| **Processing** | `dprod-due:processingMode` | `context.processingMode` |
-| **Audit** | `dprod-due:auditRequired` | `asset.auditRequired` |
-| **Identity** | `dprod-due:role`, `dprod-due:organization`, `dprod-due:costCenter`, `dprod-due:project`, `dprod-due:recipientType` | `agent.*`, `context.*` |
-| **Environment** | `dprod-due:environment`, `dprod-due:network` | `context.*` |
-| **Service level** | `dprod-due:availability`, `dprod-due:latency`, `dprod-due:throughput` | `context.*` |
-| **Data quality** | `dprod-due:completeness`, `dprod-due:accuracy` | `asset.*` |
-| **Timeliness** | `dprod-due:timeliness`, `dprod-due:delayMinutes` | `asset.*` |
-| **Legal basis** | `dprod-due:legalBasis`, `dprod-due:consentId` | `context.*` |
-| **Access pattern** | `dprod-due:accessPattern`, `dprod-due:volumeLimit`, `dprod-due:rateLimit` | `context.*` |
-| **Channel** | `dprod-due:channel`, `dprod-due:serviceWindow` | `context.*` |
-| **Subscription** | `dprod-due:subscriptionTier` | `context.subscriptionTier` |
-| **Derivation** | `dprod-due:derivationType` | `context.derivationType` |
+| **Classification** | `dprod:classification`, `dprod:sensitivity` | `asset.*` |
+| **Asset metadata** | `dprod:assetClass`, `dprod:market`, `dprod:isBenchmark` | `asset.*` |
+| **Jurisdiction** | `dprod:jurisdiction`, `dprod:residency` | `context.*`, `asset.*` |
+| **Temporal** | `dprod:retentionPeriod`, `dprod:expiry` | `asset.*` |
+| **Processing** | `dprod:processingMode` | `context.processingMode` |
+| **Audit** | `dprod:auditRequired` | `asset.auditRequired` |
+| **Identity** | `dprod:role`, `dprod:organization`, `dprod:costCenter`, `dprod:project`, `dprod:recipientType` | `agent.*`, `context.*` |
+| **Environment** | `dprod:environment`, `dprod:network` | `context.*` |
+| **Service level** | `dprod:availability`, `dprod:latency`, `dprod:throughput` | `context.*` |
+| **Data quality** | `dprod:completeness`, `dprod:accuracy` | `asset.*` |
+| **Timeliness** | `dprod:timeliness`, `dprod:delayMinutes` | `asset.*` |
+| **Legal basis** | `dprod:legalBasis`, `dprod:consentId` | `context.*` |
+| **Access pattern** | `dprod:accessPattern`, `dprod:volumeLimit`, `dprod:rateLimit` | `context.*` |
+| **Channel** | `dprod:channel`, `dprod:serviceWindow` | `context.*` |
+| **Subscription** | `dprod:subscriptionTier` | `context.subscriptionTier` |
+| **Derivation** | `dprod:derivationType` | `context.derivationType` |
 
 ### 5.2 Actions
 
@@ -382,19 +379,19 @@ The DUE profile (`dprod-due.ttl`) provides the complete data governance vocabula
 
 | Action | Definition | Hierarchy |
 |--------|------------|-----------|
-| `dprod-due:nonDisplay` | Automated/programmatic use | `includedIn odrl:use` |
-| `dprod-due:conformTo` | Conform to a schema or spec | No parent (duty-only governance action) |
-| `dprod-due:log` | Log access to the asset | `includedIn odrl:inform` |
-| `dprod-due:notify` | Notify relevant parties | `includedIn odrl:inform` |
-| `dprod-due:report` | Submit usage reports | `includedIn odrl:inform` |
-| `dprod-due:deliver` | Deliver data to consumer | `includedIn odrl:distribute` |
-| `dprod-due:calculateIndex` | Use for index calculation | `includedIn odrl:derive` |
-| `dprod-due:algorithmicTrading` | Use for automated trading | `includedIn dprod-due:nonDisplay` |
-| `dprod-due:query` | Query/select data | `includedIn odrl:read` |
-| `dprod-due:export` | Export data outside system | `includedIn odrl:distribute` |
-| `dprod-due:copy` | Copy data to another location | `includedIn odrl:reproduce` |
-| `dprod-due:link` | Link/join with other datasets | `includedIn odrl:aggregate` |
-| `dprod-due:profile` | Create profiles from data | `includedIn odrl:derive` |
+| `dprod:nonDisplay` | Automated/programmatic use | `includedIn odrl:use` |
+| `dprod:conformTo` | Conform to a schema or spec | No parent (duty-only governance action) |
+| `dprod:log` | Log access to the asset | `includedIn odrl:inform` |
+| `dprod:notify` | Notify relevant parties | `includedIn odrl:inform` |
+| `dprod:report` | Submit usage reports | `includedIn odrl:inform` |
+| `dprod:deliver` | Deliver data to consumer | `includedIn odrl:distribute` |
+| `dprod:calculateIndex` | Use for index calculation | `includedIn odrl:derive` |
+| `dprod:algorithmicTrading` | Use for automated trading | `includedIn dprod:nonDisplay` |
+| `dprod:query` | Query/select data | `includedIn odrl:read` |
+| `dprod:export` | Export data outside system | `includedIn odrl:distribute` |
+| `dprod:copy` | Copy data to another location | `includedIn odrl:reproduce` |
+| `dprod:link` | Link/join with other datasets | `includedIn odrl:aggregate` |
+| `dprod:profile` | Create profiles from data | `includedIn odrl:derive` |
 
 ### 5.3 Concept Values
 

@@ -49,15 +49,15 @@ Provider duties use DUE actions:
 
 | Action | Description | Example |
 |--------|-------------|---------|
-| `dprod-due:deliver` | Deliver data to consumers | Daily market data delivery |
-| `dprod-due:notify` | Send notifications | Schema change notification |
-| `dprod-due:conformTo` | Maintain conformance to a standard | Schema/quality SLA |
+| `dprod:deliver` | Deliver data to consumers | Daily market data delivery |
+| `dprod:notify` | Send notifications | Schema change notification |
+| `dprod:conformTo` | Maintain conformance to a standard | Schema/quality SLA |
 
 ### Consumer Duties
 
 | Action | Description | Example |
 |--------|-------------|---------|
-| `dprod-due:report` | Submit usage reports | Monthly usage reporting |
+| `dprod:report` | Submit usage reports | Monthly usage reporting |
 
 ### Permissions
 
@@ -66,7 +66,7 @@ Standard ODRL actions apply:
 | Action | Description |
 |--------|-------------|
 | `odrl:display` | Display data |
-| `dprod-due:nonDisplay` | Non-display (algorithmic) use |
+| `dprod:nonDisplay` | Non-display (algorithmic) use |
 | `odrl:derive` | Create derived products |
 | `odrl:read` | Read data |
 
@@ -82,13 +82,11 @@ Every contract starts with a type, profile declaration, and provider identity.
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/contracts/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:contract a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:state dprod:Active .
@@ -105,7 +103,7 @@ Rules inherit `odrl:target` from the policy unless they target a different asset
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
@@ -114,7 +112,7 @@ Rules inherit `odrl:target` from the policy unless they target a different asset
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target ex:marketDataSchema
     ] ;
 ```
@@ -131,12 +129,12 @@ Permissions define what subscribers can do. In an Offer, omit `odrl:assignee` --
 
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod-due:nonDisplay ;
+        odrl:action dprod:nonDisplay ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:recipientType ;
+            odrl:leftOperand dprod:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:internal
+            odrl:rightOperand dprod:internal
         ]
     ] ;
 ```
@@ -149,7 +147,7 @@ Consumer duties activate upon subscription. Prohibitions apply to all subscriber
     # Consumer must report usage monthly (different target -- not inherited)
     odrl:obligation [
         a odrl:Duty ;
-        odrl:action dprod-due:report ;
+        odrl:action dprod:report ;
         odrl:target ex:usageStats ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -167,8 +165,7 @@ When a consumer accepts the contract, create a Subscription (Agreement) referenc
 
 ```turtle
 ex:subscription a dprod:Subscription ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     dprod:subscribesTo ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;
@@ -190,7 +187,7 @@ Scheduled data delivery with a fulfillment window. Target inherited from policy.
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod-due:deliver ;
+    odrl:action dprod:deliver ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration
 ] .
@@ -206,7 +203,7 @@ Provider guarantees data conforms to a published schema. Target differs from pol
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod-due:conformTo ;
+    odrl:action dprod:conformTo ;
     odrl:target ex:marketDataSchema
 ] .
 ```
@@ -222,7 +219,7 @@ odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
     dprod:object ex:consumer ;
-    odrl:action dprod-due:notify ;
+    odrl:action dprod:notify ;
     odrl:target ex:schemaChanges ;
     dprod:deadline "P14D"^^xsd:duration
 ] .
@@ -238,13 +235,13 @@ Provider guarantees data quality via `conformTo` with a constraint. This replace
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod-due:conformTo ;
+    odrl:action dprod:conformTo ;
     odrl:target ex:riskMetricsSchema ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:timeliness ;
+        odrl:leftOperand dprod:timeliness ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod-due:realtime
+        odrl:rightOperand dprod:realtime
     ]
 ] .
 ```
@@ -261,7 +258,7 @@ Recurring duties use `dprod:recurrence` -- an RFC 5545 RRULE string. Combined wi
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod-due:deliver ;
+    odrl:action dprod:deliver ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration
 ] .
@@ -291,7 +288,7 @@ Read-only access, no recurrence, no consumer duties. Target inherited from polic
 
 ```turtle
 ex:contract a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:referenceData ;
     odrl:permission [
@@ -310,21 +307,20 @@ Daily delivery, schema conformance, display + non-display, monthly reporting. Ta
 
 ```turtle
 ex:contract a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:customerData ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target ex:customerSchema
     ] ;
     odrl:permission [
@@ -333,11 +329,11 @@ ex:contract a dprod:DataContract ;
     ] ;
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod-due:nonDisplay
+        odrl:action dprod:nonDisplay
     ] ;
     odrl:obligation [
         a odrl:Duty ;
-        odrl:action dprod-due:report ;
+        odrl:action dprod:report ;
         odrl:target ex:usageStats ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -353,33 +349,32 @@ High-frequency delivery with quality SLA and change notification. Target inherit
 
 ```turtle
 ex:contract a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:riskMetrics ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
         dprod:deadline "PT30S"^^xsd:duration
     ] ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target ex:riskSchema ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:timeliness ;
+            odrl:leftOperand dprod:timeliness ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:realtime
+            odrl:rightOperand dprod:realtime
         ]
     ] ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:target ex:schemaChanges ;
         dprod:deadline "P14D"^^xsd:duration
     ] ;
@@ -389,7 +384,7 @@ ex:contract a dprod:DataContract ;
     ] ;
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod-due:nonDisplay
+        odrl:action dprod:nonDisplay
     ] .
 ```
 
@@ -399,7 +394,7 @@ A single contract covering multiple targets. When a policy has multiple targets,
 
 ```turtle
 ex:contract a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices , ex:referenceData , ex:riskMetrics ;
     odrl:permission [
@@ -437,7 +432,7 @@ ex:contract a dprod:DataContract ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target ex:marketDataSchema      # different target -- explicit
     ] .
 ```
@@ -560,7 +555,7 @@ If migrating from DCON, see [term-mapping.md](term-mapping.md) for complete prop
 
 ## Validation Checklist
 
-1. Every policy declares `odrl:profile <https://ekgf.github.io/dprod/contracts/>` and `<https://ekgf.github.io/dprod/due/>`
+1. Every policy declares `odrl:profile <https://ekgf.github.io/dprod/>`
 2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
 3. DataContract has `odrl:assigner` (provider)
 4. Subscription has both `odrl:assigner` and `odrl:assignee`

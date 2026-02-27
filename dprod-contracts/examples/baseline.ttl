@@ -19,7 +19,6 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
@@ -107,8 +106,7 @@
 
 <https://example.org/offers/customer-api-v1> a dprod:DataContract ;
     rdfs:label "Customer API v1 (retired)" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:state dprod:Fulfilled ;
@@ -119,8 +117,7 @@
 
 <https://example.org/offers/customer-api-v2> a dprod:DataContract ;
     rdfs:label "Customer API v2" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:state dprod:Active ;
@@ -131,7 +128,7 @@
         a odrl:Duty ;
         rdfs:label "Daily customer data delivery" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
@@ -140,7 +137,7 @@
         a odrl:Duty ;
         rdfs:label "Schema conformance" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target <https://example.org/assets/customer-api-schema>
     ] ;
 
@@ -154,15 +151,15 @@
         odrl:action odrl:derive ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:derivationType ;
+            odrl:leftOperand dprod:derivationType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:nonSubstitutive
+            odrl:rightOperand dprod:nonSubstitutive
         ]
     ] ;
 
     odrl:obligation [
         a odrl:Duty ;
-        odrl:action dprod-due:report ;
+        odrl:action dprod:report ;
         odrl:target <https://example.org/assets/usage-stats> ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -178,8 +175,7 @@
 
 <https://example.org/offers/market-data-feed> a dprod:DataContract ;
     rdfs:label "Market Data Feed" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:state dprod:Active ;
@@ -190,7 +186,7 @@
         a odrl:Duty ;
         rdfs:label "15-minute market data delivery" ;
         dprod:subject <https://example.org/agents/trading-data> ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
         dprod:deadline "PT5M"^^xsd:duration
     ] ;
@@ -199,7 +195,7 @@
         a odrl:Duty ;
         rdfs:label "Market data schema conformance" ;
         dprod:subject <https://example.org/agents/trading-data> ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target <https://example.org/assets/market-data-schema>
     ] ;
 
@@ -212,12 +208,12 @@
     odrl:permission [
         a odrl:Permission ;
         rdfs:label "Non-display use" ;
-        odrl:action dprod-due:nonDisplay ;
+        odrl:action dprod:nonDisplay ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:recipientType ;
+            odrl:leftOperand dprod:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:internal
+            odrl:rightOperand dprod:internal
         ]
     ] ;
 
@@ -232,8 +228,7 @@
 
 <https://example.org/offers/country-ref> a dprod:DataContract ;
     rdfs:label "Country Reference Data" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/country-codes> ;
     dprod:state dprod:Active ;
@@ -245,7 +240,7 @@
 
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod-due:query
+        odrl:action dprod:query
     ] ;
 
     odrl:prohibition [
@@ -259,8 +254,7 @@
 
 <https://example.org/offers/transaction-files> a dprod:DataContract ;
     rdfs:label "Transaction Files" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/finance> ;
     odrl:target <https://example.org/assets/transaction-files> ;
     dprod:state dprod:Active ;
@@ -270,7 +264,7 @@
         a odrl:Duty ;
         rdfs:label "Monthly transaction file delivery" ;
         dprod:subject <https://example.org/agents/finance> ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
         dprod:deadline "P3D"^^xsd:duration
     ] ;
@@ -283,7 +277,7 @@
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Monthly reconciliation report" ;
-        odrl:action dprod-due:report ;
+        odrl:action dprod:report ;
         odrl:target <https://example.org/assets/monthly-report> ;
         dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=15" ;
         dprod:deadline "P5D"^^xsd:duration
@@ -291,7 +285,7 @@
 
     odrl:prohibition [
         a odrl:Prohibition ;
-        odrl:action dprod-due:export
+        odrl:action dprod:export
     ] .
 
 
@@ -300,8 +294,7 @@
 
 <https://example.org/offers/employee-directory> a dprod:DataContract ;
     rdfs:label "Employee Directory" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/hr> ;
     odrl:target <https://example.org/assets/employee-directory> ;
     dprod:state dprod:Active ;
@@ -310,7 +303,7 @@
         a odrl:Duty ;
         rdfs:label "Schema change notification (90 days)" ;
         dprod:subject <https://example.org/agents/hr> ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P90D"^^xsd:duration
     ] ;
@@ -322,7 +315,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:operations
+            odrl:rightOperand dprod:operations
         ]
     ] ;
 
@@ -336,9 +329,9 @@
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:processingMode ;
+            odrl:leftOperand dprod:processingMode ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:modelTraining
+            odrl:rightOperand dprod:modelTraining
         ]
     ] .
 
@@ -348,8 +341,7 @@
 
 <https://example.org/offers/risk-metrics> a dprod:DataContract ;
     rdfs:label "Risk Metrics" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/risk-metrics> ;
     dprod:state dprod:Active ;
@@ -358,7 +350,7 @@
         a odrl:Duty ;
         rdfs:label "Real-time risk metrics delivery" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
         dprod:deadline "PT30S"^^xsd:duration
     ] ;
@@ -367,13 +359,13 @@
         a odrl:Duty ;
         rdfs:label "Quality SLA: real-time conformance" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target <https://example.org/assets/risk-metrics-schema> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:timeliness ;
+            odrl:leftOperand dprod:timeliness ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:realtime
+            odrl:rightOperand dprod:realtime
         ]
     ] ;
 
@@ -381,7 +373,7 @@
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P14D"^^xsd:duration
     ] ;
@@ -393,7 +385,7 @@
 
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod-due:nonDisplay
+        odrl:action dprod:nonDisplay
     ] .
 
 
@@ -402,8 +394,7 @@
 
 <https://example.org/offers/audit-logs> a dprod:DataContract ;
     rdfs:label "Audit Log Archive" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/audit-logs> ;
     dprod:state dprod:Active ;
@@ -415,7 +406,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:compliance
+            odrl:rightOperand dprod:compliance
         ]
     ] ;
 
@@ -425,7 +416,7 @@
         odrl:action odrl:delete ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:retentionPeriod ;
+            odrl:leftOperand dprod:retentionPeriod ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "P7Y"^^xsd:duration
         ]
@@ -438,7 +429,7 @@
 
     odrl:prohibition [
         a odrl:Prohibition ;
-        odrl:action dprod-due:export
+        odrl:action dprod:export
     ] .
 
 
@@ -447,8 +438,7 @@
 
 <https://example.org/offers/multi-asset> a dprod:DataContract ;
     rdfs:label "Multi-Asset Data Bundle" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/market-prices> ,
                <https://example.org/assets/reference-data> ,
@@ -481,21 +471,21 @@
         odrl:target <https://example.org/assets/multi-asset-bundle> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:environment ;
+            odrl:leftOperand dprod:environment ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:production
+            odrl:rightOperand dprod:production
         ]
     ] ;
 
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod-due:nonDisplay ;
+        odrl:action dprod:nonDisplay ;
         odrl:target <https://example.org/assets/multi-asset-bundle> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:recipientType ;
+            odrl:leftOperand dprod:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:internal
+            odrl:rightOperand dprod:internal
         ]
     ] ;
 
@@ -522,8 +512,7 @@
 
 <https://example.org/agreements/analytics-customer-2026> a dprod:Subscription ;
     rdfs:label "Analytics Customer Data 2026" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     dprod:subscribesTo <https://example.org/offers/customer-api-v2> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:assignee <https://example.org/agents/analytics> ;
@@ -546,9 +535,9 @@
         odrl:action odrl:derive ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:derivationType ;
+            odrl:leftOperand dprod:derivationType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:nonSubstitutive
+            odrl:rightOperand dprod:nonSubstitutive
         ]
     ] ;
 
@@ -565,8 +554,7 @@
 
 <https://example.org/agreements/trading-market-data-2026> a dprod:Subscription ;
     rdfs:label "Trading Market Data 2026" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     dprod:subscribesTo <https://example.org/offers/market-data-feed> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:assignee <https://example.org/agents/analytics> ;
@@ -586,12 +574,12 @@
     odrl:permission [
         a odrl:Permission ;
         odrl:assignee <https://example.org/agents/analytics> ;
-        odrl:action dprod-due:nonDisplay ;
+        odrl:action dprod:nonDisplay ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:recipientType ;
+            odrl:leftOperand dprod:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:internal
+            odrl:rightOperand dprod:internal
         ]
     ] ;
 
@@ -608,7 +596,7 @@
     rdfs:label "Customer data delivery (2026-02-04)" ;
     dprod:subject <https://example.org/agents/data-platform> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod-due:deliver ;
+    odrl:action dprod:deliver ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration ;
@@ -618,7 +606,7 @@
     rdfs:label "Customer API schema conformance" ;
     dprod:subject <https://example.org/agents/data-platform> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod-due:conformTo ;
+    odrl:action dprod:conformTo ;
     odrl:target <https://example.org/assets/customer-api-schema> ;
     dprod:state dprod:Active .
 
@@ -626,7 +614,7 @@
     rdfs:label "Analytics usage report (February)" ;
     dprod:subject <https://example.org/agents/analytics> ;
     dprod:object <https://example.org/agents/data-platform> ;
-    odrl:action dprod-due:report ;
+    odrl:action dprod:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;
     dprod:state dprod:Active .
@@ -635,7 +623,7 @@
     rdfs:label "Market data delivery (latest interval)" ;
     dprod:subject <https://example.org/agents/trading-data> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod-due:deliver ;
+    odrl:action dprod:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
     dprod:deadline "PT5M"^^xsd:duration ;
@@ -645,14 +633,14 @@
     rdfs:label "Market data schema conformance" ;
     dprod:subject <https://example.org/agents/trading-data> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod-due:conformTo ;
+    odrl:action dprod:conformTo ;
     odrl:target <https://example.org/assets/market-data-schema> ;
     dprod:state dprod:Active .
 
 <https://example.org/duties/mkt-delivery-2026-late> a odrl:Duty ;
     rdfs:label "Market data delivery (missed interval)" ;
     dprod:subject <https://example.org/agents/trading-data> ;
-    odrl:action dprod-due:deliver ;
+    odrl:action dprod:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
     dprod:deadline "PT5M"^^xsd:duration ;

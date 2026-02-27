@@ -19,18 +19,17 @@ DPROD Contracts is designed for organizations that need:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/contracts/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:contract a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
@@ -44,7 +43,7 @@ ex:contract a dprod:DataContract ;
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:target ex:employeeData ;
     odrl:permission [
         a odrl:Permission ;
@@ -54,7 +53,7 @@ ex:policy a odrl:Set ;
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:analytics
+            odrl:rightOperand dprod:analytics
         ]
     ] .
 ```
@@ -84,7 +83,7 @@ odrl:constraint [
     a odrl:Constraint ;
     odrl:leftOperand odrl:purpose ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod-due:analytics
+    odrl:rightOperand dprod:analytics
 ] .
 ```
 
@@ -130,7 +129,7 @@ DPROD Core (dprod:)
          |
          | domain vocabulary
          v
-DPROD DUE Profile (dprod-due:)
+DPROD DUE Vocabulary (dprod:)
   50+ operands (purpose, classification, jurisdiction, ...)
   15+ actions (deliver, notify, conformTo, nonDisplay, ...)
   SKOS concept values (analytics, confidential, PII, ...)
@@ -141,8 +140,7 @@ DPROD DUE Profile (dprod-due:)
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.github.io/dprod/contracts/` | Extensions only |
-| `dprod-due:` | `https://ekgf.github.io/dprod/due/` | Data use vocabulary |
+| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions + data use vocabulary |
 
 ---
 

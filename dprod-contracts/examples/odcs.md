@@ -14,7 +14,7 @@ ODCS and DPROD Contracts solve the same problem — formalizing data agreements 
 | **Foundation** | Custom schema | W3C ODRL 2.2 standard |
 | **Scope** | Bilateral contracts only | Bilateral contracts + organizational data-use policies |
 | **Schema definition** | Inline (tables, columns, types) | External (DCAT, SHACL — separation of concerns) |
-| **Quality rules** | Inline metrics with operators | `odrl:Duty` + `dprod-due:conformTo` + `odrl:Constraint` |
+| **Quality rules** | Inline metrics with operators | `odrl:Duty` + `dprod:conformTo` + `odrl:Constraint` |
 | **SLAs** | `slaProperties` key-value list | `odrl:Duty` with measurable constraints |
 | **Access control** | `roles` with approval chains | `odrl:Permission` / `odrl:Prohibition` with constraints |
 | **Pricing** | `price` section | Out of scope (rights and obligations only) |
@@ -44,10 +44,10 @@ ODCS and DPROD Contracts solve the same problem — formalizing data agreements 
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:data-team ;
-    odrl:action dprod-due:conformTo ;
+    odrl:action dprod:conformTo ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:completeness ;
+        odrl:leftOperand dprod:completeness ;
         odrl:operator odrl:eq ;
         odrl:rightOperand "100"^^xsd:decimal
     ]
@@ -77,9 +77,9 @@ odrl:permission [
     odrl:action odrl:read ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod-due:recipientType ;
+        odrl:leftOperand dprod:recipientType ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod-due:internal
+        odrl:rightOperand dprod:internal
     ]
 ] .
 ```
@@ -137,22 +137,22 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 | ODCS | DPROD Contracts | Notes |
 |---|---|---|
 | `schema` (tables/columns) | External: DCAT + SHACL | Separation of concerns — schema is not policy |
-| `schema[].classification` | `dprod-due:classification` constraint | On permission/prohibition |
+| `schema[].classification` | `dprod:classification` constraint | On permission/prohibition |
 | `schema[].tags` | External: DCAT keywords | Not policy metadata |
-| `schema[].quality` | `odrl:Duty` + `dprod-due:conformTo` | Quality as obligation |
+| `schema[].quality` | `odrl:Duty` + `dprod:conformTo` | Quality as obligation |
 | `schema[].relationships` | External: SHACL / OWL | Not policy metadata |
 
 ### Data Quality
 
 | ODCS Quality | DPROD Contracts | Notes |
 |---|---|---|
-| `metric: nullValues` | Constraint: `dprod-due:completeness` | Quality dimension operand |
-| `metric: rowCount` | Constraint: `dprod-due:volumeCount` | Custom constraint |
+| `metric: nullValues` | Constraint: `dprod:completeness` | Quality dimension operand |
+| `metric: rowCount` | Constraint: `dprod:volumeCount` | Custom constraint |
 | `mustBe` / `mustBeGreaterThan` | `odrl:operator` (`odrl:eq`, `odrl:gt`, `odrl:gteq`) | Standard ODRL operators |
-| `dimension: accuracy` | `dprod-due:accuracy` | DUE operand |
-| `dimension: completeness` | `dprod-due:completeness` | DUE operand |
-| `dimension: timeliness` | `dprod-due:timeliness` | DUE operand |
-| `dimension: uniqueness` | Constraint on `dprod-due:conformTo` | Custom quality constraint |
+| `dimension: accuracy` | `dprod:accuracy` | DUE operand |
+| `dimension: completeness` | `dprod:completeness` | DUE operand |
+| `dimension: timeliness` | `dprod:timeliness` | DUE operand |
+| `dimension: uniqueness` | Constraint on `dprod:conformTo` | Custom quality constraint |
 | `severity` | Not directly modeled | Operational metadata |
 | `businessImpact` | Not directly modeled | Operational metadata |
 | `schedule` / `scheduler` | `dprod:recurrence` on duty | RFC 5545 RRULE |
@@ -161,12 +161,12 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 
 | ODCS SLA | DPROD Contracts | Notes |
 |---|---|---|
-| `latency` | `dprod-due:latency` + constraint | On conformance duty |
-| `availability` | `dprod-due:availability` + constraint | On conformance duty |
-| `throughput` | `dprod-due:throughput` + constraint | On conformance duty |
+| `latency` | `dprod:latency` + constraint | On conformance duty |
+| `availability` | `dprod:availability` + constraint | On conformance duty |
+| `throughput` | `dprod:throughput` + constraint | On conformance duty |
 | `frequency` | `dprod:recurrence` on delivery duty | RFC 5545 RRULE string |
 | `timeOfAvailability` | `dprod:deadline` on delivery duty | XSD duration |
-| `retention` | `odrl:Duty` + `odrl:delete` + `dprod-due:retentionPeriod` | Retention as obligation |
+| `retention` | `odrl:Duty` + `odrl:delete` + `dprod:retentionPeriod` | Retention as obligation |
 | `generalAvailability` | `dprod:effectiveDate` | Contract start date |
 | `endOfSupport` / `endOfLife` | `dprod:expirationDate` | Contract end date |
 | `timeToRepair` | `dprod:deadline` on repair duty | Per-incident SLA |
@@ -189,8 +189,8 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 
 | ODCS | DPROD Contracts | Notes |
 |---|---|---|
-| `support[].channel` | `odrl:Duty` + `dprod-due:notify` | With channel constraint |
-| `support[].tool` | `dprod-due:channel` constraint value | Slack, email, teams |
+| `support[].channel` | `odrl:Duty` + `dprod:notify` | With channel constraint |
+| `support[].tool` | `dprod:channel` constraint value | Slack, email, teams |
 | Response time | `dprod:deadline` on notify duty | SLA as duration |
 
 ### Pricing and Infrastructure

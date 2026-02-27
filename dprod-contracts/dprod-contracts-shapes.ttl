@@ -6,7 +6,6 @@
 @base <https://ekgf.github.io/dprod/contracts/shapes/> .
 @prefix dprod-shapes: <https://ekgf.github.io/dprod/contracts/shapes/> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -55,8 +54,8 @@ dprod-shapes:StatePropertyGroup
 dprod-shapes:ProfilePropertyGroup
   sh:path odrl:profile ;
   sh:minCount 1 ;
-  sh:hasValue <https://ekgf.github.io/dprod/contracts/> ;
-  sh:message "DPROD contract policies must declare odrl:profile <https://ekgf.github.io/dprod/contracts/>." ;
+  sh:hasValue <https://ekgf.github.io/dprod/> ;
+  sh:message "DPROD policies must declare odrl:profile <https://ekgf.github.io/dprod/>." ;
 .
 
 dprod-shapes:NonEmptyClausesConstraint
@@ -82,8 +81,8 @@ dprod-shapes:PolicyShape
   sh:property [
     sh:path odrl:profile ;
     sh:minCount 1 ;
-    sh:hasValue <https://ekgf.github.io/dprod/contracts/> ;
-    sh:message "DPROD contract policies must declare odrl:profile <https://ekgf.github.io/dprod/contracts/>."
+    sh:hasValue <https://ekgf.github.io/dprod/> ;
+    sh:message "DPROD policies must declare odrl:profile <https://ekgf.github.io/dprod/>."
   ] ;
 .
 
@@ -365,32 +364,32 @@ dprod-shapes:DUEOperandShape
   sh:name "DUE Operand Shape" ;
   sh:targetNode
     odrl:purpose ,
-    dprod-due:classification ,
-    dprod-due:sensitivity ,
-    dprod-due:assetClass ,
-    dprod-due:market ,
-    dprod-due:isBenchmark ,
-    dprod-due:jurisdiction ,
-    dprod-due:residency ,
-    dprod-due:retentionPeriod ,
-    dprod-due:expiry ,
-    dprod-due:processingMode ,
-    dprod-due:auditRequired ,
-    dprod-due:role ,
-    dprod-due:organization ,
-    dprod-due:costCenter ,
-    dprod-due:project ,
-    dprod-due:recipientType ,
-    dprod-due:environment ,
-    dprod-due:network ,
-    dprod-due:timeliness ,
-    dprod-due:delayMinutes ,
-    dprod-due:legalBasis ,
-    dprod-due:consentId ,
-    dprod-due:accessPattern ,
-    dprod-due:volumeLimit ,
-    dprod-due:rateLimit ,
-    dprod-due:derivationType ;
+    dprod:classification ,
+    dprod:sensitivity ,
+    dprod:assetClass ,
+    dprod:market ,
+    dprod:isBenchmark ,
+    dprod:jurisdiction ,
+    dprod:residency ,
+    dprod:retentionPeriod ,
+    dprod:expiry ,
+    dprod:processingMode ,
+    dprod:auditRequired ,
+    dprod:role ,
+    dprod:organization ,
+    dprod:costCenter ,
+    dprod:project ,
+    dprod:recipientType ,
+    dprod:environment ,
+    dprod:network ,
+    dprod:timeliness ,
+    dprod:delayMinutes ,
+    dprod:legalBasis ,
+    dprod:consentId ,
+    dprod:accessPattern ,
+    dprod:volumeLimit ,
+    dprod:rateLimit ,
+    dprod:derivationType ;
   sh:property [
     sh:path dprod:resolutionPath ;
     sh:minCount 1 ;

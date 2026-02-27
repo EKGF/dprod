@@ -912,7 +912,7 @@ Profiles attach DPROD Contracts resolution paths to operands. Standard ODRL oper
 odrl:purpose dprod:resolutionPath "context.purpose" .
 
 # Declare a new domain-specific operand
-dprod-due:timeliness a odrl:LeftOperand ;
+dprod:timeliness a odrl:LeftOperand ;
     dprod:resolutionPath "asset.timeliness" .
 ```
 
@@ -1000,8 +1000,7 @@ Both sets are included in the evaluation result, with independent lifecycle trac
 ```turtle
 @prefix ex:   <http://example.org/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:     <https://ekgf.github.io/dprod/contracts/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
 ex:agreement a odrl:Agreement ;
@@ -1021,7 +1020,7 @@ ex:agreement a odrl:Agreement ;
         a odrl:Duty ;
         dprod:subject ex:analyticsTeam ;
         dprod:object ex:dataTeam ;
-        odrl:action dprod-due:report ;
+        odrl:action dprod:report ;
         odrl:target ex:usageStats ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -1031,7 +1030,7 @@ ex:agreement a odrl:Agreement ;
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
         dprod:object ex:analyticsTeam ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:target ex:schemaChanges ;
         dprod:deadline "P7D"^^xsd:duration
     ] .

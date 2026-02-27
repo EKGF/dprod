@@ -17,7 +17,6 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix dct:      <http://purl.org/dc/terms/> .
@@ -64,8 +63,7 @@ ex:contract-seller-quantum a dprod:DataContract ;
     dct:description "Views built on top of the seller tables. Predict sales over time." ;
     dct:hasVersion "1.1.0" ;
     dct:created "2022-11-15T02:59:43+00:00"^^xsd:dateTime ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:seller-data-team ;
     odrl:target ex:seller-data ;
     dprod:state dprod:Active ;
@@ -95,14 +93,14 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Daily data delivery by 09:00" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=9;BYMINUTE=0" ;
         dprod:deadline "PT1H"^^xsd:duration ;
         odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:regulatory
+            odrl:rightOperand dprod:regulatory
         ]
     ] ;
 
@@ -126,10 +124,10 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Data latency SLA (max 4 days)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:timeliness ;
+            odrl:leftOperand dprod:timeliness ;
             odrl:operator odrl:lteq ;
             odrl:rightOperand "P4D"^^xsd:duration
         ]
@@ -191,12 +189,12 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "No null values in transaction date" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target ex:tbl-core-payments ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:completeness ;
+            odrl:leftOperand dprod:completeness ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "100"^^xsd:decimal
         ]
@@ -231,12 +229,12 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Row count above 1M" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod-due:conformTo ;
+        odrl:action dprod:conformTo ;
         odrl:target ex:tbl-core-payments ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:volumeCount ;
+            odrl:leftOperand dprod:volumeCount ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "1000000"^^xsd:integer
         ]
@@ -266,7 +264,7 @@ ex:contract-seller-quantum a dprod:DataContract ;
         odrl:action odrl:delete ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:retentionPeriod ;
+            odrl:leftOperand dprod:retentionPeriod ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "P3Y"^^xsd:duration
         ]
@@ -304,10 +302,10 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Slack support (#product-help)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:channel ;
+            odrl:leftOperand dprod:channel ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "slack"
         ]
@@ -317,10 +315,10 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Email support (datacontract-ann)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:channel ;
+            odrl:leftOperand dprod:channel ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "email"
         ]
@@ -330,19 +328,19 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Teams issue support (9-5 CET)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:constraint [
             a odrl:LogicalConstraint ;
             odrl:and (
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod-due:channel ;
+                    odrl:leftOperand dprod:channel ;
                     odrl:operator odrl:eq ;
                     odrl:rightOperand "teams"
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod-due:serviceWindow ;
+                    odrl:leftOperand dprod:serviceWindow ;
                     odrl:operator odrl:eq ;
                     odrl:rightOperand "business-hours"
                 ]
@@ -448,15 +446,15 @@ ex:contract-seller-quantum a dprod:DataContract ;
             odrl:and (
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod-due:classification ;
+                    odrl:leftOperand dprod:classification ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod-due:restricted
+                    odrl:rightOperand dprod:restricted
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod-due:recipientType ;
+                    odrl:leftOperand dprod:recipientType ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod-due:externalRecipient
+                    odrl:rightOperand dprod:externalRecipient
                 ]
             )
         ]
@@ -506,9 +504,9 @@ ex:contract-seller-quantum a dprod:DataContract ;
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:processingMode ;
+            odrl:leftOperand dprod:processingMode ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:modelTraining
+            odrl:rightOperand dprod:modelTraining
         ]
     ] ;
 
@@ -519,9 +517,9 @@ ex:contract-seller-quantum a dprod:DataContract ;
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:environment ;
+            odrl:leftOperand dprod:environment ;
             odrl:operator odrl:isNoneOf ;
-            odrl:rightOperand (dprod-due:production dprod-due:staging)
+            odrl:rightOperand (dprod:production dprod:staging)
         ]
     ] ;
 
@@ -529,7 +527,7 @@ ex:contract-seller-quantum a dprod:DataContract ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Monthly usage reporting" ;
-        odrl:action dprod-due:report ;
+        odrl:action dprod:report ;
         dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=5" ;
         dprod:deadline "P5D"^^xsd:duration
     ] .

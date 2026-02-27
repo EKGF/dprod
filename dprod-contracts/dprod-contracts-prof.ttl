@@ -1,4 +1,4 @@
-# baseURI: https://ekgf.github.io/dprod/contracts/
+# baseURI: https://ekgf.github.io/dprod/
 # prefix: dprod
 
 @prefix dprod: <https://ekgf.github.io/dprod/> .
@@ -19,18 +19,18 @@ odrl:core
 .
 
 
-############################# DPROD Contracts Profile #########################
+############################# DPROD Profile (ODRL 2.2) #########################
 
-<https://ekgf.github.io/dprod/contracts/>
+<https://ekgf.github.io/dprod/>
   a prof:Profile ;
-  dct:title "DPROD Data Contracts"@en ;
+  dct:title "DPROD"@en ;
   dct:description
     """Proper ODRL 2.2 profile for deterministic data governance.
     Uses ODRL terms for standard constructs; adds lifecycle state,
     deadline, recurrence, data contracts, hierarchy extensions,
     operand resolution, runtime references, and logical negation."""@en ;
   prof:isProfileOf odrl:core ;
-  prof:hasToken "dprod-contracts"^^xsd:token ;
+  prof:hasToken "dprod"^^xsd:token ;
   odrl:conflict odrl:prohibit ;
   prof:hasResource [
     a prof:ResourceDescriptor ;
@@ -44,23 +44,9 @@ odrl:core
     prof:hasRole role:validation ;
     dct:conformsTo <http://www.w3.org/ns/shacl#> ;
     prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-contracts-shapes.ttl>
-  ] ;
-.
-
-
-############################# Data Use Profile #########################
-
-<https://ekgf.github.io/dprod/due/>
-  a prof:Profile ;
-  dct:title "DPROD Data Use (DUE)"@en ;
-  dct:description
-    "Complete data governance vocabulary: operands, actions, concept values."@en ;
-  prof:isProfileOf <https://ekgf.github.io/dprod/contracts/> ;
-  prof:isTransitiveProfileOf odrl:core ;
-  prof:hasToken "dprod-due"^^xsd:token ;
-  prof:hasResource [
+  ] , [
     a prof:ResourceDescriptor ;
-    dct:title "DPROD DUE Vocabulary"@en ;
+    dct:title "DPROD Data Use (DUE) Vocabulary"@en ;
     prof:hasRole role:vocabulary ;
     dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
     prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-due.ttl>

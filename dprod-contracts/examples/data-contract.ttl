@@ -7,7 +7,6 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
-@prefix dprod-due: <https://ekgf.github.io/dprod/due/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
@@ -53,8 +52,7 @@
 
 <https://example.org/offers/market-prices-v2> a dprod:DataContract ;
     rdfs:label "Market Price Data Contract v2" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:state dprod:Active ;
@@ -69,7 +67,7 @@
         a odrl:Duty ;
         rdfs:label "Daily data delivery" ;
         dprod:subject <https://example.org/agents/data-platform-team> ;
-        odrl:action dprod-due:deliver ;
+        odrl:action dprod:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
@@ -80,7 +78,7 @@
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
         dprod:subject <https://example.org/agents/data-platform-team> ;
-        odrl:action dprod-due:notify ;
+        odrl:action dprod:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P14D"^^xsd:duration
     ] ;
@@ -97,12 +95,12 @@
     odrl:permission [
         a odrl:Permission ;
         rdfs:label "Non-display use" ;
-        odrl:action dprod-due:nonDisplay ;
+        odrl:action dprod:nonDisplay ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod-due:recipientType ;
+            odrl:leftOperand dprod:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod-due:internal
+            odrl:rightOperand dprod:internal
         ]
     ] ;
 
@@ -119,7 +117,7 @@
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Usage reporting" ;
-        odrl:action dprod-due:report ;
+        odrl:action dprod:report ;
         odrl:target <https://example.org/assets/usage-stats> ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -141,8 +139,7 @@
 
 <https://example.org/agreements/quant-market-data-2026> a dprod:Subscription ;
     rdfs:label "Quant Research Market Data 2026" ;
-    odrl:profile <https://ekgf.github.io/dprod/contracts/> ,
-                 <https://ekgf.github.io/dprod/due/> ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
     dprod:subscribesTo <https://example.org/offers/market-prices-v2> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
     odrl:assignee <https://example.org/agents/quant-research> ;
@@ -166,7 +163,7 @@
     odrl:permission [
         a odrl:Permission ;
         odrl:assignee <https://example.org/agents/quant-research> ;
-        odrl:action dprod-due:nonDisplay
+        odrl:action dprod:nonDisplay
     ] ;
 
     odrl:permission [
@@ -194,7 +191,7 @@
     rdfs:label "Daily delivery duty (2026-01-15)" ;
     dprod:subject <https://example.org/agents/data-platform-team> ;
     dprod:object <https://example.org/agents/quant-research> ;
-    odrl:action dprod-due:deliver ;
+    odrl:action dprod:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration ;
@@ -204,7 +201,7 @@
     rdfs:label "Schema notification duty" ;
     dprod:subject <https://example.org/agents/data-platform-team> ;
     dprod:object <https://example.org/agents/quant-research> ;
-    odrl:action dprod-due:notify ;
+    odrl:action dprod:notify ;
     odrl:target <https://example.org/assets/schema-changes> ;
     dprod:deadline "P14D"^^xsd:duration ;
     dprod:state dprod:Pending .
@@ -213,7 +210,7 @@
     rdfs:label "January usage report" ;
     dprod:subject <https://example.org/agents/quant-research> ;
     dprod:object <https://example.org/agents/data-platform-team> ;
-    odrl:action dprod-due:report ;
+    odrl:action dprod:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;
     dprod:state dprod:Active .
