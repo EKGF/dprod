@@ -12,18 +12,21 @@ examplePolicyA odrl:target exampleProduct:ProductA .
 examplePolicyB odrl:target exampleDataset:DatasetA1 .
 ```
 
-An example of a policy follows, that describes permission to distribute the data only within a specific geographic region:
+An example of an agreement follows, that describes permission to use all the datasets of the product if the user is working inside EMEA or APAC:
 
 ```json
 examplePolicyA odrl:permission
    {
-    "action": "odrl:distribute",
-    "constraint": [
-       {"leftOperand": "spatial",
-         "operator": "eq",
-        "rightOperator": "region:EMEA"
-       }
-     ]
+    "action": "odrl:use",
+    "assignee": {
+      "@type": "odrl:PartyCollection",
+      "refinement": [
+        {"leftOperand": "odrl:spatial",
+         "operator": "odrl:isAnyOf",
+         "rightOperand": ["reg:EMEA", "reg:APAC"]
+        }
+      ]
     }
+   }
  ```
 
