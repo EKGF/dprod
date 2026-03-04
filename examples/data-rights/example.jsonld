@@ -13,21 +13,19 @@
       "target": "https://data.org/data-product/equity-trade-xxx",
       "assigner": "https://schema.org/person/AdamSmith",
       "assignee": {
-        "@type": "odrl:PartyCollection",
-        "source": "https://example.org/DataDepartment",
-        "refinement": [
-          {
-            "@type": "odrl:Constraint",
-            "leftOperand": "odrl:spatial",
-            "operator": "odrl:isAnyOf",
-            "rightOperand": [
-              "reg:EMEA",
-              "reg:APAC"
-            ]
-          }
-        ]
+         "@type": "PartyCollection",
+         "source":  "https://example.org/DataDepartment",
+         "refinement": [{
+             "leftOperand": "odrl:spatial",
+             "operator": "odrl:isAnyOf",
+             "rightOperand": [
+                "reg:EMEA",
+                "reg:APAC"
+             ],
+             "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
+         }]
       },
-      "action": "odrl:use"
+      "action": "odrl:use",
     }
   ]
 }
