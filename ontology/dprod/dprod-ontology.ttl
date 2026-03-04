@@ -11,6 +11,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix vann: <http://purl.org/vocab/vann/>.
 
 # Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL
 dct:description a owl:AnnotationProperty .
@@ -37,6 +38,8 @@ dprod:
   dct:contributor <https://www.linkedin.com/in/tonyseale> ;
   owl:imports dcat: ;
   owl:versionInfo "OMG Request For Comments Errata 2" ;
+  vann:preferredNamespacePrefix "dprod" ;
+  vann:preferredNamespaceUri "https://www.omg.org/spec/DPROD/" ;
 .
 
 ############################# DPROD Classes  #########################
