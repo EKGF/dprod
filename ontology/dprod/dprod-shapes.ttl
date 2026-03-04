@@ -1,13 +1,13 @@
-# baseURI: https://ekgf.github.io/dprod/shapes/
+# baseURI: https://www.omg.org/spec/DPROD/shapes/
 # imports: http://www.w3.org/ns/dcat#
 # imports: http://www.w3.org/ns/shacl#
-# imports: https://ekgf.github.io/dprod/
+# imports: https://www.omg.org/spec/DPROD/
 # prefix: dprod-shapes
 
 
-@base <https://ekgf.github.io/dprod/shapes/> .
-@prefix dprod-shapes: <https://ekgf.github.io/dprod/shapes/> .
-@prefix dprod: <https://ekgf.github.io/dprod/> .
+@base <https://www.omg.org/spec/DPROD/shapes/> .
+@prefix dprod-shapes: <https://www.omg.org/spec/DPROD/shapes/> .
+@prefix dprod: <https://www.omg.org/spec/DPROD/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl:	<http://www.w3.org/ns/odrl/2/>.
@@ -40,11 +40,11 @@ dprod-shapes:
   owl:versionInfo "OMG Request For Comments Errata 2" ;
   sh:declare [
     sh:prefix "dprod" ;
-    sh:namespace "https://ekgf.github.io/dprod/" ;
+    sh:namespace "https://www.omg.org/spec/DPROD/" ;
    ] ;
   sh:declare [
     sh:prefix "dprod-shapes" ;
-    sh:namespace "https://ekgf.github.io/dprod/shapes/" ;
+    sh:namespace "https://www.omg.org/spec/DPROD/shapes/" ;
   ] ;
   sh:declare [
     sh:prefix "dcat" ;

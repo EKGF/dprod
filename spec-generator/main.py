@@ -1,3 +1,4 @@
+import json
 import shutil
 
 from rdflib import XSD, OWL, PROV, RDFS
@@ -78,28 +79,45 @@ def main():
     }
 
     jsonld_context_shapes = {
-            "@version": 1.1,
-            "dprod": ontology_namespace_iri,
-            "dprod-shapes": shapes_graph_ns_iri,
-            "xsd": str(XSD),
-            "owl": str(OWL),
-            "dcat": str(DCAT),
-            "dct": str(DCTERMS),
-            "prov": str(PROV),
-            "rdfs": str(RDFS),
-            "rdf": str(RDF),
-            "sh": str(SH),
-            "odrl": str(ODRL2),
-            "linkedin": str(LINKEDIN)
+        "@version": 1.1,
+        "dprod": ontology_namespace_iri,
+        "dprod-shapes": shapes_graph_ns_iri,
+        "xsd": str(XSD),
+        "owl": str(OWL),
+        "dcat": str(DCAT),
+        "dct": str(DCTERMS),
+        "prov": str(PROV),
+        "rdfs": str(RDFS),
+        "rdf": str(RDF),
+        "sh": str(SH),
+        "odrl": str(ODRL2),
+        "linkedin": str(LINKEDIN),
     }
 
     with open('dist/dprod.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF JSON-LD - on its own: ./{f.name}")
-        f.write(g_ontology.serialize(format='json-ld', base=ontology_namespace_iri, indent=4, context=jsonld_context_ontology))
+        f.write(g_ontology.serialize(
+            format='json-ld',
+            base=ontology_namespace_iri,
+            indent=4,
+            context=jsonld_context_ontology,
+            auto_compact=True
+        ))
+
+    with open('dist/dprod-context.jsonld', mode='x', encoding='utf-8') as f:
+        print(f"Generating JSON-LD context: ./{f.name}")
+        json.dump({"@context": jsonld_context_ontology}, f, indent=4)
+        f.write('\n')
 
     with open('dist/dprod-all.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating RDF JSON-LD - all: ./{f.name}")
-        f.write(g.serialize(format='json-ld', base=ontology_namespace_iri, indent=4, context=jsonld_context_shapes))
+        f.write(g.serialize(
+            format='json-ld',
+            base=ontology_namespace_iri,
+            indent=4,
+            context=jsonld_context_shapes,
+            auto_compact=True
+        ))
 
     # with open('dist/dprod.ttl', mode='x', encoding='utf-8') as f:
     #     print(f"Generating RDF Turtle - on its own: ./{f.name}")

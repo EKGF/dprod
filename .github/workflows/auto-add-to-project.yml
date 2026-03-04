@@ -1,0 +1,18 @@
+name: Auto add issues and PRs to EKGF Data Product Workgroup project
+
+on:
+  issues:
+    types: [opened, reopened]
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  add_to_project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add to org project
+        uses: actions/add-to-project@v1.0.1
+        with:
+          project-url: https://github.com/orgs/EKGF/projects/5
+          github-token: ${{ secrets.PROJECTS_WRITE_TOKEN }}
+
