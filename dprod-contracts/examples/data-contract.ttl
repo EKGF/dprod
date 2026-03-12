@@ -7,9 +7,71 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
+@prefix ex:       <https://example.org/> .
+
+
+############################# Inline Domain Vocabulary #########################
+# Only the operands, actions, and concept values used in this file.
+
+ex:scheme
+  a skos:ConceptScheme ;
+  rdfs:label "DPROD vocabulary" ;
+  dct:description "Concept scheme for the DPROD vocabulary."@en ;
+.
+
+# --- Actions ---
+ex:deliver
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "deliver" ;
+  dct:description "Deliver data to consumer."@en ;
+  odrl:includedIn odrl:distribute ;
+.
+
+ex:notify
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notify" ;
+  dct:description "Notify relevant parties."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+ex:nonDisplay
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "non-display" ;
+  dct:description "Use data for automated/programmatic purposes."@en ;
+  odrl:includedIn odrl:use ;
+.
+
+ex:report
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "report" ;
+  dct:description "Submit usage reports."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+# --- Operands ---
+ex:recipientType
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "recipient type" ;
+  dct:description "Type of data recipient."@en ;
+  dprod:path (odrl:assignee ex:recipientType) ;
+.
+
+# --- Concept values ---
+ex:internal
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "internal" ;
+.
 
 
 ############################# Parties #########################
@@ -67,7 +129,7 @@
         a odrl:Duty ;
         rdfs:label "Daily data delivery" ;
         dprod:subject <https://example.org/agents/data-platform-team> ;
-        odrl:action dprod:deliver ;
+        odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
@@ -78,7 +140,7 @@
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
         dprod:subject <https://example.org/agents/data-platform-team> ;
-        odrl:action dprod:notify ;
+        odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P14D"^^xsd:duration
     ] ;
@@ -95,12 +157,12 @@
     odrl:permission [
         a odrl:Permission ;
         rdfs:label "Non-display use" ;
-        odrl:action dprod:nonDisplay ;
+        odrl:action ex:nonDisplay ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:recipientType ;
+            odrl:leftOperand ex:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:internal
+            odrl:rightOperand ex:internal
         ]
     ] ;
 
@@ -117,7 +179,7 @@
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Usage reporting" ;
-        odrl:action dprod:report ;
+        odrl:action ex:report ;
         odrl:target <https://example.org/assets/usage-stats> ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -163,7 +225,7 @@
     odrl:permission [
         a odrl:Permission ;
         odrl:assignee <https://example.org/agents/quant-research> ;
-        odrl:action dprod:nonDisplay
+        odrl:action ex:nonDisplay
     ] ;
 
     odrl:permission [
@@ -191,7 +253,7 @@
     rdfs:label "Daily delivery duty (2026-01-15)" ;
     dprod:subject <https://example.org/agents/data-platform-team> ;
     dprod:object <https://example.org/agents/quant-research> ;
-    odrl:action dprod:deliver ;
+    odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration ;
@@ -201,7 +263,7 @@
     rdfs:label "Schema notification duty" ;
     dprod:subject <https://example.org/agents/data-platform-team> ;
     dprod:object <https://example.org/agents/quant-research> ;
-    odrl:action dprod:notify ;
+    odrl:action ex:notify ;
     odrl:target <https://example.org/assets/schema-changes> ;
     dprod:deadline "P14D"^^xsd:duration ;
     dprod:state dprod:Pending .
@@ -210,7 +272,7 @@
     rdfs:label "January usage report" ;
     dprod:subject <https://example.org/agents/quant-research> ;
     dprod:object <https://example.org/agents/data-platform-team> ;
-    odrl:action dprod:report ;
+    odrl:action ex:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;
     dprod:state dprod:Active .

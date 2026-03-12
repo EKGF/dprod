@@ -19,9 +19,180 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
+@prefix ex:       <https://example.org/> .
+
+
+############################# Inline Domain Vocabulary #########################
+# Only the operands, actions, and concept values used in this file.
+
+ex:scheme
+  a skos:ConceptScheme ;
+  rdfs:label "DPROD vocabulary" ;
+  dct:description "Concept scheme for the DPROD vocabulary."@en ;
+.
+
+# --- Purpose operand ---
+odrl:purpose
+  dprod:path odrl:purpose ;
+.
+
+# --- Actions ---
+ex:deliver
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "deliver" ;
+  dct:description "Deliver data to consumer."@en ;
+  odrl:includedIn odrl:distribute ;
+.
+
+ex:conformTo
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "conform to" ;
+  dct:description "Conform to a schema or specification."@en ;
+.
+
+ex:nonDisplay
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "non-display" ;
+  dct:description "Use data for automated/programmatic purposes."@en ;
+  odrl:includedIn odrl:use ;
+.
+
+ex:report
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "report" ;
+  dct:description "Submit usage reports."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+ex:notify
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notify" ;
+  dct:description "Notify relevant parties."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+ex:query
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "query" ;
+  dct:description "Query/select data."@en ;
+  odrl:includedIn odrl:read ;
+.
+
+ex:export
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "export" ;
+  dct:description "Export data outside the system."@en ;
+  odrl:includedIn odrl:distribute ;
+.
+
+# --- Operands ---
+ex:derivationType
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "derivation type" ;
+  dct:description "Type of derivation being performed."@en ;
+  dprod:path ex:derivationType ;
+.
+
+ex:recipientType
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "recipient type" ;
+  dct:description "Type of data recipient."@en ;
+  dprod:path (odrl:assignee ex:recipientType) ;
+.
+
+ex:processingMode
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "processing mode" ;
+  dct:description "How data is processed."@en ;
+  dprod:path ex:processingMode ;
+.
+
+ex:timeliness
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "timeliness" ;
+  dct:description "Required data freshness category."@en ;
+  dprod:path (odrl:target ex:timeliness) ;
+.
+
+ex:retentionPeriod
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "retention period" ;
+  dct:description "Maximum time data may be retained."@en ;
+  dprod:path (odrl:target ex:retentionPeriod) ;
+  dprod:select "SELECT ?v WHERE { $request odrl:target/ex:retentionPeriod ?v }" ;
+.
+
+ex:environment
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "environment" ;
+  dct:description "Execution environment."@en ;
+  dprod:path ex:environment ;
+.
+
+# --- Concept values ---
+ex:nonSubstitutive
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "non-substitutive" ;
+  dct:description "Derived data cannot substitute for original."@en ;
+.
+
+ex:internal
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "internal" ;
+.
+
+ex:modelTraining
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "model training" ;
+.
+
+ex:realtime
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "real-time" ;
+  dct:description "Data with minimal latency (sub-second)."@en ;
+.
+
+ex:production
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "production" ;
+.
+
+ex:operations
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "operations" ;
+  dct:description "Operational use."@en ;
+.
+
+ex:compliance
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "compliance" ;
+  dct:description "Regulatory compliance."@en ;
+.
 
 
 ############################# Organizations (5 parties) #########################
@@ -128,7 +299,7 @@
         a odrl:Duty ;
         rdfs:label "Daily customer data delivery" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod:deliver ;
+        odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
@@ -137,7 +308,7 @@
         a odrl:Duty ;
         rdfs:label "Schema conformance" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod:conformTo ;
+        odrl:action ex:conformTo ;
         odrl:target <https://example.org/assets/customer-api-schema>
     ] ;
 
@@ -151,15 +322,15 @@
         odrl:action odrl:derive ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:derivationType ;
+            odrl:leftOperand ex:derivationType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:nonSubstitutive
+            odrl:rightOperand ex:nonSubstitutive
         ]
     ] ;
 
     odrl:obligation [
         a odrl:Duty ;
-        odrl:action dprod:report ;
+        odrl:action ex:report ;
         odrl:target <https://example.org/assets/usage-stats> ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -186,7 +357,7 @@
         a odrl:Duty ;
         rdfs:label "15-minute market data delivery" ;
         dprod:subject <https://example.org/agents/trading-data> ;
-        odrl:action dprod:deliver ;
+        odrl:action ex:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
         dprod:deadline "PT5M"^^xsd:duration
     ] ;
@@ -195,7 +366,7 @@
         a odrl:Duty ;
         rdfs:label "Market data schema conformance" ;
         dprod:subject <https://example.org/agents/trading-data> ;
-        odrl:action dprod:conformTo ;
+        odrl:action ex:conformTo ;
         odrl:target <https://example.org/assets/market-data-schema>
     ] ;
 
@@ -208,12 +379,12 @@
     odrl:permission [
         a odrl:Permission ;
         rdfs:label "Non-display use" ;
-        odrl:action dprod:nonDisplay ;
+        odrl:action ex:nonDisplay ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:recipientType ;
+            odrl:leftOperand ex:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:internal
+            odrl:rightOperand ex:internal
         ]
     ] ;
 
@@ -240,7 +411,7 @@
 
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod:query
+        odrl:action ex:query
     ] ;
 
     odrl:prohibition [
@@ -264,7 +435,7 @@
         a odrl:Duty ;
         rdfs:label "Monthly transaction file delivery" ;
         dprod:subject <https://example.org/agents/finance> ;
-        odrl:action dprod:deliver ;
+        odrl:action ex:deliver ;
         dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
         dprod:deadline "P3D"^^xsd:duration
     ] ;
@@ -277,7 +448,7 @@
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Monthly reconciliation report" ;
-        odrl:action dprod:report ;
+        odrl:action ex:report ;
         odrl:target <https://example.org/assets/monthly-report> ;
         dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=15" ;
         dprod:deadline "P5D"^^xsd:duration
@@ -285,7 +456,7 @@
 
     odrl:prohibition [
         a odrl:Prohibition ;
-        odrl:action dprod:export
+        odrl:action ex:export
     ] .
 
 
@@ -303,7 +474,7 @@
         a odrl:Duty ;
         rdfs:label "Schema change notification (90 days)" ;
         dprod:subject <https://example.org/agents/hr> ;
-        odrl:action dprod:notify ;
+        odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P90D"^^xsd:duration
     ] ;
@@ -315,7 +486,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:operations
+            odrl:rightOperand ex:operations
         ]
     ] ;
 
@@ -329,9 +500,9 @@
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:processingMode ;
+            odrl:leftOperand ex:processingMode ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:modelTraining
+            odrl:rightOperand ex:modelTraining
         ]
     ] .
 
@@ -350,7 +521,7 @@
         a odrl:Duty ;
         rdfs:label "Real-time risk metrics delivery" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod:deliver ;
+        odrl:action ex:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
         dprod:deadline "PT30S"^^xsd:duration
     ] ;
@@ -359,13 +530,13 @@
         a odrl:Duty ;
         rdfs:label "Quality SLA: real-time conformance" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod:conformTo ;
+        odrl:action ex:conformTo ;
         odrl:target <https://example.org/assets/risk-metrics-schema> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:timeliness ;
+            odrl:leftOperand ex:timeliness ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:realtime
+            odrl:rightOperand ex:realtime
         ]
     ] ;
 
@@ -373,7 +544,7 @@
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
         dprod:subject <https://example.org/agents/data-platform> ;
-        odrl:action dprod:notify ;
+        odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P14D"^^xsd:duration
     ] ;
@@ -385,7 +556,7 @@
 
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod:nonDisplay
+        odrl:action ex:nonDisplay
     ] .
 
 
@@ -406,7 +577,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:compliance
+            odrl:rightOperand ex:compliance
         ]
     ] ;
 
@@ -416,7 +587,7 @@
         odrl:action odrl:delete ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:retentionPeriod ;
+            odrl:leftOperand ex:retentionPeriod ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "P7Y"^^xsd:duration
         ]
@@ -429,7 +600,7 @@
 
     odrl:prohibition [
         a odrl:Prohibition ;
-        odrl:action dprod:export
+        odrl:action ex:export
     ] .
 
 
@@ -471,21 +642,21 @@
         odrl:target <https://example.org/assets/multi-asset-bundle> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:environment ;
+            odrl:leftOperand ex:environment ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:production
+            odrl:rightOperand ex:production
         ]
     ] ;
 
     odrl:permission [
         a odrl:Permission ;
-        odrl:action dprod:nonDisplay ;
+        odrl:action ex:nonDisplay ;
         odrl:target <https://example.org/assets/multi-asset-bundle> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:recipientType ;
+            odrl:leftOperand ex:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:internal
+            odrl:rightOperand ex:internal
         ]
     ] ;
 
@@ -535,9 +706,9 @@
         odrl:action odrl:derive ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:derivationType ;
+            odrl:leftOperand ex:derivationType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:nonSubstitutive
+            odrl:rightOperand ex:nonSubstitutive
         ]
     ] ;
 
@@ -574,12 +745,12 @@
     odrl:permission [
         a odrl:Permission ;
         odrl:assignee <https://example.org/agents/analytics> ;
-        odrl:action dprod:nonDisplay ;
+        odrl:action ex:nonDisplay ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:recipientType ;
+            odrl:leftOperand ex:recipientType ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:internal
+            odrl:rightOperand ex:internal
         ]
     ] ;
 
@@ -596,7 +767,7 @@
     rdfs:label "Customer data delivery (2026-02-04)" ;
     dprod:subject <https://example.org/agents/data-platform> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod:deliver ;
+    odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration ;
@@ -606,7 +777,7 @@
     rdfs:label "Customer API schema conformance" ;
     dprod:subject <https://example.org/agents/data-platform> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod:conformTo ;
+    odrl:action ex:conformTo ;
     odrl:target <https://example.org/assets/customer-api-schema> ;
     dprod:state dprod:Active .
 
@@ -614,7 +785,7 @@
     rdfs:label "Analytics usage report (February)" ;
     dprod:subject <https://example.org/agents/analytics> ;
     dprod:object <https://example.org/agents/data-platform> ;
-    odrl:action dprod:report ;
+    odrl:action ex:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;
     dprod:state dprod:Active .
@@ -623,7 +794,7 @@
     rdfs:label "Market data delivery (latest interval)" ;
     dprod:subject <https://example.org/agents/trading-data> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod:deliver ;
+    odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
     dprod:deadline "PT5M"^^xsd:duration ;
@@ -633,14 +804,14 @@
     rdfs:label "Market data schema conformance" ;
     dprod:subject <https://example.org/agents/trading-data> ;
     dprod:object <https://example.org/agents/analytics> ;
-    odrl:action dprod:conformTo ;
+    odrl:action ex:conformTo ;
     odrl:target <https://example.org/assets/market-data-schema> ;
     dprod:state dprod:Active .
 
 <https://example.org/duties/mkt-delivery-2026-late> a odrl:Duty ;
     rdfs:label "Market data delivery (missed interval)" ;
     dprod:subject <https://example.org/agents/trading-data> ;
-    odrl:action dprod:deliver ;
+    odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
     dprod:deadline "PT5M"^^xsd:duration ;

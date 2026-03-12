@@ -17,11 +17,179 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix dct:      <http://purl.org/dc/terms/> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix ex:       <https://example.org/> .
+
+
+############################# Inline Domain Vocabulary #########################
+# Only the operands, actions, and concept values used in this file.
+
+ex:scheme
+  a skos:ConceptScheme ;
+  rdfs:label "DPROD vocabulary" ;
+  dct:description "Concept scheme for the DPROD vocabulary."@en ;
+.
+
+# --- Purpose operand ---
+odrl:purpose
+  dprod:path odrl:purpose ;
+.
+
+# --- Actions ---
+ex:deliver
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "deliver" ;
+  dct:description "Deliver data to consumer."@en ;
+  odrl:includedIn odrl:distribute ;
+.
+
+ex:conformTo
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "conform to" ;
+  dct:description "Conform to a schema or specification."@en ;
+.
+
+ex:notify
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notify" ;
+  dct:description "Notify relevant parties."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+ex:report
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "report" ;
+  dct:description "Submit usage reports."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+# --- Operands ---
+ex:timeliness
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "timeliness" ;
+  dct:description "Required data freshness category."@en ;
+  dprod:path (odrl:target ex:timeliness) ;
+.
+
+ex:completeness
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "completeness" ;
+  dct:description "Data completeness percentage."@en ;
+  dprod:path (odrl:target ex:completeness) ;
+.
+
+ex:volumeCount
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "volume count" ;
+  dct:description "Row or record count."@en ;
+  dprod:path (odrl:target ex:volumeCount) ;
+.
+
+ex:retentionPeriod
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "retention period" ;
+  dct:description "Maximum time data may be retained."@en ;
+  dprod:path (odrl:target ex:retentionPeriod) ;
+.
+
+ex:channel
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "channel" ;
+  dct:description "Communication or delivery channel."@en ;
+  dprod:path ex:channel ;
+.
+
+ex:serviceWindow
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "service window" ;
+  dct:description "Time window during which a service is available."@en ;
+  dprod:path ex:serviceWindow ;
+.
+
+ex:classification
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "classification" ;
+  dct:description "Data classification level."@en ;
+  dprod:path (odrl:target ex:classification) ;
+.
+
+ex:recipientType
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "recipient type" ;
+  dct:description "Type of data recipient."@en ;
+  dprod:path (odrl:assignee ex:recipientType) ;
+.
+
+ex:processingMode
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "processing mode" ;
+  dct:description "How data is processed."@en ;
+  dprod:path ex:processingMode ;
+.
+
+ex:environment
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "environment" ;
+  dct:description "Execution environment."@en ;
+  dprod:path ex:environment ;
+.
+
+# --- Concept values ---
+ex:regulatory
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "regulatory" ;
+  dct:description "Regulatory purpose."@en ;
+.
+
+ex:restricted
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "restricted" ;
+.
+
+ex:externalRecipient
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "external recipient" ;
+  dct:description "Recipient outside the organization."@en ;
+.
+
+ex:modelTraining
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "model training" ;
+.
+
+ex:production
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "production" ;
+.
+
+ex:staging
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "staging" ;
+.
 
 
 # =============================================================================
@@ -93,14 +261,14 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Daily data delivery by 09:00" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod:deliver ;
+        odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=9;BYMINUTE=0" ;
         dprod:deadline "PT1H"^^xsd:duration ;
         odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:regulatory
+            odrl:rightOperand ex:regulatory
         ]
     ] ;
 
@@ -124,10 +292,10 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Data latency SLA (max 4 days)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod:conformTo ;
+        odrl:action ex:conformTo ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:timeliness ;
+            odrl:leftOperand ex:timeliness ;
             odrl:operator odrl:lteq ;
             odrl:rightOperand "P4D"^^xsd:duration
         ]
@@ -189,12 +357,12 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "No null values in transaction date" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod:conformTo ;
+        odrl:action ex:conformTo ;
         odrl:target ex:tbl-core-payments ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:completeness ;
+            odrl:leftOperand ex:completeness ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "100"^^xsd:decimal
         ]
@@ -229,12 +397,12 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Row count above 1M" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod:conformTo ;
+        odrl:action ex:conformTo ;
         odrl:target ex:tbl-core-payments ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:volumeCount ;
+            odrl:leftOperand ex:volumeCount ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "1000000"^^xsd:integer
         ]
@@ -264,7 +432,7 @@ ex:contract-seller-quantum a dprod:DataContract ;
         odrl:action odrl:delete ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:retentionPeriod ;
+            odrl:leftOperand ex:retentionPeriod ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "P3Y"^^xsd:duration
         ]
@@ -302,10 +470,10 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Slack support (#product-help)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod:notify ;
+        odrl:action ex:notify ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:channel ;
+            odrl:leftOperand ex:channel ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "slack"
         ]
@@ -315,10 +483,10 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Email support (datacontract-ann)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod:notify ;
+        odrl:action ex:notify ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:channel ;
+            odrl:leftOperand ex:channel ;
             odrl:operator odrl:eq ;
             odrl:rightOperand "email"
         ]
@@ -328,19 +496,19 @@ ex:contract-seller-quantum a dprod:DataContract ;
         a odrl:Duty ;
         rdfs:label "Teams issue support (9-5 CET)" ;
         dprod:subject ex:seller-data-team ;
-        odrl:action dprod:notify ;
+        odrl:action ex:notify ;
         odrl:constraint [
             a odrl:LogicalConstraint ;
             odrl:and (
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod:channel ;
+                    odrl:leftOperand ex:channel ;
                     odrl:operator odrl:eq ;
                     odrl:rightOperand "teams"
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod:serviceWindow ;
+                    odrl:leftOperand ex:serviceWindow ;
                     odrl:operator odrl:eq ;
                     odrl:rightOperand "business-hours"
                 ]
@@ -446,15 +614,15 @@ ex:contract-seller-quantum a dprod:DataContract ;
             odrl:and (
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod:classification ;
+                    odrl:leftOperand ex:classification ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod:restricted
+                    odrl:rightOperand ex:restricted
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod:recipientType ;
+                    odrl:leftOperand ex:recipientType ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod:externalRecipient
+                    odrl:rightOperand ex:externalRecipient
                 ]
             )
         ]
@@ -504,9 +672,9 @@ ex:contract-seller-quantum a dprod:DataContract ;
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:processingMode ;
+            odrl:leftOperand ex:processingMode ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:modelTraining
+            odrl:rightOperand ex:modelTraining
         ]
     ] ;
 
@@ -517,9 +685,9 @@ ex:contract-seller-quantum a dprod:DataContract ;
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:environment ;
+            odrl:leftOperand ex:environment ;
             odrl:operator odrl:isNoneOf ;
-            odrl:rightOperand (dprod:production dprod:staging)
+            odrl:rightOperand (ex:production ex:staging)
         ]
     ] ;
 
@@ -527,7 +695,7 @@ ex:contract-seller-quantum a dprod:DataContract ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Monthly usage reporting" ;
-        odrl:action dprod:report ;
+        odrl:action ex:report ;
         dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=5" ;
         dprod:deadline "P5D"^^xsd:duration
     ] .

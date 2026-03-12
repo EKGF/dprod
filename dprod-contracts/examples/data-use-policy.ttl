@@ -9,8 +9,128 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:       <https://example.org/> .
+
+
+############################# Inline Domain Vocabulary #########################
+# Only the operands, actions, and concept values used in this file.
+
+ex:scheme
+  a skos:ConceptScheme ;
+  rdfs:label "DPROD vocabulary" ;
+  dct:description "Concept scheme for the DPROD vocabulary."@en ;
+.
+
+# --- Purpose operand ---
+odrl:purpose
+  dprod:path odrl:purpose ;
+.
+
+# --- Actions ---
+ex:log
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "log" ;
+  dct:description "Log access to the asset."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+# --- Operands ---
+ex:classification
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "classification" ;
+  dct:description "Data classification level."@en ;
+  dprod:path (odrl:target ex:classification) ;
+.
+
+ex:processingMode
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "processing mode" ;
+  dct:description "How data is processed."@en ;
+  dprod:path ex:processingMode ;
+.
+
+ex:environment
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "environment" ;
+  dct:description "Execution environment."@en ;
+  dprod:path ex:environment ;
+.
+
+ex:legalBasis
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "legal basis" ;
+  dct:description "Legal basis for processing."@en ;
+  dprod:path ex:legalBasis ;
+.
+
+ex:retentionPeriod
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "retention period" ;
+  dct:description "Maximum time data may be retained."@en ;
+  dprod:path (odrl:target ex:retentionPeriod) ;
+.
+
+# --- Concept values ---
+ex:analytics
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "analytics" ;
+  dct:description "General analytical use."@en ;
+.
+
+ex:compliance
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "compliance" ;
+  dct:description "Regulatory compliance."@en ;
+.
+
+ex:confidential
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "confidential" ;
+.
+
+ex:modelTraining
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "model training" ;
+.
+
+ex:production
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "production" ;
+.
+
+ex:staging
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "staging" ;
+.
+
+ex:operations
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "operations" ;
+  dct:description "Operational use."@en ;
+.
+
+ex:legitimateInterest
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "legitimate interest" ;
+.
 
 
 ############################# Parties (Hierarchy) #########################
@@ -62,7 +182,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:analytics
+            odrl:rightOperand ex:analytics
         ]
     ] ;
 
@@ -76,7 +196,7 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:compliance
+            odrl:rightOperand ex:compliance
         ]
     ] ;
 
@@ -85,13 +205,13 @@
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Mandatory audit logging" ;
-        odrl:action dprod:log ;
+        odrl:action ex:log ;
         odrl:target <https://example.org/assets/access-log> ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:classification ;
+            odrl:leftOperand ex:classification ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:confidential
+            odrl:rightOperand ex:confidential
         ] ;
         dprod:deadline "PT1H"^^xsd:duration
     ] ;
@@ -110,9 +230,9 @@
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:processingMode ;
+            odrl:leftOperand ex:processingMode ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:modelTraining
+            odrl:rightOperand ex:modelTraining
         ]
     ] ;
 
@@ -123,9 +243,9 @@
         odrl:action odrl:use ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:environment ;
+            odrl:leftOperand ex:environment ;
             odrl:operator odrl:isNoneOf ;
-            odrl:rightOperand (dprod:production dprod:staging)
+            odrl:rightOperand (ex:production ex:staging)
         ]
     ] .
 
@@ -152,13 +272,13 @@
                     a odrl:Constraint ;
                     odrl:leftOperand odrl:purpose ;
                     odrl:operator odrl:isAnyOf ;
-                    odrl:rightOperand (dprod:compliance dprod:operations)
+                    odrl:rightOperand (ex:compliance ex:operations)
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod:legalBasis ;
+                    odrl:leftOperand ex:legalBasis ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod:legitimateInterest
+                    odrl:rightOperand ex:legitimateInterest
                 ]
             )
         ]
@@ -171,7 +291,7 @@
         odrl:action odrl:delete ;
         odrl:constraint [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:retentionPeriod ;
+            odrl:leftOperand ex:retentionPeriod ;
             odrl:operator odrl:gt ;
             odrl:rightOperand "P7Y"^^xsd:duration
         ]
@@ -186,6 +306,6 @@
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:analytics
+            odrl:rightOperand ex:analytics
         ]
     ] .
