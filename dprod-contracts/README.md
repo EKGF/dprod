@@ -6,7 +6,7 @@
 
 ## What This Is
 
-DPROD Contracts is a proper ODRL 2.2 profile. It uses ODRL terms for all standard constructs (Permission, Duty, Prohibition, Agreement, etc.) and only adds extensions where ODRL 2.2 leaves behavior undefined:
+DPROD Contracts is an ODRL 2.2 profile. It uses ODRL terms for all standard constructs (Permission, Duty, Prohibition, Agreement, etc.) and only adds extensions where ODRL 2.2 leaves behavior undefined:
 
 1. **Explicit lifecycle**: Pending -> Active -> Fulfilled/Violated (unified for duties and contracts)
 2. **Bilateral agreements**: Both assigner and assignee may have duties
