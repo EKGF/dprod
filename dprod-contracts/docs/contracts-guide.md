@@ -45,7 +45,7 @@ A `dprod:Subscription` is a subclass of `odrl:Agreement`. It adds:
 
 ### Provider Duties
 
-Provider duties use DUE actions:
+Provider duties use DPROD actions:
 
 | Action | Description | Example |
 |--------|-------------|---------|
@@ -246,7 +246,7 @@ odrl:obligation [
 ] .
 ```
 
-The constraint can check any DUE operand -- timeliness, classification, environment, etc.
+The constraint can check any DPROD operand -- timeliness, classification, environment, etc.
 
 ---
 

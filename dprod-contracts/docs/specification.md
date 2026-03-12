@@ -16,7 +16,6 @@ This document is a vocabulary reference for implementers. It defines every class
 |------|----------|
 | `dprod-contracts.ttl` | Core ontology (classes, properties) |
 | `dprod-contracts-shapes.ttl` | SHACL validation shapes |
-| `dprod-due.ttl` | DUE vocabulary (operands, actions, concept values) |
 
 ---
 
@@ -263,7 +262,25 @@ Transitive: if table `partOf` schema and schema `partOf` database, then table `p
 
 Transitive: if person `memberOf` team and team `memberOf` division, then person `memberOf` division. Declared `rdfs:subPropertyOf odrl:partOf` so ODRL processors with RDFS reasoning can interpret DPROD party hierarchies.
 
-### 4.9 dprod:resolutionPath
+### 4.9 dprod:path
+
+| Property | Value |
+|----------|-------|
+| **Type** | `rdf:Property` |
+| **Domain** | `odrl:LeftOperand` |
+| **Cardinality** | 0..1 |
+| **Definition** | SHACL-style property path from evaluation context to operand value |
+
+Simple paths are a single property IRI; sequence paths are RDF lists:
+
+| Path type | Syntax | Meaning | Example |
+|-----------|--------|---------|---------|
+| Context-rooted | `dprod:path dprod:environment` | Direct property on request | `?request dprod:environment ?value` |
+| Asset-rooted | `dprod:path (odrl:target dprod:timeliness)` | Via target | `?request odrl:target ?asset . ?asset dprod:timeliness ?value` |
+| Agent-rooted | `dprod:path (odrl:assignee dprod:recipientType)` | Via assignee | `?request odrl:assignee ?agent . ?agent dprod:recipientType ?value` |
+| ODRL operand | `dprod:path odrl:purpose` | Direct property on request | `?request odrl:purpose ?value` |
+
+### 4.9b dprod:select
 
 | Property | Value |
 |----------|-------|
@@ -271,16 +288,15 @@ Transitive: if person `memberOf` team and team `memberOf` division, then person 
 | **Domain** | `odrl:LeftOperand` |
 | **Range** | `xsd:string` |
 | **Cardinality** | 0..1 |
-| **Pattern** | `^(agent|asset|context)\.` |
-| **Definition** | Dot-separated path from canonical root to value |
+| **Definition** | SPARQL query for operand value resolution |
 
-Canonical roots:
+Optional SPARQL SELECT that resolves the operand value. Binds `$request` to the evaluation context. Result variable is `?v`. Typically used alongside `dprod:path` for multi-step paths:
 
-| Root | Meaning | Examples |
-|------|---------|----------|
-| `agent` | Requesting agent | `agent.role`, `agent.organization`, `agent.costCenter` |
-| `asset` | Target asset | `asset.classification`, `asset.market`, `asset.residency` |
-| `context` | Request context | `context.purpose`, `context.environment`, `context.legalBasis` |
+```turtle
+dprod:timeliness
+  dprod:path (odrl:target dprod:timeliness) ;
+  dprod:select "SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }" .
+```
 
 ### 4.10 dprod:not
 
@@ -333,87 +349,7 @@ Use `dprod:object` as the generic alternative when no specific ODRL function fit
 
 ---
 
-## 5. DUE Vocabulary Summary
-
-The DUE profile (`dprod-due.ttl`) provides the complete data governance vocabulary.
-
-### 5.1 Operand Categories
-
-| Category | Operands | Resolution Root |
-|----------|----------|-----------------|
-| **Purpose** | `odrl:purpose` | `context.purpose` |
-| **Classification** | `dprod:classification`, `dprod:sensitivity` | `asset.*` |
-| **Asset metadata** | `dprod:assetClass`, `dprod:market`, `dprod:isBenchmark` | `asset.*` |
-| **Jurisdiction** | `dprod:jurisdiction`, `dprod:residency` | `context.*`, `asset.*` |
-| **Temporal** | `dprod:retentionPeriod`, `dprod:expiry` | `asset.*` |
-| **Processing** | `dprod:processingMode` | `context.processingMode` |
-| **Audit** | `dprod:auditRequired` | `asset.auditRequired` |
-| **Identity** | `dprod:role`, `dprod:organization`, `dprod:costCenter`, `dprod:project`, `dprod:recipientType` | `agent.*`, `context.*` |
-| **Environment** | `dprod:environment`, `dprod:network` | `context.*` |
-| **Service level** | `dprod:availability`, `dprod:latency`, `dprod:throughput` | `context.*` |
-| **Data quality** | `dprod:completeness`, `dprod:accuracy` | `asset.*` |
-| **Timeliness** | `dprod:timeliness`, `dprod:delayMinutes` | `asset.*` |
-| **Legal basis** | `dprod:legalBasis`, `dprod:consentId` | `context.*` |
-| **Access pattern** | `dprod:accessPattern`, `dprod:volumeLimit`, `dprod:rateLimit` | `context.*` |
-| **Channel** | `dprod:channel`, `dprod:serviceWindow` | `context.*` |
-| **Subscription** | `dprod:subscriptionTier` | `context.subscriptionTier` |
-| **Derivation** | `dprod:derivationType` | `context.derivationType` |
-
-### 5.2 Actions
-
-**ODRL Common Vocabulary** (used directly):
-
-| Action | Definition | Hierarchy |
-|--------|------------|-----------|
-| `odrl:use` | General use | Top of hierarchy |
-| `odrl:read` | Read/view | `includedIn odrl:use` |
-| `odrl:display` | Display to users | `includedIn odrl:use` |
-| `odrl:distribute` | Distribute to third parties | `includedIn odrl:use` |
-| `odrl:delete` | Delete the asset | `includedIn odrl:use` |
-| `odrl:modify` | Modify the asset | `includedIn odrl:use` |
-| `odrl:aggregate` | Aggregate with other data | `includedIn odrl:use` |
-| `odrl:anonymize` | Remove identifying info | `includedIn odrl:use` |
-| `odrl:derive` | Create derived data | `includedIn odrl:use` |
-
-**DUE-specific actions**:
-
-| Action | Definition | Hierarchy |
-|--------|------------|-----------|
-| `dprod:nonDisplay` | Automated/programmatic use | `includedIn odrl:use` |
-| `dprod:conformTo` | Conform to a schema or spec | No parent (duty-only governance action) |
-| `dprod:log` | Log access to the asset | `includedIn odrl:inform` |
-| `dprod:notify` | Notify relevant parties | `includedIn odrl:inform` |
-| `dprod:report` | Submit usage reports | `includedIn odrl:inform` |
-| `dprod:deliver` | Deliver data to consumer | `includedIn odrl:distribute` |
-| `dprod:calculateIndex` | Use for index calculation | `includedIn odrl:derive` |
-| `dprod:algorithmicTrading` | Use for automated trading | `includedIn dprod:nonDisplay` |
-| `dprod:query` | Query/select data | `includedIn odrl:read` |
-| `dprod:export` | Export data outside system | `includedIn odrl:distribute` |
-| `dprod:copy` | Copy data to another location | `includedIn odrl:reproduce` |
-| `dprod:link` | Link/join with other datasets | `includedIn odrl:aggregate` |
-| `dprod:profile` | Create profiles from data | `includedIn odrl:derive` |
-
-### 5.3 Concept Values
-
-Key SKOS concept values defined by DUE:
-
-| Category | Values |
-|----------|--------|
-| Purpose | `analytics`, `research`, `compliance`, `operations` |
-| Classification | `public`, `internal`, `confidential`, `restricted` |
-| Sensitivity | `pii` (PII), `mnpi` (MNPI), `phi` (PHI) |
-| Processing mode | `human`, `automated`, `modelTraining`, `inference` |
-| Environment | `production`, `staging`, `development`, `sandbox` |
-| Network | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
-| Timeliness | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
-| Legal basis | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
-| Recipient type | `internalRecipient`, `externalRecipient`, `professional`, `retail` |
-| Access pattern | `batch`, `streaming`, `interactive`, `api` |
-| Derivation type | `commingled`, `nonSubstitutive`, `newProduct` |
-
----
-
-## 6. SHACL Constraints Summary
+## 5. SHACL Constraints Summary
 
 Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
@@ -452,8 +388,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` | `resolutionPath` 0..1; must start with `agent.`, `asset.`, or `context.` |
-| `dprod-shapes:DUEOperandShape` | All 26 DUE operands | Exactly one `resolutionPath` (pattern: `agent.\|asset.\|context.`) |
+| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` | `dprod:path` 0..1; `dprod:select` 0..1 (xsd:string) |
 
 ### Rejection shapes
 
@@ -471,7 +406,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 ---
 
-## 7. Property Usage Matrix
+## 6. Property Usage Matrix
 
 Which DPROD properties are valid on which classes:
 
@@ -485,14 +420,15 @@ Which DPROD properties are valid on which classes:
 | `dprod:subscribesTo` | | | Yes | | | | |
 | `dprod:effectiveDate` | | Yes | Yes | | | | |
 | `dprod:expirationDate` | | Yes | Yes | | | | |
-| `dprod:resolutionPath` | | | | Yes | | | |
+| `dprod:path` | | | | Yes | | | |
+| `dprod:select` | | | | Yes | | | |
 | `dprod:not` | | | | | Yes | | |
 | `dprod:partOf` | | | | | | Yes | |
 | `dprod:memberOf` | | | | | | | Yes |
 
 ---
 
-## 8. Profile Constraints
+## 7. Profile Constraints
 
 DPROD Contracts restricts certain ODRL features:
 

@@ -35,7 +35,7 @@ dct:modified a owl:AnnotationProperty .
     - Duty party roles (subject = duty bearer, object = affected party)
     - Data contract and subscription subtypes
     - Asset/party hierarchy properties
-    - Structured operand resolution via resolutionPath
+    - Structured operand resolution via SHACL-style property paths
     - Runtime references for dynamic right-operand values
     - Logical negation (not) on LogicalConstraint
 
@@ -263,17 +263,30 @@ dprod:object
   rdfs:label "object" ;
 .
 
-dprod:resolutionPath
-  a rdf:Property, owl:DatatypeProperty ;
-  dct:description "Dot-separated path from canonical root to value."@en ;
-  rdfs:comment
-    """Path must start with a canonical root: agent, asset, context.
-    Examples: agent.role, asset.classification, context.purpose.
-    Resolution: resolve(path, Env) -> Value"""@en ;
+dprod:path
+  a rdf:Property ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:label "resolution path" ;
+  dct:description "SHACL-style property path from evaluation context to operand value."@en ;
+  rdfs:comment
+    """Simple paths are a single property IRI; sequence paths are RDF lists.
+    Context operands: dprod:path dprod:environment (direct property on request)
+    Asset operands: dprod:path (odrl:target dprod:timeliness) (via target)
+    Agent operands: dprod:path (odrl:assignee dprod:role) (via assignee)"""@en ;
+  rdfs:domain odrl:LeftOperand ;
+.
+
+dprod:select
+  a rdf:Property, owl:DatatypeProperty ;
+  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:label "resolution query" ;
+  dct:description "SPARQL query for operand value resolution."@en ;
+  rdfs:comment
+    """Optional SPARQL SELECT that resolves the operand value.
+    Binds $request to the evaluation context. Result variable is ?value.
+    Example: SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }"""@en ;
   rdfs:domain odrl:LeftOperand ;
   rdfs:range xsd:string ;
-  rdfs:label "resolution path" ;
 .
 
 dprod:not

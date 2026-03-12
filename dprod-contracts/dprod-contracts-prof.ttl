@@ -44,11 +44,5 @@ odrl:core
     prof:hasRole role:validation ;
     dct:conformsTo <http://www.w3.org/ns/shacl#> ;
     prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-contracts-shapes.ttl>
-  ] , [
-    a prof:ResourceDescriptor ;
-    dct:title "DPROD Data Use (DUE) Vocabulary"@en ;
-    prof:hasRole role:vocabulary ;
-    dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
-    prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-due.ttl>
   ] ;
 .

@@ -348,55 +348,15 @@ dprod-shapes:LeftOperandShape
   sh:targetClass odrl:LeftOperand ;
   sh:name "Left Operand Shape" ;
   sh:property [
-    sh:path dprod:resolutionPath ;
+    sh:path dprod:path ;
     sh:maxCount 1 ;
-    sh:datatype xsd:string ;
-    sh:pattern "^(agent|asset|context)\\." ;
-    sh:message "resolutionPath must start with agent., asset., or context."
+    sh:message "LeftOperand may have at most one dprod:path."
   ] ;
-.
-
-dprod-shapes:DUEOperandShape
-  a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
-  rdfs:label "DUE operand shape" ;
-  dct:description "DUE operands must declare a resolution path."@en ;
-  sh:name "DUE Operand Shape" ;
-  sh:targetNode
-    odrl:purpose ,
-    dprod:classification ,
-    dprod:sensitivity ,
-    dprod:assetClass ,
-    dprod:market ,
-    dprod:isBenchmark ,
-    dprod:jurisdiction ,
-    dprod:residency ,
-    dprod:retentionPeriod ,
-    dprod:expiry ,
-    dprod:processingMode ,
-    dprod:auditRequired ,
-    dprod:role ,
-    dprod:organization ,
-    dprod:costCenter ,
-    dprod:project ,
-    dprod:recipientType ,
-    dprod:environment ,
-    dprod:network ,
-    dprod:timeliness ,
-    dprod:delayMinutes ,
-    dprod:legalBasis ,
-    dprod:consentId ,
-    dprod:accessPattern ,
-    dprod:volumeLimit ,
-    dprod:rateLimit ,
-    dprod:derivationType ;
   sh:property [
-    sh:path dprod:resolutionPath ;
-    sh:minCount 1 ;
+    sh:path dprod:select ;
     sh:maxCount 1 ;
     sh:datatype xsd:string ;
-    sh:pattern "^(agent|asset|context)\\." ;
-    sh:message "DUE operands must have exactly one resolutionPath starting with agent., asset., or context."
+    sh:message "LeftOperand may have at most one dprod:select."
   ] ;
 .
 

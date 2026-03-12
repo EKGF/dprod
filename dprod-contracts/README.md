@@ -12,7 +12,7 @@ DPROD Contracts is a proper ODRL 2.2 profile. It uses ODRL terms for all standar
 2. **Bilateral agreements**: Both assigner and assignee may have duties
 3. **Deterministic evaluation**: Total functions, no undefined states
 4. **Formal verification target**: Amenable to Dafny, Why3, Coq
-5. **Structured operand resolution**: `resolutionPath` from canonical roots (agent, asset, context)
+5. **Structured operand resolution**: SHACL-style `dprod:path` property paths
 6. **Recurring duties**: `recurrence` via RFC 5545 RRULE for scheduled obligations
 
 DPROD Contracts is **specification-first**. The semantics document defines what any conformant implementation must do. Every DPROD policy is a valid ODRL 2.2 policy.
@@ -36,7 +36,7 @@ See [examples/](examples/) for complete working policies:
 | Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
-| Operand resolution | Implicit | Explicit `resolutionPath` from canonical roots |
+| Operand resolution | Implicit | Explicit `dprod:path` property paths (+ `dprod:select` for complex resolution) |
 | Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
 | Contract types | -- | `DataContract` (subclass of Offer), `Subscription` (subclass of Agreement) |
 
@@ -88,12 +88,19 @@ An `odrl:Duty` progresses through `dprod:State` values. A `dprod:DataContract` s
 
 ### 5. Structured Operand Resolution
 
-Operands resolve via `resolutionPath` -- dot-separated paths from canonical roots:
+Operands resolve via `dprod:path` -- SHACL-style property paths from the evaluation context:
 
-```
-agent.role, agent.organization, agent.costCenter
-asset.classification, asset.market, asset.isBenchmark
-context.purpose, context.environment, context.legalBasis
+```turtle
+# Context-rooted (single-step): direct property on request
+dprod:environment  dprod:path dprod:environment .
+
+# Asset-rooted (two-step): via odrl:target
+dprod:timeliness   dprod:path (odrl:target dprod:timeliness) ;
+                   dprod:select "SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }" .
+
+# Agent-rooted (two-step): via odrl:assignee
+dprod:recipientType dprod:path (odrl:assignee dprod:recipientType) ;
+                    dprod:select "SELECT ?v WHERE { $request odrl:assignee/dprod:recipientType ?v }" .
 ```
 
 ---
@@ -105,7 +112,6 @@ dprod-contracts/
 ├── dprod-contracts.ttl              # Core ontology (ODRL profile extension)
 ├── dprod-contracts-shapes.ttl       # SHACL validation shapes
 ├── dprod-contracts-prof.ttl         # DXPROF profile declaration
-├── dprod-due.ttl                    # Data use vocabulary (all operands + actions)
 ├── examples/
 │   ├── data-contract.ttl            # Complete contract example (with recurrence)
 │   ├── data-use-policy.ttl          # Access control example
@@ -127,7 +133,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions (State, deadline, recurrence, DataContract, Subscription, resolutionPath, hierarchy) + data use vocabulary (operands, domain-specific actions, concept values) |
+| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions (State, deadline, recurrence, DataContract, Subscription, path, select, hierarchy) + domain-specific actions, operands, and concept values |
 
 ---
 

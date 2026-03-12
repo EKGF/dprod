@@ -125,14 +125,9 @@ ODRL 2.2 Core (W3C Standard)
          v
 DPROD Core (dprod:)
   State, deadline, recurrence, DataContract, Subscription,
-  partOf, memberOf, resolutionPath, RuntimeReference, not
-         |
-         | domain vocabulary
-         v
-DPROD DUE Vocabulary (dprod:)
-  50+ operands (purpose, classification, jurisdiction, ...)
-  15+ actions (deliver, notify, conformTo, nonDisplay, ...)
-  SKOS concept values (analytics, confidential, PII, ...)
+  partOf, memberOf, path, select, RuntimeReference, not
+  + domain-specific actions, operands, and SKOS concept values
+  (deliver, notify, conformTo, nonDisplay, classification, ...)
 ```
 
 ### Namespaces
@@ -154,7 +149,7 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 | Agreement evaluation | Assignee duties only | Both assigner and assignee duties (bilateral) |
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
-| Operand resolution | Implicit | Explicit `resolutionPath` from canonical roots |
+| Operand resolution | Implicit | Explicit `dprod:path` property paths (+ `dprod:select` for complex resolution) |
 | Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |
 | Contract types | Generic Offer/Agreement | `DataContract` (Offer) / `Subscription` (Agreement) |
 | Logical negation | Not supported | `dprod:not` on LogicalConstraint |
@@ -165,11 +160,11 @@ Every DPROD policy remains a valid ODRL 2.2 policy. Standard ODRL processors can
 
 ## DCON Migration
 
-DPROD Contracts builds on the earlier DCON work. DCON's promise hierarchy dissolves into standard `odrl:Duty` patterns with DUE actions. If migrating from DCON:
+DPROD Contracts builds on the earlier DCON work. DCON's promise hierarchy dissolves into standard `odrl:Duty` patterns with DPROD actions. If migrating from DCON:
 
 - `dcon:DataContract` -> `dprod:DataContract`
 - `dcon:DataContractSubscription` -> `dprod:Subscription`
-- `dcon:Promise` hierarchy -> `odrl:Duty` with DUE actions (`deliver`, `notify`, `conformTo`, `report`)
+- `dcon:Promise` hierarchy -> `odrl:Duty` with DPROD actions (`deliver`, `notify`, `conformTo`, `report`)
 - `dcon:promisedDeliveryTime` -> `dprod:recurrence` + `dprod:deadline`
 
 See [term-mapping.md](term-mapping.md) for complete DCON -> DPROD property mapping.

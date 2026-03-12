@@ -388,13 +388,13 @@ odrl:permission [
 | Start date | `dprod:effectiveDate` | DPROD |
 | End date | `dprod:expirationDate` | DPROD |
 | Status | `dprod:state` | DPROD |
-| Delivery SLA | Duty + `deliver` + `recurrence` + `deadline` | DPROD + DUE |
-| Schema guarantee | Duty + `conformTo` | DUE |
-| Quality SLA | Duty + `conformTo` + constraint | DUE |
-| Change notice | Duty + `notify` + `deadline` | DUE |
-| Usage report | Duty + `report` + `deadline` | DUE |
+| Delivery SLA | Duty + `deliver` + `recurrence` + `deadline` | DPROD |
+| Schema guarantee | Duty + `conformTo` | DPROD |
+| Quality SLA | Duty + `conformTo` + constraint | DPROD |
+| Change notice | Duty + `notify` + `deadline` | DPROD |
+| Usage report | Duty + `report` + `deadline` | DPROD |
 | View rights | Permission + `display` | ODRL |
-| Algo use | Permission + `nonDisplay` | DUE |
+| Algo use | Permission + `nonDisplay` | DPROD |
 | Derivation | Permission + `derive` | ODRL |
 | No sharing | Prohibition + `distribute` | ODRL |
 | Team membership | `dprod:memberOf` | DPROD |
@@ -417,7 +417,7 @@ Complete mapping of every DCON term to its DPROD equivalent.
 | `dcon:DataContract` | `dprod:DataContract` | Direct | Subclass of `odrl:Offer` |
 | `dcon:DataContractSubscription` | `dprod:Subscription` | Direct | Subclass of `odrl:Agreement` |
 | `dcon:Promise` | `odrl:Duty` | Dissolved | All obligations are duties |
-| `dcon:ProviderPromise` | `odrl:Duty` + DUE action | Dissolved | Action differentiates duty type |
+| `dcon:ProviderPromise` | `odrl:Duty` + DPROD action | Dissolved | Action differentiates duty type |
 | `dcon:ProviderTimelinessPromise` | Duty + `deliver` + `recurrence` + `deadline` | Pattern | Schedule + window replaces delivery time |
 | `dcon:ProviderSchemaPromise` | Duty + `conformTo` | Pattern | Schema conformance duty |
 | `dcon:ProviderChangeNotificationPromise` | Duty + `notify` + `deadline` | Pattern | Deadline as duration for lead time |
@@ -474,7 +474,7 @@ These DCON concepts are intentionally not modeled in DPROD Contracts, with ratio
 | `dcon:hasContract` | External relationship. Systems use `dcat:hasPolicy` to link datasets to policies. |
 | `dcon:Condition` (as class) | Use `odrl:Constraint` directly. Standard ODRL. |
 | `schema:Schedule` format | DPROD uses RRULE string only. Single property instead of class hierarchy. |
-| Promise/ProviderPromise hierarchy | Dissolved into `odrl:Duty` patterns. DUE actions differentiate duty types. |
+| Promise/ProviderPromise hierarchy | Dissolved into `odrl:Duty` patterns. DPROD actions differentiate duty types. |
 | Promise Theory semantics (ought-to-be) | Duties suffice for DPROD's scope. Future extensions may add full Promise support for voluntary cooperation. |
 | `dcat:Distribution` integration | Use DCAT directly outside policies. Not policy semantics. |
 | Subscription billing | Operational concern, out of scope for policy evaluation. |
@@ -486,7 +486,7 @@ When migrating a DCON contract to DPROD Contracts:
 1. Change `dcon:DataContract` -> `dprod:DataContract`
 2. Change `dcon:DataContractSubscription` -> `dprod:Subscription`
 3. Add `odrl:profile <https://ekgf.github.io/dprod/>` declaration
-4. Replace promise subclasses with `odrl:Duty` + DUE action (see table above)
+4. Replace promise subclasses with `odrl:Duty` + DPROD action (see table above)
 5. Replace `dcon:promisor` with `dprod:subject` on duties
 6. Replace `dcon:hasSchedule`/`dcon:icalRule` with `dprod:recurrence`
 7. Map `dcon:contractState` to `dprod:state`

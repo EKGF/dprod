@@ -149,9 +149,9 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 | `metric: nullValues` | Constraint: `dprod:completeness` | Quality dimension operand |
 | `metric: rowCount` | Constraint: `dprod:volumeCount` | Custom constraint |
 | `mustBe` / `mustBeGreaterThan` | `odrl:operator` (`odrl:eq`, `odrl:gt`, `odrl:gteq`) | Standard ODRL operators |
-| `dimension: accuracy` | `dprod:accuracy` | DUE operand |
-| `dimension: completeness` | `dprod:completeness` | DUE operand |
-| `dimension: timeliness` | `dprod:timeliness` | DUE operand |
+| `dimension: accuracy` | `dprod:accuracy` | DPROD operand |
+| `dimension: completeness` | `dprod:completeness` | DPROD operand |
+| `dimension: timeliness` | `dprod:timeliness` | DPROD operand |
 | `dimension: uniqueness` | Constraint on `dprod:conformTo` | Custom quality constraint |
 | `severity` | Not directly modeled | Operational metadata |
 | `businessImpact` | Not directly modeled | Operational metadata |

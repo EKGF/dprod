@@ -205,7 +205,7 @@ Constraints restrict when rules apply. An `odrl:Constraint` has three parts:
 
 | Part | Property | Description |
 |------|----------|-------------|
-| Left operand | `odrl:leftOperand` | What to check (from DUE vocabulary) |
+| Left operand | `odrl:leftOperand` | What to check |
 | Operator | `odrl:operator` | How to compare (`eq`, `neq`, `lt`, `gt`, `lteq`, `gteq`, `isAnyOf`, `isNoneOf`, `isAllOf`) |
 | Right operand | `odrl:rightOperand` | Expected value(s) |
 
@@ -266,55 +266,59 @@ odrl:constraint [
 
 ---
 
-## 6. DUE Operands Quick Reference
+## 6. Operands Quick Reference
 
-All operands are `odrl:LeftOperand` with `dprod:resolutionPath`.
+All operands are `odrl:LeftOperand` with `dprod:path` (and optionally `dprod:select` for multi-step paths).
 
-### Agent Operands (resolved from requesting agent)
+### Context Operands (single-step — direct property on request)
 
-| Operand | Resolution Path | Values / Type |
-|---------|----------------|---------------|
-| `dprod:role` | `agent.role` | String |
-| `dprod:organization` | `agent.organization` | IRI |
-| `dprod:costCenter` | `agent.costCenter` | String |
-| `dprod:recipientType` | `agent.recipientType` | `internal`, etc. |
+| Operand | `dprod:path` | Values / Type |
+|---------|-------------|---------------|
+| `odrl:purpose` | `odrl:purpose` | `analytics`, `research`, `compliance`, `operations` |
+| `dprod:environment` | `dprod:environment` | `production`, `staging`, `development`, `sandbox` |
+| `dprod:processingMode` | `dprod:processingMode` | `human`, `automated`, `modelTraining`, `inference` |
+| `dprod:legalBasis` | `dprod:legalBasis` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
+| `dprod:derivationType` | `dprod:derivationType` | `commingled`, `nonSubstitutive`, `newProduct` |
+| `dprod:channel` | `dprod:channel` | String |
+| `dprod:serviceWindow` | `dprod:serviceWindow` | String |
+| `dprod:jurisdiction` | `dprod:jurisdiction` | String (country) |
+| `dprod:network` | `dprod:network` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
+| `dprod:consentId` | `dprod:consentId` | String |
+| `dprod:accessPattern` | `dprod:accessPattern` | `batch`, `streaming`, `interactive`, `api` |
+| `dprod:volumeLimit` | `dprod:volumeLimit` | Integer |
+| `dprod:rateLimit` | `dprod:rateLimit` | Integer |
+| `dprod:project` | `dprod:project` | String |
 
-### Asset Operands (resolved from target asset)
+### Asset Operands (two-step — via `odrl:target`)
 
-| Operand | Resolution Path | Values / Type |
-|---------|----------------|---------------|
-| `dprod:classification` | `asset.classification` | `public`, `internal`, `confidential`, `restricted` |
-| `dprod:sensitivity` | `asset.sensitivity` | `pii`, `mnpi`, `phi` |
-| `dprod:assetClass` | `asset.class` | String (equity, fx, etc.) |
-| `dprod:market` | `asset.market` | String (NYSE, LSE, etc.) |
-| `dprod:isBenchmark` | `asset.isBenchmark` | Boolean |
-| `dprod:residency` | `asset.residency` | String (country) |
-| `dprod:retentionPeriod` | `asset.retentionPeriod` | `xsd:duration` |
-| `dprod:expiry` | `asset.expiry` | `xsd:dateTime` |
-| `dprod:timeliness` | `asset.timeliness` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
-| `dprod:delayMinutes` | `asset.delayMinutes` | Integer |
-| `dprod:auditRequired` | `asset.auditRequired` | Boolean |
+| Operand | `dprod:path` | Values / Type |
+|---------|-------------|---------------|
+| `dprod:classification` | `(odrl:target dprod:classification)` | `public`, `internal`, `confidential`, `restricted` |
+| `dprod:sensitivity` | `(odrl:target dprod:sensitivity)` | `pii`, `mnpi`, `phi` |
+| `dprod:assetClass` | `(odrl:target dprod:assetClass)` | String (equity, fx, etc.) |
+| `dprod:market` | `(odrl:target dprod:market)` | String (NYSE, LSE, etc.) |
+| `dprod:isBenchmark` | `(odrl:target dprod:isBenchmark)` | Boolean |
+| `dprod:residency` | `(odrl:target dprod:residency)` | String (country) |
+| `dprod:retentionPeriod` | `(odrl:target dprod:retentionPeriod)` | `xsd:duration` |
+| `dprod:expiry` | `(odrl:target dprod:expiry)` | `xsd:dateTime` |
+| `dprod:timeliness` | `(odrl:target dprod:timeliness)` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
+| `dprod:delayMinutes` | `(odrl:target dprod:delayMinutes)` | Integer |
+| `dprod:auditRequired` | `(odrl:target dprod:auditRequired)` | Boolean |
+| `dprod:completeness` | `(odrl:target dprod:completeness)` | Decimal |
+| `dprod:volumeCount` | `(odrl:target dprod:volumeCount)` | Integer |
 
-### Context Operands (resolved from request context)
+### Agent Operands (two-step — via `odrl:assignee`)
 
-| Operand | Resolution Path | Values / Type |
-|---------|----------------|---------------|
-| `odrl:purpose` | `context.purpose` | `analytics`, `research`, `compliance`, `operations` |
-| `dprod:jurisdiction` | `context.jurisdiction` | String (country) |
-| `dprod:environment` | `context.environment` | `production`, `staging`, `development`, `sandbox` |
-| `dprod:network` | `context.network` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
-| `dprod:processingMode` | `context.processingMode` | `human`, `automated`, `modelTraining`, `inference` |
-| `dprod:legalBasis` | `context.legalBasis` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
-| `dprod:consentId` | `context.consentId` | String |
-| `dprod:accessPattern` | `context.accessPattern` | `batch`, `streaming`, `interactive`, `api` |
-| `dprod:volumeLimit` | `context.volumeLimit` | Integer |
-| `dprod:rateLimit` | `context.rateLimit` | Integer |
-| `dprod:derivationType` | `context.derivationType` | `commingled`, `nonSubstitutive`, `newProduct` |
-| `dprod:project` | `context.project` | String |
+| Operand | `dprod:path` | Values / Type |
+|---------|-------------|---------------|
+| `dprod:role` | `(odrl:assignee dprod:role)` | String |
+| `dprod:organization` | `(odrl:assignee dprod:organization)` | IRI |
+| `dprod:costCenter` | `(odrl:assignee dprod:costCenter)` | String |
+| `dprod:recipientType` | `(odrl:assignee dprod:recipientType)` | `internal`, etc. |
 
 ---
 
-## 7. DUE Actions Quick Reference
+## 7. Actions Quick Reference
 
 ### ODRL Common Vocabulary (used directly)
 
@@ -330,7 +334,7 @@ All operands are `odrl:LeftOperand` with `dprod:resolutionPath`.
 | `odrl:anonymize` | Remove identifying info | `includedIn use` |
 | `odrl:derive` | Create derived data | `includedIn use` |
 
-### DUE-Specific Actions
+### DPROD-Specific Actions
 
 | Action | Definition | Parent |
 |--------|------------|--------|
@@ -523,10 +527,10 @@ odrl:obligation [
 5. Each duty has exactly one `odrl:action`
 6. Each constraint has `leftOperand`, `operator`, and `rightOperand`
 7. LogicalConstraints use exactly one of `odrl:and`, `odrl:or`, or `dprod:not`
-8. Resolution paths match canonical roots (`agent.`, `asset.`, `context.`)
+8. Operand `dprod:path` values are valid property paths (single IRIs or RDF lists)
 9. Prohibitions cover the intended restrictions (prohibition overrides permission)
 10. Duties have appropriate deadlines where time-sensitive
-11. Classification and sensitivity values match the DUE vocabulary
+11. Classification and sensitivity values match the DPROD vocabulary
 12. Validate against SHACL shapes:
 
 ```bash

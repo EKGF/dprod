@@ -25,7 +25,7 @@ DPROD Contracts provides:
 - Bilateral agreement evaluation (grantor and grantee duties)
 - Total evaluation functions (always terminate with defined result)
 - Clear separation of Condition (pre-requisite) from Duty (obligation)
-- Path-based operand resolution with formal grammar and security constraints
+- Property-path-based operand resolution with SHACL-style traversal semantics
 
 ### 1.1 Scope and Runtime Boundary
 
@@ -192,8 +192,8 @@ RuntimeRef ::= currentAgent | currentDateTime
 
 **Notes**:
 
-- `leftOperand` is drawn from profile-defined operands with `resolutionPath`, or dual-typed `RuntimeReference` operands (e.g., `currentDateTime`)
-- Dynamic value resolution on the left side uses `LeftOperand` with `dprod:resolutionPath` or dual-typed `RuntimeReference` operands resolved via `resolveRuntime`
+- `leftOperand` is drawn from profile-defined operands with `dprod:path`, or dual-typed `RuntimeReference` operands (e.g., `currentDateTime`)
+- Dynamic value resolution on the left side uses `LeftOperand` with `dprod:path` (and optionally `dprod:select`) or dual-typed `RuntimeReference` operands resolved via `resolveRuntime`
 - Right operands are literal values. Identity binding via runtime references in right-operand position is deferred to RL2 (`rl2:rightOperandRef`)
 
 ### 3.4 Policies
@@ -220,7 +220,7 @@ Request ::= Request(agent: Agent, action: Action, asset: Asset, context: Context
 Context ::= Map<String, Value>
 ```
 
-**Note**: Context keys correspond to the second segment of resolution paths (e.g., the path `context.purpose` resolves by looking up `"purpose"` in `Context`).
+**Note**: Context properties correspond to the leaf of `dprod:path` declarations (e.g., `dprod:path odrl:purpose` resolves `?request odrl:purpose ?value`).
 
 ---
 
@@ -277,7 +277,7 @@ Env = {
 }
 ```
 
-The three canonical roots (`agent`, `asset`, `context`) are the entry points for `deref` path resolution (see §6.3).
+The evaluation context is the entry point for `dprod:path` property path traversal (see §6.3).
 
 **Environment Construction**: Given a Request `R = (a, x, s, ctx)` and state Σ:
 
@@ -517,115 +517,91 @@ The function `resolve(leftOperand, Env)` maps a left operand to a value.
 
 **Resolution Precedence**: Operands are resolved in the following order:
 
-1. **Path-based resolution** — if `op.resolutionPath` is defined, use `deref()`
-2. **Fallback** — return `⊥`
+1. **Property-path-based resolution** — if `op.path` is defined, use `traverse()`
+2. **Runtime reference** — if `op ∈ RuntimeRef`, use `resolveRuntime()`
+3. **Fallback** — return `⊥`
 
 ```
 resolve : LeftOperand × Env → Value ∪ {⊥}
 
 resolve(op, Env) =
     case op of
-        -- Profile-declared operands with resolution path
-        _ | op.resolutionPath ≠ ⊥ →
-            deref(op.resolutionPath, Env)
+        -- Profile-declared operands with dprod:path
+        _ | op.path ≠ ⊥ →
+            traverse(op.path, Env.request)
 
         -- Dual-typed operands (LeftOperand ∩ RuntimeReference)
         _ | op ∈ RuntimeRef →
             resolveRuntime(op, Env)
 
-        -- No resolution path and not a runtime reference
+        -- No path and not a runtime reference
         _ → ⊥
 ```
 
 Where:
-* `op.resolutionPath` — path expression declared on the operand via `dprod:resolutionPath`
+* `op.path` — property path declared on the operand via `dprod:path`
 * `op ∈ RuntimeRef` — the operand is also typed as `dprod:RuntimeReference` (e.g., `currentDateTime`); resolution delegates to `resolveRuntime` (§6.2). Path-based resolution takes precedence.
 * `⊥` indicates undefined (condition evaluates to `false` when encountered — see §6.1)
 
-**Architectural Principle**: All contextual data access MUST go through declared `odrl:LeftOperand` instances with explicit `dprod:resolutionPath`, or through dual-typed `RuntimeReference` operands resolved via `resolveRuntime`. This ensures:
+**Architectural Principle**: All contextual data access MUST go through declared `odrl:LeftOperand` instances with explicit `dprod:path`, or through dual-typed `RuntimeReference` operands resolved via `resolveRuntime`. This ensures:
 - Type safety (operands can declare expected ranges via `rdfs:range`)
 - Validation (SHACL can verify operand usage at authoring time)
 - Mechanization (clear mapping to formal verification targets)
 - Auditability (all data access points are declared in the profile)
 
-Profiles define domain-specific left operands with resolution paths:
-* `purpose` → `dprod:resolutionPath "context.purpose"`
-* `classification` → `dprod:resolutionPath "asset.classification"`
-* `role` → `dprod:resolutionPath "agent.role"`
-* `environment` → `dprod:resolutionPath "context.environment"`
-* `timeliness` → `dprod:resolutionPath "asset.timeliness"`
-* `organization` → `dprod:resolutionPath "agent.organization"`
+Profiles define domain-specific left operands with property paths:
+* `purpose` → `dprod:path odrl:purpose`
+* `classification` → `dprod:path (odrl:target dprod:classification)`
+* `recipientType` → `dprod:path (odrl:assignee dprod:recipientType)`
+* `environment` → `dprod:path dprod:environment`
+* `timeliness` → `dprod:path (odrl:target dprod:timeliness)`
 
-#### deref : Path × Env → Value
+#### traverse : PropertyPath × Node → Value
 
-The function `deref(path, Env)` traverses a path expression to retrieve a value. This is the **primary mechanism for resolving profile-declared operands** via `dprod:resolutionPath`.
+The function `traverse(path, node)` follows a SHACL-style property path to retrieve a value. This is the **primary mechanism for resolving profile-declared operands** via `dprod:path`.
 
-**Path Grammar** (normative):
+**Property Path Types** (normative):
 
-All path expressions MUST conform to the following grammar:
+| Type | Syntax | Meaning |
+|------|--------|---------|
+| Simple path | Single IRI | One-step: `?request <IRI> ?value` |
+| Sequence path | RDF list of IRIs | Multi-step: `?request <IRI₁> ?mid . ?mid <IRI₂> ?value` |
 
-```
-Path       ::= Root '.' Segment ('.' Segment)*
-Root       ::= 'agent' | 'asset' | 'context'
-Segment    ::= Identifier
-Identifier ::= [a-zA-Z_][a-zA-Z0-9_]*
-```
+**Examples**:
 
-Constraints:
-- Paths MUST begin with a valid Root
-- Identifiers MUST NOT contain `.`, `/`, `..`, or URL-encoded characters
-- Minimum path depth: 2 segments (root + at least one identifier)
-- Maximum path depth: 10 segments (implementation MAY enforce)
-
-Paths not conforming to this grammar MUST be rejected at parse time, not at evaluation time. This ensures that malformed paths cannot be used to probe for valid segments.
-
-**Canonical Path Roots** (normatively defined):
-
-| Root | Meaning | Example Paths |
-|------|---------|---------------|
-| `agent` | Env.agent (requesting agent) | `agent.role`, `agent.organization`, `agent.costCenter` |
-| `asset` | Env.asset (requested asset) | `asset.classification`, `asset.sensitivity`, `asset.timeliness` |
-| `context` | External request context | `context.purpose`, `context.environment`, `context.jurisdiction` |
+| Operand | `dprod:path` | Traversal |
+|---------|-------------|-----------|
+| `dprod:environment` | `dprod:environment` | `?request dprod:environment ?value` |
+| `odrl:purpose` | `odrl:purpose` | `?request odrl:purpose ?value` |
+| `dprod:timeliness` | `(odrl:target dprod:timeliness)` | `?request odrl:target ?asset . ?asset dprod:timeliness ?value` |
+| `dprod:recipientType` | `(odrl:assignee dprod:recipientType)` | `?request odrl:assignee ?agent . ?agent dprod:recipientType ?value` |
 
 ```
-deref : Path × Env → Value ∪ {⊥}
+traverse : PropertyPath × Node → Value ∪ {⊥}
 
-deref(path, Env) =
-    let segments = split(path, '.')
-    let root = case head(segments) of
-        "agent"   → Env.agent
-        "asset"   → Env.asset
-        "context" → Env.context
-        _         → ⊥
-    in foldl(navigate, root, tail(segments))
+traverse(path, node) =
+    case path of
+        IRI →
+            -- Simple path: single property lookup
+            if ∃v. (node, IRI, v) ∈ Graph then v else ⊥
 
-navigate(obj, segment) =
-    case obj of
-        ⊥       → ⊥
-        Record  → obj.segment if segment ∈ fields(obj) else ⊥
-        Map     → obj[segment] if segment ∈ keys(obj) else ⊥
-        _       → ⊥
+        (IRI₁ IRI₂ ... IRIₙ) →
+            -- Sequence path: fold through properties
+            foldl(step, node, [IRI₁, IRI₂, ..., IRIₙ])
+
+step(node, prop) =
+    case node of
+        ⊥ → ⊥
+        _ → if ∃v. (node, prop, v) ∈ Graph then v else ⊥
 ```
 
-**Security Requirement: Path Sandboxing** (normative)
+**Safety Properties** (normative):
 
-Implementations MUST enforce a strict sandbox for `deref` operations. The evaluator MUST reject any path that:
-
-1. Contains directory traversal sequences (e.g., `..`, `/`, `\`)
-2. References roots other than the canonical set (`agent`, `asset`, `context`)
-3. Contains URL-encoded characters or escape sequences
-4. Attempts to access host system variables or environment settings not explicitly mapped to the `Env` object
-
-Rationale: Without these constraints, a malicious path like `context.../../private/key` could escape the policy evaluation sandbox and access host system resources. Path validation MUST occur at parse time to prevent timing-based probing attacks.
-
-**Security Requirements Summary** (normative):
-
-1. **Root validation**: Reject paths not starting with a canonical root (`agent`, `asset`, `context`)
-2. **Grammar validation**: Reject paths containing `..`, `/`, `%`, or other traversal/encoding patterns
-3. **Depth limiting**: MAY reject paths exceeding implementation-defined maximum depth
-4. **Fail-closed**: Return `⊥` (not an error message) for invalid paths to prevent information leakage
-
-These constraints prevent path traversal attacks and unauthorized data access via malformed resolution paths.
+1. **IRI-only**: Path elements MUST be IRIs (not strings, not blank nodes)
+2. **Bounded depth**: Sequence paths have bounded length (recommended ≤ 5 steps)
+3. **No cycles**: Path traversal is acyclic (each step navigates to a new node)
+4. **Fail-closed**: Return `⊥` for any unresolvable path to prevent information leakage
+5. **Deterministic**: Each step resolves to exactly one value or `⊥`
 
 #### resolveRuntime : RuntimeRef × Env → Value
 
@@ -833,27 +809,27 @@ No specificity ordering within norm types. All matching norms contribute.
     WellFormed(Σ) ⟹ |{ s | Σ.state(d) = s }| = 1
 ```
 
-### 9.5 Path Resolution Safety
+### 9.5 Property Path Traversal Safety
 
-**Theorem**: Path resolution is sandboxed.
-
-```
-∀ path, Env.
-    ¬conformsToGrammar(path) ⟹ deref(path, Env) = ⊥
-```
-
-**Theorem**: Path resolution cannot escape canonical roots.
+**Theorem**: Traversal is bounded by path length.
 
 ```
-∀ path, Env.
-    deref(path, Env) ≠ ⊥ ⟹ head(split(path, '.')) ∈ {"agent", "asset", "context"}
+∀ path, node.
+    traverse(path, node) terminates in O(|path|) steps
 ```
 
-**Theorem**: Path resolution is total and fail-closed.
+**Theorem**: Traversal uses only declared IRIs.
 
 ```
-∀ path, Env.
-    conformsToGrammar(path) ⟹ deref(path, Env) ∈ Value ∪ {⊥}
+∀ path, node.
+    traverse(path, node) ≠ ⊥ ⟹ all elements of path are IRIs
+```
+
+**Theorem**: Traversal is total and fail-closed.
+
+```
+∀ path, node.
+    traverse(path, node) ∈ Value ∪ {⊥}
 ```
 
 ---
@@ -905,29 +881,39 @@ Under these constraints, `Eval` is **total**: it terminates for all well-formed 
 
 ### 11.1 Left Operands
 
-Profiles attach DPROD Contracts resolution paths to operands. Standard ODRL operands (like `odrl:purpose`) are extended in-place; domain-specific operands are declared as new `odrl:LeftOperand` instances:
+Profiles attach DPROD Contracts property paths to operands. Standard ODRL operands (like `odrl:purpose`) are extended in-place; domain-specific operands are declared as new `odrl:LeftOperand` instances:
 
 ```turtle
-# Extend an existing ODRL operand with a resolution path
-odrl:purpose dprod:resolutionPath "context.purpose" .
+# Context-rooted: direct property on request
+odrl:purpose dprod:path odrl:purpose .
+dprod:environment dprod:path dprod:environment .
 
-# Declare a new domain-specific operand
+# Asset-rooted: via odrl:target (two-step sequence path)
 dprod:timeliness a odrl:LeftOperand ;
-    dprod:resolutionPath "asset.timeliness" .
+    dprod:path (odrl:target dprod:timeliness) ;
+    dprod:select "SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }" .
+
+# Agent-rooted: via odrl:assignee (two-step sequence path)
+dprod:recipientType a odrl:LeftOperand ;
+    dprod:path (odrl:assignee dprod:recipientType) ;
+    dprod:select "SELECT ?v WHERE { $request odrl:assignee/dprod:recipientType ?v }" .
 ```
 
-The `resolutionPath` value must conform to the path grammar defined in §6.2 (`deref`). SHACL validation enforces that all resolution paths start with a canonical root:
+SHACL validation enforces cardinality on path and select:
 
 ```turtle
 dprod-shapes:LeftOperandShape a sh:NodeShape ;
     sh:targetClass odrl:LeftOperand ;
     sh:property [
-        sh:path dprod:resolutionPath ;
-        sh:minCount 1 ;
+        sh:path dprod:path ;
+        sh:maxCount 1 ;
+        sh:message "LeftOperand may have at most one dprod:path."
+    ] ;
+    sh:property [
+        sh:path dprod:select ;
         sh:maxCount 1 ;
         sh:datatype xsd:string ;
-        sh:pattern "^(agent|asset|context)\\." ;
-        sh:message "resolutionPath must start with agent., asset., or context."
+        sh:message "LeftOperand may have at most one dprod:select."
     ] .
 ```
 
@@ -1066,23 +1052,18 @@ datatype Condition =
   | Or(left: Condition, right: Condition)
   | Not(inner: Condition)
 
-function Deref(path: string, env: Env): Option<Value>
-  requires ValidPath(path)
-  ensures Deref(path, env).None? ==> !PathResolvable(path, env)
+function Traverse(path: PropertyPath, node: Node): Option<Value>
+  ensures Traverse(path, node).None? ==> !PathResolvable(path, node)
 {
-  var segments := Split(path, '.');
-  var root := match segments[0]
-    case "agent" => Some(env.agent)
-    case "asset" => Some(env.asset)
-    case "context" => Some(env.context)
-    case _ => None;
-  FoldNavigate(root, segments[1..])
+  match path
+    case SimplePath(iri) => Lookup(node, iri)
+    case SequencePath(iris) => FoldStep(Some(node), iris)
 }
 
 function Resolve(op: LeftOperand, env: Env): Option<Value>
   requires ValidEnv(env)
 {
-  if op.resolutionPath.Some? then Deref(op.resolutionPath.value, env)
+  if op.path.Some? then Traverse(op.path.value, env.request)
   else None
 }
 
@@ -1111,7 +1092,7 @@ The following properties should be proved for a verified implementation:
 2. **(S2) Totality**: `Eval` terminates for all well-formed inputs
 3. **(S3) Duty-state consistency**: No duty can be simultaneously in two states
 4. **(S4) Terminal permanence**: Fulfilled/Violated states never revert
-5. **(S5) Path safety**: `deref` returns `⊥` for any non-conforming path
+5. **(S5) Path safety**: `traverse` returns `⊥` for any unresolvable property path
 6. **(S6) Prohibition monotonicity**: Adding policies cannot remove prohibitions
 
 ---
@@ -1123,4 +1104,3 @@ The following properties should be proved for a verified implementation:
 - [RL2 Formal Semantics](../../RL2/RL2_Semantics.md)
 - DPROD Contracts Core Ontology — `ontology/dprod-contracts.ttl`
 - DPROD Contracts SHACL Shapes — `ontology/dprod-contracts-shapes.ttl`
-- DPROD Contracts DUE Profile — `profiles/dprod-due.ttl`
