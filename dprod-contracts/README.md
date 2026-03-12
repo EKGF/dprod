@@ -95,12 +95,10 @@ Operands resolve via `dprod:path` -- SHACL-style property paths from the evaluat
 dprod:environment  dprod:path dprod:environment .
 
 # Asset-rooted (two-step): via odrl:target
-dprod:timeliness   dprod:path (odrl:target dprod:timeliness) ;
-                   dprod:select "SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }" .
+dprod:timeliness   dprod:path (odrl:target dprod:timeliness) .
 
 # Agent-rooted (two-step): via odrl:assignee
-dprod:recipientType dprod:path (odrl:assignee dprod:recipientType) ;
-                    dprod:select "SELECT ?v WHERE { $request odrl:assignee/dprod:recipientType ?v }" .
+dprod:recipientType dprod:select "SELECT ?v WHERE { $request odrl:assignee/dprod:recipientType ?v }" .
 ```
 
 ---
