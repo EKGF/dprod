@@ -1,8 +1,8 @@
 # =============================================================================
 # DPROD Contracts Baseline Test Data
 # =============================================================================
-# Comprehensive test dataset: 5 organizations, 8+ assets, 8 DataContracts,
-# 2 Subscriptions, 6+ Duty instances with lifecycle state tracking.
+# Comprehensive test dataset: 5 organizations, 8+ assets, 8 DataOffers,
+# 2 DataContracts, 6+ Duty instances with lifecycle state tracking.
 #
 # Covers all DPROD contract patterns:
 #   - Recurring delivery with deadline
@@ -14,7 +14,7 @@
 #   - Purpose, classification, environment constraints
 #   - Asset hierarchy (partOf) and party hierarchy (memberOf)
 #   - Contract versioning (prov:wasRevisionOf)
-#   - Subscription with bilateral duties
+#   - DataContract with bilateral duties
 # =============================================================================
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
@@ -275,7 +275,7 @@ ex:compliance
 ############################# Contract 1: Customer API v2 #########################
 # Daily delivery + recurrence + deadline + schema
 
-<https://example.org/offers/customer-api-v1> a dprod:DataContract ;
+<https://example.org/offers/customer-api-v1> a dprod:DataOffer ;
     rdfs:label "Customer API v1 (retired)" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
@@ -286,7 +286,7 @@ ex:compliance
         odrl:action odrl:use
     ] .
 
-<https://example.org/offers/customer-api-v2> a dprod:DataContract ;
+<https://example.org/offers/customer-api-v2> a dprod:DataOffer ;
     rdfs:label "Customer API v2" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
@@ -344,7 +344,7 @@ ex:compliance
 ############################# Contract 2: Market Data Feed #########################
 # High-frequency, display + nonDisplay
 
-<https://example.org/offers/market-data-feed> a dprod:DataContract ;
+<https://example.org/offers/market-data-feed> a dprod:DataOffer ;
     rdfs:label "Market Data Feed" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
@@ -397,7 +397,7 @@ ex:compliance
 ############################# Contract 3: Country Reference SQL #########################
 # Simple read-only, no recurrence
 
-<https://example.org/offers/country-ref> a dprod:DataContract ;
+<https://example.org/offers/country-ref> a dprod:DataOffer ;
     rdfs:label "Country Reference Data" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
@@ -423,7 +423,7 @@ ex:compliance
 ############################# Contract 4: Transaction Files #########################
 # Monthly delivery, consumer reporting
 
-<https://example.org/offers/transaction-files> a dprod:DataContract ;
+<https://example.org/offers/transaction-files> a dprod:DataOffer ;
     rdfs:label "Transaction Files" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/finance> ;
@@ -463,7 +463,7 @@ ex:compliance
 ############################# Contract 5: Employee Directory #########################
 # Change notification, prohibition on distribute
 
-<https://example.org/offers/employee-directory> a dprod:DataContract ;
+<https://example.org/offers/employee-directory> a dprod:DataOffer ;
     rdfs:label "Employee Directory" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/hr> ;
@@ -510,7 +510,7 @@ ex:compliance
 ############################# Contract 6: Risk Metrics #########################
 # Quality SLA via conformTo + constraint
 
-<https://example.org/offers/risk-metrics> a dprod:DataContract ;
+<https://example.org/offers/risk-metrics> a dprod:DataOffer ;
     rdfs:label "Risk Metrics" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
@@ -563,7 +563,7 @@ ex:compliance
 ############################# Contract 7: Audit Logs #########################
 # Read-only, retention, purpose restriction
 
-<https://example.org/offers/audit-logs> a dprod:DataContract ;
+<https://example.org/offers/audit-logs> a dprod:DataOffer ;
     rdfs:label "Audit Log Archive" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
@@ -607,7 +607,7 @@ ex:compliance
 ############################# Contract 8: Multi-Asset Bundle #########################
 # Multiple targets, multiple permissions
 
-<https://example.org/offers/multi-asset> a dprod:DataContract ;
+<https://example.org/offers/multi-asset> a dprod:DataOffer ;
     rdfs:label "Multi-Asset Data Bundle" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
@@ -679,12 +679,12 @@ ex:compliance
     ] .
 
 
-############################# Subscription 1: Analytics → Customer API v2 #########################
+############################# DataContract 1: Analytics → Customer API v2 #########################
 
-<https://example.org/agreements/analytics-customer-2026> a dprod:Subscription ;
+<https://example.org/agreements/analytics-customer-2026> a dprod:DataContract ;
     rdfs:label "Analytics Customer Data 2026" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
-    dprod:subscribesTo <https://example.org/offers/customer-api-v2> ;
+    dprod:acceptsOffer <https://example.org/offers/customer-api-v2> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:assignee <https://example.org/agents/analytics> ;
     odrl:target <https://example.org/assets/customer-data> ;
@@ -721,12 +721,12 @@ ex:compliance
     ] .
 
 
-############################# Subscription 2: Trading → Market Data Feed #########################
+############################# DataContract 2: Trading → Market Data Feed #########################
 
-<https://example.org/agreements/trading-market-data-2026> a dprod:Subscription ;
+<https://example.org/agreements/trading-market-data-2026> a dprod:DataContract ;
     rdfs:label "Trading Market Data 2026" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
-    dprod:subscribesTo <https://example.org/offers/market-data-feed> ;
+    dprod:acceptsOffer <https://example.org/offers/market-data-feed> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:assignee <https://example.org/agents/analytics> ;
     odrl:target <https://example.org/assets/market-prices> ;

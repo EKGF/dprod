@@ -6,10 +6,10 @@ A guide for data platform teams using DPROD for data contracts and subscriptions
 
 ## Overview
 
-DPROD models internal data sharing agreements as ODRL 2.2 policies. A **DataContract** is an offer from a data provider. A **Subscription** is an activated contract binding provider and consumer.
+DPROD models internal data sharing agreements as ODRL 2.2 policies. A **DataOffer** is an offer from a data provider. A **DataContract** is an activated offer binding provider and consumer.
 
 ```
-DataContract (Offer)          Subscription (Agreement)
+DataOffer (Offer)          DataContract (Agreement)
 +--------------------------+  +--------------------------+
 | Provider duties          |  | Provider duties          |
 | Consumer rights          |  | Consumer rights          |
@@ -24,9 +24,9 @@ DataContract (Offer)          Subscription (Agreement)
 
 ## Key Concepts
 
-### DataContract (Offer)
+### DataOffer (Offer)
 
-A `dprod:DataContract` is a subclass of `odrl:Offer`. It specifies:
+A `dprod:DataOffer` is a subclass of `odrl:Offer`. It specifies:
 
 - **Provider** (`odrl:assigner`): the data team providing data
 - **Target** (`odrl:target`): the data asset(s) covered -- inherited by rules unless overridden
@@ -35,9 +35,9 @@ A `dprod:DataContract` is a subclass of `odrl:Offer`. It specifies:
 - **Consumer duties** (`odrl:obligation` without subject in Offer): obligations consumers accept upon subscribing
 - **Prohibitions** (`odrl:prohibition`): what consumers cannot do
 
-### Subscription (Agreement)
+### DataContract (Agreement)
 
-A `dprod:Subscription` is a subclass of `odrl:Agreement`. It adds:
+A `dprod:DataContract` is a subclass of `odrl:Agreement`. It adds:
 
 - **Consumer** (`odrl:assignee`): the subscribing team
 - **Effective/expiration dates**: contract period
@@ -74,7 +74,7 @@ Standard ODRL actions apply:
 
 ## Step-by-Step Cookbook
 
-Create your first DataContract in five steps.
+Create your first DataOffer in five steps.
 
 ### Step 1: Declare the Contract
 
@@ -85,7 +85,7 @@ Every contract starts with a type, profile declaration, and provider identity.
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
@@ -159,21 +159,21 @@ Consumer duties activate upon subscription. Prohibitions apply to all subscriber
     ] .
 ```
 
-### Step 5: Create a Subscription
+### Step 5: Create a DataContract
 
-When a consumer accepts the contract, create a Subscription (Agreement) referencing the contract:
+When a consumer accepts the offer, create a DataContract (Agreement) referencing the offer:
 
 ```turtle
-ex:subscription a dprod:Subscription ;
+ex:subscription a dprod:DataContract ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
-    dprod:subscribesTo ex:contract ;
+    dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;
     dprod:effectiveDate "2026-02-01T00:00:00Z"^^xsd:dateTime ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime .
 ```
 
-The subscription materializes all duties from the contract with explicit `dprod:subject` on each.
+The contract materializes all duties from the offer with explicit `dprod:subject` on each.
 
 ---
 
@@ -287,7 +287,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 Read-only access, no recurrence, no consumer duties. Target inherited from policy.
 
 ```turtle
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:referenceData ;
@@ -306,7 +306,7 @@ ex:contract a dprod:DataContract ;
 Daily delivery, schema conformance, display + non-display, monthly reporting. Target inherited from policy unless overridden.
 
 ```turtle
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:customerData ;
@@ -348,7 +348,7 @@ ex:contract a dprod:DataContract ;
 High-frequency delivery with quality SLA and change notification. Target inherited from policy unless overridden.
 
 ```turtle
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:riskMetrics ;
@@ -393,7 +393,7 @@ ex:contract a dprod:DataContract ;
 A single contract covering multiple targets. When a policy has multiple targets, rules must specify their target explicitly -- inheritance is ambiguous.
 
 ```turtle
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices , ex:referenceData , ex:riskMetrics ;
@@ -423,7 +423,7 @@ ex:contract a dprod:DataContract ;
 `odrl:target` at the policy level is inherited by rules that don't declare their own target. This reduces redundancy:
 
 ```turtle
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:target ex:marketPrices ;           # policy-level target
     odrl:permission [
         a odrl:Permission ;
@@ -477,17 +477,17 @@ ex:analyticsTeam a odrl:Party ;
 Use `prov:wasRevisionOf` to link contract versions:
 
 ```turtle
-ex:contract-v2 a dprod:DataContract ;
+ex:contract-v2 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v1 .
 
-ex:contract-v3 a dprod:DataContract ;
+ex:contract-v3 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v2 .
 ```
 
-Subscriptions reference the specific contract version they activate:
+DataContracts reference the specific offer version they activate:
 
 ```turtle
-ex:subscription dprod:subscribesTo ex:contract-v2 .
+ex:subscription dprod:acceptsOffer ex:contract-v2 .
 ```
 
 ### Expiration
@@ -495,7 +495,7 @@ ex:subscription dprod:subscribesTo ex:contract-v2 .
 Contracts and subscriptions can have explicit expiration dates:
 
 ```turtle
-ex:subscription a dprod:Subscription ;
+ex:subscription a dprod:DataContract ;
     dprod:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime .
 ```
@@ -527,14 +527,14 @@ Pending ──────────────> Active
 Contracts can be versioned using `prov:wasRevisionOf`:
 
 ```turtle
-ex:contract-v2 a dprod:DataContract ;
+ex:contract-v2 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v1 .
 ```
 
-Subscriptions reference the contract they activate via `dprod:subscribesTo`:
+DataContracts reference the offer they activate via `dprod:acceptsOffer`:
 
 ```turtle
-ex:subscription dprod:subscribesTo ex:contract-v2 .
+ex:subscription dprod:acceptsOffer ex:contract-v2 .
 ```
 
 ---
@@ -557,9 +557,9 @@ If migrating from DCON, see [term-mapping.md](term-mapping.md) for complete prop
 
 1. Every policy declares `odrl:profile <https://ekgf.github.io/dprod/>`
 2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
-3. DataContract has `odrl:assigner` (provider)
-4. Subscription has both `odrl:assigner` and `odrl:assignee`
-5. Subscription has `dprod:subscribesTo` referencing a DataContract
+3. DataOffer has `odrl:assigner` (provider)
+4. DataContract has both `odrl:assigner` and `odrl:assignee`
+5. DataContract has `dprod:acceptsOffer` referencing a DataOffer
 6. Each duty has exactly one `odrl:action`
 7. Each permission and prohibition has exactly one `odrl:action` and one `odrl:target`
 8. Provider duties have `dprod:subject` set to the provider

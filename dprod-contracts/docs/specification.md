@@ -65,13 +65,13 @@ Active  -> Fulfilled (action performed)
 Active  -> Violated  (deadline passed without performance)
 ```
 
-### 3.2 dprod:DataContract
+### 3.2 dprod:DataOffer
 
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:Class` |
 | **Superclass** | `odrl:Offer` |
-| **Label** | Data Contract |
+| **Label** | Data Offer |
 | **Definition** | Policy offer defining data access terms |
 
 **Required properties**:
@@ -101,7 +101,7 @@ Active  -> Violated  (deadline passed without performance)
 **Example**:
 
 ```turtle
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
@@ -109,14 +109,14 @@ ex:contract a dprod:DataContract ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime .
 ```
 
-### 3.3 dprod:Subscription
+### 3.3 dprod:DataContract
 
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:Class` |
 | **Superclass** | `odrl:Agreement` |
-| **Label** | Subscription |
-| **Definition** | Activated data contract binding provider and consumer |
+| **Label** | Data Contract |
+| **Definition** | Activated data offer binding provider and consumer |
 
 **Required properties**:
 
@@ -125,7 +125,7 @@ ex:contract a dprod:DataContract ;
 | `odrl:profile` | ODRL | 1..* |
 | `odrl:assigner` | ODRL | 1 |
 | `odrl:assignee` | ODRL | 1 |
-| `dprod:subscribesTo` | DPROD | 1 |
+| `dprod:acceptsOffer` | DPROD | 1 |
 
 **Recommended properties**:
 
@@ -138,9 +138,9 @@ ex:contract a dprod:DataContract ;
 **Example**:
 
 ```turtle
-ex:subscription a dprod:Subscription ;
+ex:subscription a dprod:DataContract ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
-    dprod:subscribesTo ex:contract ;
+    dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;
     dprod:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime ;
@@ -171,7 +171,7 @@ ex:subscription a dprod:Subscription ;
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:ObjectProperty` |
-| **Domain** | `odrl:Duty` | `dprod:DataContract` | `dprod:Subscription` |
+| **Domain** | `odrl:Duty` | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `dprod:State` |
 | **Cardinality** | 0..1 |
 | **Definition** | Current lifecycle state |
@@ -206,13 +206,13 @@ Two forms:
 
 Each generated instance follows the standard duty lifecycle independently (Pending -> Active -> Fulfilled/Violated). The `deadline` property defines the per-instance fulfillment window. Any iCal-compliant library can parse the value.
 
-### 4.4 dprod:subscribesTo
+### 4.4 dprod:acceptsOffer
 
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:ObjectProperty` |
-| **Domain** | `dprod:Subscription` |
-| **Range** | `dprod:DataContract` |
+| **Domain** | `dprod:DataContract` |
+| **Range** | `dprod:DataOffer` |
 | **Cardinality** | 1 |
 | **Definition** | The contract this subscription activates |
 
@@ -221,7 +221,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:DatatypeProperty` |
-| **Domain** | `dprod:DataContract` | `dprod:Subscription` |
+| **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
 | **Definition** | When the contract/subscription becomes effective |
@@ -231,7 +231,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:DatatypeProperty` |
-| **Domain** | `dprod:DataContract` | `dprod:Subscription` |
+| **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
 | **Definition** | When the contract/subscription expires |
@@ -381,8 +381,8 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:DataContractShape` | `dprod:DataContract` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause; `state` 0..1; effective/expiration dates 0..1 |
-| `dprod-shapes:SubscriptionShape` | `dprod:Subscription` | Must declare `odrl:profile`; exactly one `dprod:subscribesTo` (must be `dprod:DataContract`); at least one clause; `state` 0..1; effective/expiration dates 0..1 |
+| `dprod-shapes:DataOfferShape` | `dprod:DataOffer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause; `state` 0..1; effective/expiration dates 0..1 |
+| `dprod-shapes:DataContractShape` | `dprod:DataContract` | Must declare `odrl:profile`; exactly one `dprod:acceptsOffer` (must be `dprod:DataOffer`); at least one clause; `state` 0..1; effective/expiration dates 0..1 |
 
 ### Operand shapes
 
@@ -410,14 +410,14 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 Which DPROD properties are valid on which classes:
 
-| Property | Duty | DataContract | Subscription | LeftOperand | LogicalConstraint | Asset | Party |
+| Property | Duty | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
 |----------|------|-------------|-------------|-------------|-------------------|-------|-------|
 | `dprod:state` | Yes | Yes | Yes | | | | |
 | `dprod:deadline` | Yes | | | | | | |
 | `dprod:recurrence` | Yes | | | | | | |
 | `dprod:subject` | Yes | | | | | | |
 | `dprod:object` | Yes | | | | | | |
-| `dprod:subscribesTo` | | | Yes | | | | |
+| `dprod:acceptsOffer` | | | Yes | | | | |
 | `dprod:effectiveDate` | | Yes | Yes | | | | |
 | `dprod:expirationDate` | | Yes | Yes | | | | |
 | `dprod:path` | | | | Yes | | | |

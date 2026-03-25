@@ -33,7 +33,7 @@ dct:modified a owl:AnnotationProperty .
     - Deadline property on odrl:Duty
     - Recurrence property on odrl:Duty (RFC 5545 RRULE)
     - Duty party roles (subject = duty bearer, object = affected party)
-    - Data contract and subscription subtypes
+    - Data offer and data contract subtypes
     - Asset/party hierarchy properties
     - Structured operand resolution via SHACL-style property paths
     - Runtime references for dynamic right-operand values
@@ -74,7 +74,7 @@ dprod:State
     - Fulfilled: action performed
     - Violated: deadline passed without performance
 
-    On contracts/subscriptions (administrative, not evaluated at request time):
+    On offers/contracts (administrative, not evaluated at request time):
     - Pending: not yet in force
     - Active: in force
     - Fulfilled: obligations complete
@@ -112,30 +112,30 @@ dprod:Violated
   rdfs:label "violated" ;
 .
 
-dprod:DataContract
+dprod:DataOffer
   a owl:Class, rdfs:Class ;
   dct:description "Policy offer defining data access terms."@en ;
   rdfs:comment
-    """A DataContract is an Offer from a data provider.
+    """A DataOffer is an Offer from a data provider.
     It defines permissions, duties, and prohibitions for data access.
-    When accepted (subscribed), becomes a Subscription (Agreement)."""@en ;
+    When accepted by a consumer, becomes a DataContract (Agreement)."""@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
-  rdfs:label "data contract" ;
+  rdfs:label "data offer" ;
   rdfs:subClassOf odrl:Offer ;
 .
 
-dprod:Subscription
+dprod:DataContract
   a owl:Class, rdfs:Class ;
-  dct:description "Activated data contract binding provider and consumer."@en ;
+  dct:description "Activated data offer binding provider and consumer."@en ;
   rdfs:comment
-    """A Subscription is an activated DataContract.
-    - assigner: data provider (from contract)
-    - assignee: data consumer (subscriber)
+    """A DataContract is an activated DataOffer.
+    - assigner: data provider (from offer)
+    - assignee: data consumer
     Bilateral: both parties may have active duties."""@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
-  rdfs:label "subscription" ;
+  rdfs:label "data contract" ;
   rdfs:subClassOf odrl:Agreement ;
-  owl:disjointWith dprod:DataContract ;
+  owl:disjointWith dprod:DataOffer ;
 .
 
 dprod:RuntimeReference
@@ -145,7 +145,7 @@ dprod:RuntimeReference
   rdfs:label "runtime reference" ;
 .
 
-
+ 
 #############################  DPROD Contracts Properties ################
 
 
@@ -153,7 +153,7 @@ dprod:state
   a rdf:Property, owl:ObjectProperty ;
   dct:description "Current lifecycle state."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
-  rdfs:domain [ owl:unionOf (odrl:Duty dprod:DataContract dprod:Subscription) ] ;
+  rdfs:domain [ owl:unionOf (odrl:Duty dprod:DataOffer dprod:DataContract) ] ;
   rdfs:range dprod:State ;
   rdfs:label "state" ;
 .
@@ -188,29 +188,29 @@ dprod:recurrence
   rdfs:label "recurrence" ;
 .
 
-dprod:subscribesTo
+dprod:acceptsOffer
   a rdf:Property, owl:ObjectProperty ;
-  dct:description "The contract this subscription activates."@en ;
+  dct:description "The offer this contract activates."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
-  rdfs:domain dprod:Subscription ;
-  rdfs:range dprod:DataContract ;
-  rdfs:label "subscribes to" ;
+  rdfs:domain dprod:DataContract ;
+  rdfs:range dprod:DataOffer ;
+  rdfs:label "accepts offer" ;
 .
 
 dprod:effectiveDate
   a rdf:Property, owl:DatatypeProperty ;
-  dct:description "When the contract or subscription becomes effective."@en ;
+  dct:description "When the offer or contract becomes effective."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
-  rdfs:domain [ owl:unionOf (dprod:DataContract dprod:Subscription) ] ;
+  rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
   rdfs:range xsd:dateTime ;
   rdfs:label "effective date" ;
 .
 
 dprod:expirationDate
   a rdf:Property, owl:DatatypeProperty ;
-  dct:description "When the contract or subscription expires."@en ;
+  dct:description "When the offer or contract expires."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
-  rdfs:domain [ owl:unionOf (dprod:DataContract dprod:Subscription) ] ;
+  rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
   rdfs:range xsd:dateTime ;
   rdfs:label "expiration date" ;
 .

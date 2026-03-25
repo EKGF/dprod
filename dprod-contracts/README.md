@@ -23,7 +23,7 @@ DPROD Contracts is **specification-first**. The semantics document defines what 
 
 See [examples/](examples/) for complete working policies:
 
-- [data-contract.ttl](examples/data-contract.ttl) -- DataContract, Subscription, bilateral duties
+- [data-contract.ttl](examples/data-contract.ttl) -- DataOffer, DataContract, bilateral duties
 - [data-use-policy.ttl](examples/data-use-policy.ttl) -- Role-based access, purpose constraints
 
 ---
@@ -38,7 +38,7 @@ See [examples/](examples/) for complete working policies:
 | Evaluation order | Undefined | Deterministic left-to-right |
 | Operand resolution | Implicit | Explicit `dprod:path` property paths (+ `dprod:select` for complex resolution) |
 | Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
-| Contract types | -- | `DataContract` (subclass of Offer), `Subscription` (subclass of Agreement) |
+| Contract types | -- | `DataOffer` (subclass of Offer), `DataContract` (subclass of Agreement) |
 
 **Note**: DPROD Contracts is an ODRL profile, not a parallel vocabulary. Standard ODRL processors can parse DPROD policies; DPROD-aware processors additionally enforce lifecycle, bilateral duties, and deterministic evaluation.
 
@@ -84,7 +84,7 @@ Pending ──────────────> Active
                    Fulfilled  Violated
 ```
 
-An `odrl:Duty` progresses through `dprod:State` values. A `dprod:DataContract` shares the same state machine.
+An `odrl:Duty` progresses through `dprod:State` values. A `dprod:DataOffer` shares the same state machine.
 
 ### 5. Structured Operand Resolution
 
@@ -113,7 +113,7 @@ dprod-contracts/
 ├── examples/
 │   ├── data-contract.ttl            # Complete contract example (with recurrence)
 │   ├── data-use-policy.ttl          # Access control example
-│   └── baseline.ttl                 # Comprehensive test data (8 contracts, 2 subscriptions)
+│   └── baseline.ttl                 # Comprehensive test data (8 offers, 2 contracts)
 └── docs/
     ├── overview.md                  # What is DPROD Contracts? (start here)
     ├── specification.md             # Technical vocabulary reference
@@ -131,7 +131,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions (State, deadline, recurrence, DataContract, Subscription, path, select, hierarchy) + domain-specific actions, operands, and concept values |
+| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path, select, hierarchy) + domain-specific actions, operands, and concept values |
 
 ---
 

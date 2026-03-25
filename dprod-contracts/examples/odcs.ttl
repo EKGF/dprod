@@ -226,7 +226,7 @@ ex:seller-data a odrl:Asset ;
     rdfs:label "Seller Data Product" ;
     dct:description "Views built on top of the seller tables." .
 
-ex:contract-seller-quantum a dprod:DataContract ;
+ex:contract-seller-quantum a dprod:DataOffer ;
     rdfs:label "Seller Data Contract (My Quantum)" ;
     dct:description "Views built on top of the seller tables. Predict sales over time." ;
     dct:hasVersion "1.1.0" ;

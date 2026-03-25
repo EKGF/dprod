@@ -22,7 +22,7 @@ DPROD Contracts is designed for organizations that need:
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
-ex:contract a dprod:DataContract ;
+ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
@@ -102,9 +102,9 @@ Pending ──────────────> Active
                    Fulfilled  Violated
 ```
 
-### DataContract and Subscription
+### DataOffer and DataContract
 
-A `dprod:DataContract` (subclass of `odrl:Offer`) is a provider's offer specifying SLAs, permissions, and restrictions. A `dprod:Subscription` (subclass of `odrl:Agreement`) is an activated contract binding both parties.
+A `dprod:DataOffer` (subclass of `odrl:Offer`) is a provider's offer specifying SLAs, permissions, and restrictions. A `dprod:DataContract` (subclass of `odrl:Agreement`) is an activated offer binding both parties.
 
 ### Recurrence
 
@@ -124,7 +124,7 @@ ODRL 2.2 Core (W3C Standard)
          | proper profile (thin extension)
          v
 DPROD Core (dprod:)
-  State, deadline, recurrence, DataContract, Subscription,
+  State, deadline, recurrence, DataOffer, DataContract,
   partOf, memberOf, path, select, RuntimeReference, not
   + domain-specific actions, operands, and SKOS concept values
   (deliver, notify, conformTo, nonDisplay, classification, ...)
@@ -151,7 +151,7 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 | Evaluation order | Undefined | Deterministic left-to-right |
 | Operand resolution | Implicit | Explicit `dprod:path` property paths (+ `dprod:select` for complex resolution) |
 | Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |
-| Contract types | Generic Offer/Agreement | `DataContract` (Offer) / `Subscription` (Agreement) |
+| Contract types | Generic Offer/Agreement | `DataOffer` (Offer) / `DataContract` (Agreement) |
 | Logical negation | Not supported | `dprod:not` on LogicalConstraint |
 
 Every DPROD policy remains a valid ODRL 2.2 policy. Standard ODRL processors can parse them; DPROD-aware processors additionally enforce lifecycle, bilateral duties, and deterministic evaluation.
@@ -162,8 +162,8 @@ Every DPROD policy remains a valid ODRL 2.2 policy. Standard ODRL processors can
 
 DPROD Contracts builds on the earlier DCON work. DCON's promise hierarchy dissolves into standard `odrl:Duty` patterns with DPROD actions. If migrating from DCON:
 
-- `dcon:DataContract` -> `dprod:DataContract`
-- `dcon:DataContractSubscription` -> `dprod:Subscription`
+- `dcon:DataContract` -> `dprod:DataOffer`
+- `dcon:DataContractSubscription` -> `dprod:DataContract`
 - `dcon:Promise` hierarchy -> `odrl:Duty` with DPROD actions (`deliver`, `notify`, `conformTo`, `report`)
 - `dcon:promisedDeliveryTime` -> `dprod:recurrence` + `dprod:deadline`
 

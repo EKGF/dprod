@@ -121,7 +121,7 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 
 | ODCS Section | DPROD Contracts | Notes |
 |---|---|---|
-| `kind: DataContract` | `a dprod:DataContract` | Subclass of `odrl:Offer` |
+| `kind: DataContract` | `a dprod:DataOffer` | Subclass of `odrl:Offer` |
 | `status` | `dprod:state` | 4-state lifecycle (Pending, Active, Fulfilled, Violated) |
 | `version` | `dct:hasVersion` | Standard Dublin Core |
 | `domain` / `dataProduct` | Core DPROD `dprod:DataProduct` | Linked via `odrl:hasPolicy` |
@@ -214,7 +214,7 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 7. **Party hierarchies** — `dprod:memberOf` for organizational structures with transitivity
 8. **Asset hierarchies** — `dprod:partOf` for dataset containment with transitivity
 9. **Linked data** — SPARQL-queryable, federable across organizations
-10. **Subscriptions** — formal bilateral agreements (`dprod:Subscription` as `odrl:Agreement`)
+10. **DataContracts** — formal bilateral agreements (`dprod:DataContract` as `odrl:Agreement`)
 
 ## What ODCS Adds Beyond DPROD Contracts
 

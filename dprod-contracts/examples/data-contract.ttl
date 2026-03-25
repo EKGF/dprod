@@ -108,11 +108,11 @@ ex:internal
 
 ############################# Data Contract (Offer) #########################
 # Template offer from the data provider.
-# Subscribers accept this to create a Subscription (Agreement).
+# Consumers accept this to create a DataContract (Agreement).
 # Target inheritance: odrl:target at policy level is inherited by rules
 # unless overridden.
 
-<https://example.org/offers/market-prices-v2> a dprod:DataContract ;
+<https://example.org/offers/market-prices-v2> a dprod:DataOffer ;
     rdfs:label "Market Price Data Contract v2" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
@@ -194,15 +194,15 @@ ex:internal
     ] .
 
 
-############################# Subscription (Agreement) #########################
-# Quant Research has subscribed to the data contract.
+############################# DataContract (Agreement) #########################
+# Quant Research has accepted the data offer.
 # Bilateral agreement with duties on BOTH parties.
 # Target inherited from policy (market-prices) unless overridden.
 
-<https://example.org/agreements/quant-market-data-2026> a dprod:Subscription ;
+<https://example.org/agreements/quant-market-data-2026> a dprod:DataContract ;
     rdfs:label "Quant Research Market Data 2026" ;
     odrl:profile <https://ekgf.github.io/dprod/> ;
-    dprod:subscribesTo <https://example.org/offers/market-prices-v2> ;
+    dprod:acceptsOffer <https://example.org/offers/market-prices-v2> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
     odrl:assignee <https://example.org/agents/quant-research> ;
     odrl:target <https://example.org/assets/market-prices> ;

@@ -169,8 +169,8 @@ Recurrence ::= RRule(rule: String)
 | `grantee` | `odrl:assignee` | Party receiving rights (policy-level) |
 | `condition` | `odrl:constraint` | |
 | `Set` | `odrl:Set` | |
-| `Offer` | `odrl:Offer` | `DataContract` is a subtype |
-| `Agreement` | `odrl:Agreement` | `Subscription` is a subtype |
+| `Offer` | `odrl:Offer` | `DataOffer` is a subtype |
+| `Agreement` | `odrl:Agreement` | `DataContract` is a subtype |
 | `lte` | `odrl:lteq` | |
 | `gte` | `odrl:gteq` | |
 | `recurrence` | `dprod:recurrence` | RFC 5545 RRULE string |
@@ -207,8 +207,8 @@ Policy ::= Set(target: Asset?, clauses: Norm+, condition: Condition?)
 **Notes**:
 
 - `Set`: Unilateral declaration, no parties. Maps to `odrl:Set` in the RDF encoding.
-- `Offer`: Proposal from grantor, grantee optional (open offer). Maps to `odrl:Offer`. `DataContract` is a subtype of `Offer`.
-- `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `Subscription` is a subtype of `Agreement`.
+- `Offer`: Proposal from grantor, grantee optional (open offer). Maps to `odrl:Offer`. `DataOffer` is a subtype of `Offer`.
+- `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `DataContract` is a subtype of `Agreement`.
 - The formal `grantor` parameter maps to `odrl:assigner` (the party granting rights) in the RDF encoding.
 - The formal `grantee` parameter maps to `odrl:assignee` (the party receiving rights) in the RDF encoding.
 
@@ -704,7 +704,7 @@ PolicyApplicable(p, Env) =
     (p.condition = ⊥ ∨ ⟦p.condition⟧(Env))
 ```
 
-For Agreements (including Subscriptions), the agent must be a party:
+For Agreements (including DataContracts), the agent must be a party:
 
 ```
 PolicyApplicable(Agreement(grantor, grantee, ...), Env) =
@@ -972,7 +972,7 @@ DPROD Contracts fixes this: evaluation returns duties for **both** parties.
 
 ### 12.2 Formal Definition
 
-For an Agreement (or Subscription), duties are partitioned by bearer:
+For an Agreement (or DataContract), duties are partitioned by bearer:
 
 ```
 grantorDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantor }

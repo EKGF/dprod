@@ -270,19 +270,19 @@ dprod-shapes:LogicalConstraintShape
 ############################# Contract Shapes #########################
 
 
-dprod-shapes:DataContractShape
+dprod-shapes:DataOfferShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
-  rdfs:label "data contract shape" ;
-  sh:targetClass dprod:DataContract ;
-  sh:name "Data Contract Shape" ;
+  rdfs:label "data offer shape" ;
+  sh:targetClass dprod:DataOffer ;
+  sh:name "Data Offer Shape" ;
   sh:property dprod-shapes:ProfilePropertyGroup ;
   sh:node dprod-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:assigner ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:message "DataContract must have exactly one assigner."
+    sh:message "DataOffer must have exactly one assigner."
   ] ;
   sh:property dprod-shapes:StatePropertyGroup ;
   sh:property [
@@ -297,32 +297,32 @@ dprod-shapes:DataContractShape
   ] ;
 .
 
-dprod-shapes:SubscriptionShape
+dprod-shapes:DataContractShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
-  rdfs:label "subscription shape" ;
-  sh:targetClass dprod:Subscription ;
-  sh:name "Subscription Shape" ;
+  rdfs:label "data contract shape" ;
+  sh:targetClass dprod:DataContract ;
+  sh:name "Data Contract Shape" ;
   sh:property dprod-shapes:ProfilePropertyGroup ;
   sh:node dprod-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:assigner ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:message "Subscription must have exactly one assigner (data provider)."
+    sh:message "DataContract must have exactly one assigner (data provider)."
   ] ;
   sh:property [
     sh:path odrl:assignee ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:message "Subscription must have exactly one assignee (data consumer)."
+    sh:message "DataContract must have exactly one assignee (data consumer)."
   ] ;
   sh:property [
-    sh:path dprod:subscribesTo ;
+    sh:path dprod:acceptsOffer ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
-    sh:class dprod:DataContract ;
-    sh:message "Subscription must reference exactly one DataContract."
+    sh:class dprod:DataOffer ;
+    sh:message "DataContract must reference exactly one DataOffer."
   ] ;
   sh:property dprod-shapes:StatePropertyGroup ;
   sh:property [
