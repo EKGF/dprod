@@ -130,14 +130,6 @@ dprod-shapes:DataProductLifecycleStatusShape
     rdfs:isDefinedBy dprod-shapes:;
   .
 
-dprod-shapes:ProtocolShape
-    a sh:NodeShape;
-    rdfs:label "protocol shape" ;
-    dct:description "A detailed specification, possibly including a specific version, for how to communicate with a service."@en ;
-    rdfs:isDefinedBy dprod-shapes:;
-    sh:targetClass dprod:Protocol;
-.
-
 dprod-shapes:SecuritySchemaTypeShape
     a sh:NodeShape;
     rdfs:label "security schema type shape" ;
@@ -362,7 +354,6 @@ dprod-shapes:DataService-protocol
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:protocol;
-  sh:class dcat:Protocol;
   dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
   rdfs:label "data service protocol shape" ;
   .

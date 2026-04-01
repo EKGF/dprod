@@ -78,13 +78,6 @@ dprod:Enumeration
   rdfs:label "enumeration" ;
 .
 
-dprod:Protocol
-  a owl:Class, rdfs:Class ;
-  dct:description "A detailed specification, possibly including a specific version, for how to communicate with a service."@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "protocol" ;
-.
-
 dprod:SecuritySchemaType
   a owl:Class, rdfs:Class ;
   dct:description "A classification encompassing a set of rules used for authentication and communication."@en ;
@@ -211,7 +204,7 @@ dprod:protocol
   dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:DataService ;
-# rdfs:range rdf:resource ; # better let user decide whether they want Protocol class or own class or skos
+# rdfs:range not specified; users reference external URIs or SKOS concepts (DPROD-33)
   rdfs:label "protocol" ;
 .
 
