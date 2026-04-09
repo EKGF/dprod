@@ -15,11 +15,12 @@ DPROD Contracts is designed for organizations that need:
 - **Deterministic evaluation** where the same request always produces the same decision
 - **Formal verification** of policy correctness (amenable to Dafny, Why3, Coq)
 
-### Minimal Data Contract
+### Minimal Data Offer
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:contract a dprod:DataOffer ;
@@ -29,13 +30,57 @@ ex:contract a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
-        odrl:action dprod:deliver ;
+        odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
     odrl:permission [
         a odrl:Permission ;
         odrl:action odrl:display
+    ] .
+```
+
+### Minimal Data Contract
+
+A `dprod:DataContract` activates an offer, binding both parties:
+
+```turtle
+@prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
+@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix ex:       <https://example.org/> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+ex:agreement a dprod:DataContract ;
+    odrl:profile <https://ekgf.github.io/dprod/> ;
+    dprod:acceptsOffer ex:contract ;
+    odrl:assigner ex:dataTeam ;
+    odrl:assignee ex:quantResearch ;
+    odrl:target ex:marketPrices ;
+    dprod:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+    odrl:obligation [
+        a odrl:Duty ;
+        dprod:subject ex:dataTeam ;
+        odrl:action ex:deliver ;
+        dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        dprod:deadline "PT30M"^^xsd:duration
+    ] ;
+    odrl:obligation [
+        a odrl:Duty ;
+        dprod:subject ex:quantResearch ;
+        odrl:action ex:report ;
+        odrl:target ex:usageStats ;
+        dprod:deadline "P30D"^^xsd:duration
+    ] ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee ex:quantResearch ;
+        odrl:action odrl:display
+    ] ;
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assignee ex:quantResearch ;
+        odrl:action odrl:distribute
     ] .
 ```
 
@@ -53,7 +98,7 @@ ex:policy a odrl:Set ;
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:analytics
+            odrl:rightOperand ex:analytics
         ]
     ] .
 ```
@@ -83,7 +128,7 @@ odrl:constraint [
     a odrl:Constraint ;
     odrl:leftOperand odrl:purpose ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod:analytics
+    odrl:rightOperand ex:analytics
 ] .
 ```
 
@@ -126,7 +171,11 @@ ODRL 2.2 Core (W3C Standard)
 DPROD Core (dprod:)
   State, deadline, recurrence, DataOffer, DataContract,
   partOf, memberOf, path, select, RuntimeReference, not
-  + domain-specific actions, operands, and SKOS concept values
+         |
+         | domain profiles define (ex:)
+         v
+Domain Vocabulary
+  actions, operands, and SKOS concept values
   (deliver, notify, conformTo, nonDisplay, classification, ...)
 ```
 
@@ -135,7 +184,8 @@ DPROD Core (dprod:)
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions + data use vocabulary |
+| `dprod:` | `https://ekgf.github.io/dprod/` | Core extensions (lifecycle, operand resolution, contract types) |
+| `ex:` | (domain-specific) | Domain actions, operands, and concept values |
 
 ---
 
