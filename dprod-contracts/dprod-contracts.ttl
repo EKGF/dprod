@@ -62,7 +62,7 @@ dct:modified a owl:AnnotationProperty .
 
 
 dprod:State
-  a owl:Class, rdfs:Class ;
+  a owl:Class ;
   dct:description
     "Unified lifecycle state for duties and contracts."@en ;
   rdfs:comment
@@ -113,7 +113,7 @@ dprod:Violated
 .
 
 dprod:DataOffer
-  a owl:Class, rdfs:Class ;
+  a owl:Class ;
   dct:description "Policy offer defining data access terms."@en ;
   rdfs:comment
     """A DataOffer is an Offer from a data provider.
@@ -125,7 +125,7 @@ dprod:DataOffer
 .
 
 dprod:DataContract
-  a owl:Class, rdfs:Class ;
+  a owl:Class ;
   dct:description "Activated data offer binding provider and consumer."@en ;
   rdfs:comment
     """A DataContract is an activated DataOffer.
@@ -139,7 +139,7 @@ dprod:DataContract
 .
 
 dprod:RuntimeReference
-  a owl:Class, rdfs:Class ;
+  a owl:Class ;
   dct:description "Value resolved at evaluation time."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:label "runtime reference" ;
@@ -150,7 +150,7 @@ dprod:RuntimeReference
 
 
 dprod:state
-  a rdf:Property, owl:ObjectProperty ;
+  a owl:ObjectProperty ;
   dct:description "Current lifecycle state."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:domain [ owl:unionOf (odrl:Duty dprod:DataOffer dprod:DataContract) ] ;
@@ -159,7 +159,7 @@ dprod:state
 .
 
 dprod:deadline
-  a rdf:Property, owl:DatatypeProperty ;
+  a owl:DatatypeProperty ;
   dct:description "Time constraint for duty fulfillment."@en ;
   rdfs:comment
     """Supports multiple forms:
@@ -174,7 +174,7 @@ dprod:deadline
 .
 
 dprod:recurrence
-  a rdf:Property, owl:DatatypeProperty ;
+  a owl:DatatypeProperty ;
   dct:description "RFC 5545 RRULE defining when duty instances are generated."@en ;
   rdfs:comment
     """An RFC 5545 RRULE string (e.g., FREQ=DAILY;BYHOUR=6;BYMINUTE=0).
@@ -189,7 +189,7 @@ dprod:recurrence
 .
 
 dprod:acceptsOffer
-  a rdf:Property, owl:ObjectProperty ;
+  a owl:ObjectProperty ;
   dct:description "The offer this contract activates."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:domain dprod:DataContract ;
@@ -198,7 +198,7 @@ dprod:acceptsOffer
 .
 
 dprod:effectiveDate
-  a rdf:Property, owl:DatatypeProperty ;
+  a owl:DatatypeProperty ;
   dct:description "When the offer or contract becomes effective."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
@@ -207,7 +207,7 @@ dprod:effectiveDate
 .
 
 dprod:expirationDate
-  a rdf:Property, owl:DatatypeProperty ;
+  a owl:DatatypeProperty ;
   dct:description "When the offer or contract expires."@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
@@ -216,7 +216,7 @@ dprod:expirationDate
 .
 
 dprod:partOf
-  a rdf:Property, owl:ObjectProperty, owl:TransitiveProperty ;
+  a owl:ObjectProperty, owl:TransitiveProperty ;
   dct:description "Asset contained in larger asset."@en ;
   rdfs:comment
     "Transitive asset hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility."@en ;
@@ -228,7 +228,7 @@ dprod:partOf
 .
 
 dprod:memberOf
-  a rdf:Property, owl:ObjectProperty, owl:TransitiveProperty ;
+  a owl:ObjectProperty, owl:TransitiveProperty ;
   dct:description "Party member of group or organization."@en ;
   rdfs:comment
     "Transitive party hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility."@en ;
@@ -240,7 +240,7 @@ dprod:memberOf
 .
 
 dprod:subject
-  a rdf:Property, owl:ObjectProperty ;
+  a owl:ObjectProperty ;
   dct:description "Party bearing the duty (must perform the action)."@en ;
   rdfs:comment
     "The duty bearer. Sub-property of odrl:assignee for ODRL processor compatibility."@en ;
@@ -252,7 +252,7 @@ dprod:subject
 .
 
 dprod:object
-  a rdf:Property, owl:ObjectProperty ;
+  a owl:ObjectProperty ;
   dct:description "Party affected by the duty action."@en ;
   rdfs:comment
     "The party affected by or receiving the result of the duty action. Sub-property of odrl:function for ODRL processor compatibility."@en ;
@@ -277,7 +277,7 @@ dprod:path
 .
 
 dprod:select
-  a rdf:Property, owl:DatatypeProperty ;
+  a owl:DatatypeProperty ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:label "resolution query" ;
   dct:description "SPARQL query for operand value resolution."@en ;
@@ -290,7 +290,7 @@ dprod:select
 .
 
 dprod:not
-  a rdf:Property, owl:ObjectProperty ;
+  a owl:ObjectProperty ;
   dct:description "Logical negation on a constraint."@en ;
   rdfs:comment
     """ODRL defines odrl:and and odrl:or on LogicalConstraint but lacks

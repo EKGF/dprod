@@ -31,6 +31,7 @@ A minimal data use policy:
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:policy a odrl:Set ;
@@ -46,7 +47,7 @@ ex:policy a odrl:Set ;
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:analytics
+            odrl:rightOperand ex:analytics
         ]
     ] ;
 
@@ -77,7 +78,7 @@ odrl:permission [
         a odrl:Constraint ;
         odrl:leftOperand odrl:purpose ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod:compliance
+        odrl:rightOperand ex:compliance
     ]
 ] .
 ```
@@ -93,9 +94,9 @@ odrl:permission [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:classification ;
+        odrl:leftOperand ex:classification ;
         odrl:operator odrl:isAnyOf ;
-        odrl:rightOperand (dprod:public dprod:internal)
+        odrl:rightOperand (ex:public ex:internal)
     ]
 ] .
 ```
@@ -111,7 +112,7 @@ odrl:permission [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:role ;
+        odrl:leftOperand ex:role ;
         odrl:operator odrl:eq ;
         odrl:rightOperand "data-analyst"
     ]
@@ -164,15 +165,15 @@ odrl:prohibition [
         odrl:and (
             [
                 a odrl:Constraint ;
-                odrl:leftOperand dprod:sensitivity ;
+                odrl:leftOperand ex:sensitivity ;
                 odrl:operator odrl:eq ;
-                odrl:rightOperand dprod:pii
+                odrl:rightOperand ex:pii
             ]
             [
                 a odrl:Constraint ;
-                odrl:leftOperand dprod:processingMode ;
+                odrl:leftOperand ex:processingMode ;
                 odrl:operator odrl:eq ;
-                odrl:rightOperand dprod:modelTraining
+                odrl:rightOperand ex:modelTraining
             ]
         )
     ]
@@ -190,9 +191,9 @@ odrl:prohibition [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:derivationType ;
+        odrl:leftOperand ex:derivationType ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod:commingled
+        odrl:rightOperand ex:commingled
     ]
 ] .
 ```
@@ -216,7 +217,7 @@ odrl:constraint [
     a odrl:Constraint ;
     odrl:leftOperand odrl:purpose ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod:analytics
+    odrl:rightOperand ex:analytics
 ] .
 ```
 
@@ -225,9 +226,9 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod:classification ;
+    odrl:leftOperand ex:classification ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod:confidential
+    odrl:rightOperand ex:confidential
 ] .
 ```
 
@@ -236,7 +237,7 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod:jurisdiction ;
+    odrl:leftOperand ex:jurisdiction ;
     odrl:operator odrl:isAnyOf ;
     odrl:rightOperand ("US" "UK" "EU")
 ] .
@@ -247,7 +248,7 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod:retentionPeriod ;
+    odrl:leftOperand ex:retentionPeriod ;
     odrl:operator odrl:lteq ;
     odrl:rightOperand "P7Y"^^xsd:duration
 ] .
@@ -258,9 +259,9 @@ odrl:constraint [
 ```turtle
 odrl:constraint [
     a odrl:Constraint ;
-    odrl:leftOperand dprod:environment ;
+    odrl:leftOperand ex:environment ;
     odrl:operator odrl:eq ;
-    odrl:rightOperand dprod:production
+    odrl:rightOperand ex:production
 ] .
 ```
 
@@ -275,46 +276,46 @@ All operands are `odrl:LeftOperand` with `dprod:path` (and optionally `dprod:sel
 | Operand | `dprod:path` | Values / Type |
 |---------|-------------|---------------|
 | `odrl:purpose` | `odrl:purpose` | `analytics`, `research`, `compliance`, `operations` |
-| `dprod:environment` | `dprod:environment` | `production`, `staging`, `development`, `sandbox` |
-| `dprod:processingMode` | `dprod:processingMode` | `human`, `automated`, `modelTraining`, `inference` |
-| `dprod:legalBasis` | `dprod:legalBasis` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
-| `dprod:derivationType` | `dprod:derivationType` | `commingled`, `nonSubstitutive`, `newProduct` |
-| `dprod:channel` | `dprod:channel` | String |
-| `dprod:serviceWindow` | `dprod:serviceWindow` | String |
-| `dprod:jurisdiction` | `dprod:jurisdiction` | String (country) |
-| `dprod:network` | `dprod:network` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
-| `dprod:consentId` | `dprod:consentId` | String |
-| `dprod:accessPattern` | `dprod:accessPattern` | `batch`, `streaming`, `interactive`, `api` |
-| `dprod:volumeLimit` | `dprod:volumeLimit` | Integer |
-| `dprod:rateLimit` | `dprod:rateLimit` | Integer |
-| `dprod:project` | `dprod:project` | String |
+| `ex:environment` | `ex:environment` | `production`, `staging`, `development`, `sandbox` |
+| `ex:processingMode` | `ex:processingMode` | `human`, `automated`, `modelTraining`, `inference` |
+| `ex:legalBasis` | `ex:legalBasis` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
+| `ex:derivationType` | `ex:derivationType` | `commingled`, `nonSubstitutive`, `newProduct` |
+| `ex:channel` | `ex:channel` | String |
+| `ex:serviceWindow` | `ex:serviceWindow` | String |
+| `ex:jurisdiction` | `ex:jurisdiction` | String (country) |
+| `ex:network` | `ex:network` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
+| `ex:consentId` | `ex:consentId` | String |
+| `ex:accessPattern` | `ex:accessPattern` | `batch`, `streaming`, `interactive`, `api` |
+| `ex:volumeLimit` | `ex:volumeLimit` | Integer |
+| `ex:rateLimit` | `ex:rateLimit` | Integer |
+| `ex:project` | `ex:project` | String |
 
 ### Asset Operands (two-step — via `odrl:target`)
 
 | Operand | `dprod:path` | Values / Type |
 |---------|-------------|---------------|
-| `dprod:classification` | `(odrl:target dprod:classification)` | `public`, `internal`, `confidential`, `restricted` |
-| `dprod:sensitivity` | `(odrl:target dprod:sensitivity)` | `pii`, `mnpi`, `phi` |
-| `dprod:assetClass` | `(odrl:target dprod:assetClass)` | String (equity, fx, etc.) |
-| `dprod:market` | `(odrl:target dprod:market)` | String (NYSE, LSE, etc.) |
-| `dprod:isBenchmark` | `(odrl:target dprod:isBenchmark)` | Boolean |
-| `dprod:residency` | `(odrl:target dprod:residency)` | String (country) |
-| `dprod:retentionPeriod` | `(odrl:target dprod:retentionPeriod)` | `xsd:duration` |
-| `dprod:expiry` | `(odrl:target dprod:expiry)` | `xsd:dateTime` |
-| `dprod:timeliness` | `(odrl:target dprod:timeliness)` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
-| `dprod:delayMinutes` | `(odrl:target dprod:delayMinutes)` | Integer |
-| `dprod:auditRequired` | `(odrl:target dprod:auditRequired)` | Boolean |
-| `dprod:completeness` | `(odrl:target dprod:completeness)` | Decimal |
-| `dprod:volumeCount` | `(odrl:target dprod:volumeCount)` | Integer |
+| `ex:classification` | `(odrl:target ex:classification)` | `public`, `internal`, `confidential`, `restricted` |
+| `ex:sensitivity` | `(odrl:target ex:sensitivity)` | `pii`, `mnpi`, `phi` |
+| `ex:assetClass` | `(odrl:target ex:assetClass)` | String (equity, fx, etc.) |
+| `ex:market` | `(odrl:target ex:market)` | String (NYSE, LSE, etc.) |
+| `ex:isBenchmark` | `(odrl:target ex:isBenchmark)` | Boolean |
+| `ex:residency` | `(odrl:target ex:residency)` | String (country) |
+| `ex:retentionPeriod` | `(odrl:target ex:retentionPeriod)` | `xsd:duration` |
+| `ex:expiry` | `(odrl:target ex:expiry)` | `xsd:dateTime` |
+| `ex:timeliness` | `(odrl:target ex:timeliness)` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
+| `ex:delayMinutes` | `(odrl:target ex:delayMinutes)` | Integer |
+| `ex:auditRequired` | `(odrl:target ex:auditRequired)` | Boolean |
+| `ex:completeness` | `(odrl:target ex:completeness)` | Decimal |
+| `ex:volumeCount` | `(odrl:target ex:volumeCount)` | Integer |
 
 ### Agent Operands (two-step — via `odrl:assignee`)
 
 | Operand | `dprod:path` | Values / Type |
 |---------|-------------|---------------|
-| `dprod:role` | `(odrl:assignee dprod:role)` | String |
-| `dprod:organization` | `(odrl:assignee dprod:organization)` | IRI |
-| `dprod:costCenter` | `(odrl:assignee dprod:costCenter)` | String |
-| `dprod:recipientType` | `(odrl:assignee dprod:recipientType)` | `internal`, etc. |
+| `ex:role` | `(odrl:assignee ex:role)` | String |
+| `ex:organization` | `(odrl:assignee ex:organization)` | IRI |
+| `ex:costCenter` | `(odrl:assignee ex:costCenter)` | String |
+| `ex:recipientType` | `(odrl:assignee ex:recipientType)` | `internal`, etc. |
 
 ---
 
@@ -338,19 +339,19 @@ All operands are `odrl:LeftOperand` with `dprod:path` (and optionally `dprod:sel
 
 | Action | Definition | Parent |
 |--------|------------|--------|
-| `dprod:nonDisplay` | Automated/programmatic use | `use` |
-| `dprod:conformTo` | Conform to schema/spec | None |
-| `dprod:log` | Log access | `inform` |
-| `dprod:notify` | Notify parties | `inform` |
-| `dprod:report` | Submit reports | `inform` |
-| `dprod:deliver` | Deliver data | `distribute` |
-| `dprod:query` | Query/select | `read` |
-| `dprod:export` | Export outside system | `distribute` |
-| `dprod:copy` | Copy to another location | `reproduce` |
-| `dprod:link` | Link/join datasets | `aggregate` |
-| `dprod:profile` | Create profiles | `derive` |
-| `dprod:calculateIndex` | Index calculation | `derive` |
-| `dprod:algorithmicTrading` | Automated trading | `nonDisplay` |
+| `ex:nonDisplay` | Automated/programmatic use | `use` |
+| `ex:conformTo` | Conform to schema/spec | None |
+| `ex:log` | Log access | `inform` |
+| `ex:notify` | Notify parties | `inform` |
+| `ex:report` | Submit reports | `inform` |
+| `ex:deliver` | Deliver data | `distribute` |
+| `ex:query` | Query/select | `read` |
+| `ex:export` | Export outside system | `distribute` |
+| `ex:copy` | Copy to another location | `reproduce` |
+| `ex:link` | Link/join datasets | `aggregate` |
+| `ex:profile` | Create profiles | `derive` |
+| `ex:calculateIndex` | Index calculation | `derive` |
+| `ex:algorithmicTrading` | Automated trading | `nonDisplay` |
 
 Action hierarchy uses `odrl:includedIn`. A permission on `odrl:use` implicitly permits all actions below it.
 
@@ -370,13 +371,13 @@ odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:compliance
+            odrl:rightOperand ex:compliance
         ]
         [
             a odrl:Constraint ;
-            odrl:leftOperand dprod:legalBasis ;
+            odrl:leftOperand ex:legalBasis ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:legitimateInterest
+            odrl:rightOperand ex:legitimateInterest
         ]
     )
 ] .
@@ -394,13 +395,13 @@ odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:compliance
+            odrl:rightOperand ex:compliance
         ]
         [
             a odrl:Constraint ;
             odrl:leftOperand odrl:purpose ;
             odrl:operator odrl:eq ;
-            odrl:rightOperand dprod:operations
+            odrl:rightOperand ex:operations
         ]
     )
 ] .
@@ -415,9 +416,9 @@ odrl:constraint [
     a odrl:LogicalConstraint ;
     dprod:not [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:environment ;
+        odrl:leftOperand ex:environment ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod:production
+        odrl:rightOperand ex:production
     ]
 ] .
 ```
@@ -448,13 +449,13 @@ ex:policy a odrl:Set ;
                     a odrl:Constraint ;
                     odrl:leftOperand odrl:purpose ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod:analytics
+                    odrl:rightOperand ex:analytics
                 ]
                 [
                     a odrl:Constraint ;
-                    odrl:leftOperand dprod:recipientType ;
+                    odrl:leftOperand ex:recipientType ;
                     odrl:operator odrl:eq ;
-                    odrl:rightOperand dprod:internal
+                    odrl:rightOperand ex:internal
                 ]
             )
         ]
@@ -476,7 +477,7 @@ odrl:permission [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:jurisdiction ;
+        odrl:leftOperand ex:jurisdiction ;
         odrl:operator odrl:isAnyOf ;
         odrl:rightOperand ("US" "UK")
     ]
@@ -492,7 +493,7 @@ odrl:obligation [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:retentionPeriod ;
+        odrl:leftOperand ex:retentionPeriod ;
         odrl:operator odrl:gt ;
         odrl:rightOperand "P5Y"^^xsd:duration
     ]
@@ -504,13 +505,13 @@ odrl:obligation [
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    odrl:action dprod:log ;
+    odrl:action ex:log ;
     odrl:target ex:accessLog ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:classification ;
+        odrl:leftOperand ex:classification ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod:confidential
+        odrl:rightOperand ex:confidential
     ] ;
     dprod:deadline "PT1H"^^xsd:duration
 ] .

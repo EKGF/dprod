@@ -223,13 +223,13 @@ ex:marketDataSchema a odrl:Asset ;
 ### Delivery SLA
 
 **Business term:** `data delivery`, `SLA`, `timeliness guarantee`
-**DPROD pattern:** `odrl:Duty` with `dprod:deliver` + `dprod:recurrence` + `dprod:deadline`
+**DPROD pattern:** `odrl:Duty` with `ex:deliver` + `dprod:recurrence` + `dprod:deadline`
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod:deliver ;
+    odrl:action ex:deliver ;
     odrl:target ex:marketPrices ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration
@@ -240,13 +240,13 @@ odrl:obligation [
 ### Schema Conformance
 
 **Business term:** `schema guarantee`, `data quality SLA`, `format compliance`
-**DPROD pattern:** `odrl:Duty` with `dprod:conformTo`
+**DPROD pattern:** `odrl:Duty` with `ex:conformTo`
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod:conformTo ;
+    odrl:action ex:conformTo ;
     odrl:target ex:marketDataSchema
 ] .
 ```
@@ -255,19 +255,19 @@ odrl:obligation [
 ### Quality SLA
 
 **Business term:** `quality guarantee`, `accuracy SLA`, `data quality commitment`
-**DPROD pattern:** `odrl:Duty` with `dprod:conformTo` + `odrl:constraint`
+**DPROD pattern:** `odrl:Duty` with `ex:conformTo` + `odrl:constraint`
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod:conformTo ;
+    odrl:action ex:conformTo ;
     odrl:target ex:riskMetricsSchema ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:timeliness ;
+        odrl:leftOperand ex:timeliness ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod:realtime
+        odrl:rightOperand ex:realtime
     ]
 ] .
 ```
@@ -276,13 +276,13 @@ odrl:obligation [
 ### Change Notification
 
 **Business term:** `notification`, `advance notice`, `change alert`
-**DPROD pattern:** `odrl:Duty` with `dprod:notify` + `dprod:deadline`
+**DPROD pattern:** `odrl:Duty` with `ex:notify` + `dprod:deadline`
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subject ex:dataTeam ;
-    odrl:action dprod:notify ;
+    odrl:action ex:notify ;
     odrl:target ex:schemaChanges ;
     dprod:deadline "P14D"^^xsd:duration
 ] .
@@ -292,12 +292,12 @@ odrl:obligation [
 ### Usage Reporting
 
 **Business term:** `usage report`, `consumption report`
-**DPROD pattern:** `odrl:Duty` with `dprod:report` + `dprod:deadline`
+**DPROD pattern:** `odrl:Duty` with `ex:report` + `dprod:deadline`
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    odrl:action dprod:report ;
+    odrl:action ex:report ;
     odrl:target ex:usageStats ;
     dprod:deadline "P30D"^^xsd:duration
 ] .
@@ -317,7 +317,7 @@ odrl:obligation [
 ### Non-Display Permission
 
 **Business term:** `algorithmic use`, `automated use`, `programmatic access`
-**DPROD property:** `dprod:nonDisplay` (action on `odrl:Permission`)
+**DPROD property:** `ex:nonDisplay` (action on `odrl:Permission`)
 **Note:** Distinct from `odrl:display`. Covers models, automation, calculations.
 
 ### Derivation Permission
@@ -346,7 +346,7 @@ odrl:permission [
         a odrl:Constraint ;
         odrl:leftOperand odrl:purpose ;
         odrl:operator odrl:eq ;
-        odrl:rightOperand dprod:analytics
+        odrl:rightOperand ex:analytics
     ]
 ] .
 ```
@@ -457,10 +457,10 @@ Complete mapping of every DCON term to its DPROD equivalent.
 
 | DCON Action | DPROD Equivalent | Status |
 |-------------|------------------|--------|
-| `dcon:deliver` | `dprod:deliver` | Direct |
-| `dcon:maintain` (schema) | `dprod:conformTo` | Renamed |
-| `dcon:notify` | `dprod:notify` | Direct |
-| `dcon:report` (implied) | `dprod:report` | Direct |
+| `dcon:deliver` | `ex:deliver` | Direct |
+| `dcon:maintain` (schema) | `ex:conformTo` | Renamed |
+| `dcon:notify` | `ex:notify` | Direct |
+| `dcon:report` (implied) | `ex:report` | Direct |
 
 ### 10.4 Not Modeled (by design)
 

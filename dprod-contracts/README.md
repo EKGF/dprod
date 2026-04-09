@@ -92,13 +92,13 @@ Operands resolve via `dprod:path` -- SHACL-style property paths from the evaluat
 
 ```turtle
 # Context-rooted (single-step): direct property on request
-dprod:environment  dprod:path dprod:environment .
+ex:environment  dprod:path ex:environment .
 
 # Asset-rooted (two-step): via odrl:target
-dprod:timeliness   dprod:path (odrl:target dprod:timeliness) .
+ex:timeliness   dprod:path (odrl:target ex:timeliness) .
 
 # Agent-rooted (two-step): via odrl:assignee
-dprod:recipientType dprod:select "SELECT ?v WHERE { $request odrl:assignee/dprod:recipientType ?v }" .
+ex:recipientType dprod:select "SELECT ?v WHERE { $request odrl:assignee/ex:recipientType ?v }" .
 ```
 
 ---

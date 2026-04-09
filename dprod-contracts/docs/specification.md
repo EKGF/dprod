@@ -275,9 +275,9 @@ Simple paths are a single property IRI; sequence paths are RDF lists:
 
 | Path type | Syntax | Meaning | Example |
 |-----------|--------|---------|---------|
-| Context-rooted | `dprod:path dprod:environment` | Direct property on request | `?request dprod:environment ?value` |
-| Asset-rooted | `dprod:path (odrl:target dprod:timeliness)` | Via target | `?request odrl:target ?asset . ?asset dprod:timeliness ?value` |
-| Agent-rooted | `dprod:path (odrl:assignee dprod:recipientType)` | Via assignee | `?request odrl:assignee ?agent . ?agent dprod:recipientType ?value` |
+| Context-rooted | `dprod:path ex:environment` | Direct property on request | `?request ex:environment ?value` |
+| Asset-rooted | `dprod:path (odrl:target ex:timeliness)` | Via target | `?request odrl:target ?asset . ?asset ex:timeliness ?value` |
+| Agent-rooted | `dprod:path (odrl:assignee ex:recipientType)` | Via assignee | `?request odrl:assignee ?agent . ?agent ex:recipientType ?value` |
 | ODRL operand | `dprod:path odrl:purpose` | Direct property on request | `?request odrl:purpose ?value` |
 
 ### 4.9b dprod:select
@@ -293,9 +293,9 @@ Simple paths are a single property IRI; sequence paths are RDF lists:
 Optional SPARQL SELECT that resolves the operand value. Binds `$request` to the evaluation context. Result variable is `?v`. Typically used alongside `dprod:path` for multi-step paths:
 
 ```turtle
-dprod:timeliness
-  dprod:path (odrl:target dprod:timeliness) ;
-  dprod:select "SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }" .
+ex:timeliness
+  dprod:path (odrl:target ex:timeliness) ;
+  dprod:select "SELECT ?v WHERE { $request odrl:target/ex:timeliness ?v }" .
 ```
 
 ### 4.10 dprod:not

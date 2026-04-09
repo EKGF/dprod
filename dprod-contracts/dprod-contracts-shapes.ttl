@@ -45,6 +45,7 @@ dprod-shapes:
 
 
 dprod-shapes:StatePropertyGroup
+  a sh:PropertyShape ;
   sh:path dprod:state ;
   sh:maxCount 1 ;
   sh:in (dprod:Pending dprod:Active dprod:Fulfilled dprod:Violated) ;
@@ -52,6 +53,7 @@ dprod-shapes:StatePropertyGroup
 .
 
 dprod-shapes:ProfilePropertyGroup
+  a sh:PropertyShape ;
   sh:path odrl:profile ;
   sh:minCount 1 ;
   sh:hasValue <https://ekgf.github.io/dprod/> ;
@@ -419,44 +421,48 @@ dprod-shapes:RejectConsequenceShape
 dprod-shapes:RejectTicketShape
   a sh:NodeShape ;
   sh:targetClass odrl:Ticket ;
-  sh:property [
-    sh:path rdf:type ;
-    sh:maxCount 0 ;
+  sh:sparql [
+    sh:message "DPROD contracts do not support odrl:Ticket." ;
     sh:severity sh:Violation ;
-    sh:message "DPROD contracts do not support odrl:Ticket."
+    sh:select """
+      SELECT $this WHERE { $this a odrl:Ticket }
+    """ ;
   ] ;
 .
 
 dprod-shapes:RejectRequestShape
   a sh:NodeShape ;
   sh:targetClass odrl:Request ;
-  sh:property [
-    sh:path rdf:type ;
-    sh:maxCount 0 ;
+  sh:sparql [
+    sh:message "DPROD contracts do not support odrl:Request." ;
     sh:severity sh:Violation ;
-    sh:message "DPROD contracts do not support odrl:Request."
+    sh:select """
+      SELECT $this WHERE { $this a odrl:Request }
+    """ ;
   ] ;
 .
 
 dprod-shapes:RejectAssetCollectionShape
   a sh:NodeShape ;
   sh:targetClass odrl:AssetCollection ;
-  sh:property [
-    sh:path rdf:type ;
-    sh:maxCount 0 ;
+  sh:sparql [
+    sh:message "DPROD contracts do not support odrl:AssetCollection. Use dprod:partOf hierarchy instead." ;
     sh:severity sh:Violation ;
-    sh:message "DPROD contracts do not support odrl:AssetCollection. Use dprod:partOf hierarchy instead."
+    sh:select """
+      SELECT $this WHERE { $this a odrl:AssetCollection }
+    """ ;
   ] ;
 .
 
 dprod-shapes:RejectPartyCollectionShape
   a sh:NodeShape ;
   sh:targetClass odrl:PartyCollection ;
-  sh:property [
-    sh:path rdf:type ;
-    sh:maxCount 0 ;
+  sh:sparql [
+    sh:message "DPROD contracts do not support odrl:PartyCollection. Use dprod:memberOf hierarchy instead." ;
     sh:severity sh:Violation ;
-    sh:message "DPROD contracts do not support odrl:PartyCollection. Use dprod:memberOf hierarchy instead."
+    sh:select """
+      SELECT $this WHERE { $this a odrl:PartyCollection }
+    """ ;
   ] ;
 .
 

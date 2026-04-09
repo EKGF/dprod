@@ -530,17 +530,23 @@ resolve(op, Env) =
         _ | op.path ≠ ⊥ →
             traverse(op.path, Env.request)
 
+        -- Profile-declared operands with dprod:select
+        _ | op.select ≠ ⊥ →
+            sparqlEval(op.select, {$request → Env.request})
+
         -- Dual-typed operands (LeftOperand ∩ RuntimeReference)
         _ | op ∈ RuntimeRef →
             resolveRuntime(op, Env)
 
-        -- No path and not a runtime reference
+        -- No path, no select, and not a runtime reference
         _ → ⊥
 ```
 
 Where:
 * `op.path` — property path declared on the operand via `dprod:path`
-* `op ∈ RuntimeRef` — the operand is also typed as `dprod:RuntimeReference` (e.g., `currentDateTime`); resolution delegates to `resolveRuntime` (§6.2). Path-based resolution takes precedence.
+* `op.select` — SPARQL SELECT query declared on the operand via `dprod:select`
+* `sparqlEval(query, bindings)` — evaluates the SPARQL SELECT with the given variable bindings and returns the `?value` binding from the first result row (or `⊥` if no results)
+* `op ∈ RuntimeRef` — the operand is also typed as `dprod:RuntimeReference` (e.g., `currentDateTime`); resolution delegates to `resolveRuntime` (§6.2). Path-based resolution takes precedence over SPARQL-based resolution.
 * `⊥` indicates undefined (condition evaluates to `false` when encountered — see §6.1)
 
 **Architectural Principle**: All contextual data access MUST go through declared `odrl:LeftOperand` instances with explicit `dprod:path`, or through dual-typed `RuntimeReference` operands resolved via `resolveRuntime`. This ensures:
@@ -551,10 +557,10 @@ Where:
 
 Profiles define domain-specific left operands with property paths:
 * `purpose` → `dprod:path odrl:purpose`
-* `classification` → `dprod:path (odrl:target dprod:classification)`
-* `recipientType` → `dprod:path (odrl:assignee dprod:recipientType)`
-* `environment` → `dprod:path dprod:environment`
-* `timeliness` → `dprod:path (odrl:target dprod:timeliness)`
+* `classification` → `dprod:path (odrl:target ex:classification)`
+* `recipientType` → `dprod:path (odrl:assignee ex:recipientType)`
+* `environment` → `dprod:path ex:environment`
+* `timeliness` → `dprod:path (odrl:target ex:timeliness)`
 
 #### traverse : PropertyPath × Node → Value
 
@@ -571,10 +577,10 @@ The function `traverse(path, node)` follows a SHACL-style property path to retri
 
 | Operand | `dprod:path` | Traversal |
 |---------|-------------|-----------|
-| `dprod:environment` | `dprod:environment` | `?request dprod:environment ?value` |
+| `ex:environment` | `ex:environment` | `?request ex:environment ?value` |
 | `odrl:purpose` | `odrl:purpose` | `?request odrl:purpose ?value` |
-| `dprod:timeliness` | `(odrl:target dprod:timeliness)` | `?request odrl:target ?asset . ?asset dprod:timeliness ?value` |
-| `dprod:recipientType` | `(odrl:assignee dprod:recipientType)` | `?request odrl:assignee ?agent . ?agent dprod:recipientType ?value` |
+| `ex:timeliness` | `(odrl:target ex:timeliness)` | `?request odrl:target ?asset . ?asset ex:timeliness ?value` |
+| `ex:recipientType` | `(odrl:assignee ex:recipientType)` | `?request odrl:assignee ?agent . ?agent ex:recipientType ?value` |
 
 ```
 traverse : PropertyPath × Node → Value ∪ {⊥}
@@ -886,17 +892,17 @@ Profiles attach DPROD Contracts property paths to operands. Standard ODRL operan
 ```turtle
 # Context-rooted: direct property on request
 odrl:purpose dprod:path odrl:purpose .
-dprod:environment dprod:path dprod:environment .
+ex:environment dprod:path ex:environment .
 
 # Asset-rooted: via odrl:target (two-step sequence path)
-dprod:timeliness a odrl:LeftOperand ;
-    dprod:path (odrl:target dprod:timeliness) ;
-    dprod:select "SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }" .
+ex:timeliness a odrl:LeftOperand ;
+    dprod:path (odrl:target ex:timeliness) ;
+    dprod:select "SELECT ?v WHERE { $request odrl:target/ex:timeliness ?v }" .
 
 # Agent-rooted: via odrl:assignee (two-step sequence path)
-dprod:recipientType a odrl:LeftOperand ;
-    dprod:path (odrl:assignee dprod:recipientType) ;
-    dprod:select "SELECT ?v WHERE { $request odrl:assignee/dprod:recipientType ?v }" .
+ex:recipientType a odrl:LeftOperand ;
+    dprod:path (odrl:assignee ex:recipientType) ;
+    dprod:select "SELECT ?v WHERE { $request odrl:assignee/ex:recipientType ?v }" .
 ```
 
 SHACL validation enforces cardinality on path and select:
@@ -1006,7 +1012,7 @@ ex:agreement a odrl:Agreement ;
         a odrl:Duty ;
         dprod:subject ex:analyticsTeam ;
         dprod:object ex:dataTeam ;
-        odrl:action dprod:report ;
+        odrl:action ex:report ;
         odrl:target ex:usageStats ;
         dprod:deadline "P30D"^^xsd:duration
     ] ;
@@ -1016,7 +1022,7 @@ ex:agreement a odrl:Agreement ;
         a odrl:Duty ;
         dprod:subject ex:dataTeam ;
         dprod:object ex:analyticsTeam ;
-        odrl:action dprod:notify ;
+        odrl:action ex:notify ;
         odrl:target ex:schemaChanges ;
         dprod:deadline "P7D"^^xsd:duration
     ] .
