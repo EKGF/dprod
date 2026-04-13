@@ -137,7 +137,7 @@ export default function AdoptPage() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild variant="outline">
-                  <Link href="/spec/">
+                  <Link href="/spec-versions">
                     <ArrowRight className="mr-2 h-4 w-4" />
                     Browse the shapes in the spec
                   </Link>
@@ -192,7 +192,7 @@ export default function AdoptPage() {
                   </CardDescription>
                   <div className="mt-4">
                     <Link
-                      href="/spec/"
+                      href="/spec-versions"
                       className="inline-flex items-center gap-1 text-sm font-medium text-[#4051b5] transition-colors hover:text-[#5c6bc0]"
                     >
                       Open the spec
