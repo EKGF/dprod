@@ -28,28 +28,61 @@ function parseSpecPath(pathname: string): { slug: string; rest: string } | null 
   return { slug: match[1], rest: match[2] ?? "" };
 }
 
+function withDebug(
+  res: NextResponse,
+  tag: string,
+  extras: Record<string, string | undefined> = {},
+): NextResponse {
+  res.headers.set("x-dprod-mw", tag);
+  for (const [k, v] of Object.entries(extras)) {
+    if (v !== undefined) res.headers.set(`x-dprod-mw-${k}`, v);
+  }
+  return res;
+}
+
 export async function middleware(req: NextRequest) {
   const parsed = parseSpecPath(req.nextUrl.pathname);
-  if (!parsed) return NextResponse.next();
+  if (!parsed) return withDebug(NextResponse.next(), "no-match");
   const { slug, rest } = parsed;
 
-  if (STATIC_SLUGS.has(slug)) return NextResponse.next();
+  if (STATIC_SLUGS.has(slug)) {
+    return withDebug(NextResponse.next(), "static-slug", { slug });
+  }
 
   const versions = await getSpecVersions();
   const version = versions.find((v) => v.id === slug);
-  if (!version || version.kind !== "vercel-branch") return NextResponse.next();
+  if (!version || version.kind !== "vercel-branch") {
+    return withDebug(NextResponse.next(), "unknown-slug", {
+      slug,
+      versions: versions.map((v) => v.id).join(","),
+    });
+  }
 
-  // If the requested version matches the current deployment, serve locally
-  // via same-origin rewrite — assets resolve normally. The destination must
-  // include the basePath because req.nextUrl.pathname is wire-level.
+  // If the requested version matches the current deployment, directly
+  // rewrite to the static index.html inside public/spec/ under basePath.
+  // We bypass the /spec -> /spec/index.html rewrite from next.config.ts
+  // because chaining middleware rewrites through afterFiles rewrites is
+  // unreliable in Next.js 16. We also construct the destination URL via
+  // `new URL(path, req.url)` rather than `req.nextUrl.clone()` because
+  // NextURL carries a basePath attribute and mutating its pathname leads
+  // to double-prefix surprises.
   if (version.isCurrent) {
-    const url = req.nextUrl.clone();
-    url.pathname = `/dprod/spec${rest}`;
-    return NextResponse.rewrite(url);
+    const destPath = rest
+      ? `/dprod/spec${rest}`
+      : `/dprod/spec/index.html`;
+    const destUrl = new URL(destPath, req.url);
+    return withDebug(NextResponse.rewrite(destUrl), "self-rewrite", {
+      slug,
+      dest: destPath,
+    });
   }
 
   // For cross-branch targets we 307 to the actual deployment URL. The
   // origin already includes /dprod (see spec-versions.ts) so we only append
   // /spec<rest>.
-  return NextResponse.redirect(`${version.origin}/spec${rest}`, 307);
+  return withDebug(
+    NextResponse.redirect(`${version.origin}/spec${rest}`, 307),
+    "cross-branch",
+    { slug, origin: version.origin },
+  );
 }
