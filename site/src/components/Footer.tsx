@@ -1,12 +1,20 @@
 import Link from "next/link";
 import { Github } from "lucide-react";
 
-const NAV_LINKS = [
+/**
+ * Cross-zone nav items that escape the /dprod basePath back to ekgf.org.
+ * Rendered as plain `<a>` tags.
+ */
+const EKGF_LINKS = [
   { href: "/about", label: "About" },
   { href: "/quadrants", label: "Quadrants" },
   { href: "/resources", label: "Resources" },
   { href: "/membership", label: "Membership" },
   { href: "/contact", label: "Contact" },
+];
+
+/** In-zone links rendered with Next.js Link (basePath auto-prefixed). */
+const DPROD_LINKS = [
   { href: "/spec-versions", label: "Specification" },
 ];
 
@@ -36,7 +44,17 @@ export function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Navigate</h3>
             <ul className="space-y-2 text-sm">
-              {NAV_LINKS.map(({ href, label }) => (
+              {EKGF_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    className="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+              {DPROD_LINKS.map(({ href, label }) => (
                 <li key={href}>
                   <Link
                     href={href}

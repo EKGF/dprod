@@ -13,12 +13,25 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-const NAV_ITEMS = [
+/**
+ * Items that belong to the EKGF primary zone (ekgf.org). They're rendered
+ * as plain `<a>` tags with root-relative hrefs so the Next.js basePath
+ * ("/dprod") is NOT prepended — clicking these escapes the dprod zone
+ * back to the ekgf.org routes that serve them.
+ */
+const EKGF_NAV = [
   { href: "/about", label: "About" },
   { href: "/quadrants", label: "Quadrants" },
   { href: "/resources", label: "Resources" },
   { href: "/membership", label: "Membership" },
   { href: "/contact", label: "Contact" },
+] as const;
+
+/**
+ * Items that live inside this zone. Rendered with Next.js `<Link>` so the
+ * "/dprod" basePath is automatically prepended.
+ */
+const DPROD_NAV = [
   { href: "/spec-versions", label: "Specification" },
 ] as const;
 
@@ -26,10 +39,11 @@ export function Header() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/20 bg-background/90 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border/20 bg-background/90">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link
+          {/* Brand link escapes the dprod zone back to ekgf.org root. */}
+          <a
             href="/"
             className="group flex items-center text-3xl leading-none transform -translate-y-1.5"
           >
@@ -39,11 +53,21 @@ export function Header() {
                 EKGF
               </span>
             </span>
-          </Link>
+          </a>
 
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList>
-              {NAV_ITEMS.map(({ href, label }) => (
+              {EKGF_NAV.map(({ href, label }) => (
+                <NavigationMenuItem key={href}>
+                  <NavigationMenuLink
+                    asChild
+                    className={navigationMenuTriggerStyle()}
+                  >
+                    <a href={href}>{label}</a>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+              {DPROD_NAV.map(({ href, label }) => (
                 <NavigationMenuItem key={href}>
                   <NavigationMenuLink
                     asChild

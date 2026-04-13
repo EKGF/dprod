@@ -122,12 +122,15 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
     seen.add(branch);
 
     const slug = branchToSlug(branch);
+    // NOTE: the origin intentionally includes the /dprod basePath so the
+    // middleware redirect lands on the zone root, not the deployment
+    // root (which is a 404 under multi-zone).
     versions.push({
       id: slug,
       label: labelForBranch(branch),
       description: descriptionForBranch(branch),
       branch,
-      origin: `https://dprod-git-${slug}-ekgf.vercel.app`,
+      origin: `https://dprod-git-${slug}-ekgf.vercel.app/dprod`,
       isCurrent: branch === currentBranch,
       isProduction: branch === "develop",
       kind: "vercel-branch",
