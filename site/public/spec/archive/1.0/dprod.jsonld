@@ -1,0 +1,474 @@
+{
+    "@context": {
+        "@version": 1.1,
+        "dcat": "http://www.w3.org/ns/dcat#",
+        "dct": "http://purl.org/dc/terms/",
+        "dprod": "https://ekgf.github.io/dprod/",
+        "linkedin": "https://www.linkedin.com/in/",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "prov": "http://www.w3.org/ns/prov#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "sh": "http://www.w3.org/ns/shacl#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "@graph": [
+        {
+            "@id": "dprod:DataProduct",
+            "@type": [
+                "owl:Class",
+                "rdfs:Class"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."
+            },
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A data product may have input and output ports, code and metadata"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "data product",
+            "rdfs:subClassOf": {
+                "@id": "dcat:Resource"
+            }
+        },
+        {
+            "@id": "dprod:securitySchemaType",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The security schema type used for authentication and communication with this Data Service."
+            },
+            "rdf:label": "security schema type",
+            "rdfs:domain": {
+                "@id": "dcat:DataService"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            }
+        },
+        {
+            "@id": "dprod:Protocol",
+            "@type": [
+                "owl:Class",
+                "rdfs:Class"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A detailed specification, possibly including a specific version, for how to communicate with a service."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "protocol"
+        },
+        {
+            "@id": "dprod:DataProductLifecycleStatus",
+            "@type": [
+                "owl:Class",
+                "rdfs:Class"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."
+            },
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The lifecycle of the data product as defined by EDM Council CDMC"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "data product lifecycle status",
+            "rdfs:seeAlso": {
+                "@id": "https://edmcouncil.org/wp-content/uploads/2024/03/EDMWebinar_DPSIG_04-30-Presentation.pdf#page=7"
+            },
+            "rdfs:subClassOf": {
+                "@id": "dprod:Enumeration"
+            }
+        },
+        {
+            "@id": "dct:modified",
+            "@type": "owl:AnnotationProperty"
+        },
+        {
+            "@id": "dprod:",
+            "@type": "owl:Ontology",
+            "dct:contributor": [
+                {
+                    "@id": "linkedin:natasavaritimou"
+                },
+                {
+                    "@id": "linkedin:peterivett"
+                },
+                {
+                    "@id": "linkedin:jgeluk"
+                },
+                {
+                    "@id": "linkedin:marcel-fr%C3%B6hlich-648a043"
+                },
+                {
+                    "@id": "linkedin:matthias-jurisch"
+                },
+                {
+                    "@id": "linkedin:tonyseale"
+                }
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way."
+            },
+            "dct:license": {
+                "@id": "https://creativecommons.org/licenses/by/4.0/"
+            },
+            "dct:modified": {
+                "@type": "xsd:date",
+                "@value": "2024-08-31"
+            },
+            "dct:publisher": {
+                "@id": "https://www.omg.org/"
+            },
+            "dct:title": {
+                "@language": "en",
+                "@value": "The Data Product (DPROD) Ontology"
+            },
+            "owl:imports": {
+                "@id": "dcat:"
+            },
+            "owl:versionInfo": "OMG Request For Comments Errata 2",
+            "rdfs:comment": [
+                {
+                    "@language": "en",
+                    "@value": "The ontology utilizes the notion of Datasets as defined from DCAT vocabulary."
+                },
+                {
+                    "@language": "en",
+                    "@value": "DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors."
+                }
+            ],
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "DPROD ontology"
+            }
+        },
+        {
+            "@id": "dprod:Enumeration",
+            "@type": [
+                "owl:Class",
+                "rdfs:Class"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The superclass of enumeration lists referenced from data product related artifacts."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "enumeration"
+        },
+        {
+            "@id": "dprod:informationSensitivityClassification",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization."
+            },
+            "rdfs:domain": {
+                "@id": "dcat:Dataset"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "information sensitivity classification",
+            "rdfs:range": {
+                "@id": "dprod:InformationSensitivityClassification"
+            }
+        },
+        {
+            "@id": "dprod:isDistributionOf",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The dataset that this distribution makes available."
+            },
+            "owl:inverseOf": {
+                "@id": "dcat:distribution"
+            },
+            "rdfs:domain": {
+                "@id": "dcat:Distribution"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "is distribution of"
+        },
+        {
+            "@id": "dct:license",
+            "@type": "owl:AnnotationProperty"
+        },
+        {
+            "@id": "dprod:outputPort",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A set of services exposed by a data product to share the generated data in a way that can be understood and trusted."
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "output port",
+            "rdfs:range": {
+                "@id": "dcat:DataService"
+            }
+        },
+        {
+            "@id": "dprod:domain",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The business or information area supported by the data product."
+            },
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The domain is intended to be a resource in its own right. This specification does not constrain the class to be used."
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "domain"
+        },
+        {
+            "@id": "dprod:isAccessServiceOf",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The dataset distribution that is being offered through this data service."
+            },
+            "owl:inverseOf": {
+                "@id": "dcat:accessService"
+            },
+            "rdfs:domain": {
+                "@id": "dcat:DataService"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "is access service of",
+            "rdfs:range": {
+                "@id": "dcat:Distribution"
+            }
+        },
+        {
+            "@id": "dprod:protocol",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A protocol (possibly one of many options) used to communicate with this data service."
+            },
+            "rdfs:domain": {
+                "@id": "dcat:DataService"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "protocol"
+        },
+        {
+            "@id": "dct:contributor",
+            "@type": "owl:AnnotationProperty"
+        },
+        {
+            "@id": "dprod:purpose",
+            "@type": [
+                "rdf:Property",
+                "owl:DatatypeProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A description of the objectives and intended usage of the data product."
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "purpose",
+            "rdfs:range": {
+                "@id": "xsd:string"
+            }
+        },
+        {
+            "@id": "dprod:inputDataset",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports."
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "input dataset",
+            "rdfs:range": {
+                "@id": "dcat:Dataset"
+            }
+        },
+        {
+            "@id": "dprod:lifecycleStatus",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The development status of the data product. "
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "lifecycle status",
+            "rdfs:range": {
+                "@id": "dprod:DataProductLifecycleStatus"
+            }
+        },
+        {
+            "@id": "dprod:inputPort",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "input port",
+            "rdfs:range": {
+                "@id": "dcat:DataService"
+            }
+        },
+        {
+            "@id": "dprod:outputDataset",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports."
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "output dataset",
+            "rdfs:range": {
+                "@id": "dcat:Dataset"
+            }
+        },
+        {
+            "@id": "dct:description",
+            "@type": "owl:AnnotationProperty"
+        },
+        {
+            "@id": "dprod:SecuritySchemaType",
+            "@type": [
+                "owl:Class",
+                "rdfs:Class"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A classification encompassing a set of rules used for authentication and communication."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "security schema type"
+        },
+        {
+            "@id": "dprod:dataProductOwner",
+            "@type": [
+                "rdf:Property",
+                "owl:ObjectProperty"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "The agent that is accountable overall for the data product, including managing it through its lifecycle."
+            },
+            "rdfs:domain": {
+                "@id": "dprod:DataProduct"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "data product owner",
+            "rdfs:range": {
+                "@id": "prov:Agent"
+            }
+        },
+        {
+            "@id": "dprod:InformationSensitivityClassification",
+            "@type": [
+                "owl:Class",
+                "rdfs:Class"
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "A classification of the information within a dataset to indicate the level of control and protection that must be applied."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod:"
+            },
+            "rdfs:label": "information sensitivity classification",
+            "rdfs:seeAlso": {
+                "@id": "https://spec.edmcouncil.org/cdmc/ontology/Classification/InformationSensitivity"
+            }
+        }
+    ]
+}

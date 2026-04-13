@@ -1,0 +1,225 @@
+# baseURI: https://ekgf.github.io/dprod/
+# imports: http://www.w3.org/ns/dcat#
+# prefix: dprod
+
+@base <https://ekgf.github.io/dprod/> .
+@prefix dprod: <https://ekgf.github.io/dprod/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL
+dct:description a owl:AnnotationProperty .
+dct:contributor a owl:AnnotationProperty .
+dct:license a owl:AnnotationProperty .
+dct:modified a owl:AnnotationProperty .
+
+dprod:
+  a owl:Ontology ;
+  dct:title "The Data Product (DPROD) Ontology"@en ;
+  rdfs:label "DPROD ontology"@en ;
+  dct:description "DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way."@en ;
+  rdfs:comment
+    "The ontology utilizes the notion of Datasets as defined from DCAT vocabulary."@en ;
+  rdfs:comment "DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors."@en ;
+  dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dct:modified "2024-08-31"^^xsd:date ;
+  dct:publisher <https://www.omg.org/> ;
+  dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
+  dct:contributor <https://www.linkedin.com/in/peterivett> ;
+  dct:contributor <https://www.linkedin.com/in/jgeluk> ;
+  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043> ;
+  dct:contributor <https://www.linkedin.com/in/matthias-jurisch> ;
+  dct:contributor <https://www.linkedin.com/in/tonyseale> ;
+  owl:imports dcat: ;
+  owl:versionInfo "OMG Request For Comments Errata 2" ;
+.
+
+############################# DPROD Classes  #########################
+
+dprod:DataProduct
+  a owl:Class, rdfs:Class ;
+  dct:description
+    "A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."@en ;
+  rdfs:comment "A data product may have input and output ports, code and metadata"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data product" ;
+  rdfs:subClassOf dcat:Resource ;
+.
+
+dprod:DataProductLifecycleStatus
+  a owl:Class, rdfs:Class ;
+  dct:description
+    "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."@en ;
+  rdfs:comment "The lifecycle of the data product as defined by EDM Council CDMC"@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data product lifecycle status" ;
+  rdfs:subClassOf dprod:Enumeration ;
+  rdfs:seeAlso <https://edmcouncil.org/wp-content/uploads/2024/03/EDMWebinar_DPSIG_04-30-Presentation.pdf#page=7> ;
+.
+
+dprod:InformationSensitivityClassification
+  a owl:Class, rdfs:Class ;
+  rdfs:label "information sensitivity classification" ;
+  dct:description
+    "A classification of the information within a dataset to indicate the level of control and protection that must be applied."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:seeAlso <https://spec.edmcouncil.org/cdmc/ontology/Classification/InformationSensitivity> ;
+.
+
+dprod:Enumeration
+  a owl:Class, rdfs:Class ;
+  dct:description "The superclass of enumeration lists referenced from data product related artifacts."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "enumeration" ;
+.
+
+dprod:Protocol
+  a owl:Class, rdfs:Class ;
+  dct:description "A detailed specification, possibly including a specific version, for how to communicate with a service."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "protocol" ;
+.
+
+dprod:SecuritySchemaType
+  a owl:Class, rdfs:Class ;
+  dct:description "A classification encompassing a set of rules used for authentication and communication."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "security schema type" ;
+.
+
+
+#############################  DPROD Properties ################
+
+
+dprod:dataProductOwner
+  a rdf:Property, owl:ObjectProperty ;
+# a rdfs:subPropertyOf prov:wasAttributedTo ; # in line with DCAT
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range prov:Agent ;
+  dct:description
+    "The agent that is accountable overall for the data product, including managing it through its lifecycle."@en ;
+  rdfs:label "data product owner" ;
+.
+
+dprod:lifecycleStatus
+  a rdf:Property, owl:ObjectProperty ;
+# a rdfs:subPropertyOf adms:status ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dprod:DataProductLifecycleStatus ;
+  dct:description
+    "The development status of the data product. "@en ;
+  rdfs:label "lifecycle status" ;
+.
+
+dprod:informationSensitivityClassification
+  a rdf:Property, owl:ObjectProperty ;
+  dct:description
+    "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dcat:Dataset ;
+  rdfs:range dprod:InformationSensitivityClassification ;
+  rdfs:label "information sensitivity classification" ;
+.
+
+dprod:purpose
+  a rdf:Property, owl:DatatypeProperty ;
+  dct:description "A description of the objectives and intended usage of the data product."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range xsd:string ;
+  rdfs:label "purpose" ;
+.
+
+dprod:domain
+  a rdf:Property, owl:ObjectProperty ;
+  dct:description "The business or information area supported by the data product."@en ;
+  rdfs:comment
+    "The domain is intended to be a resource in its own right. This specification does not constrain the class to be used."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:label "domain" ;
+.
+
+dprod:inputPort
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:DataService ;
+  rdfs:isDefinedBy dprod: ;
+  dct:description
+    "A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."@en ;
+  rdfs:label "input port" ;
+.
+
+dprod:outputPort
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:DataService ;
+  rdfs:isDefinedBy dprod: ;
+  dct:description
+    "A set of services exposed by a data product to share the generated data in a way that can be understood and trusted."@en ;
+  rdfs:label "output port" ;
+.
+
+dprod:inputDataset
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:Dataset ;
+  rdfs:isDefinedBy dprod: ;
+  dct:description
+    "The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports."@en ;
+  rdfs:label "input dataset" ;
+.
+
+dprod:outputDataset
+  a rdf:Property, owl:ObjectProperty ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range dcat:Dataset ;
+  rdfs:isDefinedBy dprod: ;
+  dct:description
+    "The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports."@en ;
+  rdfs:label "output dataset" ;
+.
+
+dprod:isDistributionOf
+  a rdf:Property, owl:ObjectProperty ;
+  owl:inverseOf dcat:distribution ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dcat:Distribution ;
+  dct:description "The dataset that this distribution makes available."@en ;
+  rdfs:label "is distribution of" ;
+.
+
+dprod:isAccessServiceOf
+  a rdf:Property, owl:ObjectProperty ;
+  dct:description "The dataset distribution that is being offered through this data service."@en ;
+  rdfs:isDefinedBy dprod: ;
+  owl:inverseOf dcat:accessService ;
+  rdfs:domain dcat:DataService ;
+  rdfs:range dcat:Distribution ;
+  rdfs:label "is access service of" ;
+.
+
+dprod:protocol
+  a rdf:Property, owl:ObjectProperty ;
+  dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dcat:DataService ;
+# rdfs:range rdf:resource ; # better let user decide whether they want Protocol class or own class or skos
+  rdfs:label "protocol" ;
+.
+
+dprod:securitySchemaType
+  a rdf:Property, owl:ObjectProperty ;
+  dct:description "The security schema type used for authentication and communication with this Data Service."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dcat:DataService ;
+# rdfs:range rdf:resource ; # better let user decide whether they want SecuritySchemaType class or own class or skos
+  rdf:label "security schema type" ;
+.
