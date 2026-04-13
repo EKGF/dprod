@@ -13,7 +13,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync-spec": "mkdir -p public/spec && (test -d ../dist && cp -r ../dist/. public/spec/ || echo 'sync-spec: ../dist not present, skipping (phase 5 wires this up)')",
+    "sync-spec": "mkdir -p public/spec && (test -d ../dist || bash scripts/build-spec.sh) && cp -r ../dist/. public/spec/",
     "prebuild": "pnpm sync-spec"
   },
   "dependencies": {

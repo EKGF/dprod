@@ -1,0 +1,798 @@
+{
+    "@context": {
+        "@version": 1.1,
+        "dcat": "http://www.w3.org/ns/dcat#",
+        "dct": "http://purl.org/dc/terms/",
+        "dprod": "https://ekgf.github.io/dprod/",
+        "dprod-shapes": "https://ekgf.github.io/dprod/shapes/",
+        "linkedin": "https://www.linkedin.com/in/",
+        "odrl": "http://www.w3.org/ns/odrl/2/",
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "prov": "http://www.w3.org/ns/prov#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "sh": "http://www.w3.org/ns/shacl#",
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "@graph": [
+        {
+            "@id": "dprod-shapes:DataService-protocol",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A protocol (possibly one of many options) used to communicate with this data service."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data service protocol shape",
+            "sh:class": {
+                "@id": "dcat:Protocol"
+            },
+            "sh:path": {
+                "@id": "dprod:protocol"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProductLifecycleStatusShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product lifecycle status shape",
+            "sh:targetClass": {
+                "@id": "dprod:DataProductLifecycleStatus"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-hasPolicy",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "An ODRL conformant policy expressing the rights associated with the data product. This is an inferred relationship based on the rights expressed on the individual datasets of the data product."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product has policy shape",
+            "sh:class": {
+                "@id": "odrl:Policy"
+            },
+            "sh:path": {
+                "@id": "odrl:hasPolicy"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Distribution-isDistributionOf",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The dataset that this distribution makes available."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "distribution is distribution of shape",
+            "sh:class": {
+                "@id": "dcat:Dataset"
+            },
+            "sh:path": {
+                "@id": "dprod:isDistributionOf"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Dataset-label",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The name given to the dataset"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset label shape",
+            "sh:datatype": {
+                "@id": "xsd:string"
+            },
+            "sh:path": {
+                "@id": "rdfs:label"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataService-endpointURL",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The root location or primary endpoint of the service."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data service endpoint URL shape",
+            "sh:path": {
+                "@id": "dcat:endpointURL"
+            }
+        },
+        {
+            "@id": "dcat:Dataset-informationSensitivityClassification",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset information sensitivity classification shape",
+            "sh:class": {
+                "@id": "dprod:InformationSensitivityClassification"
+            },
+            "sh:path": {
+                "@id": "dprod:informationSensitivityClassification"
+            }
+        },
+        {
+            "@id": "dprod-shapes:InformationSensitivityClassificationShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A classification of the information within a dataset to indicate the level of control and protection that must be applied."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "information sensitivity classification shape",
+            "sh:targetClass": {
+                "@id": "dprod:InformationSensitivityClassification"
+            }
+        },
+        {
+            "@id": "dprod-shapes:ProtocolShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A detailed specification, possibly including a specific version, for how to communicate with a service."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "protocol shape",
+            "sh:targetClass": {
+                "@id": "dprod:Protocol"
+            }
+        },
+        {
+            "@id": "dprod-shapes:",
+            "@type": "owl:Ontology",
+            "dct:contributor": [
+                {
+                    "@id": "linkedin:natasavaritimou"
+                },
+                {
+                    "@id": "linkedin:peterivett"
+                },
+                {
+                    "@id": "linkedin:jgeluk"
+                },
+                {
+                    "@id": "linkedin:marcel-fr%C3%B6hlich-648a043"
+                },
+                {
+                    "@id": "linkedin:matthias-jurisch"
+                },
+                {
+                    "@id": "linkedin:tonyseale"
+                }
+            ],
+            "dct:description": {
+                "@language": "en",
+                "@value": "SHACL shapes for DPROD, including the DCAT classes and properties to be used."
+            },
+            "dct:license": {
+                "@id": "https://creativecommons.org/licenses/by/4.0/"
+            },
+            "dct:modified": {
+                "@type": "xsd:date",
+                "@value": "2024-08-31"
+            },
+            "dct:title": {
+                "@language": "en",
+                "@value": "Shapes for the Data Product (DPROD) Ontology"
+            },
+            "owl:imports": [
+                {
+                    "@id": "dcat:"
+                },
+                {
+                    "@id": "sh:"
+                },
+                {
+                    "@id": "dprod:"
+                }
+            ],
+            "owl:versionInfo": "OMG Request For Comments Errata 2",
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "DPROD ontology shapes"
+            },
+            "sh:declare": [
+                {
+                    "@id": "_:n1808fdfa142d49ab87b594308213bcf0b1"
+                },
+                {
+                    "@id": "_:n1808fdfa142d49ab87b594308213bcf0b2"
+                },
+                {
+                    "@id": "_:n1808fdfa142d49ab87b594308213bcf0b3"
+                }
+            ]
+        },
+        {
+            "@id": "_:n1808fdfa142d49ab87b594308213bcf0b1",
+            "sh:namespace": "https://ekgf.github.io/dprod/",
+            "sh:prefix": "dprod"
+        },
+        {
+            "@id": "_:n1808fdfa142d49ab87b594308213bcf0b2",
+            "sh:namespace": "https://ekgf.github.io/dprod/shapes/",
+            "sh:prefix": "dprod-shapes"
+        },
+        {
+            "@id": "_:n1808fdfa142d49ab87b594308213bcf0b3",
+            "sh:namespace": "http://www.w3.org/ns/dcat#",
+            "sh:prefix": "dcat"
+        },
+        {
+            "@id": "dprod-shapes:Dataset-conformsTo",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A model, schema, ontology, view or profile that the dataset conforms to."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset conforms to shape",
+            "sh:path": {
+                "@id": "dct:conformsTo"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-purpose",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A description of the objectives and intended usage of the data product."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product purpose shape",
+            "sh:datatype": {
+                "@id": "xsd:string"
+            },
+            "sh:path": {
+                "@id": "dprod:purpose"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Distribution-conformsTo",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The schema that the distribution conforms to that is format and technology dependent."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "distribution conforms to shape",
+            "sh:path": {
+                "@id": "dct:conformsTo"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Distribution-format",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The file format of the distribution."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "distribution format shape",
+            "sh:path": {
+                "@id": "dct:format"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DistributionShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above)."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "distribution shape",
+            "sh:property": [
+                {
+                    "@id": "dprod-shapes:Distribution-accessService"
+                },
+                {
+                    "@id": "dprod-shapes:Distribution-conformsTo"
+                },
+                {
+                    "@id": "dprod-shapes:Distribution-isDistributionOf"
+                },
+                {
+                    "@id": "dprod-shapes:Distribution-format"
+                }
+            ],
+            "sh:targetClass": {
+                "@id": "dcat:Distribution"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataServiceShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A collection of operations that provides access to one or more datasets or data processing functions."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data service shape",
+            "sh:property": [
+                {
+                    "@id": "dprod-shapes:DataService-isAccessServiceOf"
+                },
+                {
+                    "@id": "dprod-shapes:DataService-protocol"
+                },
+                {
+                    "@id": "dprod-shapes:DataService-securitySchemaType"
+                },
+                {
+                    "@id": "dprod-shapes:DataService-endpointURL"
+                },
+                {
+                    "@id": "dprod-shapes:DataService-endpointDescription"
+                }
+            ],
+            "sh:targetClass": {
+                "@id": "dcat:DataService"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-dataProductOwner",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The agent that is accountable overall for the data product, including managing it through its lifecycle."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product owner shape",
+            "sh:class": {
+                "@id": "prov:Agent"
+            },
+            "sh:path": {
+                "@id": "dprod:dataProductOwner"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-label",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The name given to the data product."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product label shape",
+            "sh:datatype": {
+                "@id": "xsd:string"
+            },
+            "sh:path": {
+                "@id": "rdfs:label"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DatasetShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A collection of data, published or curated by a single source, and available for access or download in one or more representations."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset shape",
+            "sh:property": [
+                {
+                    "@id": "dprod-shapes:Dataset-label"
+                },
+                {
+                    "@id": "dprod-shapes:Dataset-description"
+                },
+                {
+                    "@id": "dprod-shapes:Dataset-type"
+                },
+                {
+                    "@id": "dprod-shapes:Dataset-distribution"
+                },
+                {
+                    "@id": "dprod-shapes:Dataset-conformsTo"
+                },
+                {
+                    "@id": "dprod-shapes:Dataset-hasPolicy"
+                },
+                {
+                    "@id": "dcat:Dataset-informationSensitivityClassification"
+                }
+            ],
+            "sh:targetClass": {
+                "@id": "dcat:Dataset"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Distribution-accessService",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A data service that gives access to the distribution of the dataset."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "distribution access service shape",
+            "sh:class": {
+                "@id": "dcat:DataService"
+            },
+            "sh:path": {
+                "@id": "dcat:accessService"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-lifecycleStatus",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The development status of the data product. "
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product lifecycle status shape",
+            "sh:class": {
+                "@id": "dprod:DataProductLifecycleStatus"
+            },
+            "sh:path": {
+                "@id": "dprod:lifecycleStatus"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Dataset-description",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "Free text description of the dataset."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset distribution shape",
+            "sh:datatype": {
+                "@id": "xsd:string"
+            },
+            "sh:path": {
+                "@id": "dct:description"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-inputDataset",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product input dataset shape",
+            "sh:class": {
+                "@id": "dcat:Dataset"
+            },
+            "sh:path": {
+                "@id": "dprod:inputDataset"
+            }
+        },
+        {
+            "@id": "dprod-shapes:SecuritySchemaTypeShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A classification encompassing a set of rules used for authentication and communication."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "security schema type shape",
+            "sh:targetClass": {
+                "@id": "dprod:SecuritySchemaType"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataService-isAccessServiceOf",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The dataset distribution that is being offered through this data service."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data service is access service of shape",
+            "sh:class": {
+                "@id": "dcat:Distribution"
+            },
+            "sh:path": {
+                "@id": "dprod:isAccessServiceOf"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Dataset-hasPolicy",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "An ODRL conformant policy expressing the rights associated with the resource."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset has policy shape",
+            "sh:path": {
+                "@id": "odrl:hasPolicy"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-description",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A free text description of the data product."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product description shape",
+            "sh:datatype": {
+                "@id": "xsd:string"
+            },
+            "sh:path": {
+                "@id": "dct:description"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Dataset-type",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The type or genre of the dataset."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset type shape",
+            "sh:path": {
+                "@id": "dct:type"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-outputPort",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A set of services exposed by a data product to share the generated data in a way that can be understood and trusted."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product output port shape",
+            "sh:class": {
+                "@id": "dcat:DataService"
+            },
+            "sh:path": {
+                "@id": "dprod:outputPort"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProductShape",
+            "@type": "sh:NodeShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle."
+            },
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A data product may have input and output ports, code and metadata"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product shape",
+            "sh:property": [
+                {
+                    "@id": "dprod-shapes:DataProduct-label"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-description"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-dataProductOwner"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-domain"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-inputPort"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-outputPort"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-inputDataset"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-outputDataset"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-purpose"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-hasPolicy"
+                },
+                {
+                    "@id": "dprod-shapes:DataProduct-lifecycleStatus"
+                }
+            ],
+            "sh:targetClass": {
+                "@id": "dprod:DataProduct"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-domain",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The business or information area supported by the data product."
+            },
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The target class is left open"
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product domain shape",
+            "sh:path": {
+                "@id": "dprod:domain"
+            }
+        },
+        {
+            "@id": "dprod-shapes:Dataset-distribution",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "An available distribution of the dataset."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "dataset distribution shape",
+            "sh:class": {
+                "@id": "dcat:Distribution"
+            },
+            "sh:path": {
+                "@id": "dcat:distribution"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-outputDataset",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product output dataset shape",
+            "sh:class": {
+                "@id": "dcat:Dataset"
+            },
+            "sh:path": {
+                "@id": "dprod:outputDataset"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataService-endpointDescription",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A description of the services available via the end-points, including their operations, parameters etc."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data service endpoint description shape",
+            "sh:path": {
+                "@id": "dcat:endpointDescription"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-inputPort",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product input port shape",
+            "sh:class": {
+                "@id": "dcat:DataService"
+            },
+            "sh:path": {
+                "@id": "dprod:inputPort"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataProduct-type",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The nature or genre of the data product."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data product description shape",
+            "sh:path": {
+                "@id": "dct:type"
+            }
+        },
+        {
+            "@id": "dprod-shapes:DataService-securitySchemaType",
+            "@type": "sh:PropertyShape",
+            "dct:description": {
+                "@language": "en",
+                "@value": "The security schema type used for authentication and communication with this Data Service."
+            },
+            "rdfs:isDefinedBy": {
+                "@id": "dprod-shapes:"
+            },
+            "rdfs:label": "data service security schema type shape",
+            "sh:class": {
+                "@id": "dcat:SecuritySchemaType"
+            },
+            "sh:path": {
+                "@id": "dprod:securitySchemaType"
+            }
+        }
+    ]
+}

@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { href: "/resources", label: "Resources" },
   { href: "/membership", label: "Membership" },
   { href: "/contact", label: "Contact" },
-  { href: "/spec/", label: "Specification" },
+  { href: "/spec-versions", label: "Specification" },
 ] as const;
 
 export function Header() {

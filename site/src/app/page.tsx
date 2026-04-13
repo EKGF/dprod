@@ -30,7 +30,7 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button asChild size="lg" className="bg-[#4051b5] text-white hover:bg-[#303f9f]">
-                <Link href="/spec/">View Specification</Link>
+                <Link href="/spec-versions">View Specification</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <Link href="/adopt">Get Started</Link>
@@ -261,7 +261,7 @@ export default function HomePage() {
                   size="lg"
                   className="bg-white text-[#4051b5] hover:bg-white/90"
                 >
-                  <Link href="/spec/">
+                  <Link href="/spec-versions">
                     <ExternalLink className="mr-2 h-4 w-4" />
                     View Specification
                   </Link>

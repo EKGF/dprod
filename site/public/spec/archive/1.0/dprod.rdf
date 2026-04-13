@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xml:base="https://ekgf.github.io/dprod/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dct="http://purl.org/dc/terms/"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+>
+  <rdf:Property rdf:about="outputDataset">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
+    <rdfs:isDefinedBy>
+      <owl:Ontology rdf:about="">
+        <dct:title xml:lang="en">The Data Product (DPROD) Ontology</dct:title>
+        <rdfs:label xml:lang="en">DPROD ontology</rdfs:label>
+        <dct:description xml:lang="en">DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way.</dct:description>
+        <rdfs:comment xml:lang="en">The ontology utilizes the notion of Datasets as defined from DCAT vocabulary.</rdfs:comment>
+        <rdfs:comment xml:lang="en">DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors.</rdfs:comment>
+        <dct:license rdf:resource="https://creativecommons.org/licenses/by/4.0/"/>
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2024-08-31</dct:modified>
+        <dct:publisher rdf:resource="https://www.omg.org/"/>
+        <dct:contributor rdf:resource="https://www.linkedin.com/in/natasavaritimou"/>
+        <dct:contributor rdf:resource="https://www.linkedin.com/in/peterivett"/>
+        <dct:contributor rdf:resource="https://www.linkedin.com/in/jgeluk"/>
+        <dct:contributor rdf:resource="https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043"/>
+        <dct:contributor rdf:resource="https://www.linkedin.com/in/matthias-jurisch"/>
+        <dct:contributor rdf:resource="https://www.linkedin.com/in/tonyseale"/>
+        <owl:imports rdf:resource="http://www.w3.org/ns/dcat#"/>
+        <owl:versionInfo>OMG Request For Comments Errata 2</owl:versionInfo>
+      </owl:Ontology>
+    </rdfs:isDefinedBy>
+    <dct:description xml:lang="en">The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports.</dct:description>
+    <rdfs:label>output dataset</rdfs:label>
+  </rdf:Property>
+  <owl:Class rdf:about="SecuritySchemaType">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <dct:description xml:lang="en">A classification encompassing a set of rules used for authentication and communication.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:label>security schema type</rdfs:label>
+  </owl:Class>
+  <rdf:Property rdf:about="protocol">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dct:description xml:lang="en">A protocol (possibly one of many options) used to communicate with this data service.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/dcat#DataService"/>
+    <rdfs:label>protocol</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="securitySchemaType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dct:description xml:lang="en">The security schema type used for authentication and communication with this Data Service.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/dcat#DataService"/>
+    <rdf:label>security schema type</rdf:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="lifecycleStatus">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:range rdf:resource="DataProductLifecycleStatus"/>
+    <dct:description xml:lang="en">The development status of the data product. </dct:description>
+    <rdfs:label>lifecycle status</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="inputDataset">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <dct:description xml:lang="en">The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports.</dct:description>
+    <rdfs:label>input dataset</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="purpose">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <dct:description xml:lang="en">A description of the objectives and intended usage of the data product.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:label>purpose</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="isAccessServiceOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dct:description xml:lang="en">The dataset distribution that is being offered through this data service.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <owl:inverseOf rdf:resource="http://www.w3.org/ns/dcat#accessService"/>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/dcat#DataService"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <rdfs:label>is access service of</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="domain">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dct:description xml:lang="en">The business or information area supported by the data product.</dct:description>
+    <rdfs:comment xml:lang="en">The domain is intended to be a resource in its own right. This specification does not constrain the class to be used.</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:label>domain</rdfs:label>
+  </rdf:Property>
+  <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/license"/>
+  <rdf:Property rdf:about="dataProductOwner">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/prov#Agent"/>
+    <dct:description xml:lang="en">The agent that is accountable overall for the data product, including managing it through its lifecycle.</dct:description>
+    <rdfs:label>data product owner</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="isDistributionOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <owl:inverseOf rdf:resource="http://www.w3.org/ns/dcat#distribution"/>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+    <dct:description xml:lang="en">The dataset that this distribution makes available.</dct:description>
+    <rdfs:label>is distribution of</rdfs:label>
+  </rdf:Property>
+  <owl:Class rdf:about="Protocol">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <dct:description xml:lang="en">A detailed specification, possibly including a specific version, for how to communicate with a service.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:label>protocol</rdfs:label>
+  </owl:Class>
+  <rdf:Property rdf:about="informationSensitivityClassification">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <dct:description xml:lang="en">More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
+    <rdfs:range rdf:resource="InformationSensitivityClassification"/>
+    <rdfs:label>information sensitivity classification</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="inputPort">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/dcat#DataService"/>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <dct:description xml:lang="en">A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports.</dct:description>
+    <rdfs:label>input port</rdfs:label>
+  </rdf:Property>
+  <rdf:Property rdf:about="outputPort">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="DataProduct"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/dcat#DataService"/>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <dct:description xml:lang="en">A set of services exposed by a data product to share the generated data in a way that can be understood and trusted.</dct:description>
+    <rdfs:label>output port</rdfs:label>
+  </rdf:Property>
+  <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/modified"/>
+  <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/description"/>
+  <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/contributor"/>
+  <owl:Class rdf:about="DataProduct">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <dct:description xml:lang="en">A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle.</dct:description>
+    <rdfs:comment xml:lang="en">A data product may have input and output ports, code and metadata</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:label>data product</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/dcat#Resource"/>
+  </owl:Class>
+  <owl:Class rdf:about="InformationSensitivityClassification">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <rdfs:label>information sensitivity classification</rdfs:label>
+    <dct:description xml:lang="en">A classification of the information within a dataset to indicate the level of control and protection that must be applied.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:seeAlso rdf:resource="https://spec.edmcouncil.org/cdmc/ontology/Classification/InformationSensitivity"/>
+  </owl:Class>
+  <owl:Class rdf:about="DataProductLifecycleStatus">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <dct:description xml:lang="en">The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume).</dct:description>
+    <rdfs:comment xml:lang="en">The lifecycle of the data product as defined by EDM Council CDMC</rdfs:comment>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:label>data product lifecycle status</rdfs:label>
+    <rdfs:subClassOf rdf:resource="Enumeration"/>
+    <rdfs:seeAlso rdf:resource="https://edmcouncil.org/wp-content/uploads/2024/03/EDMWebinar_DPSIG_04-30-Presentation.pdf#page=7"/>
+  </owl:Class>
+  <owl:Class rdf:about="Enumeration">
+    <rdf:type rdf:resource="http://www.w3.org/2000/01/rdf-schema#Class"/>
+    <dct:description xml:lang="en">The superclass of enumeration lists referenced from data product related artifacts.</dct:description>
+    <rdfs:isDefinedBy rdf:resource=""/>
+    <rdfs:label>enumeration</rdfs:label>
+  </owl:Class>
+</rdf:RDF>

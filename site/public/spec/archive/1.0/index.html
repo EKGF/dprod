@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>EKGF DPROD Ontology</title>
+  <meta charset='utf-8'>
+  <!--suppress JSUnresolvedLibraryURL -->
+  <script src='https://ekgf.github.io/respec/builds/respec-w3c.js' async class='remove'></script>
+  <script class='remove'>
+    // All config options at https://respec.org/docs/
+    // noinspection JSUnusedGlobalSymbols
+    const respecConfig = {
+      // Working Groups ids at https://respec.org/w3c/groups/
+      // group: "Semantic Data Products Working Group",
+      latestVersion: "https://ekgf.github.io/dprod/",
+      specStatus: "base",
+      editors: [
+        {
+          name: "Tony Seale, Chair",
+          url: "https://www.linkedin.com/in/tonyseale/",
+        },
+        {
+          name: "Natasa Varytimou",
+          url: "https://www.linkedin.com/in/natasavaritimou/",
+        },
+        {
+          name: "Pete Rivett",
+          url: "https://www.linkedin.com/in/peterivett/",
+        },
+        {
+          name: "Marcel Fröhlich",
+          url: "https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/",
+        },
+      ],
+      authors: [
+        {
+          name: "Andrea Gioia",
+          url: "https://www.linkedin.com/in/andreagioia/",
+        },
+        {
+          name: "Jacobus Geluk, Initiator",
+          url: "https://www.linkedin.com/in/jgeluk/",
+        },
+        {
+          name: "Ben Whittam Smith",
+          url: "https://www.linkedin.com/in/benedictws/",
+        },
+        {
+          name: "Steve Fisher",
+          url: "https://www.linkedin.com/in/steve-fisher-b9463a3/",
+        },
+        {
+          name: "Oli Bage",
+          url: "https://www.linkedin.com/in/olibage/",
+        },
+        {
+          name: "Ben Clinch",
+          url: "https://www.linkedin.com/in/benclinch/",
+        },
+        {
+          name: "Carl Mattocks",
+          url: "https://www.linkedin.com/in/carlmattocks/",
+        },
+        {
+          name: "Carlos Tubbax",
+          url: "https://www.linkedin.com/in/carlos-tubbax-975058118/",
+        },
+        {
+          name: "Charles Ivie",
+          url: "https://www.linkedin.com/in/charlesivie/",
+        },
+      ],
+      github: {
+        branch: "main",
+        repoURL: "https://github.com/EKGF/dprod",
+      },
+      license: "mit",
+      logos: [{
+        src: "./assets/dprod.jpg",
+        alt: "DPROD",
+        width: 200,
+      }],
+      maxTocLevel: 3,
+      otherLinks: [
+        {
+          key: "Download as RDF:",
+          data: [
+            {
+              value: "DPROD Ontology --- RDF Turtle --- (authoritative file)",
+              href: "dprod.ttl",
+            },
+            {
+              value: "DPROD Ontology --- JSON-LD",
+              href: "dprod.jsonld",
+            },
+            {
+              value: "DPROD Ontology --- RDF/XML",
+              href: "dprod.rdf",
+            },
+            {
+              value: "DPROD Ontology --- JSON-LD --- Everything included",
+              href: "dprod-all.jsonld",
+            },
+            {
+              value: "DPROD Ontology --- RDF Turtle --- Everything included",
+              href: "dprod-all.ttl",
+            },
+            {
+              value: "DPROD Ontology --- RDF/XML --- Everything included",
+              href: "dprod-all.rdf",
+            },
+            {
+              value: "DPROD Shapes --- RDF Turtle --- (authoritative file)",
+              href: "dprod-shapes.ttl",
+            },
+            {
+              value: "DPROD Shapes --- JSON-LD",
+              href: "dprod-shapes.jsonld",
+            },
+            {
+              value: "DPROD Shapes --- RDF/XML",
+              href: "dprod-shapes.rdf",
+            },
+          ],
+        },
+      ],
+      localBiblio: {
+        "Data Mesh": {
+          title: "Data Mesh Architectures",
+          href: "https://en.wikipedia.org/wiki/Data_mesh",
+          publisher: "Wikipedia",
+        },
+        dprod: {
+          title: "Data Product Ontology",
+          href: "https://ekgf.github.io/dprod/",
+          authors: [
+            "Tony Seale",
+            "Natasa Varytimou",
+            "Pete Rivett",
+            "Marcel Fröhlich",
+            "Andrea Gioia",
+            "Jacobus Geluk",
+            "Ben Whittam Smith",
+            "Steve Fisher",
+            "Oli Bage",
+            "Ben Clinch",
+            "Carl Mattocks",
+            "Carlos Tubbax",
+            "Charles Ivie",
+          ],
+          status: "base",
+          publisher: "EKGF"
+        },
+      },
+    };
+  </script>
+  <style>
+    .preamble-section {
+      margin: 0 auto;
+      max-width: 800px;
+      text-align: justify;
+    }
+
+    .preamble-section p {
+      margin: 0 0 1em 0;
+      color: gray;
+    }
+
+    .preamble-section .section-title {
+      padding-bottom: 1em;
+      text-align: center;
+    }
+
+    .preamble-section a:link {
+      color: gray;
+      text-decoration: none;
+    }
+
+    .preamble-section a:visited {
+      color: gray;
+    }
+
+    .preamble-section a:hover {
+      color: gray;
+      text-decoration: underline;
+    }
+
+    .preamble-section ol {
+      color: gray;
+      counter-reset: item;
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .preamble-section ol li {
+      counter-increment: item;
+      margin-bottom: 2px;
+      padding-left: 50px; /* Adjust this value to set the indentation */
+      text-indent: -50px; /* Match this value with the padding-left */
+    }
+
+    .preamble-section ol li::before {
+      content: "(" counter(item) ")";
+      padding-right: 15px; /* Adjust to control space between number and text */
+      display: inline-block;
+      width: 30px; /* Adjust this value based on your padding-left */
+      text-align: right;
+    }
+    
+    ul.blue-balls {
+      list-style-type: none; /* Remove default bullets */
+      padding-left: 0; /* Remove default padding */
+    }
+
+    ul.blue-balls li {
+      position: relative; /* Allows for positioning the bullet */
+      padding-left: 30px; /* Creates space for the bullet */
+      margin-bottom: 10px; /* Spacing between list items */
+    }
+
+    ul.blue-balls li::before {
+      content: "🔵"; /* Inserts the blue circle as the bullet */
+      position: absolute; /* Position it to the left of the text */
+      left: 0; /* Aligns the bullet to the left */
+      top: 0.5em; /* Aligns the bullet vertically with the text */
+      font-size: 0.6em; /* Adjust the size of the bullet */
+    }
+    
+    pre.ekgfexample {
+      background-color: #f9f9f9;
+      border-left: 6px solid #3c78d8;
+      margin: 1.5em 1.5em 0;
+      padding: 1em 1em 0;
+    }
+    
+    code.ekgfexample {
+      overflow-wrap: break-word;
+      background-color: #f9f9f9;
+      margin: 1.5em 0;
+      padding: 1em 1em 0;
+      color: black;
+    }
+    @media print {
+      body {
+        max-width: none !important;
+      }
+      img {
+        max-width:100% !important;
+      }
+      .ekgfexample {
+        white-space: pre-wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+<details id="copyright" class="copyright preamble-section">
+  <summary>Preamble</summary>
+  <p>
+    Copyright © 2024, <a href="https://www.lseg.com/en">London Stock Exchange Group plc</a><br/>
+    Copyright © 2024, <a href="https://federatedknowledge.com/">Federated Knowledge, LLC</a><br/>
+    Copyright © 2024, <a href="https://agnos.ai">agnos.ai UK Ltd.</a><br/>
+    Copyright © 2024, <a href="https://www.quantyca.it/en/home-en/">Quantyca S.p.A.</a><br/>
+    Copyright © 2024, <a href="https://eccenca.com">eccenca GmbH</a><br/>
+    Copyright © 2024, <a href="https://www.omg.org/communities/enterprise-knowledge-graph-forum.htm">Object Management Group, Inc.</a><br/>
+    Copyright © 2024, <a href="https://edmcouncil.org">EDM Council, Inc.</a>
+  </p>
+  <br/>
+  <div>
+    <p class="section-title">USE OF SPECIFICATION – TERMS, CONDITIONS & NOTICES</p>
+    <p>
+      The material in this document details an Object Management Group specification in accordance with the terms,
+      conditions and notices set forth below.
+      This document does not represent a commitment to implement any portion of this specification in any
+      company's products.
+      The information contained in this document is subject to change without notice.
+    </p>
+  </div>
+  <div>
+    <p class="section-title">LICENSES</p>
+    <p>
+      Contributions to this specification are made under the terms of the Contributor License Agreement given
+      at <a href="https://cla-assistant.io/EKGF/dprod">https://cla-assistant.io/EKGF/dprod</a>.
+      Each of the copyright holders listed above has agreed that no person shall be deemed to have infringed the
+      copyright in the included material of any such copyright holder by reason of having used the specification
+      set forth herein or having conformed any computer software to the specification.
+    </p>
+    <p>
+      Subject to all of the terms and conditions below, the owners of the copyright in this specification
+      hereby grant you a fully-paid up, non-exclusive, nontransferable, perpetual, worldwide license (without the
+      right to sublicense), to use this specification to create and distribute software and special purpose
+      specifications that are based upon this specification, and to use, copy, and distribute this specification
+      as provided under the Copyright Act; provided that:
+      <ol>
+        <li>
+          both the copyright notice identified above and this permission notice appear on any copies of 
+          this specification;
+        </li>
+        <li>
+          the use of the specifications is for informational purposes and will not be copied or posted on any network
+          computer or broadcast in any media and will not be otherwise resold or transferred for commercial purposes;
+          and
+        </li>
+        <li>
+          no modifications are made to this specification.
+        </li>
+      </ol>
+    </p>
+    <p>
+      This limited permission automatically terminates without notice if you breach any of these terms or conditions.
+      Upon termination, you will immediately destroy any copies of the specifications in your possession or control.
+    </p>
+  </div>
+  <div>
+    <p class="section-title">PATENTS</p>
+    <p>
+      This specification is made available under the OMG’s Copyright and Non-Assertion Covenant (see
+      https://www.omg.org/cgi-bin/doc.cgi?ipr for details).
+      The attention of adopters is directed to the possibility that compliance with or adoption of OMG specifications
+      may require use of an invention covered by patent rights.
+      OMG shall not be responsible for identifying patents for which a license may be required by any OMG specification,
+      or for conducting legal inquiries into the legal validity or scope of those patents that are brought to its
+      attention.
+      OMG specifications are prospective and advisory only. Prospective users are responsible for protecting themselves
+      against liability for infringement of patents.
+    </p>
+  </div>
+  <div>
+    <p class="section-title">GENERAL USE RESTRICTIONS</p>
+    <p>
+      Any unauthorized use of this specification may violate copyright laws, trademark laws, and communications
+      regulations and statutes.
+      This document contains information which is protected by copyright.
+      All Rights Reserved.
+      No part of this work covered by copyright herein may be reproduced or used in any form or by any means--graphic,
+      electronic, or mechanical, including photocopying, recording, taping, or information storage and
+      retrieval systems--without permission of the copyright owner.
+    </p>
+  </div>
+  <div>
+    <p class="section-title">DISCLAIMER OF WARRANTY</p>
+    <p>
+      WHILE THIS PUBLICATION IS BELIEVED TO BE ACCURATE, IT IS PROVIDED "AS IS" AND MAY CONTAIN ERRORS OR MISPRINTS.
+      THE OBJECT MANAGEMENT GROUP AND THE COMPANIES LISTED ABOVE MAKE NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+      WITH REGARD TO THIS PUBLICATION, INCLUDING BUT NOT LIMITED TO ANY WARRANTY OF TITLE OR OWNERSHIP,
+      IMPLIED WARRANTY OF MERCHANTABILITY OR WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE OR USE.
+      IN NO EVENT SHALL THE OBJECT MANAGEMENT GROUP OR ANY OF THE COMPANIES LISTED ABOVE BE LIABLE FOR ERRORS
+      CONTAINED HEREIN OR FOR DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, RELIANCE OR COVER DAMAGES,
+      INCLUDING LOSS OF PROFITS, REVENUE, DATA OR USE, INCURRED BY ANY USER OR ANY THIRD PARTY IN CONNECTION WITH THE
+      FURNISHING, PERFORMANCE, OR USE OF THIS MATERIAL, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+    </p>
+    <p>
+      The entire risk as to the quality and performance of software developed using this specification is borne by you.
+      This disclaimer of warranty constitutes an essential part of the license granted to you to use this specification.
+    </p>
+  </div>
+  <div>
+    <p class="section-title">RESTRICTED RIGHTS LEGEND</p>
+    <p>
+      Use, duplication or disclosure by the U.S. Government is subject to the restrictions set forth in subparagraph
+      (c) (1) (ii) of The Rights in Technical Data and Computer Software Clause at DFARS 252.227-7013 or in
+      subparagraph (c)(1) and (2) of the Commercial Computer Software - Restricted Rights clauses at 48 C.F.R. 52.227-19
+      or as specified in 48 C.F.R. 227-7202-2 of the DoD F.A.R. Supplement and its successors,
+      or as specified in 48 C.F.R. 12.212 of the Federal Acquisition Regulations and its successors, as applicable.
+      The specification copyright owners are as indicated above and may be contacted through the
+      Object Management Group, 9C Medway Rd, PMB 274, Milford, MA 01757, U.S.A.
+    </p>
+  </div>
+  <div>
+    <p class="section-title">TRADEMARKS</p>
+    <p>
+      CORBA®, CORBA logos®, FIBO®, Financial Industry Business Ontology®, FINANCIAL INSTRUMENT GLOBAL IDENTIFIER®,
+      IIOP®, IMM®, Model Driven Architecture®, MDA®, Object Management Group®, OMG®, OMG Logo®, SoaML®, SOAML®, SysML®,
+      UAF®, Unified Modeling Language®, UML®, UML Cube Logo®, VSIPL®, and XMI® are registered trademarks of the
+      Object Management Group, Inc.
+    </p>
+    <p>
+      For a complete list of trademarks, 
+      see: <a href="https://www.omg.org/legal/tm_list.htm.">https://www.omg.org/legal/tm_list.htm</a>.
+      All other products or company names mentioned are used for identification purposes only and may be
+      trademarks of their respective owners.
+    </p>
+  </div>
+  <div>
+    <p class="section-title">COMPLIANCE</p>
+    <p>
+      The copyright holders listed above acknowledge that the Object Management Group (acting itself or through its
+      designees) is and shall at all times be the sole entity that may authorize developers, suppliers and sellers of
+      computer software to use certification marks, trademarks or other special designations to indicate compliance
+      with these materials.
+      Software developed under the terms of this license may claim compliance or conformance with this specification
+      if and only if the software compliance is of a nature fully matching the applicable compliance points as stated
+      in the specification.
+      Software developed only partially matching the applicable compliance points may claim only that the software
+      was based on this specification but may not claim compliance or conformance with this specification.
+      In the event that testing suites are implemented or approved by Object Management Group, Inc.,
+      software developed using this specification may claim compliance or conformance with the specification only
+      if the software satisfactorily completes the testing suites.
+    <p>
+  </div>
+  </details>
+<!--</div>-->
+<h1 id="title">Data Product Ontology (DPROD)</h1>
+
+<section id='abstract'>
+  <p>
+  The concept of Data Products has emerged as organizations increasingly recognize
+  the value of data as an asset to be managed and distributed like any other product. 
+  As more companies adopt decentralized data architectures, such as Data Mesh,
+  the need for standardized methods to describe and manage data products consistently 
+  across platforms has become critical. 
+  This is where the [[dprod]] specification, built on W3C Linked Data standards, becomes essential. 
+  Without such a standard, organizations face significant challenges: 
+  inconsistent metadata across diverse data products, limited discoverability, 
+  and interoperability issues that hinder data integration from various sources. 
+  As data ecosystems grow, the lack of a common framework also impedes scalability, 
+  increases vendor lock-in, and makes it difficult to manage these products effectively.
+  </p>
+  <p>
+  DPROD offers a solution by providing a clear schema for describing data products, 
+  ensuring they are discoverable, interoperable, and treated with the same level of 
+  accountability as traditional products.
+  </p>
+  <p>
+  The W3C tech stack is perfectly suited to address these challenges because it was 
+  designed to foster interconnected, decentralized systems, providing a robust framework 
+  for creating metadata that is both machine-readable and human-understandable. 
+  DPROD enables consistent terminology across different platforms, domains, and organizations, 
+  allowing advanced users to semantically enrich their data products and connect 
+  them into distributed knowledge graphs.
+  </p>
+  <p>
+  As more organizations strive to build and scale data products, 
+  DPROD provides the standardization needed to ensure interoperability and unlock 
+  the full potential of decentralized data ecosystems in a controlled and mature way.
+  </p>
+
+</section>
+
+<section>
+  <h2>Scope</h2>
+  <p>
+    The <a href="https://ekgf.github.io/dprod/dprod.ttl">Data Product (DPROD)</a> specification is a
+    profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>,
+    designed to describe Data Products.
+    This document defines the schema and provides examples of its use.
+  </p>
+  <p>
+    DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way.
+    By using a standard model and ontology, DPROD facilitates the consumption and aggregation of metadata
+    from multiple Data Marketplaces.
+    This approach increases the discoverability of products and services, supports decentralized data publishing,
+    and enables federated search across multiple sites using a uniform query mechanism and structure.
+  </p>
+  <p>
+    The namespace for DPROD terms is <a href="https://ekgf.github.io/dprod/">https://ekgf.github.io/dprod/</a>
+  </p>
+  <p>
+    The suggested prefix for the DPROD namespace is <strong><code>dprod</code></strong>
+  </p>
+
+  <p><strong>DPROD follows two basic principles:</strong></p>
+  <ul class="blue-balls">
+    <li>
+      Decentralize Data Ownership: To make data integration more efficient, tasks should be shared among multiple
+      teams. DCAT helps by offering a standard way to publish datasets in a decentralized manner.
+    </li>
+    <li>
+      Harmonize Data Schemas: Using shared schemas helps unify different data formats.
+      For instance, the <a href="https://ekgf.github.io/dprod/dprod.ttl">DPROD</a> specification provides a
+      <!--suppress HtmlUnknownAnchorTarget -->
+      common set of rules for defining a <a href="#dataproduct">Data Product</a>.
+      Users of DPROD can extend this schema as needed.
+    </li>
+  </ul>
+
+  The [[dprod]]] specification builds on DCAT [[vocab-dcat-3]] by connecting
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to
+  <!--suppress HtmlUnknownAnchorTarget -->
+  DPROD <a href="#dataproduct">Data Products</a> using
+  <!--suppress HtmlUnknownAnchorTarget -->
+  <a href="#inputport">input</a> and
+  <!--suppress HtmlUnknownAnchorTarget -->
+  <a href="#outputport">output</a> ports.
+  These ports are used to publish and consume data from a Data Product.
+  DPROD treats ports as <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT data services</a>,
+  so the data exchanged can be described using DCAT's highly expressive metadata around
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> and
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a>.
+  This approach also allows publishers to create their own descriptions for the data they are sharing.
+  They can use a special property called
+  <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> from DCAT to link to
+  their own set of rules or guidelines for their data.
+
+  <p><strong>The DPROD specification has four main aims:</strong></p>
+  <ul class="blue-balls">
+    <li>
+      To provide unambiguous and sharable semantics to answer the question:
+      <!--suppress HtmlUnknownAnchorTarget -->
+      'What is a <a href="#dataproduct">data product</a>?'
+    </li>
+    <li>
+      Be simple for anyone to use, but expressive enough to power large data marketplaces
+    </li>
+    <li>
+      Allow organisations to reuse their existing data catalogues and dataset infrastructure
+    </li>
+    <li>
+      To share common semantics across different Data Products and promote harmonization
+    </li>
+  </ul>
+</section>
+
+<section id='conformance' class="override">
+  <h2>Conformance</h2>
+
+  <p>
+    A data product is conformant with this specification if it satisfies the [[SHACL]] constraints provided in the file
+    <!--suppress HtmlUnknownTarget -->
+    <a href="dprod-shapes.ttl">dprod-shapes.ttl</a>.
+  </p>
+</section>
+
+<section>
+  <h2>Terms and Definitions</h2>
+  <p>
+    All terms introduced in this specification are given definitions in the Data Product Model defined later.
+  </p>
+</section>
+
+<section id="symbols">
+  <h2>Symbols</h2>
+  <p>The following acronyms are used in this specification.</p>
+  <p>
+    <ul class="no-bullets">
+      <li>
+        <strong>DPROD</strong> - Data Product Ontology [[dprod]]
+      </li>
+      <li>
+        <strong>DCAT</strong> - Data Catalog Vocabulary [[vocab-dcat-3]]
+      </li>
+      <li>
+        <strong>JSON-LD</strong> - JavaScript Object Notation for Linked Data [[json-ld11]]
+      </li>
+      <li>
+        <strong>IRI</strong> - Internationalized Resource Identifier [[IRI]]
+      </li>
+      <li>
+        <strong>ODRL</strong> - Open Digital Rights Language [[odrl-model]]
+      </li>
+      <li>
+        <strong>OWL</strong> - Web Ontology Language [[owl2-quick-reference]]
+      </li>
+      <li>
+        <strong>PROV</strong> - Provenance Ontology [[prov-overview]]
+      </li>
+      <li>
+        <strong>RDF</strong> - Resource Description Format [[rdf11-concepts]]
+      </li>
+      <li>
+        <strong>RDFS</strong> - RDF Schema [[rdf-schema]], [[swbp-xsch-datatypes]]
+      </li>
+      <li>
+        <strong>SHACL</strong> - Shapes Constraint Language ([[shacl]])
+      </li>
+      <li>
+        <strong>TTL</strong> - Turtle (commonly used serialization for RDF) [[turtle]] [[rdf12-turtle]]
+      </li>
+      <li>
+        <strong>URI</strong> - Uniform Resource Identifier [[URI]]
+      </li>
+      <li>
+        <strong>W3C</strong> - World Wide Web Consortium
+      </li>
+    </ul>
+  </p>
+</section>
+
+<section>
+  <h2>Normative namespaces</h2>
+  <p>Namespaces and prefixes used in normative parts of this Profile are shown in the following table.</p>
+
+  <table id="table-namespaces" class="simple">
+    <thead>
+    <tr>
+      <th>Prefix</th>
+      <th>Namespace IRI</th>
+      <th>Source</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>
+        <code>dprod</code>
+      </td>
+      <td>
+        <code>https://ekgf.github.io/dprod/</code>
+      </td>
+      <td>[[dprod]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>dcat</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/ns/dcat#</code>
+      </td>
+      <td>[[vocab-dcat-3]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>dct</code>
+      </td>
+      <td>
+        <!--suppress HttpUrlsUsage -->
+        <code>http://purl.org/dc/terms/</code>
+      </td>
+      <td>[[dcterms]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>odrl</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/ns/odrl/2/</code>
+      </td>
+      <td>[[odrl-model]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>owl</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/2002/07/owl#</code>
+      </td>
+      <td>[[owl2-quick-reference]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>prov</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/ns/prov#</code>
+      </td>
+      <td>[[prov-overview]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>rdf</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#</code>
+      </td>
+      <td>[[rdf11-primer]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>rdfs</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/2000/01/rdf-schema#</code>
+      </td>
+      <td>[[rdf-schema]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>sh</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/ns/shacl#</code>
+      </td>
+      <td>[[shacl]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>xsd</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/2001/XMLSchema#</code>
+      </td>
+      <td>[[xmlschema-2]]</td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Data Product (DPROD) Model</h2>
+  <p>
+    <a href="https://en.wikipedia.org/wiki/Data_mesh">Data Mesh Architectures</a> [[Data Mesh]] use input and output ports to manage
+    how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input
+    ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or
+    reporting, etc.
+  </p>
+  <p>
+    In the [[[vocab-dcat-3]]] framework, 
+    a <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:DataService">Data Service</a> is a way 
+    to describe services that provide access to data. 
+    Data Services give standardized, machine-readable descriptions of how to access one or more 
+    datasets or data processing functions.
+  </p>
+  <p>   
+    Data Services specify how to access and download the data. In DPROD, Data Services are connected to 
+    <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">Distributions</a> by a property called 
+    <!--suppress HtmlUnknownAnchorTarget -->
+    <a href="#isaccessserviceof">isAccessServiceOf</a>; 
+    on the Distribution one can specify formats (like CSV or JSON etc.)
+    and provide metadata about the "physical model" of the data. Distributions link to
+    <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">Datasets</a> and DCAT has a very rich vocabulary for
+    describing every aspect of a dataset. Finally, Datasets use the 
+    <a href="https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to">conformsTo</a> property to link to the
+    "logical model" where one can specify one's own rich semantic metadata.
+  </p>
+  <p>
+    By linking Data Product ports to DCAT DataServices ([[vocab-dcat-3]]), 
+    DPROD can describe Data Products in a way that machines can read
+    across the organization. This makes it easier for data teams to build and manage their own data products
+    independently, while still working well with the rest of the organization's data.
+  </p>
+  <p>
+    Using standards like DCAT helps create a strong and clear way to define Data Products. It ensures that as data
+    becomes more complex, the methods for describing, sharing, and using data stay consistent and reliable. It also
+    allows different organizations to share data securely and in a standardized way.
+  </p>
+  <figure id="ProfileModel">
+    <!--suppress HtmlUnknownTarget -->
+    <img alt="Information model for the Profile" src="./assets/DPROD.drawio.svg">
+    <figcaption>
+      Overview of the DPROD model and its relationship with DCAT classes
+    </figcaption>
+  </figure>
+
+  <p>
+    The Profile consists of the following classes:
+    <ul>
+      <li>
+        Data Mesh (<code>dcat:Catalog</code>) - The collection of Data Products
+      </li>
+      <li>
+        Data Product (<code>dprod:DataProduct</code>) - A data product may have input and output ports, code and
+        metadata
+      </li>
+      <li>
+        Port (<code>dcat:DataService</code>) - A digital interface that provides access to a Dataset. 
+        This can be an HTTP URL, a Database or a FileShare, etc.
+      </li>
+      <li>
+        Distribution (<code>dcat:Distribution</code>) - A specific representation of a dataset (CSV, JSON, ADLS etc.)
+        which can conform to a physical model
+      </li>
+      <li>
+        Dataset (<code>dcat:Dataset</code>) - A collection of related data that can conform to a logical model
+      </li>
+    </ul>
+  </p>
+  <p>
+    As <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a>,
+    <!--suppress HtmlUnknownAnchorTarget -->
+    the DPROD <a href="#inputport">input</a> and
+    <!--suppress HtmlUnknownAnchorTarget -->
+    <a href="#outputport">output</a> ports can specify connection details, they have <a
+    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution">distributions</a> that define formats, and link to <a
+    href="https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset">datasets</a> that conform to shared schemas. In this
+    example,
+    the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to
+    the shared FIBO specification for callable bonds.
+  </p>
+
+  <pre id="eg12" class="example hljs json ekgfexample">
+  {
+    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "id": "https://y.com/products/uk-bonds",
+    "type": "DataProduct",
+    "title": "UK Bonds",
+    "description": "UK Bonds is your one-stop-shop for all your bonds!",
+    "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
+    "lifecycleStatus" : "https://ekgf.github.io/dprod/data/lifecycle-status/Consume",
+    "outputPort": {
+      "type": "DataService",
+      "endpointURL": "https://y.com/uk-10-year-bonds",
+      "isAccessServiceOf": {
+        "type": "Distribution",
+        "format": "https://www.iana.org/assignments/media-types/application/json",
+        "isDistributionOf": {
+          "type": "Dataset",
+          "id": "https://y.com/products/uk-bonds/datasets/10-year",
+          "conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
+        }
+      }
+     }
+  }
+  </pre>
+  <p class="note">
+    The examples map the type of the above classes to <code>@type</code> in the JSON-LD serializations.
+    One can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD.
+    <br/>
+    The JSON above can be pasted into <a
+    href="https://json-ld.org/playground/">https://json-ld.org/playground</a>.
+    One can see that the schema resolves.
+  </p>
+
+  <p class="note">
+    The following sections are driven by the Shapes definitions for DPROD, which represent the properties 
+    expected to be used for instances of the above classes. 
+    As such, they include properties defined by the DCAT specification which DPROD extends. 
+    The prefix in the <i>identifier</i> for each entry indicates the ontology defining the property.
+  </p>
+
+  
+  <section>
+    <h3 id="dataproductshape">DataProduct</h3>
+    
+    <p>A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle.</p>
+    
+    
+    <p>A data product may have input and output ports, code and metadata</p>
+    
+    
+    <section>
+      <h4 id="dataproduct-label">label</h4>
+      <p>The name given to the data product.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>data product label shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataproduct-description">description</h4>
+      <p>A free text description of the data product.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://purl.org/dc/terms/description">dct:description</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>data product description shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataproductowner">dataProductOwner</h4>
+      <p>The agent that is accountable overall for the data product, including managing it through its lifecycle.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#dataproductowner">dprod:dataProductOwner</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>data product owner</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/prov#Agent" title="http://www.w3.org/ns/prov#Agent">prov:Agent</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="domain">domain</h4>
+      <p>The business or information area supported by the data product.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#domain">dprod:domain</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>domain</td></tr>
+        
+           
+        <tr><th>Comment:</th><td>The domain is intended to be a resource in its own right. This specification does not constrain the class to be used.</td></tr>
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="inputport">inputPort</h4>
+      <p>A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#inputport">dprod:inputPort</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>input port</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="outputport">outputPort</h4>
+      <p>A set of services exposed by a data product to share the generated data in a way that can be understood and trusted.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#outputport">dprod:outputPort</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>output port</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="inputdataset">inputDataset</h4>
+      <p>The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#inputdataset">dprod:inputDataset</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>input dataset</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="outputdataset">outputDataset</h4>
+      <p>The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#outputdataset">dprod:outputDataset</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>output dataset</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="purpose">purpose</h4>
+      <p>A description of the objectives and intended usage of the data product.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#purpose">dprod:purpose</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>purpose</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataproduct-haspolicy">hasPolicy</h4>
+      <p>An ODRL conformant policy expressing the rights associated with the data product. This is an inferred relationship based on the rights expressed on the individual datasets of the data product.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/ns/odrl/2/hasPolicy">odrl:hasPolicy</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>data product has policy shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/odrl/2/Policy" title="http://www.w3.org/ns/odrl/2/Policy">odrl:Policy</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="lifecyclestatus">lifecycleStatus</h4>
+      <p>The development status of the data product.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#lifecyclestatus">dprod:lifecycleStatus</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>lifecycle status</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="#dataproduct" title="https://ekgf.github.io/dprod/DataProduct">dprod:DataProduct</a></td></tr>
+        <tr><th>Range:</th><td><a href="#dataproductlifecyclestatus" title="https://ekgf.github.io/dprod/DataProductLifecycleStatus">dprod:DataProductLifecycleStatus</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+  </section>
+  
+  <section>
+    <h3 id="dataserviceshape">DataService</h3>
+    
+    <p>A collection of operations that provides access to one or more datasets or data processing functions.</p>
+    
+    
+    <p>A site or end-point providing operations related to the discovery of, access to, or processing functions on, data or related resources.</p>
+    
+    
+    <section>
+      <h4 id="isaccessserviceof">isAccessServiceOf</h4>
+      <p>The dataset distribution that is being offered through this data service.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#isaccessserviceof">dprod:isAccessServiceOf</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>is access service of</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#Distribution" title="http://www.w3.org/ns/dcat#Distribution">dcat:Distribution</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="protocol">protocol</h4>
+      <p>A protocol (possibly one of many options) used to communicate with this data service.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#protocol">dprod:protocol</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>protocol</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#Protocol" title="http://www.w3.org/ns/dcat#Protocol">dcat:Protocol</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="securityschematype">securitySchemaType</h4>
+      <p>The security schema type used for authentication and communication with this Data Service.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#securityschematype">dprod:securitySchemaType</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>data service security schema type shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#SecuritySchemaType" title="http://www.w3.org/ns/dcat#SecuritySchemaType">dcat:SecuritySchemaType</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataservice-endpointurl">endpointURL</h4>
+      <p>The root location or primary endpoint of the service.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/ns/dcat#endpointURL">dcat:endpointURL</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>end-point del servicio</td></tr>
+        
+           
+        <tr><th>Comment:</th><td>Kořenové umístění nebo hlavní přístupový bod služby (IRI přístupné přes Web).</td></tr>
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/2000/01/rdf-schema#Resource" title="http://www.w3.org/2000/01/rdf-schema#Resource">rdfs:Resource</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataservice-endpointdescription">endpointDescription</h4>
+      <p>A description of the services available via the end-points, including their operations, parameters etc.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/ns/dcat#endpointDescription">dcat:endpointDescription</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>descripción del end-point del servicio</td></tr>
+        
+           
+        <tr><th>Comment:</th><td>A description of the service end-point, including its operations, parameters etc.</td></tr>
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+        <tr><th>Range:</th><td></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+  </section>
+  
+  <section>
+    <h3 id="distributionshape">Distribution</h3>
+    
+    <p>A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above).</p>
+    
+    
+    
+    <section>
+      <h4 id="distribution-accessservice">accessService</h4>
+      <p>A data service that gives access to the distribution of the dataset.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/ns/dcat#accessService">dcat:accessService</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>data access service</td></tr>
+        
+           
+        <tr><th>Comment:</th><td>A site or end-point that gives access to the distribution of the dataset.</td></tr>
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Distribution" title="http://www.w3.org/ns/dcat#Distribution">dcat:Distribution</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#DataService" title="http://www.w3.org/ns/dcat#DataService">dcat:DataService</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="distribution-conformsto">conformsTo</h4>
+      <p>The schema that the distribution conforms to that is format and technology dependent.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://purl.org/dc/terms/conformsTo">dct:conformsTo</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>distribution conforms to shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Distribution" title="http://www.w3.org/ns/dcat#Distribution">dcat:Distribution</a></td></tr>
+        <tr><th>Range:</th><td></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="isdistributionof">isDistributionOf</h4>
+      <p>The dataset that this distribution makes available.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#isdistributionof">dprod:isDistributionOf</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>is distribution of</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Distribution" title="http://www.w3.org/ns/dcat#Distribution">dcat:Distribution</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="distribution-format">format</h4>
+      <p>The file format of the distribution.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://purl.org/dc/terms/format">dct:format</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>distribution format shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Distribution" title="http://www.w3.org/ns/dcat#Distribution">dcat:Distribution</a></td></tr>
+        <tr><th>Range:</th><td></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+  </section>
+  
+  <section>
+    <h3 id="datasetshape">Dataset</h3>
+    
+    <p>A collection of data, published or curated by a single source, and available for access or download in one or more representations.</p>
+    
+    
+    
+    <section>
+      <h4 id="dataset-label">label</h4>
+      <p>The name given to the dataset</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/2000/01/rdf-schema#label">rdfs:label</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>dataset label shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataset-description">description</h4>
+      <p>Free text description of the dataset.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://purl.org/dc/terms/description">dct:description</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>dataset distribution shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/2001/XMLSchema#string" title="http://www.w3.org/2001/XMLSchema#string">xsd:string</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataset-type">type</h4>
+      <p>The type or genre of the dataset.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://purl.org/dc/terms/type">dct:type</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>dataset type shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+        <tr><th>Range:</th><td></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataset-distribution">distribution</h4>
+      <p>An available distribution of the dataset.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/ns/dcat#distribution">dcat:distribution</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>distribuce</td></tr>
+        
+           
+        <tr><th>Comment:</th><td>An available distribution of the dataset.</td></tr>
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+        <tr><th>Range:</th><td><a href="http://www.w3.org/ns/dcat#Distribution" title="http://www.w3.org/ns/dcat#Distribution">dcat:Distribution</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataset-conformsto">conformsTo</h4>
+      <p>A model, schema, ontology, view or profile that the dataset conforms to.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://purl.org/dc/terms/conformsTo">dct:conformsTo</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>dataset conforms to shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+        <tr><th>Range:</th><td></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="dataset-haspolicy">hasPolicy</h4>
+      <p>An ODRL conformant policy expressing the rights associated with the resource.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="http://www.w3.org/ns/odrl/2/hasPolicy">odrl:hasPolicy</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>dataset has policy shape</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+        <tr><th>Range:</th><td></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+    <section>
+      <h4 id="informationsensitivityclassification">informationSensitivityClassification</h4>
+      <p>More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization.</p>
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="#informationsensitivityclassification">dprod:informationSensitivityClassification</a>
+          </td>
+        </tr>
+           
+        <tr><th>Label:</th><td>information sensitivity classification</td></tr>
+        
+        
+        <tr><th>Domain:</th><td><a href="http://www.w3.org/ns/dcat#Dataset" title="http://www.w3.org/ns/dcat#Dataset">dcat:Dataset</a></td></tr>
+        <tr><th>Range:</th><td><a href="#informationsensitivityclassification" title="https://ekgf.github.io/dprod/InformationSensitivityClassification">dprod:InformationSensitivityClassification</a></td></tr>
+      </tbody>
+      </table>
+    </section>
+    
+  </section>
+  
+  <section>
+    <h3 id="dataproductlifecyclestatusshape">DataProductLifecycleStatus</h3>
+    
+    <p>The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume).</p>
+    
+    
+    <p>The lifecycle of the data product as defined by EDM Council CDMC</p>
+    
+    
+  </section>
+  
+  <section>
+    <h3 id="informationsensitivityclassificationshape">InformationSensitivityClassification</h3>
+    
+    <p>A classification of the information within a dataset to indicate the level of control and protection that must be applied.</p>
+    
+    
+    
+  </section>
+  
+  <section>
+    <h3 id="protocolshape">Protocol</h3>
+    
+    <p>A detailed specification, possibly including a specific version, for how to communicate with a service.</p>
+    
+    
+    
+  </section>
+  
+  <section>
+    <h3 id="securityschematypeshape">SecuritySchemaType</h3>
+    
+    <p>A classification encompassing a set of rules used for authentication and communication.</p>
+    
+    
+    
+  </section>
+  
+
+</section>
+
+
+<section class="Examples">
+  <h2>Worked Examples</h2>
+  <p>This section contains some worked examples illustrating how to use [[dprod]] for some common use cases.
+    All these examples are provided as accompanying machine-readable files, 
+    from which this part of the specification is automatically generated (hence soem formatting variations).
+  </p>
+
+  
+  <section>
+    <h3>Sba Pool Rates</h3>
+    <p><p>Rates for SBA Pool that are Mortgage Backed Securities. </p>
+<p>The data product is provided through 3 ports:</p>
+<ul>
+<li>1st port: providing all sba pool rates through a query to a database </li>
+<li>2nd port: providing only EMEA rates through an api </li>
+<li>3rd port: providing only US rates through a Kafka topic</li>
+</ul></p>
+    
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">{  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+  "id":  "sba-pool-rates",
+  "@id": "https://y.com/products/sba-pool-rates",
+  "@type": "DataProduct",
+  "title": "SBA Pool Rates",
+  "description": "Rates for SBA Pool that are Mortgage Backed Securities. The data product is provided through 3 ports, one of them proving all SBA pool rates through a query to a database, another port providing EMEA only rates through an api and another one providing US only rates through a Kafka topic",
+  "dataProductOwner": "https://www.schema.xxx/person/johnSmith",
+  "lifecycle" : "Consume",
+ 
+  "outputPort": [{         
+    "@type": "dcat:DataService",
+    "id":  "sba-pool-rate-tabular-prod1",
+    "environment": "PROD",
+    "@id": "https://y.com/service/sba-pool-rate-tabular-prod1",
+    "dcat:endpointURL": "jdbc:oracle:thin@sd656-5656-6745.ldn.organiation.com:43534/PGPERG.WORLD",
+    "sql": "select * from ...",
+    "isAccessServiceOf": {
+      "@id": "https://y.com/distribution/sba-pool-rate-tabular",
+      "id":  "sba-pool-rate-tabular",
+      "@type": "dcat:Distribution",
+      "dcterms:format": "https://www.iana.org/assignments/media-types/application/sql",
+      "isDistributionOf": {
+        "@type": "dcat:Dataset",
+        "@id": "https://y.com/dataset/sba-pool-rate",
+        "id":  "sba-pool-rate",
+        "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
+      }
+    }
+   }
+,
+  {            
+    "@type": "dcat:DataService",  
+    "id":  "sba-pool-rate-emea-api-prod1",
+    "environment": "PROD",
+    "@id": "https://y.com/service/sba-pool-rate-emea-api-prod1",
+    "dcat:endpointURL": "https://example.org/mbs/SBA-Pool-location-emea",
+    "dcat:conformsTo":  "../resources/users.yaml'" ,
+    "isAccessServiceOf": {
+      "@id": "https://y.com/distribution/sba-pool-rate-emea-json1",  
+      "id":  "sba-pool-rate-emea-json1",
+      "@type": "dcat:Distribution",
+      "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
+      "isDistributionOf": {             
+        "@type": "dcat:Dataset",
+        "@id": "https://y.com/dataset/sba-pool-rate-emea",
+        "description": "SBA pool data that cover EMEA accessed through an api" ,
+        "geographicalCoverage" :"https://y.com/country/EMEA",
+        "id":  "sba-pool-rate-emea",
+        "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
+      }
+    }
+   }
+
+ , {   
+     "@type": "dcat:DataService",
+     "id":  "sba-pool-rate-json-prod1",
+     "@id": "https://y.com/service/sba-pool-rate-json-prod1",
+     "dcat:endpointURL": "q1.debt.mbs.dataset.us", 
+     "isAccessServiceOf": {
+       "@id": "https://y.com/distribution/sba-pool-rate-json",
+       "id":  "sba-pool-rate-json",
+       "@type": "dcat:Distribution",
+       "dcterms:format": "https://www.iana.org/assignments/media-types/application/json",
+       "conformsTo": "http://confluent-registry-y/rates-json-schema.json",
+        "schemaCompatiblity": "backwards compatible",
+        "isDistributionOf": {
+         "@type": "dcat:Dataset",
+         "@id": "https://y.com/dataset/sba-pool-rate-us",
+         "id":  "sba-pool-rate-us",
+         "geographicalCoverage" :"https://y.com/country/US",
+         "dcat:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool"
+       }
+     }
+  }
+    ]
+}
+</code></pre>
+    
+  </section>
+  
+  <section>
+    <h3>Core Data Product Extensions</h3>
+    <p><p>For real world data products, the core data product details will be part of a 
+wider set of metadata that allows the data and data product to be used effectively. </p>
+<p>Below is an example of extending the DPROD data product, 
+specifically by adding an agreement to a data product.</p>
+<p>In this example, a Data Product Agreement is defined as a subclass of FIBO Agreement. </p>
+<p><em>Definition of a simple Agreement based on FIBO:</em></p>
+<pre class="nolinks hljs json ekgfexample"><code class="ekgfexample">[
+  {
+    &quot;@context&quot;: [
+      &quot;https://ekgf.github.io/dprod/dprod.jsonld&quot;,
+      {
+        &quot;fibo&quot;: &quot;http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#&quot;,
+        &quot;ex&quot;: &quot;http://example.org/dp#&quot;
+      }
+    ],
+    &quot;@id&quot;: &quot;ex:isSubjectToAgreement&quot;,
+    &quot;@type&quot;: &quot;rdf:Property&quot;,
+    &quot;rdfs:label&quot;: &quot;Data Product is Subject To FIBO Agreement&quot;,
+    &quot;rdfs:domain&quot;: {
+      &quot;@id&quot;: &quot;DataProduct&quot;
+    },
+    &quot;rdfs:range&quot;: {
+      &quot;@id&quot;: &quot;DataProductAgreement&quot;
+    }
+  },
+  {
+    &quot;@id&quot;: &quot;ex:DataProductAgreement&quot;,
+    &quot;@type&quot;: &quot;rdfs:class&quot;,
+    &quot;rdfs:label&quot;: &quot;DataProductAgreement&quot;,
+    &quot;rdfs:subClassOf&quot;: {
+      &quot;@id&quot;: &quot;fibo:Agreement&quot;
+    }
+  }
+]
+
+</code></pre>
+
+<p>A full definition of agreements for data products is likely to be more complex 
+than a single class and may use other information models or their profiles 
+(such as ODRL Policy) or create dedicated definitions.</p>
+<p>Below is an example of a Data Product with an associated Data Product Agreement with an effective date.</p>
+<p><em>Using the agreement:</em></p>
+<pre class="nolinks hljs json ekgfexample"><code class="ekgfexample">{
+  &quot;@context&quot;: [
+    &quot;https://ekgf.github.io/dprod/dprod.jsonld&quot;,
+    {
+      &quot;fibo&quot;: &quot;http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#&quot;,
+      &quot;ex&quot;: &quot;http://example.org/dp#&quot;
+    }
+  ],
+  &quot;dataProducts&quot;: [
+    {
+      &quot;id&quot;: &quot;https://y.com/data-product/company-sales&quot;,
+      &quot;type&quot;: &quot;DataProduct&quot;,
+      &quot;outputPort&quot;: {
+        &quot;id&quot;: &quot;https://y.com/data-product/company-sales/port/2025-sales&quot;,
+        &quot;type&quot;: &quot;DataService&quot;,
+        &quot;label&quot;: &quot;Sales&quot;,
+        &quot;endpointURL&quot;: &quot;https://y.com/data-product/company-sales/port/2025-sales&quot;,
+        &quot;isAccessServiceOf&quot;: {
+          &quot;type&quot;: &quot;Distribution&quot;,
+          &quot;format&quot;: &quot;https://www.iana.org/assignments/media-types/application/json&quot;,
+          &quot;isDistributionOf&quot;: {
+            &quot;type&quot;: &quot;Dataset&quot;,
+            &quot;label&quot;: &quot;Sales&quot;,
+            &quot;id&quot;: &quot;https://y.com/data-product/company-sales/dataset/2025-sales&quot;,
+            &quot;conformsTo&quot;: &quot;https://y.com/schema/Sale&quot;
+          }
+        }
+      },
+      &quot;ex:iSubjectToAgreement&quot;: {
+        &quot;@id&quot;: &quot;ex:VVSimpleAgreement&quot;,
+        &quot;@type&quot;: &quot;ex:DataProductagreement&quot;
+      }
+    }
+  ],
+  &quot;agreements&quot;: [
+    {
+      &quot;@id&quot;: &quot;ex:VVSimpleAgreement&quot;,
+      &quot;@type&quot;: &quot;ex:DataProductAgreement&quot;,
+      &quot;rdfs:label&quot;: &quot;Very Simple Data Product Agreement&quot;,
+      &quot;fibo:hasEffectiveDate&quot;: {
+        &quot;@type&quot;: &quot;xsd:date&quot;,
+        &quot;@value&quot;: &quot;2024-08-31&quot;
+      }
+    }
+  ]
+}
+
+</code></pre></p>
+    
+  </section>
+  
+  <section>
+    <h3>Data Schema</h3>
+    <p><p>The Data Product provides to the consumers (dprod:outputDataset) datasets
+defined based on <a href="https://www.w3.org/TR/vocab-dcat-3/">DCAT</a>.
+Datasets should be described (<a href="https://www.w3.org/TR/vocab-dcat-2/#Property:resource_conforms_to">dcat:conforms</a>) with logical models. 
+Logical models describe business entities and their properties (attributes 
+and relationships) with consistent business terms and they are technology independent.
+Ideally, logical models are based on existing standards eg, <a href="https://spec.edmcouncil.org/fibo/ontology">FIBO</a>, <a href="https://www.finos.org/common-domain-model">CDM</a> etc.
+If a logical model does not exist to describe the dataset, then the dataset publisher 
+can create one, preferably by using SHACL modelling language:</p>
+<p>Example of a Dataset conforming to a SHACL Schema:</p>
+<pre class="ekgfexample"><code class="ekgfexample">exampleDataset dcat:conforms exampleSchema:DatasetLogicalSchema.
+exampleSchema:DatasetLogicalSchema a owl:Ontology, dct:Standard.
+
+</code></pre>
+
+<p>Based on <a href="https://www.w3.org/TR/shacl/">SHACL</a> all entities that exist in the dataset are Node Shapes (1).
+The attributes of the entities are described as Property Shapes with sh:datatype (2)
+The relationships are also defined as Property Shaped with sh:class the target class of the relationship  (3)</p>
+<pre class="nolinks hljs turtle ekgfexample"><code class="ekgfexample"># definition of the entity as a Node Shape (1)
+example:Account a sh:NodeShape ;
+    # human readable name of the entity
+    rdfs:label &quot;Account&quot;@en ;
+    # description of the entity
+    dc:description &quot;An Account is...&quot; ;
+    # an account has a property shape Account Age. 
+    # Definition of the property shape follows (2)
+    sh:property example:Account-AccountAge ; 
+    # an account has a property shape Account Branch. 
+    # Definition of the property shape follows (3)
+    sh:property example:Account-AccountBranch ;     
+    rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema;
+.
+
+# (2) Definition of the Account-AccountAge property shape
+#     describing that an account MUST have exactly one
+#     AccountAge attribute and its datatype is integer
+example:Account-AccountAge a sh:PropertyShape ;   
+    sh:path example:AccountAge ;
+    sh:datatype xsd:integer ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema ;
+.
+
+# (3) Definition of the Account-AccountBranch property shape
+#     describing than an account must have at least one 
+#     Account Branch which is another entity
+example:Account-AccountBranch a sh:PropertyShape ;   
+    sh:path example:AccountBranch ;
+    sh:class  example:Branch ;
+    sh:minCount 1 ;
+    rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema ;
+.
+
+# definition of the entity Branch as a Node Shape (1)
+example:Branch a sh:NodeShape ;
+    rdfs:label &quot;Branch&quot;@en ;
+    dc:description &quot;A Branch is..&quot; ;
+    rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema ;
+.
+
+</code></pre></p>
+    
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">{
+"@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+"id": "https://y.com/products/equity-trade-xxx",
+"@type": "DataProduct",
+"title": "Equity Trade XXX",
+"description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
+"outputPort": {
+  "@type": "DataService",
+  "endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
+  "isAccessServiceOf": {
+    "@type": "Distribution",
+    "format": "application/parquet",
+    "isDistributionOf": {
+      "@type": "Dataset",
+      "@id": "https://y.com/dataset/equity-trade-euronext-paris",
+      "title":  "Equity Trade Euronext Paris XXX",
+        "conformsTo":"https://spec.edmcouncil.org/fibo/ontology/BP/Process/FinancialContextAndProcess/SecuritiesTrade"     } 
+    }
+  }
+}
+</code></pre>
+    
+  </section>
+  
+  <section>
+    <h3>Data Quality</h3>
+    <p><ul>
+<li><a href="https://www.w3.org/TR/vocab-dqv/">DQV</a> is a standard vocabulary to describe data quality and is proposed along with the DCAT vocabulary to measure the quality of datasets.</li>
+<li>It is based on 3 basic entities: Dimensions, the Metrics that belong to its dimension, and the Measurement for each metric.</li>
+<li>Data Quality can be computed at different levels, eg. data product, dataset, table, column level etc. </li>
+<li>Usually, data quality metrics are measured at a dataset level and can inform more higher-level quality metrics at a data product level.</li>
+</ul></p>
+    
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">[
+  
+  {
+  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+  "id": "https://y.com/derived-quality-measurementA",
+  "@type": "QualityMeasurement",
+  "value": 1,
+  "computedOn": {
+      "@type": "DataProduct",
+      "@id": "https://y.com/products/uk-bonds"
+    },
+  "isMeasurementOf": {
+    "@type": "Metric",
+    "label": "Number of stale datasets"
+    }
+}
+,
+
+{
+  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+  "@id": "https://y.com/quality-measurement-B",
+  "@type": "QualityMeasurement",
+  "value": "false",
+  "computedOn": {
+      "@type": "Dataset",
+      "@id": "https://y.com/products/uk-bonds/yearlyPrices"
+    },
+  "isMeasurementOf": {
+    "@type": "Metric",
+    "label": "Expected distribution frequency achieved"
+  }
+}
+,
+  {
+    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "id": "https://y.com/products/uk-bonds",
+    "type": "DataProduct",
+    "outputPort": {
+      "type": "DataService",
+      "endpointURL": "https://y.com/uk-bonds/quality-report",
+      "isAccessServiceOf": {
+        "type": "Distribution",
+        "isDistributionOf": {
+          "type": "Dataset",
+          "conformsTo": "https://www.w3.org/TR/vocab-dqv/#dqv:QualityMeasurement"
+        }
+      }
+    }
+  }
+]
+</code></pre>
+    
+  </section>
+  
+  <section>
+    <h3>Equity Trade</h3>
+    <p><p>Example of a data product for Equity Trades.</p>
+<p>The Equity Trades Data Product provides two datasets to the consumers: one for trades in London Stock Exchange (LSEG) and one in Euronext.</p></p>
+    
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">{
+"@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+"id":  "equity trade-xxx",
+"@id": "https://y.com/products/equity-trade-xxx",
+"@type": "DataProduct",
+"title": "Equity Trade XXX",
+"description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
+"dataProductOwner": "https://www.schema.xxx/person/AnnTaylor",
+"lifecycle" : "Consume",
+"outputPort": [{
+  "@type": "dcat:DataService",
+  "id":  "equity-trade-euronext-xxx-tabular-adls-prod",
+  "@id": "https://y.com/service/equity-trade-euronext-xxx-adls-prod-1",
+  "dcat:endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
+  "dcat:endpointDescription": "Details for accessing storage account",
+  "isAccessServiceOf": {
+    "@id": "https://y.com/service/equity-trade-euronext-xxx-tabular",
+    "id":  "equity-trade-euronext-xxx-tabular",
+    "@type": "dcat:Distribution",
+    "dcterms:format": "application/parquet",
+     "dcat:conformsTo": "https://cdm.finos.org/docs/event-model" ,
+    "isDistributionOf": {
+      "@type": "dcat:Dataset",
+      "@id": "https://y.com/dataset/equity-trade-euronext-paris",
+      "datasetOwner": "https://www.schema.xxx/person/JohnBarks",
+      "title":  "Equity Trade Euronext Paris XXX",
+      "id":  "equity-trade-euronext-paris-xxx",
+      "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
+        } 
+    }
+  }
+,{
+   "@type": "dcat:DataService",
+  "id":  "equity-trade-lseg-xxx-tabular-adls-prod",
+  "@id": "https://y.com/service/equity-trade-lseg-xxx-adls-prod-1",
+  "dcat:endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-lseg",
+  "dcat:endpointDescription": "Details for accessing storage account",
+  "isAccessServiceOf": {
+    "@id": "https://y.com/service/equity-trade-lseg-xxx-tabular",
+    "id":  "equity-trade-lseg-xxx-tabular",
+    "@type": "dcat:Distribution",
+    "dcterms:format": "application/parquet",
+     "dcat:conformsTo": "https://cdm.finos.org/docs/event-model" ,
+    "isDistributionOf": {
+      "@type": "dcat:Dataset",
+      "@id": "https://y.com/dataset/equity-trade-lseg-xxx",
+      "title":  "Equity Trade LSEG XXX",
+      "id":  "equity-trade-lseg-xxx",
+      "dcat:conformsTo": "https://cdm.finos.org/docs/event-model"
+        } 
+    }
+  }
+  ]
+}
+</code></pre>
+    
+  </section>
+  
+  <section>
+    <h3>Data Rights</h3>
+    <p><p><a href="https://www.w3.org/TR/odrl-model/">ODRL</a> is a W3C standard to describe rights and entitlements.
+Based on ODRL, data product and dataset publishers can describe policies in a consistent, standard and machine-readable manner. Policies contain permissions and prohibitions on specific actions that are required to be met by stakeholders.</p>
+<p>In addition, policies may be limited by constraints (eg. temporal or geographical constraints) and duties (eg. payments) that may be imposed on the permissions.</p>
+<p>Policies and their permitted or prohibited actions can be described at different levels, eg. a policy can target a data product, a dataset, a data service or even a column.</p>
+<p>Sophisticated engines should interpret and enforce the ODRL policies at the appropriate level eg.:</p>
+<pre class="nolinks hljs turtle ekgfexample"><code class="ekgfexample">examplePolicyA odrl:targets exampleProduct:ProductA .
+examplePolicyB odrl:targets exampleDataset:DatasetA1 .
+
+</code></pre>
+
+<p>An example of a policy follows, that describes permission to distribute the data only within a specific geographic region:</p>
+<pre class="nolinks hljs json ekgfexample"><code class="ekgfexample">examplePolicyA odrl:permission
+   {
+    &quot;action&quot;: &quot;odrl:distribute&quot;,
+    &quot;constraint&quot;: [
+       {&quot;leftOperand&quot;: &quot;region&quot;,
+         &quot;operator&quot;: &quot;eq&quot;,
+        &quot;rightOperator&quot;: &quot;region:EMEA&quot;
+       }
+     ]
+    }
+
+</code></pre></p>
+    
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">{
+  "@type": "Policy",
+  "id": "56456df-dfg-34535345-5545",
+  
+  "assigner": 'https://schema.org/person/AdamSmith",
+  "target": "https://data.org/data-product/equity-trade-xxx",
+  
+  "permission": [
+      {
+       "action": "odrl:read",
+       "constraint": [
+          {
+            "@type": "Constraint",
+            "leftOperand": "spatial",
+            "operator": "odrl:isAnyOf",
+            "rightOperand": [region:EMEA, region:APAC],
+            "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
+        }
+    ]
+}
+        
+</code></pre>
+    
+  </section>
+  
+  <section>
+    <h3>Observability Ports</h3>
+    <p><p>An Observability Port is a designated interface or endpoint in a system or 
+application specifically used for monitoring and diagnostic purposes. 
+It allows external tools or services to collect and analyze data related to 
+the system's performance, health, and behaviour.
+By exposing metrics, logs, and traces through this port, administrators and 
+developers can gain insights into the system's state, troubleshoot issues, 
+and ensure it operates efficiently and reliably.</p>
+<h2>Defining Observability Ports in DPROD</h2>
+<p>DPROD has a schema-first design. 
+The first thing to do is define a schema for the 
+logging information. 
+It could be a schema based on OpenTelemetry, but this 
+uses RLOG (which is a semantic ontology for logging).</p>
+<p>To find the Observability Port, query the ports to identify the 
+ones that return an <code>RLOG:Entry</code>:</p>
+<pre class="ekgfexample"><code class="ekgfexample">outputPort &gt;&gt; isAccessServiceOf &gt;&gt; isDistributionOf &gt;&gt; conformsTo &gt;&gt; rlog:Entry
+
+</code></pre>
+
+<h2>Example Data Product with Observability Port</h2>
+<p>One can see that the example data product has two ports, one with the data 
+and one with the logging. 
+This query will return the URI of the port that returns logging 
+data: <code>https://y.com/uk-bonds/observability-port</code>.</p>
+<p>Here is an example of a data product with an observability port:</p>
+<pre class="nolinks hljs json ekgfexample"><code class="ekgfexample">{
+  &quot;@context&quot;: &quot;https://ekgf.github.io/dprod/dprod.jsonld&quot;,
+  &quot;dataProducts&quot;: [
+    {
+      &quot;id&quot;: &quot;https://y.com/data-product/uk-bonds&quot;,
+      &quot;type&quot;: &quot;DataProduct&quot;,
+      &quot;inputPort&quot;: [
+        {
+          &quot;id&quot;: &quot;https://y.com/data-product/uk-bonds/port/2024-data&quot;,
+          &quot;type&quot;: &quot;DataService&quot;
+        }
+      ],
+      &quot;outputPort&quot;: [
+        {
+          &quot;id&quot;: &quot;https://y.com/data-product/uk-bonds/port/2024-observability&quot;,
+          &quot;type&quot;: &quot;DataService&quot;,
+          &quot;label&quot;: &quot;Observability Port&quot;,
+          &quot;endpointURL&quot;: &quot;https://y.com/data-product/uk-bonds/port/2024-observability&quot;,
+          &quot;isAccessServiceOf&quot;: {
+            &quot;type&quot;: &quot;Distribution&quot;,
+            &quot;format&quot;: &quot;https://www.iana.org/assignments/media-types/application/json&quot;,
+            &quot;isDistributionOf&quot;: {
+              &quot;type&quot;: &quot;Dataset&quot;,
+              &quot;id&quot;: &quot;https://y.com/data-product/uk-bonds/dataset/2024-observability&quot;,
+              &quot;conformsTo&quot;: &quot;https://y.com/schema/ObservabilityLog&quot;
+            }
+          }
+        },
+        {
+          &quot;id&quot;: &quot;https://y.com/data-product/uk-bonds/port/2024-data&quot;,
+          &quot;type&quot;: &quot;DataService&quot;,
+          &quot;label&quot;: &quot;Data Port&quot;,
+          &quot;endpointURL&quot;: &quot;https://y.com/data-product/uk-bonds/port/2024-data&quot;,
+          &quot;isAccessServiceOf&quot;: {
+            &quot;type&quot;: &quot;Distribution&quot;,
+            &quot;format&quot;: &quot;https://www.iana.org/assignments/media-types/application/json&quot;,
+            &quot;isDistributionOf&quot;: {
+              &quot;type&quot;: &quot;Dataset&quot;,
+              &quot;id&quot;: &quot;https://y.com/data-product/uk-bonds/dataset/2024-data&quot;,
+              &quot;conformsTo&quot;: &quot;https://y.com/schema/Data&quot;
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+</code></pre>
+
+<p>Given that the schema defines the class for an observation, it can be used to 
+find all observability ports on data product like this:</p>
+<pre class="ekgfexample"><code class="ekgfexample">[https://y.com/data-product/uk-bonds/port/2024-observability] &gt;&gt; isAccessServiceOf &gt;&gt; isDistributionOf &gt;&gt; conformsTo &gt;&gt; https://y.com/schema/ObservabilityLog
+
+</code></pre>
+
+<p>In Linked Data a SPARQL query would do that:</p>
+<pre class="nolinks hljs sparql ekgfexample"><code class="ekgfexample">SELECT ?port
+WHERE
+{ 
+  ?port a dcat:DataService .
+  ?port (dprod:isAccessServiceOf/dprod:isDistributionOf)/dcat:conformsTo rlog:Entry
+}
+
+</code></pre>
+
+<p>This query will return the URI of the port that provides logging
+data: <code>https://y.com/data-product/uk-bonds/port/2024-observability</code>.</p></p>
+    
+  </section>
+  
+  <section>
+    <h3>Data Lineage</h3>
+    <p><p>It is important to be able to trace the lineage of data. 
+Within DPROD, this can be done in two ways: at a high level from one 
+data product to another and, if desired, 
+at the more detailed level of the underlying datasets.</p>
+<h2>High Level Lineage: Between Data Products</h2>
+<p>Data products have input and output ports, and one data product’s 
+input port will point to another data product’s output port.</p>
+<p>This allows a user to query the lineage. 
+The data products all have URLs as identifiers, and properties all 
+connect to each other, so a query can walk from one data product to 
+the downstream data products that feed it.</p>
+<p>One can follow the path that leads from one data product to
+another like this:</p>
+<pre class="ekgfexample"><code class="ekgfexample">Data Product &gt;&gt; inputPort &gt;&gt; isAccessServiceOf &gt;&gt; isDistributionOf &gt;&gt; Input Data Product 
+
+</code></pre>
+
+<p>The following example data has three data products that 
+connect to each other through their input and output ports:</p>
+<pre class="nolinks hljs json ekgfexample"><code class="ekgfexample">{
+  &quot;@context&quot;: &quot;https://ekgf.github.io/dprod/dprod.jsonld&quot;,
+  &quot;dataProducts&quot;: [
+    {
+      &quot;id&quot;: &quot;https://y.com/data-product/company-finance&quot;,
+      &quot;type&quot;: &quot;DataProduct&quot;,
+      &quot;inputPort&quot;: [
+        {
+          &quot;id&quot;: &quot;https://y.com/data-product/company-sales/port/2025-sales&quot;,
+          &quot;type&quot;: &quot;DataService&quot;
+        },
+        {
+          &quot;id&quot;: &quot;https://y.com/data-product/company-hr/port/2025-payroll&quot;,
+          &quot;type&quot;: &quot;DataService&quot;
+        }
+      ],
+      &quot;outputPort&quot;: {
+        &quot;id&quot;: &quot;https://y.com/data-product/company-sales/port/2025-balance-sheet&quot;,
+        &quot;type&quot;: &quot;DataService&quot;,
+        &quot;label&quot;: &quot;Balance Sheet&quot;,
+        &quot;endpointURL&quot;: &quot;https://y.com/data-product/company-sales/port/2025-c&quot;,
+        &quot;isAccessServiceOf&quot;: {
+          &quot;type&quot;: &quot;Distribution&quot;,
+          &quot;format&quot;: &quot;https://www.iana.org/assignments/media-types/application/json&quot;,
+          &quot;isDistributionOf&quot;: {
+            &quot;type&quot;: &quot;Dataset&quot;,
+            &quot;id&quot;: &quot;https://y.com/data-product/company-sales/dataset/2025-balance-sheet&quot;,
+            &quot;conformsTo&quot;: &quot;https://y.com/schema/BalanceSheet&quot;
+          }
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;https://y.com/data-product/company-sales&quot;,
+      &quot;type&quot;: &quot;DataProduct&quot;,
+      &quot;outputPort&quot;: {
+        &quot;id&quot;: &quot;https://y.com/data-product/company-sales/port/2025-sales&quot;,
+        &quot;type&quot;: &quot;DataService&quot;,
+        &quot;label&quot;: &quot;Sales&quot;,
+        &quot;endpointURL&quot;: &quot;https://y.com/data-product/company-sales/port/2025-sales&quot;,
+        &quot;isAccessServiceOf&quot;: {
+          &quot;type&quot;: &quot;Distribution&quot;,
+          &quot;format&quot;: &quot;https://www.iana.org/assignments/media-types/application/json&quot;,
+          &quot;isDistributionOf&quot;: {
+            &quot;type&quot;: &quot;Dataset&quot;,
+            &quot;label&quot;: &quot;Sales&quot;,
+            &quot;id&quot;: &quot;https://y.com/data-product/company-sales/dataset/2025-sales&quot;,
+            &quot;conformsTo&quot;: &quot;https://y.com/schema/Sale&quot;
+          }
+        }
+      }
+    },
+    {
+      &quot;id&quot;: &quot;https://y.com/data-product/company-hr&quot;,
+      &quot;type&quot;: &quot;DataProduct&quot;,
+      &quot;outputPort&quot;: {
+        &quot;id&quot;: &quot;https://y.com/data-product/company-sales/port/2025-payroll&quot;,
+        &quot;type&quot;: &quot;DataService&quot;,
+        &quot;label&quot;: &quot;Payroll&quot;,
+        &quot;endpointURL&quot;: &quot;https://y.com/data-product/company-hr/port/2025-payroll&quot;,
+        &quot;isAccessServiceOf&quot;: {
+          &quot;type&quot;: &quot;Distribution&quot;,
+          &quot;format&quot;: &quot;https://www.iana.org/assignments/media-types/text/csv&quot;,
+          &quot;isDistributionOf&quot;: {
+            &quot;type&quot;: &quot;Dataset&quot;,
+            &quot;label&quot;: &quot;Payroll&quot;,
+            &quot;id&quot;: &quot;https://y.com/data-product/company-sales/dataset/2025-payroll&quot;,
+            &quot;conformsTo&quot;: &quot;https://y.com/schema/Payroll&quot;
+          }
+        }
+      }
+    }
+  ]
+}
+
+</code></pre>
+
+<p>Given this example data, starting at the data product
+<code>https://y.com/data-product/company-finance</code>, 
+one could walk the relationships to find the input data products that feed it:</p>
+<pre class="ekgfexample"><code class="ekgfexample">https://y.com/data-product/company-finance &gt;&gt; 
+    :inputPort &gt;&gt; 
+    :isAccessServiceOf &gt;&gt; 
+    :isDistributionOf &gt;&gt; [
+        https://y.com/data-product/company-sales, 
+        https://y.com/data-product/company-hr
+    ]
+
+</code></pre>
+
+<p>In Linked Data, this would use a query such as:</p>
+<pre class="nolinks hljs sparql ekgfexample"><code class="ekgfexample">PREFIX :      &lt;https://y.com/data-product/&gt;
+PREFIX rdfs:  &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX dprod: &lt;https://ekgf.github.io/dprod/&gt;
+
+SELECT DISTINCT ?input
+WHERE
+{ 
+  :company-finance dprod:inputPort ?inputPort .
+  ?inputPort dprod:isAccessServiceOf/dprod:isDistributionOf/rdfs:label ?input .
+}
+
+</code></pre>
+
+<h3>Detailed Level: Between Datasets</h3>
+<p>To track lineage at a more granular level, 
+one can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.</p>
+<pre class="nolinks hljs turtle ekgfexample"><code class="ekgfexample">dap:atnf-P366-2003SEPT
+  rdf:type dcat:Dataset ;
+  dcterms:bibliographicCitation &quot;Burgay, M; McLaughlin, M; Kramer, M; Lyne, A; Joshi, B; Pearce, G; D&#x27;Amico, N; Possenti, A; Manchester, R; Camilo, F (2017): Parkes observations for project P366 semester 2003SEPT. v1. CSIRO. Data Collection. https://doi.org/10.4225/08/598dc08d07bb7&quot; ;
+  dcterms:title &quot;Parkes observations for project P366 semester 2003SEPT&quot;@en ;
+  dcat:landingPage &lt;https://data.csiro.au/dap/landingpage?pid=csiro:P366-2003SEPT&gt; ;
+  prov:wasGeneratedBy dap:P366 ;
+  .
+
+dap:P366
+  rdf:type prov:Activity ;
+  dcterms:type &lt;http://dbpedia.org/resource/Observation&gt; ;
+  prov:startedAtTime &quot;2000-11-01&quot;^^xsd:date ;
+  prov:used dap:Parkes-radio-telescope ;
+  prov:wasInformedBy dap:ATNF ;
+  rdfs:label &quot;P366 - Parkes multibeam high-latitude pulsar survey&quot;@en ;
+  rdfs:seeAlso &lt;https://doi.org/10.1111/j.1365-2966.2006.10100.x&gt; ;
+  .
+
+</code></pre>
+
+<p>See: https://www.w3.org/TR/vocab-dcat-3/#examples-dataset-provenance.</p></p>
+    
+  </section>
+  
+</section>
+
+<section class="appendix">
+  <h2>Acknowledgements</h2>
+  <p>
+    The editors gratefully acknowledge the feedback and
+    contributions made by individuals who have participated in <a href="https://edmcouncil.org/frameworks/cdmc/">EDM Council's CDMC team</a>.
+  </p>
+</section>
+
+</body>
+</html>
