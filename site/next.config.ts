@@ -19,7 +19,12 @@ import type { NextConfig } from "next";
  *             so localhost:3000 still works.
  */
 const vercelUrl = process.env.VERCEL_URL;
-const assetPrefix = vercelUrl ? `https://${vercelUrl}` : undefined;
+// IMPORTANT: include the /dprod basePath in the assetPrefix. With basePath
+// set, Next.js serves _next/* assets at /dprod/_next/*, but assetPrefix is
+// written to the HTML as-is without the basePath being re-appended, so we
+// have to include it ourselves or every asset 404s across the zone
+// boundary.
+const assetPrefix = vercelUrl ? `https://${vercelUrl}/dprod` : undefined;
 
 const nextConfig: NextConfig = {
   basePath: "/dprod",
