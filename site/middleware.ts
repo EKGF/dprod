@@ -62,15 +62,18 @@ export async function middleware(req: NextRequest) {
   // rewrite to the static index.html inside public/spec/ under basePath.
   // We bypass the /spec -> /spec/index.html rewrite from next.config.ts
   // because chaining middleware rewrites through afterFiles rewrites is
-  // unreliable in Next.js 16.
+  // unreliable in Next.js 16. We also construct the destination URL via
+  // `new URL(path, req.url)` rather than `req.nextUrl.clone()` because
+  // NextURL carries a basePath attribute and mutating its pathname leads
+  // to double-prefix surprises.
   if (version.isCurrent) {
-    const url = req.nextUrl.clone();
-    url.pathname = rest
+    const destPath = rest
       ? `/dprod/spec${rest}`
       : `/dprod/spec/index.html`;
-    return withDebug(NextResponse.rewrite(url), "self-rewrite", {
+    const destUrl = new URL(destPath, req.url);
+    return withDebug(NextResponse.rewrite(destUrl), "self-rewrite", {
       slug,
-      dest: url.pathname,
+      dest: destPath,
     });
   }
 
