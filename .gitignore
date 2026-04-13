@@ -2,6 +2,8 @@
 .venv/
 venv/
 __pypackages__/
+.envrc
+.direnv/
 dist/
 # Next.js marketing site (site/)
 site/node_modules/
@@ -67,3 +69,4 @@ code/bin/
 code/lib/
 code/include
 */__pycache__
+.vercel
