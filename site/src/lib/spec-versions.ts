@@ -100,6 +100,55 @@ async function fetchDeployments(): Promise<VercelDeployment[]> {
   }
 }
 
+type GitHubPullRequest = {
+  head?: { ref?: string };
+  state?: string;
+};
+
+/**
+ * Returns the set of branches that have at least one open Pull Request on
+ * GitHub, plus the production branch "develop". Used to filter out Vercel
+ * deployments whose branch has already been merged: once a PR closes, its
+ * branch typically gets auto-deleted (or at least becomes irrelevant), and
+ * its Vercel preview deployment — while still reachable by URL — should no
+ * longer appear in the user-facing version picker.
+ *
+ * On failure (network error, missing token, rate limit, non-2xx response)
+ * the function returns `null` so callers can fail *open* — i.e. show every
+ * branch Vercel knows about rather than silently hide valid ones.
+ */
+async function fetchActiveBranches(): Promise<Set<string> | null> {
+  const token = process.env.GITHUB_TOKEN;
+
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  try {
+    const res = await fetch(
+      "https://api.github.com/repos/EKGF/dprod/pulls?state=open&per_page=100",
+      {
+        headers,
+        next: { revalidate: 60 },
+      },
+    );
+    if (!res.ok) return null;
+    const prs = (await res.json()) as GitHubPullRequest[];
+    const branches = new Set<string>();
+    for (const pr of prs) {
+      const ref = pr.head?.ref;
+      if (ref) branches.add(ref);
+    }
+    // Always treat the production branch as active.
+    branches.add("develop");
+    return branches;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Returns the list of spec versions, in display order:
  *   1. The frozen 1.0 archive (always first, always present).
@@ -113,12 +162,21 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
   const currentBranch = process.env.VERCEL_GIT_COMMIT_REF;
   const versions: SpecVersion[] = [ARCHIVE_1_0];
 
-  const deployments = await fetchDeployments();
+  const [deployments, activeBranches] = await Promise.all([
+    fetchDeployments(),
+    fetchActiveBranches(),
+  ]);
 
   const seen = new Set<string>();
   for (const dep of deployments) {
     const branch = dep.meta?.githubCommitRef;
     if (!branch || EXCLUDED_BRANCHES.has(branch) || seen.has(branch)) continue;
+
+    // Fail open: when the GitHub lookup failed, keep every branch. When it
+    // succeeded, only keep branches with an open PR (or the production
+    // branch, which fetchActiveBranches() adds unconditionally).
+    if (activeBranches && !activeBranches.has(branch)) continue;
+
     seen.add(branch);
 
     const slug = branchToSlug(branch);
