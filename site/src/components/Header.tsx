@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/navigation-menu";
 
 const NAV_ITEMS = [
-  { href: "/why", label: "Why" },
-  { href: "/concepts", label: "Concepts" },
-  { href: "/adopt", label: "Adopt" },
-  { href: "/roadmap", label: "Roadmap" },
+  { href: "/about", label: "About" },
+  { href: "/quadrants", label: "Quadrants" },
+  { href: "/resources", label: "Resources" },
+  { href: "/membership", label: "Membership" },
+  { href: "/contact", label: "Contact" },
   { href: "/spec/", label: "Specification" },
 ] as const;
 
@@ -30,11 +31,13 @@ export function Header() {
         <div className="flex items-center gap-8">
           <Link
             href="/"
-            className="group flex items-center gap-2 leading-none"
+            className="group flex items-center text-3xl leading-none transform -translate-y-1.5"
           >
-            <EkgfLogoSymbol className="h-7 w-7 transition-transform group-hover:scale-110" />
-            <span className="hidden text-2xl font-black tracking-tighter sm:inline-block">
-              DPROD
+            <span className="relative inline-flex items-baseline">
+              <EkgfLogoSymbol className="absolute right-full mr-2 h-[1em] w-[1em] transition-transform group-hover:scale-110" />
+              <span className="hidden font-black tracking-tighter leading-none sm:inline-block">
+                EKGF
+              </span>
             </span>
           </Link>
 

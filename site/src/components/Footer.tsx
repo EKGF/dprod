@@ -2,10 +2,11 @@ import Link from "next/link";
 import { Github } from "lucide-react";
 
 const NAV_LINKS = [
-  { href: "/why", label: "Why DPROD?" },
-  { href: "/concepts", label: "Core Concepts" },
-  { href: "/adopt", label: "Get Started" },
-  { href: "/roadmap", label: "Roadmap" },
+  { href: "/about", label: "About" },
+  { href: "/quadrants", label: "Quadrants" },
+  { href: "/resources", label: "Resources" },
+  { href: "/membership", label: "Membership" },
+  { href: "/contact", label: "Contact" },
   { href: "/spec/", label: "Specification" },
 ];
 
