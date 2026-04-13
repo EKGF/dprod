@@ -807,6 +807,17 @@
   {% for cls in classes %}
   <section>
     <h3 id="{{cls.html_id()}}">{{cls.name}}</h3>
+    <table class="def classdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="{{cls.href()}}">{{cls.axiom_iri_normalized}}</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
     {% if cls.description is not none %}
     <p>{{cls.description}}</p>
     {% endif %}
