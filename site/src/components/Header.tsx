@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EkgfLogoSymbol } from "@/components/icons/EkgfLogoSymbol";
+import { OmgLogo } from "@/components/icons/OmgLogo";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -101,6 +102,16 @@ export function Header() {
               <Github className="h-5 w-5" />
             </a>
           </Button>
+
+          <a
+            href="https://omg.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Object Management Group (OMG)"
+            className="hidden sm:flex items-center rounded-md px-2 py-1 opacity-80 hover:opacity-100 transition-opacity transform -translate-y-1"
+          >
+            <OmgLogo className="h-[1.65rem] w-auto" />
+          </a>
         </div>
       </div>
     </header>
