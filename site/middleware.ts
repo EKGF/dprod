@@ -27,13 +27,20 @@ export async function middleware(req: NextRequest) {
   if (!version || version.kind !== "vercel-branch") return NextResponse.next();
 
   // If the requested version matches the current deployment, serve locally
-  // rather than looping back through the API.
+  // via same-origin rewrite — assets resolve normally.
   if (version.isCurrent) {
     const url = req.nextUrl.clone();
     url.pathname = `/spec${rest}`;
     return NextResponse.rewrite(url);
   }
 
-  // Otherwise proxy to the branch's own Vercel deployment.
-  return NextResponse.rewrite(`${version.origin}/spec${rest}`);
+  // For cross-branch targets we 307 to the actual deployment URL instead of
+  // proxy-rewriting. NextResponse.rewrite() to an external origin returns
+  // the HTML body but does NOT rewrite the /_next/static/... asset paths
+  // inside it — the browser then fetches assets from the current origin
+  // (where the hashed filenames don't exist) and the page renders unstyled.
+  // A redirect loses the /spec/<slug> URL in the address bar but everything
+  // works. A future route handler could do HTML rewriting with <base> tag
+  // injection for unified chrome, but not in phase 5.
+  return NextResponse.redirect(`${version.origin}/spec${rest}`, 307);
 }
