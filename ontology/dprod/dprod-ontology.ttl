@@ -29,6 +29,7 @@ dprod:
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
   dct:modified "2024-08-31"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
+  dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
   dct:contributor <https://www.linkedin.com/in/peterivett> ;
   dct:contributor <https://www.linkedin.com/in/jgeluk> ;
