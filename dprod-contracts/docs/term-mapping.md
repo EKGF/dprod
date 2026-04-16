@@ -1,6 +1,6 @@
 # DPROD Contracts Term Mapping
 
-Maps business language to DPROD/ODRL vocabulary. Includes complete DCON -> DPROD migration mapping.
+Maps business language to DPROD/ODRL vocabulary.
 
 ---
 
@@ -13,7 +13,6 @@ This document bridges the gap between business terminology and the technical ODR
 - **Used on**: which policy elements this applies to
 - **Cardinality**: how many values are allowed
 - **Source**: whether the term comes from ODRL or DPROD
-- **DCON equivalent**: for migration reference
 
 For the formal vocabulary reference, see [specification.md](specification.md). For authoring guidance, see [contracts-guide.md](contracts-guide.md) or [policy-writers-guide.md](policy-writers-guide.md).
 
@@ -33,7 +32,6 @@ For the formal vocabulary reference, see [specification.md](specification.md). F
 ex:contract a dprod:DataOffer ;
     rdfs:label "Market Price Data Contract v2" .
 ```
-**DCON equivalent:** `rdfs:label` (same)
 
 ### Contract Description
 
@@ -55,7 +53,6 @@ ex:contract a dprod:DataOffer ;
 ex:contract-v2 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v1 .
 ```
-**DCON equivalent:** `prov:wasRevisionOf` (same)
 
 ### Contract Status
 
@@ -65,8 +62,6 @@ ex:contract-v2 a dprod:DataOffer ;
 **Cardinality:** 0..1
 **Values:** `dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`
 **Source:** DPROD
-**DCON equivalent:** `dcon:contractState` (partial; DCON also had Draft/Published which are not modeled)
-
 ---
 
 ## 3. Temporal Properties
@@ -83,7 +78,6 @@ ex:contract-v2 a dprod:DataOffer ;
 ```turtle
 ex:subscription dprod:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime .
 ```
-**DCON equivalent:** `dcon:effectiveDate`
 
 ### Expiration Date
 
@@ -93,7 +87,6 @@ ex:subscription dprod:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime .
 **Cardinality:** 0..1
 **Datatype:** `xsd:dateTime`
 **Source:** DPROD
-**DCON equivalent:** `dcon:expirationDate`
 
 ### Deadline
 
@@ -111,7 +104,6 @@ dprod:deadline "2026-12-31T23:59:59Z"^^xsd:dateTime .
 # Relative deadline (30 days from activation)
 dprod:deadline "P30D"^^xsd:duration .
 ```
-**DCON equivalent:** `dcon:hasTerminationClause` (partial)
 
 ### Recurrence Schedule
 
@@ -125,7 +117,6 @@ dprod:deadline "P30D"^^xsd:duration .
 ```turtle
 dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" .
 ```
-**DCON equivalent:** `dcon:hasSchedule` + `dcon:icalRule` (two properties collapsed into one)
 
 ---
 
@@ -143,7 +134,6 @@ dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" .
 ex:contract a dprod:DataOffer ;
     odrl:assigner ex:dataTeam .
 ```
-**DCON equivalent:** `odrl:assigner` (same)
 
 ### Contract Consumer
 
@@ -157,7 +147,6 @@ ex:contract a dprod:DataOffer ;
 ex:subscription a dprod:DataContract ;
     odrl:assignee ex:analyticsTeam .
 ```
-**DCON equivalent:** `dcon:subscriber` -> `odrl:assignee`
 
 ### Duty Holder
 
@@ -167,8 +156,6 @@ ex:subscription a dprod:DataContract ;
 **Cardinality:** 0..1
 **Source:** DPROD (`rdfs:subPropertyOf odrl:assignee`)
 **Note:** In a DataOffer (Offer), provider duties have `dprod:subject` set to the provider. Consumer duties omit `dprod:subject` -- it is filled in when the DataContract is created.
-**DCON equivalent:** `dcon:promisor`
-
 ### Party Hierarchy
 
 **Business term:** `team membership`, `department`, `division`
@@ -199,7 +186,6 @@ ex:analyticsTeam a odrl:Party ;
 ```turtle
 ex:contract odrl:target ex:marketPrices .
 ```
-**DCON equivalent:** `odrl:target` (same)
 
 ### Asset Hierarchy
 
@@ -235,7 +221,6 @@ odrl:obligation [
     dprod:deadline "PT30M"^^xsd:duration
 ] .
 ```
-**DCON equivalent:** `dcon:ProviderTimelinessPromise`
 
 ### Schema Conformance
 
@@ -250,7 +235,6 @@ odrl:obligation [
     odrl:target ex:marketDataSchema
 ] .
 ```
-**DCON equivalent:** `dcon:ProviderSchemaPromise`
 
 ### Quality SLA
 
@@ -271,7 +255,6 @@ odrl:obligation [
     ]
 ] .
 ```
-**DCON equivalent:** `dcon:ProviderQualityPromise`
 
 ### Change Notification
 
@@ -287,7 +270,6 @@ odrl:obligation [
     dprod:deadline "P14D"^^xsd:duration
 ] .
 ```
-**DCON equivalent:** `dcon:ProviderChangeNotificationPromise`
 
 ### Usage Reporting
 
@@ -302,7 +284,6 @@ odrl:obligation [
     dprod:deadline "P30D"^^xsd:duration
 ] .
 ```
-**DCON equivalent:** `dcon:ConsumerUsageReportingPromise` (implied)
 
 ---
 
@@ -312,7 +293,6 @@ odrl:obligation [
 
 **Business term:** `can view`, `display rights`, `screen display`
 **DPROD property:** `odrl:display` (action on `odrl:Permission`)
-**DCON equivalent:** `odrl:display` (same)
 
 ### Non-Display Permission
 
@@ -324,13 +304,11 @@ odrl:obligation [
 
 **Business term:** `can create derived data`, `derivation rights`
 **DPROD property:** `odrl:derive` (action on `odrl:Permission`)
-**DCON equivalent:** `odrl:derive` (same)
 
 ### Distribution Prohibition
 
 **Business term:** `no redistribution`, `no sharing outside`
 **DPROD property:** `odrl:distribute` (action on `odrl:Prohibition`)
-**DCON equivalent:** Prohibition with `odrl:distribute`
 
 ### Constrained Permission
 
@@ -373,8 +351,6 @@ odrl:permission [
 | Complete | All obligations met | `dprod:Fulfilled` |
 | Breached | Material obligation violated | `dprod:Violated` |
 
-**Note:** DCON's `Draft` and `Published` are pre-normative workflow metadata. DPROD does not model them -- they belong to the authoring system, not policy evaluation.
-
 ---
 
 ## 9. Quick Reference Table
@@ -403,94 +379,6 @@ odrl:permission [
 | Schedule | `dprod:recurrence` (RRULE) | DPROD |
 | Deadline | `dprod:deadline` | DPROD |
 | Contract link | `dprod:acceptsOffer` | DPROD |
-
----
-
-## 10. DCON -> DPROD Migration
-
-Complete mapping of every DCON term to its DPROD equivalent.
-
-### 10.1 Classes
-
-| DCON Class | DPROD Equivalent | Status | Notes |
-|------------|------------------|--------|-------|
-| `dcon:DataContract` | `dprod:DataOffer` | Direct | Subclass of `odrl:Offer` |
-| `dcon:DataContractSubscription` | `dprod:DataContract` | Direct | Subclass of `odrl:Agreement` |
-| `dcon:Promise` | `odrl:Duty` | Dissolved | All obligations are duties |
-| `dcon:ProviderPromise` | `odrl:Duty` + DPROD action | Dissolved | Action differentiates duty type |
-| `dcon:ProviderTimelinessPromise` | Duty + `deliver` + `recurrence` + `deadline` | Pattern | Schedule + window replaces delivery time |
-| `dcon:ProviderSchemaPromise` | Duty + `conformTo` | Pattern | Schema conformance duty |
-| `dcon:ProviderChangeNotificationPromise` | Duty + `notify` + `deadline` | Pattern | Deadline as duration for lead time |
-| `dcon:ProviderQualityPromise` | Duty + `conformTo` + constraint | Pattern | Quality constraints on conformance duty |
-| `dcon:ConsumerPromise` | `odrl:Duty` (assignee duty) | Dissolved | Standard ODRL duty |
-| `dcon:Schedule` | `dprod:recurrence` value | Simplified | Single RRULE string, not a class |
-| `dcon:ICalSchedule` | `dprod:recurrence` value | Absorbed | RRULE is the iCal format |
-| `dcon:PromiseState` | `dprod:State` | Extended | 4 states (adds Pending) vs DCON's 3 |
-| `dcon:Condition` | `odrl:Constraint` | Standard | Use ODRL directly |
-| `dcon:ContractStatus` (Draft/Active/Retired/Cancelled) | -- | Not modeled | Pre-normative workflow metadata |
-
-### 10.2 Properties
-
-| DCON Property | DPROD Equivalent | Status | Notes |
-|---------------|------------------|--------|-------|
-| `dcon:provider` | `odrl:assigner` | Standard | ODRL term |
-| `dcon:subscriber` | `odrl:assignee` | Standard | ODRL term |
-| `dcon:contractState` | `dprod:state` | Direct | Unified 4-state lifecycle |
-| `dcon:effectiveDate` | `dprod:effectiveDate` | Direct | Same semantics |
-| `dcon:expirationDate` | `dprod:expirationDate` | Direct | Same semantics |
-| `dcon:subscribesTo` | `dprod:acceptsOffer` | Direct | Same semantics |
-| `dcon:promisedDeliveryTime` | `dprod:recurrence` + `dprod:deadline` | Simplified | Schedule + window |
-| `dcon:notificationLeadTime` | `dprod:deadline` (as `xsd:duration`) | Simplified | Duration value |
-| `dcon:promisor` | `dprod:subject` (on Duty) | DPROD | `rdfs:subPropertyOf odrl:assignee` |
-| `dcon:promisee` | Implicit (other party) | Not needed | Bilateral agreement handles this |
-| `dcon:promiseContent` | `odrl:action` (on Duty) | Standard | ODRL term |
-| `dcon:promiseState` | `dprod:state` | Direct | Unified lifecycle |
-| `dcon:fulfillsPromise` | `prov:wasDerivedFrom` (on DataContract) | Standard | W3C PROV |
-| `dcon:hasPromise` | `odrl:obligation` | Standard | ODRL term |
-| `dcon:hasContract` | `dcat:hasPolicy` (external systems) | External | Not policy semantics |
-| `dcon:hasEffectivePeriod` | `dprod:effectiveDate` + `dprod:expirationDate` | Simplified | Two dates instead of period object |
-| `dcon:hasTerminationClause` | `dprod:deadline` (as duration) | Simplified | Duration on duty |
-| `dcon:hasSchedule` | `dprod:recurrence` | Simplified | Single property |
-| `dcon:icalRule` | `dprod:recurrence` value | Absorbed | RRULE string is the value |
-
-### 10.3 Actions
-
-| DCON Action | DPROD Equivalent | Status |
-|-------------|------------------|--------|
-| `dcon:deliver` | `ex:deliver` | Direct |
-| `dcon:maintain` (schema) | `ex:conformTo` | Renamed |
-| `dcon:notify` | `ex:notify` | Direct |
-| `dcon:report` (implied) | `ex:report` | Direct |
-
-### 10.4 Not Modeled (by design)
-
-These DCON concepts are intentionally not modeled in DPROD Contracts, with rationale:
-
-| DCON Concept | Reason Not Modeled |
-|--------------|--------------------|
-| `dcon:Draft` / `dcon:Retired` / `dcon:Cancelled` | Pre-normative workflow metadata, not policy semantics. Belongs to authoring system. |
-| `dcon:promiseContent` (as class) | Dissolved into `odrl:action` on duties. Actions provide the semantic differentiation. |
-| `dcon:fulfillsPromise` (as property) | Replaced by `prov:wasDerivedFrom` on DataContract. Standard W3C provenance. |
-| `dcon:hasContract` | External relationship. Systems use `dcat:hasPolicy` to link datasets to policies. |
-| `dcon:Condition` (as class) | Use `odrl:Constraint` directly. Standard ODRL. |
-| `schema:Schedule` format | DPROD uses RRULE string only. Single property instead of class hierarchy. |
-| Promise/ProviderPromise hierarchy | Dissolved into `odrl:Duty` patterns. DPROD actions differentiate duty types. |
-| Promise Theory semantics (ought-to-be) | Duties suffice for DPROD's scope. Future extensions may add full Promise support for voluntary cooperation. |
-| `dcat:Distribution` integration | Use DCAT directly outside policies. Not policy semantics. |
-| Contract billing | Operational concern, out of scope for policy evaluation. |
-
-### 10.5 Migration Checklist
-
-When migrating a DCON contract to DPROD Contracts:
-
-1. Change `dcon:DataContract` -> `dprod:DataOffer`
-2. Change `dcon:DataContractSubscription` -> `dprod:DataContract`
-3. Add `odrl:profile <https://ekgf.github.io/dprod/>` declaration
-4. Replace promise subclasses with `odrl:Duty` + DPROD action (see table above)
-5. Replace `dcon:promisor` with `dprod:subject` on duties
-6. Replace `dcon:hasSchedule`/`dcon:icalRule` with `dprod:recurrence`
-7. Map `dcon:contractState` to `dprod:state`
-8. Validate against SHACL shapes: `shacl validate --shapes dprod-contracts-shapes.ttl --data migrated.ttl`
 
 ---
 
