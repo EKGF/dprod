@@ -6,7 +6,7 @@ REPO_DIR="$(dirname "$(realpath ${BASH_SOURCE[0]})")"
 venv_dir="${REPO_DIR}/.venv"
 system_python_bin="/usr/bin/python3"
 system_python_version="0.0.0"
-system_python_minimum_version="3.12"
+system_python_minimum_version="3.13"
 venv_python_bin="${venv_dir}/bin/python${system_python_minimum_version}"
 
 function check_system_python() {

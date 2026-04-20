@@ -25,7 +25,7 @@ connect to each other through their input and output ports:
 
 ```json
 {
-  "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+  "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
   "dataProducts": [
     {
       "id": "https://y.com/data-product/company-finance",
@@ -119,7 +119,7 @@ In Linked Data, this would use a query such as:
 ```sparql
 PREFIX :      <https://y.com/data-product/>
 PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dprod: <https://ekgf.github.io/dprod/>
+PREFIX dprod: <https://www.omg.org/spec/DPROD/>
 
 SELECT DISTINCT ?input
 WHERE
