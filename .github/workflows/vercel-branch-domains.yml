@@ -1,0 +1,89 @@
+name: vercel-branch-domains
+
+# Keeps the set of custom Vercel domains under *.dprod-preview.ekgf.org in
+# sync with the set of branches that spec-versions.ts surfaces on the site:
+#
+# - Every PR's head branch gets <slug>.dprod-preview.ekgf.org pinned to it
+#   (slug = branch with "/" replaced by "-"), matching branchToSlug() in
+#   site/src/lib/spec-versions.ts.
+# - When the PR closes (merged or not), the domain is removed again.
+# - develop is refreshed on every push so its domain is always present.
+#
+# Requires repo secrets VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID —
+# the same ones spec-versions.ts already consumes at build time.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+  push:
+    branches:
+      - develop
+
+jobs:
+  sync-domain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve branch, slug, domain, mode
+        id: ctx
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH="${{ github.event.pull_request.head.ref }}"
+            if [ "${{ github.event.action }}" = "closed" ]; then
+              MODE="delete"
+            else
+              MODE="add"
+            fi
+          else
+            BRANCH="${GITHUB_REF#refs/heads/}"
+            MODE="add"
+          fi
+          SLUG="${BRANCH//\//-}"
+          DOMAIN="${SLUG}.dprod-preview.ekgf.org"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "domain=$DOMAIN" >> "$GITHUB_OUTPUT"
+          echo "mode=$MODE"   >> "$GITHUB_OUTPUT"
+          echo "Resolved: branch=$BRANCH domain=$DOMAIN mode=$MODE"
+
+      - name: Add Vercel domain pinned to branch
+        if: steps.ctx.outputs.mode == 'add'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          BRANCH: ${{ steps.ctx.outputs.branch }}
+          DOMAIN: ${{ steps.ctx.outputs.domain }}
+        run: |
+          set -euo pipefail
+          URL="https://api.vercel.com/v10/projects/${VERCEL_PROJECT_ID}/domains?teamId=${VERCEL_ORG_ID}"
+          HTTP=$(curl -sS -o response.json -w "%{http_code}" -X POST "$URL" \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\":\"${DOMAIN}\",\"gitBranch\":\"${BRANCH}\"}")
+          echo "Vercel responded with HTTP ${HTTP}:"
+          cat response.json; echo
+          case "$HTTP" in
+            200|201) echo "Added ${DOMAIN} → ${BRANCH}" ;;
+            409)     echo "Domain ${DOMAIN} already exists — treating as success" ;;
+            *)       echo "Unexpected status ${HTTP}"; exit 1 ;;
+          esac
+
+      - name: Remove Vercel domain for closed PR
+        if: steps.ctx.outputs.mode == 'delete'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          DOMAIN: ${{ steps.ctx.outputs.domain }}
+        run: |
+          set -euo pipefail
+          URL="https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/domains/${DOMAIN}?teamId=${VERCEL_ORG_ID}"
+          HTTP=$(curl -sS -o response.json -w "%{http_code}" -X DELETE "$URL" \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}")
+          echo "Vercel responded with HTTP ${HTTP}:"
+          cat response.json; echo
+          case "$HTTP" in
+            200|204) echo "Removed ${DOMAIN}" ;;
+            404)     echo "Domain ${DOMAIN} was not configured — treating as success" ;;
+            *)       echo "Unexpected status ${HTTP}"; exit 1 ;;
+          esac
