@@ -29,23 +29,17 @@ const assetPrefix = vercelUrl ? `https://${vercelUrl}/dprod` : undefined;
 const nextConfig: NextConfig = {
   basePath: "/dprod",
   assetPrefix,
-  async redirects() {
-    // The spec HTML references sibling assets (images, downloads) with
-    // relative URLs like `./assets/dprod.jpg` and `dprod.ttl`. Without a
-    // trailing slash on the spec URL, the browser strips the last segment
-    // when resolving those, so relative links land one directory too high
-    // and 404. Redirect bare forms to the slashed form so relative URLs in
-    // the spec resolve inside the intended directory.
-    return [
-      { source: "/spec", destination: "/spec/", permanent: false },
-      { source: "/spec/main", destination: "/spec/main/", permanent: false },
-      {
-        source: "/spec/archive/:version",
-        destination: "/spec/archive/:version/",
-        permanent: false,
-      },
-    ];
-  },
+  // The spec HTML references sibling assets (images, downloads) with
+  // relative URLs like `./assets/dprod.jpg` and `dprod.ttl`. Without a
+  // trailing slash on the spec URL, the browser strips the last segment
+  // when resolving those, so relative links land one directory too high
+  // and 404. With `trailingSlash: true`, Next.js auto-redirects URLs
+  // without a trailing slash to the slashed form, so relative URLs inside
+  // the spec resolve against the intended directory. An earlier attempt
+  // using an explicit `redirects()` entry for `/spec → /spec/` produced
+  // a redirect loop because the default (`trailingSlash: false`) strips
+  // the slash right back off.
+  trailingSlash: true,
   async rewrites() {
     return [
       // /spec/ → current deployment's own generated spec
