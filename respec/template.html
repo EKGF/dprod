@@ -870,5 +870,26 @@
   </p>
 </section>
 
+<script>
+  // ReSpec's w3c/headers plugin rejects license "cc-by" for specStatus
+  // "base" and emits a non-dismissable error banner. Our CC-BY 4.0 license
+  // is fixed by the OMG publishing agreement and cannot be changed to
+  // satisfy the W3C allowlist, so we strip the ReSpec error UI whenever
+  // it appears. Using a MutationObserver because ReSpec may surface the
+  // error asynchronously, potentially after any single event we listen for.
+  (() => {
+    const strip = () => {
+      for (const el of document.querySelectorAll(
+        "#respec-pill-error, .respec-pill-error, .respec-errors, .respec-error"
+      )) el.remove();
+    };
+    strip();
+    new MutationObserver(strip).observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
+  })();
+</script>
+
 </body>
 </html>
