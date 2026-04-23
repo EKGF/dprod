@@ -18,6 +18,18 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to sync (head ref, e.g. add-dprod-contracts or ballot/3)
+        required: true
+        type: string
+      mode:
+        description: add or delete the domain for that branch
+        required: true
+        type: choice
+        default: add
+        options: [add, delete]
 
 jobs:
   sync-domain:
@@ -34,6 +46,9 @@ jobs:
             else
               MODE="add"
             fi
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BRANCH="${{ inputs.branch }}"
+            MODE="${{ inputs.mode }}"
           else
             BRANCH="${GITHUB_REF#refs/heads/}"
             MODE="add"
