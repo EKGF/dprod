@@ -64,7 +64,6 @@ def main():
     g_shapes = load_dprod_shapes()
     
     jsonld_context_ontology = {
-<<<<<<< HEAD
             "@version": 1.1,
             "dprod": ontology_namespace_iri,
             "xsd": str(XSD),
