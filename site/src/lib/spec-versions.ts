@@ -37,7 +37,7 @@ export type SpecVersion = {
 
 const ARCHIVE_1_0: SpecVersion = {
   id: "main",
-  label: "1.0 (OMG approved)",
+  label: "DPROD 1.0 (Beta)",
   description: "The frozen version approved by OMG as the official standard. Never rebuilt.",
   branch: "main",
   origin: "",
