@@ -29,21 +29,38 @@ const assetPrefix = vercelUrl ? `https://${vercelUrl}/dprod` : undefined;
 const nextConfig: NextConfig = {
   basePath: "/dprod",
   assetPrefix,
+  async redirects() {
+    // The spec HTML references sibling assets (images, downloads) with
+    // relative URLs like `./assets/dprod.jpg` and `dprod.ttl`. Without a
+    // trailing slash on the spec URL, the browser strips the last segment
+    // when resolving those, so relative links land one directory too high
+    // and 404. Redirect bare forms to the slashed form so relative URLs in
+    // the spec resolve inside the intended directory.
+    return [
+      { source: "/spec", destination: "/spec/", permanent: false },
+      { source: "/spec/main", destination: "/spec/main/", permanent: false },
+      {
+        source: "/spec/archive/:version",
+        destination: "/spec/archive/:version/",
+        permanent: false,
+      },
+    ];
+  },
   async rewrites() {
     return [
-      // /spec → current deployment's own generated spec
+      // /spec/ → current deployment's own generated spec
       // (basePath is automatically prepended, so this resolves to
-      // /dprod/spec → /dprod/spec/index.html under the zone.)
-      { source: "/spec", destination: "/spec/index.html" },
-      // /spec/main → frozen OMG 1.0 archive
-      { source: "/spec/main", destination: "/spec/archive/1.0/index.html" },
+      // /dprod/spec/ → /dprod/spec/index.html under the zone.)
+      { source: "/spec/", destination: "/spec/index.html" },
+      // /spec/main/ → frozen OMG 1.0 archive
+      { source: "/spec/main/", destination: "/spec/archive/1.0/index.html" },
       {
         source: "/spec/main/:path*",
         destination: "/spec/archive/1.0/:path*",
       },
-      // /spec/archive/<version> directory index
+      // /spec/archive/<version>/ directory index
       {
-        source: "/spec/archive/:version",
+        source: "/spec/archive/:version/",
         destination: "/spec/archive/:version/index.html",
       },
     ];
