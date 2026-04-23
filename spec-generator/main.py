@@ -1,5 +1,7 @@
 import json
+import os
 import shutil
+import subprocess
 
 from rdflib import XSD, OWL, PROV, RDFS
 
@@ -9,6 +11,22 @@ from property_shape import PropertyShape
 from jinja import generate_spec_page
 
 from globals import ontology_namespace_iri, shapes_graph_ns_iri, LINKEDIN
+
+
+def detect_branch() -> str:
+    # Vercel exposes the branch directly; fall back to a local git call so
+    # local builds render a sensible "Commit history" link too.
+    env_branch = os.environ.get("VERCEL_GIT_COMMIT_REF")
+    if env_branch:
+        return env_branch
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            check=True, capture_output=True, text=True,
+        )
+        return result.stdout.strip() or "main"
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return "main"
 
 
 # Define a function to add classes and properties to the context
@@ -59,7 +77,7 @@ def main():
 
     # generate_class_and_property_pages(classes)
 
-    generate_spec_page({'classes': classes, 'examples': examples})
+    generate_spec_page({'classes': classes, 'examples': examples, 'branch': detect_branch()})
 
     g_ontology = load_dprod_ontology()
     g_shapes = load_dprod_shapes()
