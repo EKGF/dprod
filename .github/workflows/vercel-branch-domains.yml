@@ -38,6 +38,15 @@ jobs:
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BRANCH="${{ github.event.pull_request.head.ref }}"
+            HEAD_REPO="${{ github.event.pull_request.head.repo.full_name }}"
+            BASE_REPO="${{ github.event.pull_request.base.repo.full_name }}"
+            # Fork PRs deploy from the fork's branch, which doesn't exist in
+            # our repo — Vercel would return git_branch_not_found.
+            if [ "$HEAD_REPO" != "$BASE_REPO" ]; then
+              echo "Skipping fork PR ($HEAD_REPO) — Vercel can't pin a branch that doesn't live in $BASE_REPO"
+              echo "mode=skip" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
             if [ "${{ github.event.action }}" = "closed" ]; then
               MODE="delete"
             else
@@ -82,10 +91,24 @@ jobs:
             -d "{\"name\":\"${DOMAIN}\",\"gitBranch\":\"${BRANCH}\"}")
           echo "Vercel responded with HTTP ${HTTP}:"
           cat response.json; echo
+          # invalid_domain fires for branches whose slug contains characters
+          # DNS labels don't accept (e.g. dependabot's "github_actions" with
+          # an underscore, or dotted version suffixes). git_branch_not_found
+          # fires for fork PRs or branches that no longer exist. Both are
+          # benign for this use case — warn but don't fail the job.
+          ERROR_CODE=$(jq -r '.error.code // empty' response.json 2>/dev/null || true)
           case "$HTTP" in
             200|201) echo "Added ${DOMAIN} → ${BRANCH}" ;;
             409)     echo "Domain ${DOMAIN} already exists — treating as success" ;;
-            *)       echo "Unexpected status ${HTTP}"; exit 1 ;;
+            400)
+              case "$ERROR_CODE" in
+                invalid_domain|git_branch_not_found)
+                  echo "::warning::Skipped ${DOMAIN}: $ERROR_CODE"
+                  ;;
+                *) echo "Unexpected 400 (code=$ERROR_CODE)"; exit 1 ;;
+              esac
+              ;;
+            *) echo "Unexpected status ${HTTP}"; exit 1 ;;
           esac
 
       - name: Remove Vercel domain for closed PR
