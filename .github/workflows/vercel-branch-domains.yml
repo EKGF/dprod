@@ -15,9 +15,6 @@ name: vercel-branch-domains
 on:
   pull_request:
     types: [opened, reopened, synchronize, closed]
-  push:
-    branches:
-      - develop
   workflow_dispatch:
     inputs:
       branch:
@@ -52,6 +49,14 @@ jobs:
           else
             BRANCH="${GITHUB_REF#refs/heads/}"
             MODE="add"
+          fi
+          # Vercel refuses to pin the production branch as a preview domain,
+          # and develop is already reachable via the primary zone at
+          # ekgf.org/dprod — so skip it outright.
+          if [ "$BRANCH" = "develop" ] || [ "$BRANCH" = "main" ]; then
+            echo "Skipping production branch '$BRANCH' — no preview domain needed"
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           SLUG="${BRANCH//\//-}"
           DOMAIN="${SLUG}.dprod-preview.ekgf.org"
