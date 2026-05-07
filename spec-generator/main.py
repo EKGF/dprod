@@ -47,7 +47,6 @@ def main():
         'Dataset',
         'DataProductLifecycleStatus',
         'InformationSensitivityClassification',
-        'Protocol',
         'SecuritySchemaType',
         'Enumeration'
     ])
