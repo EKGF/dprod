@@ -1,5 +1,5 @@
 {
-  "@type": "Offer",
+  "@type": "Agreement",
   "@context": [
     {
       "odrl": "http://www.w3.org/ns/odrl/2/",
@@ -7,24 +7,25 @@
     }
   ],
   "uid": "56456df-dfg-34535345-5545",
-  "assigner": "https://schema.org/person/AdamSmith",
-  "target": "https://data.org/data-product/equity-trade-xxx",
 
   "permission": [
     {
-      "action": "odrl:read",
-      "constraint": [
-        {
-          "@type": "odrl:Constraint",
-          "leftOperand": "odrl:spatial",
-          "operator": "odrl:isAnyOf",
-          "rightOperand": [
-            "reg:EMEA",
-            "reg:APAC"
-          ],
-          "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
-        }
-      ]
+      "target": "https://data.org/data-product/equity-trade-xxx",
+      "assigner": "https://schema.org/person/AdamSmith",
+      "assignee": {
+         "@type": "PartyCollection",
+         "source":  "https://example.org/DataDepartment",
+         "refinement": [{
+             "leftOperand": "odrl:spatial",
+             "operator": "odrl:isAnyOf",
+             "rightOperand": [
+                "reg:EMEA",
+                "reg:APAC"
+             ],
+             "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
+         }]
+      },
+      "action": "odrl:use",
     }
   ]
 }

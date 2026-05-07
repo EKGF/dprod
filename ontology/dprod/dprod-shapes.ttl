@@ -17,7 +17,6 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix sdo: <http://schema.org/> .
 
 dprod-shapes:
   a owl:Ontology ;
@@ -125,18 +124,10 @@ dprod-shapes:InformationSensitivityClassificationShape
 dprod-shapes:DataProductLifecycleStatusShape
     a sh:NodeShape;
     rdfs:label "data product lifecycle status shape" ;
-    dct:description "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."@en ;
+    dct:description "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume, Retire)."@en ;
     sh:targetClass dprod:DataProductLifecycleStatus;
     rdfs:isDefinedBy dprod-shapes:;
   .
-
-dprod-shapes:ProtocolShape
-    a sh:NodeShape;
-    rdfs:label "protocol shape" ;
-    dct:description "A detailed specification, possibly including a specific version, for how to communicate with a service."@en ;
-    rdfs:isDefinedBy dprod-shapes:;
-    sh:targetClass dprod:Protocol;
-.
 
 dprod-shapes:SecuritySchemaTypeShape
     a sh:NodeShape;
@@ -362,7 +353,6 @@ dprod-shapes:DataService-protocol
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:protocol;
-  sh:class dcat:Protocol;
   dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
   rdfs:label "data service protocol shape" ;
   .
@@ -371,7 +361,7 @@ dprod-shapes:DataService-securitySchemaType
   a sh:PropertyShape;
   rdfs:isDefinedBy dprod-shapes:;
   sh:path dprod:securitySchemaType;
-  sh:class dcat:SecuritySchemaType;
+  sh:class dprod:SecuritySchemaType;
   dct:description "The security schema type used for authentication and communication with this Data Service."@en ;
   rdfs:label "data service security schema type shape" ;
   .

@@ -54,7 +54,7 @@ dprod:DataProduct
 dprod:DataProductLifecycleStatus
   a owl:Class, rdfs:Class ;
   dct:description
-    "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume)."@en ;
+    "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume, Retire)."@en ;
   rdfs:comment "The lifecycle of the data product as defined by EDM Council CDMC"@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "data product lifecycle status" ;
@@ -76,13 +76,6 @@ dprod:Enumeration
   dct:description "The superclass of enumeration lists referenced from data product related artifacts."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "enumeration" ;
-.
-
-dprod:Protocol
-  a owl:Class, rdfs:Class ;
-  dct:description "A detailed specification, possibly including a specific version, for how to communicate with a service."@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "protocol" ;
 .
 
 dprod:SecuritySchemaType
@@ -211,7 +204,7 @@ dprod:protocol
   dct:description "A protocol (possibly one of many options) used to communicate with this data service."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:DataService ;
-# rdfs:range rdf:resource ; # better let user decide whether they want Protocol class or own class or skos
+# rdfs:range not specified; users reference external URIs or SKOS concepts (DPROD-33)
   rdfs:label "protocol" ;
 .
 
@@ -221,5 +214,5 @@ dprod:securitySchemaType
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dcat:DataService ;
 # rdfs:range rdf:resource ; # better let user decide whether they want SecuritySchemaType class or own class or skos
-  rdf:label "security schema type" ;
+  rdfs:label "security schema type" ;
 .
