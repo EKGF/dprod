@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from rdflib import URIRef, Graph, SH, DCTERMS, Literal, RDFS
 
 from functions import short_name, null_html_string, cast_to_uri_ref
-from globals import IGNORED_NODE_SHAPE_PREDICATES, shapes_graph_ns_iri
+from globals import IGNORED_NODE_SHAPE_PREDICATES, ontology_namespace_iri, shapes_graph_ns_iri
 
 
 @dataclass(init=False)
@@ -25,6 +25,7 @@ class NodeShape:
         self.axiom_iri = cast_to_uri_ref(g.value(self.shape_iri, SH.targetClass))
         if self.axiom_iri is None:
             raise ValueError("No sh:axiom_iri provided for NodeShape")
+        self.axiom_iri_normalized = g.namespace_manager.normalizeUri(self.axiom_iri)
         # First load the properties of the OWL target class
         for rdf_predicate, rdf_object in g.predicate_objects(self.axiom_iri):
             self._set_prop(g, rdf_predicate, rdf_object, 'OWL')
@@ -85,3 +86,12 @@ class NodeShape:
         if self.shape_iri.__contains__(shapes_graph_ns_iri):
             return self.shape_iri.replace(shapes_graph_ns_iri, '').lower()
         return self.name.lower()
+
+    def href(self) -> str:
+        """Return the href value for the class's canonical identifier.
+        For DPROD-local classes this points back to the in-page section
+        (consistent with PropertyShape.href); for external classes such as
+        dcat:DataService it points to the defining vocabulary."""
+        if self.axiom_iri.__contains__(ontology_namespace_iri):
+            return f"#{self.html_id()}"
+        return str(self.axiom_iri)
