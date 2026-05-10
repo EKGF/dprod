@@ -117,7 +117,7 @@ dprod-contracts/
 └── docs/
     ├── overview.md                  # What is DPROD Contracts? (start here)
     ├── specification.md             # Technical vocabulary reference
-    ├── term-mapping.md              # Business term -> property mapping + DCON migration
+    ├── term-mapping.md              # Business term -> property mapping
     ├── formal-semantics.md          # Formal semantics (normative)
     ├── contracts-guide.md           # Data contract authoring guide
     └── policy-writers-guide.md      # Data use policy authoring guide

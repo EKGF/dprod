@@ -236,11 +236,6 @@ ODCS and DPROD Contracts are not mutually exclusive. An organization could:
 
 The bridge between them is the core DPROD ontology: a `dprod:DataProduct` links to both its DCAT distribution metadata (which could be generated from ODCS schema) and its `odrl:hasPolicy` (the DPROD Contract).
 
----
-
-## Translated Examples
-
-See `examples/odcs-translated.ttl` for the ODCS full example translated to DPROD Contracts, demonstrating how each ODCS section maps to ODRL constructs.
 
 ---
 

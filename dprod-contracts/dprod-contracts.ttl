@@ -81,7 +81,6 @@ dprod:State
     - Violated: breached"""@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:label "state" ;
-  owl:oneOf (dprod:Pending dprod:Active dprod:Fulfilled dprod:Violated) ;
 .
 
 dprod:Pending
@@ -219,7 +218,7 @@ dprod:partOf
   a owl:ObjectProperty, owl:TransitiveProperty ;
   dct:description "Asset contained in larger asset."@en ;
   rdfs:comment
-    "Transitive asset hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility."@en ;
+    """Transitive asset hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Asset, so the inferred odrl:partOf triples only ever connect asset to asset — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:subPropertyOf odrl:partOf ;
   rdfs:domain odrl:Asset ;
@@ -231,7 +230,7 @@ dprod:memberOf
   a owl:ObjectProperty, owl:TransitiveProperty ;
   dct:description "Party member of group or organization."@en ;
   rdfs:comment
-    "Transitive party hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility."@en ;
+    """Transitive party hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Party, so the inferred odrl:partOf triples only ever connect party to party — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:subPropertyOf odrl:partOf ;
   rdfs:domain odrl:Party ;
@@ -323,7 +322,7 @@ dprod:currentDateTime
   a odrl:LeftOperand, dprod:RuntimeReference ;
   dct:description "Evaluation timestamp."@en ;
   rdfs:comment
-    "Equivalent to odrl:dateTime in constraint evaluation. Dual-typed as RuntimeReference to enable resolution at evaluation time."@en ;
+    """Canonical DPROD operand for the evaluation timestamp. Dual-typed as dprod:RuntimeReference so that resolveRuntime binds it to the evaluator's clock at evaluation time. odrl:dateTime is the upstream ODRL equivalent; DPROD evaluators MUST canonicalise odrl:dateTime to dprod:currentDateTime before resolution. Equivalence is documented via rdfs:seeAlso rather than owl:sameAs, so DPROD evaluation does not require an OWL reasoner."""@en ;
   rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
   rdfs:label "current date time" ;
   rdfs:seeAlso odrl:dateTime ;

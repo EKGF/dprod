@@ -208,19 +208,6 @@ Every DPROD policy remains a valid ODRL 2.2 policy. Standard ODRL processors can
 
 ---
 
-## DCON Migration
-
-DPROD Contracts builds on the earlier DCON work. DCON's promise hierarchy dissolves into standard `odrl:Duty` patterns with DPROD actions. If migrating from DCON:
-
-- `dcon:DataContract` -> `dprod:DataOffer`
-- `dcon:DataContractSubscription` -> `dprod:DataContract`
-- `dcon:Promise` hierarchy -> `odrl:Duty` with DPROD actions (`deliver`, `notify`, `conformTo`, `report`)
-- `dcon:promisedDeliveryTime` -> `dprod:recurrence` + `dprod:deadline`
-
-See [term-mapping.md](term-mapping.md) for complete DCON -> DPROD property mapping.
-
----
-
 ## Document Map
 
 Which document to read next depends on your role:
@@ -230,7 +217,6 @@ Which document to read next depends on your role:
 | **Contract writer** (data platform team) | [contracts-guide.md](contracts-guide.md) | [examples/data-contract.ttl](../examples/data-contract.ttl) |
 | **Policy writer** (data steward) | [policy-writers-guide.md](policy-writers-guide.md) | [examples/data-use-policy.ttl](../examples/data-use-policy.ttl) |
 | **Implementer** (runtime developer) | [formal-semantics.md](formal-semantics.md) | [specification.md](specification.md) |
-| **Migrating from DCON** | [term-mapping.md](term-mapping.md) | -- |
 | **Evaluating DPROD** | This document | -- |
 
 ### Full Document Inventory
@@ -239,7 +225,7 @@ Which document to read next depends on your role:
 |----------|-------------|
 | [overview.md](overview.md) | What is DPROD Contracts? (this document) |
 | [specification.md](specification.md) | Technical vocabulary reference |
-| [term-mapping.md](term-mapping.md) | Business term -> property mapping + DCON migration |
+| [term-mapping.md](term-mapping.md) | Business term -> property mapping |
 | [contracts-guide.md](contracts-guide.md) | Data contract authoring guide |
 | [policy-writers-guide.md](policy-writers-guide.md) | Data use policy authoring guide |
 | [formal-semantics.md](formal-semantics.md) | Formal operational semantics (normative) |

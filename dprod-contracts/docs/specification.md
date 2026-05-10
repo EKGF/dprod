@@ -160,7 +160,7 @@ ex:subscription a dprod:DataContract ;
 | Individual | Types | Definition |
 |------------|-------|------------|
 | `dprod:currentAgent` | `dprod:RuntimeReference`, `odrl:Party` | The requesting agent (resolved at evaluation time) |
-| `dprod:currentDateTime` | `odrl:LeftOperand`, `dprod:RuntimeReference` | Evaluation timestamp (mapped to `odrl:dateTime`) |
+| `dprod:currentDateTime` | `odrl:LeftOperand`, `dprod:RuntimeReference` | Evaluation timestamp (canonical form; `odrl:dateTime` normalises to this) |
 
 ---
 

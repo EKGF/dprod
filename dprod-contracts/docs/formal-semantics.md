@@ -613,11 +613,14 @@ step(node, prop) =
 
 Runtime references resolve to values at evaluation time. These are used by `resolve()` for dual-typed left operands (§6.2) — operands typed as both `odrl:LeftOperand` and `dprod:RuntimeReference` (e.g., `currentDateTime`).
 
+**Normalisation.** `odrl:dateTime` is the upstream ODRL operand for the evaluation timestamp. DPROD treats it as an alias of `currentDateTime`: before invoking `resolveRuntime`, evaluators MUST rewrite `odrl:dateTime` to `currentDateTime` so the case-match captures both names. The alias is asserted via `rdfs:seeAlso` in the ontology, not `owl:sameAs`, so this canonicalisation is an evaluator rule rather than an OWL entailment.
+
 ```
 resolveRuntime : RuntimeRef × Env → Value ∪ {⊥}
 
 resolveRuntime(ref, Env) =
-    case ref of
+    let ref' = if ref = odrl:dateTime then currentDateTime else ref
+    in case ref' of
         currentAgent    → Env.agent
         currentDateTime → Env.Σ.clock
         _               → ⊥  -- Unknown runtime reference

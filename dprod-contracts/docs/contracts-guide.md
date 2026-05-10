@@ -208,8 +208,6 @@ odrl:obligation [
 ] .
 ```
 
-**DCON equivalent**: `ProviderSchemaPromise`
-
 ### Notification Pattern (Change Notification)
 
 Provider must notify consumers before making changes, with a lead time expressed as a duration deadline. Use `dprod:object` to identify who is notified.
@@ -225,11 +223,9 @@ odrl:obligation [
 ] .
 ```
 
-**DCON equivalent**: `ProviderChangeNotificationPromise`
-
 ### Quality SLA Pattern
 
-Provider guarantees data quality via `conformTo` with a constraint. This replaces DCON's `ProviderQualityPromise`.
+Provider guarantees data quality via `conformTo` with a constraint.
 
 ```turtle
 odrl:obligation [
@@ -544,12 +540,6 @@ ex:subscription dprod:acceptsOffer ex:contract-v2 .
 See [examples/data-contract.ttl](../examples/data-contract.ttl) for a full working contract with bilateral duties, recurrence, schema conformance, and subscription.
 
 For comprehensive test data covering all patterns, see [examples/baseline.ttl](../examples/baseline.ttl).
-
----
-
-## DCON Migration
-
-If migrating from DCON, see [term-mapping.md](term-mapping.md) for complete property equivalents.
 
 ---
 

@@ -290,12 +290,14 @@ dprod-shapes:DataOfferShape
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
-    sh:datatype xsd:dateTime
+    sh:datatype xsd:dateTime ;
+    sh:message "effectiveDate, if present, must be a single xsd:dateTime value."
   ] ;
   sh:property [
     sh:path dprod:expirationDate ;
     sh:maxCount 1 ;
-    sh:datatype xsd:dateTime
+    sh:datatype xsd:dateTime ;
+    sh:message "expirationDate, if present, must be a single xsd:dateTime value."
   ] ;
 .
 
@@ -330,12 +332,14 @@ dprod-shapes:DataContractShape
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
-    sh:datatype xsd:dateTime
+    sh:datatype xsd:dateTime ;
+    sh:message "effectiveDate, if present, must be a single xsd:dateTime value."
   ] ;
   sh:property [
     sh:path dprod:expirationDate ;
     sh:maxCount 1 ;
-    sh:datatype xsd:dateTime
+    sh:datatype xsd:dateTime ;
+    sh:message "expirationDate, if present, must be a single xsd:dateTime value."
   ] ;
 .
 
@@ -369,13 +373,7 @@ dprod-shapes:LeftOperandShape
 
 dprod-shapes:RejectXoneShape
   a sh:NodeShape ;
-  sh:target [
-    a sh:SPARQLTarget ;
-    sh:select """
-      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
-      SELECT ?this WHERE { ?this odrl:xone ?list . }
-    """
-  ] ;
+  sh:targetSubjectOf odrl:xone ;
   sh:property [
     sh:path odrl:xone ;
     sh:maxCount 0 ;
@@ -386,13 +384,7 @@ dprod-shapes:RejectXoneShape
 
 dprod-shapes:RejectRemedyShape
   a sh:NodeShape ;
-  sh:target [
-    a sh:SPARQLTarget ;
-    sh:select """
-      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
-      SELECT ?this WHERE { ?this odrl:remedy ?r . }
-    """
-  ] ;
+  sh:targetSubjectOf odrl:remedy ;
   sh:property [
     sh:path odrl:remedy ;
     sh:maxCount 0 ;
@@ -403,13 +395,7 @@ dprod-shapes:RejectRemedyShape
 
 dprod-shapes:RejectConsequenceShape
   a sh:NodeShape ;
-  sh:target [
-    a sh:SPARQLTarget ;
-    sh:select """
-      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
-      SELECT ?this WHERE { ?this odrl:consequence ?c . }
-    """
-  ] ;
+  sh:targetSubjectOf odrl:consequence ;
   sh:property [
     sh:path odrl:consequence ;
     sh:maxCount 0 ;
@@ -468,13 +454,7 @@ dprod-shapes:RejectPartyCollectionShape
 
 dprod-shapes:RejectInheritAllowedShape
   a sh:NodeShape ;
-  sh:target [
-    a sh:SPARQLTarget ;
-    sh:select """
-      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
-      SELECT ?this WHERE { ?this odrl:inheritAllowed ?v . }
-    """
-  ] ;
+  sh:targetSubjectOf odrl:inheritAllowed ;
   sh:property [
     sh:path odrl:inheritAllowed ;
     sh:maxCount 0 ;
@@ -485,13 +465,7 @@ dprod-shapes:RejectInheritAllowedShape
 
 dprod-shapes:RejectInheritFromShape
   a sh:NodeShape ;
-  sh:target [
-    a sh:SPARQLTarget ;
-    sh:select """
-      PREFIX odrl: <http://www.w3.org/ns/odrl/2/>
-      SELECT ?this WHERE { ?this odrl:inheritFrom ?p . }
-    """
-  ] ;
+  sh:targetSubjectOf odrl:inheritFrom ;
   sh:property [
     sh:path odrl:inheritFrom ;
     sh:maxCount 0 ;
