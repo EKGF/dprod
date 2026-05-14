@@ -150,8 +150,8 @@ Recurrence ::= RRule(rule: String)
 **Notes**:
 
 - `Permission` corresponds to `odrl:Permission`; `Prohibition` to `odrl:Prohibition`; `Duty` to `odrl:Duty`.
-- The formal `subject` parameter maps to `dprod:subject` on duties (rdfs:subPropertyOf `odrl:assignee`) and to `odrl:assignee` on permissions/prohibitions.
-- The formal `object` parameter (duties only) maps to `dprod:object` — the party affected by the duty action (e.g., who is notified). Not used in norm matching.
+- The formal `subject` parameter maps to `dprod:subjectOfDuty` on duties (rdfs:subPropertyOf `odrl:function`) and to `odrl:assignee` on permissions/prohibitions.
+- The formal `object` parameter (duties only) maps to `dprod:objectOfDuty` — the party affected by the duty action (e.g., who is notified). Not used in norm matching.
 - `AbsoluteDeadline`: Fixed point in time (e.g., 2026-12-31T23:59:59Z)
 - `RelativeDeadline`: Duration from activation (e.g., P30D, PT24H)
 
@@ -163,8 +163,8 @@ Recurrence ::= RRule(rule: String)
 | `Duty` | `odrl:Duty` | |
 | `Prohibition` | `odrl:Prohibition` | |
 | `subject` (Permission/Prohibition) | `odrl:assignee` | Party to whom the norm applies |
-| `subject` (Duty) | `dprod:subject` | Party bearing the duty (rdfs:subPropertyOf odrl:assignee) |
-| `object` (Duty) | `dprod:object` | Party affected by the duty action (metadata, not used in matching) |
+| `subject` (Duty) | `dprod:subjectOfDuty` | Party bearing the duty (rdfs:subPropertyOf odrl:function) |
+| `object` (Duty) | `dprod:objectOfDuty` | Party affected by the duty action (metadata, not used in matching) |
 | `grantor` | `odrl:assigner` | Party granting rights |
 | `grantee` | `odrl:assignee` | Party receiving rights (policy-level) |
 | `condition` | `odrl:constraint` | |
@@ -1013,8 +1013,8 @@ ex:agreement a odrl:Agreement ;
     # Assignee duty (consumer reports to provider)
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:analyticsTeam ;
-        dprod:object ex:dataTeam ;
+        dprod:subjectOfDuty ex:analyticsTeam ;
+        dprod:objectOfDuty ex:dataTeam ;
         odrl:action ex:report ;
         odrl:target ex:usageStats ;
         dprod:deadline "P30D"^^xsd:duration
@@ -1023,8 +1023,8 @@ ex:agreement a odrl:Agreement ;
     # Assigner duty (provider notifies consumer)
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
-        dprod:object ex:analyticsTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
+        dprod:objectOfDuty ex:analyticsTeam ;
         odrl:action ex:notify ;
         odrl:target ex:schemaChanges ;
         dprod:deadline "P7D"^^xsd:duration

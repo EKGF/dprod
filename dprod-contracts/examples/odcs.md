@@ -43,7 +43,7 @@ ODCS and DPROD Contracts solve the same problem — formalizing data agreements 
 # ODCS quality rule: nullValues mustBe 0
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:data-team ;
+    dprod:subjectOfDuty ex:data-team ;
     odrl:action ex:conformTo ;
     odrl:constraint [
         a odrl:Constraint ;

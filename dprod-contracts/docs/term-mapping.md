@@ -151,11 +151,11 @@ ex:subscription a dprod:DataContract ;
 ### Duty Holder
 
 **Business term:** `responsible party`, `obligee`, `who must do it`
-**DPROD property:** `dprod:subject` (on `odrl:Duty`)
+**DPROD property:** `dprod:subjectOfDuty` (on `odrl:Duty`)
 **Used on:** `odrl:Duty`
 **Cardinality:** 0..1
-**Source:** DPROD (`rdfs:subPropertyOf odrl:assignee`)
-**Note:** In a DataOffer (Offer), provider duties have `dprod:subject` set to the provider. Consumer duties omit `dprod:subject` -- it is filled in when the DataContract is created.
+**Source:** DPROD (`rdfs:subPropertyOf odrl:function`)
+**Note:** In a DataOffer (Offer), provider duties have `dprod:subjectOfDuty` set to the provider. Consumer duties omit `dprod:subjectOfDuty` -- it is filled in when the DataContract is created.
 ### Party Hierarchy
 
 **Business term:** `team membership`, `department`, `division`
@@ -214,7 +214,7 @@ ex:marketDataSchema a odrl:Asset ;
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:deliver ;
     odrl:target ex:marketPrices ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
@@ -230,7 +230,7 @@ odrl:obligation [
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:conformTo ;
     odrl:target ex:marketDataSchema
 ] .
@@ -244,7 +244,7 @@ odrl:obligation [
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:conformTo ;
     odrl:target ex:riskMetricsSchema ;
     odrl:constraint [
@@ -264,7 +264,7 @@ odrl:obligation [
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:notify ;
     odrl:target ex:schemaChanges ;
     dprod:deadline "P14D"^^xsd:duration

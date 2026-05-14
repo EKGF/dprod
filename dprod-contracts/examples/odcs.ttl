@@ -260,7 +260,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Daily data delivery by 09:00" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=9;BYMINUTE=0" ;
         dprod:deadline "PT1H"^^xsd:duration ;
@@ -291,7 +291,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Data latency SLA (max 4 days)" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:conformTo ;
         odrl:constraint [
             a odrl:Constraint ;
@@ -356,7 +356,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "No null values in transaction date" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:conformTo ;
         odrl:target ex:tbl-core-payments ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
@@ -396,7 +396,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Row count above 1M" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:conformTo ;
         odrl:target ex:tbl-core-payments ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
@@ -428,7 +428,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Data retention limit (3 years)" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action odrl:delete ;
         odrl:constraint [
             a odrl:Constraint ;
@@ -469,7 +469,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Slack support (#product-help)" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:notify ;
         odrl:constraint [
             a odrl:Constraint ;
@@ -482,7 +482,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Email support (datacontract-ann)" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:notify ;
         odrl:constraint [
             a odrl:Constraint ;
@@ -495,7 +495,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Teams issue support (9-5 CET)" ;
-        dprod:subject ex:seller-data-team ;
+        dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:notify ;
         odrl:constraint [
             a odrl:LogicalConstraint ;

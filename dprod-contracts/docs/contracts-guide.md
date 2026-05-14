@@ -30,7 +30,7 @@ A `dprod:DataOffer` is a subclass of `odrl:Offer`. It specifies:
 
 - **Provider** (`odrl:assigner`): the data team providing data
 - **Target** (`odrl:target`): the data asset(s) covered -- inherited by rules unless overridden
-- **Provider duties** (`odrl:obligation` with `dprod:subject` = provider): SLAs like delivery, notification, schema conformance
+- **Provider duties** (`odrl:obligation` with `dprod:subjectOfDuty` = provider): SLAs like delivery, notification, schema conformance
 - **Consumer permissions** (`odrl:permission`): what consumers can do with the data
 - **Consumer duties** (`odrl:obligation` without subject in Offer): obligations consumers accept upon subscribing
 - **Prohibitions** (`odrl:prohibition`): what consumers cannot do
@@ -95,7 +95,7 @@ ex:contract a dprod:DataOffer ;
 
 ### Step 2: Add Provider Duties (SLAs)
 
-Provider duties declare what the data team commits to. The provider is identified by `dprod:subject` on each duty. Use `dprod:object` to identify who is affected (e.g., who receives notifications).
+Provider duties declare what the data team commits to. The provider is identified by `dprod:subjectOfDuty` on each duty. Use `dprod:objectOfDuty` to identify who is affected (e.g., who receives notifications).
 
 Rules inherit `odrl:target` from the policy unless they target a different asset.
 
@@ -103,7 +103,7 @@ Rules inherit `odrl:target` from the policy unless they target a different asset
     # Daily delivery by 06:30 (target inherited from policy)
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
@@ -112,7 +112,7 @@ Rules inherit `odrl:target` from the policy unless they target a different asset
     # Schema conformance (different target -- not inherited)
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:conformTo ;
         odrl:target ex:marketDataSchema
     ] ;
@@ -174,7 +174,7 @@ ex:subscription a dprod:DataContract ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime .
 ```
 
-The contract materializes all duties from the offer with explicit `dprod:subject` on each.
+The contract materializes all duties from the offer with explicit `dprod:subjectOfDuty` on each.
 
 ---
 
@@ -187,7 +187,7 @@ Scheduled data delivery with a fulfillment window. Target inherited from policy.
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:deliver ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration
@@ -202,7 +202,7 @@ Provider guarantees data conforms to a published schema. Target differs from pol
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:conformTo ;
     odrl:target ex:marketDataSchema
 ] .
@@ -210,13 +210,13 @@ odrl:obligation [
 
 ### Notification Pattern (Change Notification)
 
-Provider must notify consumers before making changes, with a lead time expressed as a duration deadline. Use `dprod:object` to identify who is notified.
+Provider must notify consumers before making changes, with a lead time expressed as a duration deadline. Use `dprod:objectOfDuty` to identify who is notified.
 
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
-    dprod:object ex:consumer ;
+    dprod:subjectOfDuty ex:dataTeam ;
+    dprod:objectOfDuty ex:consumer ;
     odrl:action ex:notify ;
     odrl:target ex:schemaChanges ;
     dprod:deadline "P14D"^^xsd:duration
@@ -230,7 +230,7 @@ Provider guarantees data quality via `conformTo` with a constraint.
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:conformTo ;
     odrl:target ex:riskMetricsSchema ;
     odrl:constraint [
@@ -253,7 +253,7 @@ Recurring duties use `dprod:recurrence` -- an RFC 5545 RRULE string. Combined wi
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
-    dprod:subject ex:dataTeam ;
+    dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:deliver ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration
@@ -308,14 +308,14 @@ ex:contract a dprod:DataOffer ;
     odrl:target ex:customerData ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:conformTo ;
         odrl:target ex:customerSchema
     ] ;
@@ -350,14 +350,14 @@ ex:contract a dprod:DataOffer ;
     odrl:target ex:riskMetrics ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
         dprod:deadline "PT30S"^^xsd:duration
     ] ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:conformTo ;
         odrl:target ex:riskSchema ;
         odrl:constraint [
@@ -369,7 +369,7 @@ ex:contract a dprod:DataOffer ;
     ] ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:notify ;
         odrl:target ex:schemaChanges ;
         dprod:deadline "P14D"^^xsd:duration
@@ -427,7 +427,7 @@ ex:contract a dprod:DataOffer ;
     ] ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:conformTo ;
         odrl:target ex:marketDataSchema      # different target -- explicit
     ] .
@@ -552,7 +552,7 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 5. DataContract has `dprod:acceptsOffer` referencing a DataOffer
 6. Each duty has exactly one `odrl:action`
 7. Each permission and prohibition has exactly one `odrl:action` and one `odrl:target`
-8. Provider duties have `dprod:subject` set to the provider
+8. Provider duties have `dprod:subjectOfDuty` set to the provider
 9. Deadlines use `xsd:dateTime` or `xsd:duration`
 10. Recurrence uses a valid RFC 5545 RRULE starting with `FREQ=`
 11. Constraints have `leftOperand`, `operator`, and `rightOperand`

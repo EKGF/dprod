@@ -1,9 +1,11 @@
-# baseURI: https://ekgf.github.io/dprod/contracts/
+# All DPROD-contracts terms are minted in the core dprod: namespace
+# (https://ekgf.github.io/dprod/); this file contributes additional
+# axioms to the DPROD ontology rather than minting under a separate
+# contracts namespace.
 # imports: https://ekgf.github.io/dprod/
 # imports: http://www.w3.org/ns/odrl/2/
 # prefix: dprod
 
-@base <https://ekgf.github.io/dprod/contracts/> .
 @prefix dprod: <https://ekgf.github.io/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -79,35 +81,35 @@ dprod:State
     - Active: in force
     - Fulfilled: obligations complete
     - Violated: breached"""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "state" ;
 .
 
 dprod:Pending
   a dprod:State ;
   dct:description "Condition not yet satisfied; not yet in force."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "pending" ;
 .
 
 dprod:Active
   a dprod:State ;
   dct:description "Condition satisfied, action required; in force."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "active" ;
 .
 
 dprod:Fulfilled
   a dprod:State ;
   dct:description "Action performed; obligations complete."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "fulfilled" ;
 .
 
 dprod:Violated
   a dprod:State ;
   dct:description "Deadline passed without performance; breached."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "violated" ;
 .
 
@@ -118,7 +120,7 @@ dprod:DataOffer
     """A DataOffer is an Offer from a data provider.
     It defines permissions, duties, and prohibitions for data access.
     When accepted by a consumer, becomes a DataContract (Agreement)."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "data offer" ;
   rdfs:subClassOf odrl:Offer ;
 .
@@ -131,7 +133,7 @@ dprod:DataContract
     - assigner: data provider (from offer)
     - assignee: data consumer
     Bilateral: both parties may have active duties."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "data contract" ;
   rdfs:subClassOf odrl:Agreement ;
   owl:disjointWith dprod:DataOffer ;
@@ -140,7 +142,7 @@ dprod:DataContract
 dprod:RuntimeReference
   a owl:Class ;
   dct:description "Value resolved at evaluation time."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "runtime reference" ;
 .
 
@@ -151,7 +153,7 @@ dprod:RuntimeReference
 dprod:state
   a owl:ObjectProperty ;
   dct:description "Current lifecycle state."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:domain [ owl:unionOf (odrl:Duty dprod:DataOffer dprod:DataContract) ] ;
   rdfs:range dprod:State ;
   rdfs:label "state" ;
@@ -167,7 +169,7 @@ dprod:deadline
     For duration: deadline = activationTime + duration.
     No rdfs:range declared because the range is a union of datatypes;
     SHACL enforces the allowed types."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:domain odrl:Duty ;
   rdfs:label "deadline" ;
 .
@@ -181,7 +183,7 @@ dprod:recurrence
     Each instance follows the standard duty lifecycle independently.
     The deadline property defines the per-instance fulfillment window.
     Any iCal-compliant library can parse the value."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:domain odrl:Duty ;
   rdfs:range xsd:string ;
   rdfs:label "recurrence" ;
@@ -190,7 +192,7 @@ dprod:recurrence
 dprod:acceptsOffer
   a owl:ObjectProperty ;
   dct:description "The offer this contract activates."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataContract ;
   rdfs:range dprod:DataOffer ;
   rdfs:label "accepts offer" ;
@@ -199,7 +201,7 @@ dprod:acceptsOffer
 dprod:effectiveDate
   a owl:DatatypeProperty ;
   dct:description "When the offer or contract becomes effective."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
   rdfs:range xsd:dateTime ;
   rdfs:label "effective date" ;
@@ -208,7 +210,7 @@ dprod:effectiveDate
 dprod:expirationDate
   a owl:DatatypeProperty ;
   dct:description "When the offer or contract expires."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
   rdfs:range xsd:dateTime ;
   rdfs:label "expiration date" ;
@@ -219,7 +221,7 @@ dprod:partOf
   dct:description "Asset contained in larger asset."@en ;
   rdfs:comment
     """Transitive asset hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Asset, so the inferred odrl:partOf triples only ever connect asset to asset — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:subPropertyOf odrl:partOf ;
   rdfs:domain odrl:Asset ;
   rdfs:range odrl:Asset ;
@@ -231,31 +233,31 @@ dprod:memberOf
   dct:description "Party member of group or organization."@en ;
   rdfs:comment
     """Transitive party hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Party, so the inferred odrl:partOf triples only ever connect party to party — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:subPropertyOf odrl:partOf ;
   rdfs:domain odrl:Party ;
   rdfs:range odrl:Party ;
   rdfs:label "member of" ;
 .
 
-dprod:subject
+dprod:subjectOfDuty
   a owl:ObjectProperty ;
   dct:description "Party bearing the duty (must perform the action)."@en ;
   rdfs:comment
-    "The duty bearer. Sub-property of odrl:assignee for ODRL processor compatibility."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
-  rdfs:subPropertyOf odrl:assignee ;
+    "The duty bearer. Sub-property of odrl:function for ODRL processor compatibility."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf odrl:function ;
   rdfs:domain odrl:Duty ;
   rdfs:range odrl:Party ;
   rdfs:label "subject" ;
 .
 
-dprod:object
+dprod:objectOfDuty
   a owl:ObjectProperty ;
   dct:description "Party affected by the duty action."@en ;
   rdfs:comment
     "The party affected by or receiving the result of the duty action. Sub-property of odrl:function for ODRL processor compatibility."@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:subPropertyOf odrl:function ;
   rdfs:domain odrl:Duty ;
   rdfs:range odrl:Party ;
@@ -264,7 +266,7 @@ dprod:object
 
 dprod:path
   a rdf:Property ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "resolution path" ;
   dct:description "SHACL-style property path from evaluation context to operand value."@en ;
   rdfs:comment
@@ -277,7 +279,7 @@ dprod:path
 
 dprod:select
   a owl:DatatypeProperty ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "resolution query" ;
   dct:description "SPARQL query for operand value resolution."@en ;
   rdfs:comment
@@ -296,7 +298,7 @@ dprod:not
     negation. DPROD adds dprod:not following the same pattern:
       _:lc a odrl:LogicalConstraint ;
           dprod:not _:c1 ."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:domain odrl:LogicalConstraint ;
   rdfs:range [ owl:unionOf (odrl:Constraint odrl:LogicalConstraint) ] ;
   rdfs:label "not" ;
@@ -314,7 +316,7 @@ dprod:currentAgent
     RuntimeReference and odrl:Party for ODRL processor compatibility.
     For rules applying to any requesting agent, omit odrl:assignee
     (standard ODRL); do not use currentAgent as assignee."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "current agent" ;
 .
 
@@ -323,7 +325,7 @@ dprod:currentDateTime
   dct:description "Evaluation timestamp."@en ;
   rdfs:comment
     """Canonical DPROD operand for the evaluation timestamp. Dual-typed as dprod:RuntimeReference so that resolveRuntime binds it to the evaluator's clock at evaluation time. odrl:dateTime is the upstream ODRL equivalent; DPROD evaluators MUST canonicalise odrl:dateTime to dprod:currentDateTime before resolution. Equivalence is documented via rdfs:seeAlso rather than owl:sameAs, so DPROD evaluation does not require an OWL reasoner."""@en ;
-  rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;
+  rdfs:isDefinedBy dprod: ;
   rdfs:label "current date time" ;
   rdfs:seeAlso odrl:dateTime ;
 .

@@ -298,7 +298,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Daily customer data delivery" ;
-        dprod:subject <https://example.org/agents/data-platform> ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
@@ -307,7 +307,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Schema conformance" ;
-        dprod:subject <https://example.org/agents/data-platform> ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:conformTo ;
         odrl:target <https://example.org/assets/customer-api-schema>
     ] ;
@@ -356,7 +356,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "15-minute market data delivery" ;
-        dprod:subject <https://example.org/agents/trading-data> ;
+        dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
         dprod:deadline "PT5M"^^xsd:duration
@@ -365,7 +365,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Market data schema conformance" ;
-        dprod:subject <https://example.org/agents/trading-data> ;
+        dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
         odrl:action ex:conformTo ;
         odrl:target <https://example.org/assets/market-data-schema>
     ] ;
@@ -434,7 +434,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Monthly transaction file delivery" ;
-        dprod:subject <https://example.org/agents/finance> ;
+        dprod:subjectOfDuty <https://example.org/agents/finance> ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
         dprod:deadline "P3D"^^xsd:duration
@@ -473,7 +473,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Schema change notification (90 days)" ;
-        dprod:subject <https://example.org/agents/hr> ;
+        dprod:subjectOfDuty <https://example.org/agents/hr> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P90D"^^xsd:duration
@@ -520,7 +520,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Real-time risk metrics delivery" ;
-        dprod:subject <https://example.org/agents/data-platform> ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
         dprod:deadline "PT30S"^^xsd:duration
@@ -529,7 +529,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Quality SLA: real-time conformance" ;
-        dprod:subject <https://example.org/agents/data-platform> ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:conformTo ;
         odrl:target <https://example.org/assets/risk-metrics-schema> ;
         odrl:constraint [
@@ -543,7 +543,7 @@ ex:compliance
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
-        dprod:subject <https://example.org/agents/data-platform> ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P14D"^^xsd:duration
@@ -765,8 +765,8 @@ ex:compliance
 
 <https://example.org/duties/cust-delivery-2026-001> a odrl:Duty ;
     rdfs:label "Customer data delivery (2026-02-04)" ;
-    dprod:subject <https://example.org/agents/data-platform> ;
-    dprod:object <https://example.org/agents/analytics> ;
+    dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
@@ -775,16 +775,16 @@ ex:compliance
 
 <https://example.org/duties/cust-schema-2026-001> a odrl:Duty ;
     rdfs:label "Customer API schema conformance" ;
-    dprod:subject <https://example.org/agents/data-platform> ;
-    dprod:object <https://example.org/agents/analytics> ;
+    dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:conformTo ;
     odrl:target <https://example.org/assets/customer-api-schema> ;
     dprod:state dprod:Active .
 
 <https://example.org/duties/cust-report-2026-001> a odrl:Duty ;
     rdfs:label "Analytics usage report (February)" ;
-    dprod:subject <https://example.org/agents/analytics> ;
-    dprod:object <https://example.org/agents/data-platform> ;
+    dprod:subjectOfDuty <https://example.org/agents/analytics> ;
+    dprod:objectOfDuty <https://example.org/agents/data-platform> ;
     odrl:action ex:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;
@@ -792,8 +792,8 @@ ex:compliance
 
 <https://example.org/duties/mkt-delivery-2026-001> a odrl:Duty ;
     rdfs:label "Market data delivery (latest interval)" ;
-    dprod:subject <https://example.org/agents/trading-data> ;
-    dprod:object <https://example.org/agents/analytics> ;
+    dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
@@ -802,15 +802,15 @@ ex:compliance
 
 <https://example.org/duties/mkt-schema-2026-001> a odrl:Duty ;
     rdfs:label "Market data schema conformance" ;
-    dprod:subject <https://example.org/agents/trading-data> ;
-    dprod:object <https://example.org/agents/analytics> ;
+    dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:conformTo ;
     odrl:target <https://example.org/assets/market-data-schema> ;
     dprod:state dprod:Active .
 
 <https://example.org/duties/mkt-delivery-2026-late> a odrl:Duty ;
     rdfs:label "Market data delivery (missed interval)" ;
-    dprod:subject <https://example.org/agents/trading-data> ;
+    dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;

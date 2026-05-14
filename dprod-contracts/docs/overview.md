@@ -29,7 +29,7 @@ ex:contract a dprod:DataOffer ;
     odrl:target ex:marketPrices ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
@@ -60,14 +60,14 @@ ex:agreement a dprod:DataContract ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:dataTeam ;
+        dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
     odrl:obligation [
         a odrl:Duty ;
-        dprod:subject ex:quantResearch ;
+        dprod:subjectOfDuty ex:quantResearch ;
         odrl:action ex:report ;
         odrl:target ex:usageStats ;
         dprod:deadline "P30D"^^xsd:duration

@@ -128,7 +128,7 @@ ex:internal
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Daily data delivery" ;
-        dprod:subject <https://example.org/agents/data-platform-team> ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
         odrl:action ex:deliver ;
         dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
         dprod:deadline "PT30M"^^xsd:duration
@@ -139,7 +139,7 @@ ex:internal
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
-        dprod:subject <https://example.org/agents/data-platform-team> ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
         dprod:deadline "P14D"^^xsd:duration
@@ -251,8 +251,8 @@ ex:internal
 
 <https://example.org/duties/delivery-2026-001> a odrl:Duty ;
     rdfs:label "Daily delivery duty (2026-01-15)" ;
-    dprod:subject <https://example.org/agents/data-platform-team> ;
-    dprod:object <https://example.org/agents/quant-research> ;
+    dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
+    dprod:objectOfDuty <https://example.org/agents/quant-research> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
@@ -261,8 +261,8 @@ ex:internal
 
 <https://example.org/duties/notify-2026-001> a odrl:Duty ;
     rdfs:label "Schema notification duty" ;
-    dprod:subject <https://example.org/agents/data-platform-team> ;
-    dprod:object <https://example.org/agents/quant-research> ;
+    dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
+    dprod:objectOfDuty <https://example.org/agents/quant-research> ;
     odrl:action ex:notify ;
     odrl:target <https://example.org/assets/schema-changes> ;
     dprod:deadline "P14D"^^xsd:duration ;
@@ -270,8 +270,8 @@ ex:internal
 
 <https://example.org/duties/report-2026-001> a odrl:Duty ;
     rdfs:label "January usage report" ;
-    dprod:subject <https://example.org/agents/quant-research> ;
-    dprod:object <https://example.org/agents/data-platform-team> ;
+    dprod:subjectOfDuty <https://example.org/agents/quant-research> ;
+    dprod:objectOfDuty <https://example.org/agents/data-platform-team> ;
     odrl:action ex:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;

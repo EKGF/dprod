@@ -94,7 +94,7 @@ Active  -> Violated  (deadline passed without performance)
 
 | Property | Contains |
 |----------|----------|
-| `odrl:obligation` | Provider duties (with `dprod:subject`), consumer duties (without subject in Offer) |
+| `odrl:obligation` | Provider duties (with `dprod:subjectOfDuty`), consumer duties (without subject in Offer) |
 | `odrl:permission` | Consumer permissions |
 | `odrl:prohibition` | Restrictions |
 
@@ -310,20 +310,20 @@ ex:timeliness
 
 ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `dprod:not` following the same pattern.
 
-### 4.11 dprod:subject
+### 4.11 dprod:subjectOfDuty
 
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:ObjectProperty` |
-| **SubPropertyOf** | `odrl:assignee` |
+| **SubPropertyOf** | `odrl:function` |
 | **Domain** | `odrl:Duty` |
 | **Range** | `odrl:Party` |
 | **Cardinality** | 0..1 |
 | **Definition** | Party bearing the duty (must perform the action) |
 
-The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading -- in a bilateral agreement, the data provider is `odrl:assigner` at the policy level but would also need to be `odrl:assignee` on their own delivery duty. `dprod:subject` removes this confusion. Bridges to ODRL via `rdfs:subPropertyOf odrl:assignee` (itself a sub-property of `odrl:function`), so ODRL processors with RDFS reasoning can infer `odrl:assignee` from `dprod:subject`. Aligns with `md:subject` (W3C Market Data).
+The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading -- in a bilateral agreement, the data provider is `odrl:assigner` at the policy level but would also need to be `odrl:assignee` on their own delivery duty. `dprod:subjectOfDuty` removes this confusion. Bridges to ODRL via `rdfs:subPropertyOf odrl:function` (the abstract umbrella for party-roles in a Rule), so ODRL processors retain a generic role link without inheriting the contested `odrl:assignee` semantics. Aligns with `md:subject` (W3C Market Data), which likewise scopes the property to `odrl:Duty`.
 
-### 4.12 dprod:object
+### 4.12 dprod:objectOfDuty
 
 | Property | Value |
 |----------|-------|
@@ -336,7 +336,7 @@ The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading --
 
 The party affected by or receiving the result of the duty action (e.g., who is notified, who receives the report). Bridges to ODRL via `rdfs:subPropertyOf odrl:function`. Aligns with `md:object` (W3C Market Data).
 
-**ODRL Common Vocabulary alternatives**: ODRL defines action-specific party functions that may be more semantically precise than `dprod:object` in certain cases:
+**ODRL Common Vocabulary alternatives**: ODRL defines action-specific party functions that may be more semantically precise than `dprod:objectOfDuty` in certain cases:
 
 | ODRL Function | Use when... | Example |
 |---|---|---|
@@ -345,7 +345,7 @@ The party affected by or receiving the result of the duty action (e.g., who is n
 | `odrl:trackedParty` | The duty involves tracking/monitoring | Usage tracking |
 | `odrl:consentingParty` | The duty requires obtaining consent | Data processing consent |
 
-Use `dprod:object` as the generic alternative when no specific ODRL function fits, or when you prefer consistency across duty types. All are sub-properties of `odrl:function`.
+Use `dprod:objectOfDuty` as the generic alternative when no specific ODRL function fits, or when you prefer consistency across duty types. All are sub-properties of `odrl:function`.
 
 ---
 
@@ -368,7 +368,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 |-------|--------|-----------------|
 | `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
 | `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `subject` 0..1; `object` 0..1; `deadline` 0..1 (dateTime/duration); `recurrence` 0..1 (RRULE pattern); `state` 0..1 |
+| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `recurrence` 0..1 (RRULE pattern); `state` 0..1 |
 
 ### Constraint-level shapes
 
@@ -415,8 +415,8 @@ Which DPROD properties are valid on which classes:
 | `dprod:state` | Yes | Yes | Yes | | | | |
 | `dprod:deadline` | Yes | | | | | | |
 | `dprod:recurrence` | Yes | | | | | | |
-| `dprod:subject` | Yes | | | | | | |
-| `dprod:object` | Yes | | | | | | |
+| `dprod:subjectOfDuty` | Yes | | | | | | |
+| `dprod:objectOfDuty` | Yes | | | | | | |
 | `dprod:acceptsOffer` | | | Yes | | | | |
 | `dprod:effectiveDate` | | Yes | Yes | | | | |
 | `dprod:expirationDate` | | Yes | Yes | | | | |
@@ -440,7 +440,7 @@ DPROD Contracts restricts certain ODRL features:
 | `odrl:consequence` | Rejected | Noted as future extension |
 | `odrl:Ticket` | Not used | Not applicable to data governance |
 | `odrl:Request` | Not used | Not applicable |
-| `odrl:assignee` (on Duty) | Replaced by `dprod:subject` | `dprod:subject rdfs:subPropertyOf odrl:assignee` -- avoids role overloading |
+| `odrl:assignee` (on Duty) | Replaced by `dprod:subjectOfDuty` | `dprod:subjectOfDuty rdfs:subPropertyOf odrl:function` -- avoids role overloading on duties |
 | `odrl:AssetCollection` | Not used | Use `dprod:partOf` hierarchy instead (`rdfs:subPropertyOf odrl:partOf` bridges to ODRL) |
 | `odrl:PartyCollection` | Not used | Use `dprod:memberOf` hierarchy instead (`rdfs:subPropertyOf odrl:partOf` bridges to ODRL) |
 

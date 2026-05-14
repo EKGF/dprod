@@ -1,14 +1,14 @@
 # Plan: Apply outstanding suggestions from Matthias
 
 Working plan for the DPROD-contracts review items not yet applied on `add-dprod-contracts`.
-Source emails (oldest -> newest): `19d08a1d` 2026-03-19, `19d92a2a` 2026-04-15, `19da58f8` 2026-04-19, `19db5fe8` 2026-04-22.
+Source emails (oldest -> newest): `19d08a1d` 2026-03-19, `19d92a2a` 2026-04-15, `19da58f8` 2026-04-19, `19db5fe8` 2026-04-22, Stephen 2026-05-14 (DataDuty consistency / DataOffer target / acceptsOffer basket model).
 
 Buckets, in suggested execution order:
 1. Quick textual fixes (low risk, no semantics)
 2. SHACL shape improvements (mechanical)
 3. DCON remnant cleanup (documentation)
 4. Recurrence redesign (one large change; spec already drafted in `temp.md`)
-5. Ontology design decisions (need your judgment)
+5. Ontology design decisions
 6. Deferred / needs more info
 
 A "verify" step is included for each item so the work can be checked without re-reading the email.
@@ -29,24 +29,24 @@ Cross-cutting status pass over all items in this plan. Verified line numbers and
 - **2.2** — done 2026-05-10; all five Reject* shapes (`Xone`, `Remedy`, `Consequence`, `InheritAllowed`, `InheritFrom`) swapped from `sh:SPARQLTarget` SPARQL queries to declarative `sh:targetSubjectOf`. SHACL-Core only, no SHACL-SPARQL dependency. Validation outcomes unchanged.
 - **1.5** — done 2026-05-10; Option A executed across three files. `rdfs:comment` rewritten on `dprod:currentDateTime`; `formal-semantics.md` §6.2 gets a Normalisation paragraph + `let ref' = …` line in `resolveRuntime`; `specification.md:163` parenthetical updated. Optional info-shape step skipped.
 - **5.3** — done 2026-05-10; Option A (keep `subPropertyOf` + document deliberate domain narrowing). Both `dprod:partOf` and `dprod:memberOf` `rdfs:comment` blocks extended.
+- **5.2** — done 2026-05-14; hybrid of option (a). Renamed `dprod:subject` → `dprod:subjectOfDuty` and `dprod:object` → `dprod:objectOfDuty`; both now `rdfs:subPropertyOf odrl:function` (symmetric, mirrors the W3C Market Data ODRL Profile's duty-scoped `md:subject`/`md:object`). Propagated across `dprod-contracts.ttl`, `dprod-contracts-shapes.ttl`, all three example TTLs, and all docs (spec, guides, formal-semantics, term-mapping, og.md). All TTL files re-parsed cleanly with rdflib.
+- **3.4** — done 2026-05-14; no action. The plan's premise conflated two distinct things: `dct:conformsTo` is the *predicate* ("the data conforms to schema X" — a static fact, already in core DPROD) and `ex:conformTo` is the *ODRL action* in the concept scheme used inside Duty patterns ("the provider must conform to X by date Y" — a deontic obligation). They are not redundant ways of saying the same thing; they encode different commitments. Current usage is correct as-is — nothing to rewrite.
+- **5.1** — done 2026-05-14. Confirmed all contracts terms are minted under the core `dprod:` namespace (they always were — the prefix was already `dprod:`). Cleaned up the confusing `@base <…/contracts/>` directive in `dprod-contracts.ttl` (no relative IRIs depended on it) and re-pointed every `rdfs:isDefinedBy` from `<…/contracts/>` to `dprod:` so the terms self-declare as part of core DPROD. The artifact-level `owl:Ontology` IRI at `<…/contracts/>` is kept because `dprod-contracts-prof.ttl` and `dprod-contracts-shapes.ttl` reference it as a `prof:hasArtifact` / `owl:imports` target. All three TTL files re-parse cleanly with rdflib.
 - **5.6** — done 2026-05-10; Option D (do nothing). Plan's premise was wrong: nothing in DPROD-contracts is typed `dct:Standard` (that label sits correctly on `odrl:core`). Current `prof:Profile` + `owl:Ontology` typing kept; `voaf:Vocabulary` not added.
-
-### Decided / queued
-*(empty)*
 
 ### Superseded by group decision (no longer a quick textual fix)
 - **1.3** — group agreed to remove `owl:oneOf` and split `dprod:State` into Contract-state and Duty-state subclasses. This is now a Bucket-5 design task: needs a naming choice and a list of which evaluation algorithms branch on which subclass.
-
+- Rename to life cycle state so a :dutyLifeCycleState and a :dataContractLifeCycleState. 
 ### Quick wins — low risk, no decision needed (verified)
 
-- **2.4** — new `RejectPolicyConflictShape`. No existing line to verify; small additive shape. (See also: false-positive risk on the profile itself; needs scoping to `odrl:Policy` subclasses.)
-### Needs Pete/Matthias decision
-- **3.4** — REFRAMED in-line. The plan's premise that `dprod:conformsTo` exists is **wrong**: there is no such property anywhere in the repo. The real choice is fact vs obligation (`dct:conformsTo` already in core DPROD vs `ex:conformTo` Action in a Duty pattern vs a hybrid). Three options enumerated under the item; do NOT bulk-rewrite until decided.
-- **5.1** — namespace collision (mint contracts terms under `dprod-contracts:` vs treat as core `dprod:` axioms).
-- **5.2** — `subject`/`object` super-property + possible rename. Coordinated change across ontology, shapes, docs, examples — non-trivial.
+
+### Needs decision
 - **5.4** — `dprod:path` OWL typing. Affects 2.3 and Bucket 6.2.
 - **5.5** — `dprod:select`: implement, mark non-normative, or delete.
 - **1.3 follow-on** — naming and algorithm-branching for the Contract-state / Duty-state split.
+- **5.7** — consistency: introduce `dprod:DataDuty` subtype of `odrl:Duty`? (Stephen, 2026-05-14)
+- **5.8** — `odrl:target` on DataOffer: drop to exactly 1? (Stephen, 2026-05-14; couples with 5.9)
+- **5.9** — `dprod:acceptsOffer` on DataContract: allow 1..* (basket model)? (Stephen, 2026-05-14; couples with 5.8)
 
 ### Could decide unilaterally if you want to dispatch
 - **2.3** — SHACL shape for `dprod:path` value structure: mechanical if you keep it SHACL-Core. Soft-blocks on 5.4 only if 5.4 changes how `dprod:path` is OWL-typed.
@@ -61,7 +61,7 @@ Cross-cutting status pass over all items in this plan. Verified line numbers and
 ### Suggested execution order (refines the existing one at the bottom)
 1. **Now (independent commits, all verified):** 1.5 (apply the three Option-A edits), 2.1, 2.2, 2.4, 3.1, 3.2, 3.3. (Item 1.2 is no longer standalone — folded into Bucket 4 as item 4.6.)
 2. **Then:** 2.3 if you want to dispatch it unilaterally.
-3. **Surface to Matthias/Pete in one message:** 3.4 (with the reframing), 5.1, 5.2, 5.4, 5.5, plus the 1.3 follow-on.
+3. **Surface to group in one message:** 5.4, 5.5, 5.7, 5.8+5.9 (treat as one bundle — they are tightly coupled), plus the 1.3 follow-on.
 4. **Fetch attachment** for 6.1.
 5. **Bucket 4** as a dedicated PR.
 6. **Bucket 5 → Bucket 6.2** after decisions land.
@@ -204,11 +204,11 @@ They should subclass from the DPROD enumeration)
   2. Walk each cited line; for each "duty with `odrl:action ex:conformTo`" idiom, rewrite to use `dprod:conformsTo` directly on the asset/contract. If the duty wraps additional metadata (deadline, recurrence) keep the duty but switch its action — discuss with author before mass-rewrite.
   3. Update `examples/` files that demonstrate the action pattern.
 - Verify: `rg -n "ex:conformTo|conformTo" dprod-contracts/` shows only `dprod:conformsTo` occurrences (or none) in normative docs/examples.
-- Risk: this changes example semantics — pause after step 1 and confirm the direction with Pete/Matthias before doing the bulk rewrite.
+- Risk: this changes example semantics — pause after step 1 and confirm the direction with group before doing the bulk rewrite.
 - CORRECTION (2026-05-10): The plan's premise is wrong. `dprod:conformsTo` does **not** exist anywhere. What actually exists:
   - `dct:conformsTo` — used by core DPROD (`ontology/dprod/dprod-shapes.ttl:97,112,293` define `Distribution-conformsTo`/`Dataset-conformsTo` with `sh:path dct:conformsTo`); also in `dprod-contracts-prof.ttl:39,45` and the recurrence-spec design.
   - `ex:conformTo` — example-namespace `odrl:Action`, used in Duty patterns in `examples/baseline.ttl`, `examples/odcs.ttl`, `contracts-guide.md`, `term-mapping.md`, `policy-writers-guide.md`.
-- Reframed decision space (needs Pete/Matthias):
+- Reframed decision space (needs group):
   - **(a) Replace `ex:conformTo` Duty pattern with direct `dct:conformsTo` triples on the asset.** Loses the deontic framing — "the data conforms to X" becomes a static fact, not an enforceable obligation. Probably wrong for SLA/quality use where deadlines/constraints attach to the duty.
   - **(b) Promote `ex:conformTo` to a real DPROD action `dprod:conformTo`** (typed as `odrl:Action`). Same Duty pattern, stable IRI, out of the example namespace. Minimal semantic change.
   - **(c) Hybrid (recommended starting point):** keep `dct:conformsTo` for static "this is the schema we conform to" facts (already in core DPROD), AND mint `dprod:conformTo` as an `odrl:Action` for the Duty pattern. They coexist because they mean different things — fact vs obligation.
@@ -278,23 +278,15 @@ Source: 19da58f8 (full proposal in temp.md).
 
 ---
 
-## Bucket 5 — Ontology design decisions (need your judgment)
-
-These are not mechanical edits. Each needs a yes/no from you (or Pete/Matthias) before code changes.
-
-### 5.1 Namespace collision — `@base contracts/` vs `dprod:` core prefix
-- Source: 19d08a1d item #1
-- Where: `dprod-contracts/dprod-contracts.ttl:6-7`.
-- Issue: `@base` is `https://ekgf.github.io/dprod/contracts/` but every class/property uses the `dprod:` prefix (`https://ekgf.github.io/dprod/`). So new contracts terms get minted into the *core* DPROD namespace, not the contracts namespace. Either the contracts profile should mint its own terms under its own IRI, or it should declare itself a part of core DPROD and drop the `@base`. The current setup is confused.
-- Decision: **Mint new terms under `dprod-contracts:` (a new prefix on the contracts base)?** Or **Move all contracts terms into core `dprod:` and treat the contracts file as additional ontology axioms over the core namespace?**
-- Once decided: bulk rename + update docs.
+## Bucket 5 — Ontology design decisions
 
 ### 5.2 `dprod:subject subPropertyOf odrl:assignee` — wrong inference?
 - Source: 19d08a1d items #2/#3, 19db5fe8 item B
-- Where: `dprod-contracts.ttl:242-264`.
+- Where: `dprod-contracts.ttl:241-263`.
 - Issue: Today `dprod:subject` -> `odrl:assignee` and `dprod:object` -> `odrl:function`. Matthias argues `odrl:assignee` is the wrong super-property — the duty bearer in ODRL is the *assignee* of an action, but DPROD's `subject` is "the party who must perform" which fits `odrl:function`'s "party affected" semantics inversely. Matthias also flags that the rename to clearer names (`bearerParty`/`affectedParty` or `assignerParty`/`assigneeParty`) would resolve the confusion entirely.
 - Decision: **(a)** Rename `subject`/`object` to descriptive names AND fix the super-property choice, or **(b)** Keep names, just swap super-properties, or **(c)** Leave alone and document the intentional choice.
 - If (a): coordinated rename across ontology + shapes + docs + examples — non-trivial.
+- DONE (2026-05-14): Hybrid of option (a). Renamed `dprod:subject` → `dprod:subjectOfDuty` and `dprod:object` → `dprod:objectOfDuty` (the `OfDuty` suffix makes the duty-only scope explicit and matches the SHACL domain). Super-property changed: both are now `rdfs:subPropertyOf odrl:function` (symmetric; the previously-asserted `odrl:assignee` parent on `subject` produced the inference Matthias flagged). The W3C Market Data ODRL Profile sets the precedent — `md:subject`/`md:object` are stand-alone duty-scoped properties with no `subPropertyOf` to `odrl:assignee`; we keep a single bridge to the abstract `odrl:function` umbrella so ODRL processors still see *some* role link. Propagated across shapes, all three example TTLs, and all docs (spec, guides, formal-semantics, term-mapping, og.md). `rdfs:label` left as "subject"/"object" for human-readable display.
 
 ### 5.3 `dprod:memberOf subPropertyOf odrl:partOf`
 - Source: 19d08a1d item #4
@@ -326,6 +318,27 @@ These are not mechanical edits. Each needs a yes/no from you (or Pete/Matthias) 
   - `<https://ekgf.github.io/dprod/contracts/>` (contracts ontology) → `owl:Ontology` in `dprod-contracts.ttl:23-24`
   Reframed, the real question is whether to *add* `voaf:Vocabulary` (for LOV discoverability) to the contracts ontology root, the profile node, or neither.
 - DONE (2026-05-10): **Option D — do nothing.** Current `prof:Profile` + `owl:Ontology` typing is correct and DXPROF-compliant. `voaf:Vocabulary` would only matter for LOV-style auto-discovery, which isn't a priority. Revisit cheap if LOV indexing becomes a goal.
+
+### 5.7 Consistency: introduce `dprod:DataDuty` as a subtype of `odrl:Duty`?
+- Source: Stephen (email, 2026-05-14) — comment #1.
+- Where: `dprod-contracts.ttl` — `dprod:DataOffer` (`rdfs:subClassOf odrl:Offer`) and `dprod:DataContract` (`rdfs:subClassOf odrl:Agreement`) are confirmed subclasses, but no `dprod:DataDuty` exists; the duty-specific properties (`dprod:subjectOfDuty`, `dprod:objectOfDuty`, `dprod:deadline`, `dprod:recurrence`, `dprod:state`) hang directly off `odrl:Duty`.
+- Issue: Inconsistent. The Offer/Agreement extensions are scoped to a DPROD subclass; the Duty extension is *not*, so it widens the meaning of any `odrl:Duty` that happens to share a graph with DPROD. Stephen argues a `dprod:DataDuty` subclass would mirror the Offer/Contract pattern and contain the lifecycle/deadline/recurrence semantics inside DPROD-land.
+- Decision: **(a)** Mint `dprod:DataDuty rdfs:subClassOf odrl:Duty` and re-domain the duty-only properties (`subjectOfDuty`, `objectOfDuty`, `deadline`, `recurrence`, `state` restricted to duty case) to `dprod:DataDuty`; update SHACL `DutyShape` to target `dprod:DataDuty` rather than `odrl:Duty`. Coordinated change across ontology + shapes + examples + docs. Or **(b)** Document the asymmetry as deliberate (duty extensions are *cross-cutting* and apply to any ODRL duty in a DPROD-profile graph, by design). Or **(c)** Run both: add `dprod:DataDuty` as an annotation-only subclass with no shape change.
+- Risk: Option (a) is non-trivial because `dprod:state` has a union domain `(odrl:Duty | dprod:DataOffer | dprod:DataContract)` — re-domaining the duty branch means split state semantics or leave the union as-is.
+
+### 5.8 `odrl:target` cardinality on `dprod:DataOffer` — drop from 1..* to 1?
+- Source: Stephen (email, 2026-05-14) — comment #2.
+- Where: `dprod-contracts-shapes.ttl` — `dprod-shapes:SetShape:99-102` allows unbounded `odrl:target` at the policy level (inherited by `OfferShape` and `DataOfferShape`); `dprod-shapes:DataOfferShape:275-302` adds no further `odrl:target` constraint.
+- Issue: Current shape permits multiple targets per `dprod:DataOffer`. This forces inline duties to re-declare `odrl:target` to disambiguate which dataset each obligation refers to. Stephen argues for a tighter model: exactly one `odrl:target` per offer, and bundle multiple offers into a contract instead (see 5.9). Outcome: simpler offers, cleaner duty scoping, easier reuse.
+- Decision: **(a)** Constrain `dprod-shapes:DataOfferShape` to `sh:minCount 1; sh:maxCount 1` on `odrl:target` and remove the per-duty `odrl:target` workaround in examples. Or **(b)** Keep 1..* and document when authors should split into multiple offers. Or **(c)** Leave as 0..* (matches ODRL Set inheritance) and treat single-target as a convention.
+- Coupling: tightly linked to 5.9 — if 5.9 lets a contract accept multiple offers, 5.8 (single target per offer) becomes the natural composition unit.
+
+### 5.9 `dprod:acceptsOffer` cardinality on `dprod:DataContract` — 1 vs 1..*?
+- Source: Stephen (email, 2026-05-14) — comment #3 ("shopping basket" model).
+- Where: `dprod-contracts.ttl:192-198` (`dprod:acceptsOffer` property) and `dprod-contracts-shapes.ttl:324-330` (`sh:minCount 1; sh:maxCount 1; sh:class dprod:DataOffer`).
+- Issue: Today a `dprod:DataContract` references exactly one `dprod:DataOffer`. Stephen's reference-data use case has 100s of distributions from one provider, of which any subscriber takes a different subset — so the 1:1 model either forces 80 near-duplicate contracts, or one contract referencing a 100-distribution offer with extra metadata about which 80 obligations apply. Stephen proposes: pair (5.8) "single-target offer" with (5.9) `dprod:acceptsOffer` cardinality `1..*` so a contract is a *basket* of accepted offers. Bonus: lets provider-duties and consumer-duties be authored as separate offers and composed in the contract, instead of stuffed into one generic provider offer.
+- Decision: **(a)** Change `dprod-shapes:DataContractShape` `dprod:acceptsOffer` to `sh:minCount 1` only (drop `sh:maxCount`), accepting the basket model. Or **(b)** Keep `1`, document the workaround (one mega-offer + selective obligation refs). Or **(c)** Add a sibling property `dprod:acceptsOffers` (plural, basket) and keep `acceptsOffer` as the single-offer shorthand.
+- Coupling: depends on 5.8. Whatever is decided here, the formal-semantics resolve algorithm (norm matching across the contract's offers) needs an explicit rule.
 
 ---
 
