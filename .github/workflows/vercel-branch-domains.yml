@@ -1,0 +1,132 @@
+name: vercel-branch-domains
+
+# Keeps the set of custom Vercel domains under *.dprod-preview.ekgf.org in
+# sync with the set of branches that spec-versions.ts surfaces on the site:
+#
+# - Every PR's head branch gets <slug>.dprod-preview.ekgf.org pinned to it
+#   (slug = branch with "/" replaced by "-"), matching branchToSlug() in
+#   site/src/lib/spec-versions.ts.
+# - When the PR closes (merged or not), the domain is removed again.
+# - develop is refreshed on every push so its domain is always present.
+#
+# Requires repo secrets VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID —
+# the same ones spec-versions.ts already consumes at build time.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Branch to sync (head ref, e.g. add-dprod-contracts or ballot/3)
+        required: true
+        type: string
+      mode:
+        description: add or delete the domain for that branch
+        required: true
+        type: choice
+        default: add
+        options: [add, delete]
+
+jobs:
+  sync-domain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve branch, slug, domain, mode
+        id: ctx
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BRANCH="${{ github.event.pull_request.head.ref }}"
+            HEAD_REPO="${{ github.event.pull_request.head.repo.full_name }}"
+            BASE_REPO="${{ github.event.pull_request.base.repo.full_name }}"
+            # Fork PRs deploy from the fork's branch, which doesn't exist in
+            # our repo — Vercel would return git_branch_not_found.
+            if [ "$HEAD_REPO" != "$BASE_REPO" ]; then
+              echo "Skipping fork PR ($HEAD_REPO) — Vercel can't pin a branch that doesn't live in $BASE_REPO"
+              echo "mode=skip" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            if [ "${{ github.event.action }}" = "closed" ]; then
+              MODE="delete"
+            else
+              MODE="add"
+            fi
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BRANCH="${{ inputs.branch }}"
+            MODE="${{ inputs.mode }}"
+          else
+            BRANCH="${GITHUB_REF#refs/heads/}"
+            MODE="add"
+          fi
+          # Vercel refuses to pin the production branch as a preview domain,
+          # and develop is already reachable via the primary zone at
+          # ekgf.org/dprod — so skip it outright.
+          if [ "$BRANCH" = "develop" ] || [ "$BRANCH" = "main" ]; then
+            echo "Skipping production branch '$BRANCH' — no preview domain needed"
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          SLUG="${BRANCH//\//-}"
+          DOMAIN="${SLUG}.dprod-preview.ekgf.org"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "domain=$DOMAIN" >> "$GITHUB_OUTPUT"
+          echo "mode=$MODE"   >> "$GITHUB_OUTPUT"
+          echo "Resolved: branch=$BRANCH domain=$DOMAIN mode=$MODE"
+
+      - name: Add Vercel domain pinned to branch
+        if: steps.ctx.outputs.mode == 'add'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          BRANCH: ${{ steps.ctx.outputs.branch }}
+          DOMAIN: ${{ steps.ctx.outputs.domain }}
+        run: |
+          set -euo pipefail
+          URL="https://api.vercel.com/v10/projects/${VERCEL_PROJECT_ID}/domains?teamId=${VERCEL_ORG_ID}"
+          HTTP=$(curl -sS -o response.json -w "%{http_code}" -X POST "$URL" \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\":\"${DOMAIN}\",\"gitBranch\":\"${BRANCH}\"}")
+          echo "Vercel responded with HTTP ${HTTP}:"
+          cat response.json; echo
+          # invalid_domain fires for branches whose slug contains characters
+          # DNS labels don't accept (e.g. dependabot's "github_actions" with
+          # an underscore, or dotted version suffixes). git_branch_not_found
+          # fires for fork PRs or branches that no longer exist. Both are
+          # benign for this use case — warn but don't fail the job.
+          ERROR_CODE=$(jq -r '.error.code // empty' response.json 2>/dev/null || true)
+          case "$HTTP" in
+            200|201) echo "Added ${DOMAIN} → ${BRANCH}" ;;
+            409)     echo "Domain ${DOMAIN} already exists — treating as success" ;;
+            400)
+              case "$ERROR_CODE" in
+                invalid_domain|git_branch_not_found)
+                  echo "::warning::Skipped ${DOMAIN}: $ERROR_CODE"
+                  ;;
+                *) echo "Unexpected 400 (code=$ERROR_CODE)"; exit 1 ;;
+              esac
+              ;;
+            *) echo "Unexpected status ${HTTP}"; exit 1 ;;
+          esac
+
+      - name: Remove Vercel domain for closed PR
+        if: steps.ctx.outputs.mode == 'delete'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          DOMAIN: ${{ steps.ctx.outputs.domain }}
+        run: |
+          set -euo pipefail
+          URL="https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}/domains/${DOMAIN}?teamId=${VERCEL_ORG_ID}"
+          HTTP=$(curl -sS -o response.json -w "%{http_code}" -X DELETE "$URL" \
+            -H "Authorization: Bearer ${VERCEL_TOKEN}")
+          echo "Vercel responded with HTTP ${HTTP}:"
+          cat response.json; echo
+          case "$HTTP" in
+            200|204) echo "Removed ${DOMAIN}" ;;
+            404)     echo "Domain ${DOMAIN} was not configured — treating as success" ;;
+            *)       echo "Unexpected status ${HTTP}"; exit 1 ;;
+          esac

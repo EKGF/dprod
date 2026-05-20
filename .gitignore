@@ -2,8 +2,15 @@
 .venv/
 venv/
 __pypackages__/
-site/
+.envrc
+.direnv/
 dist/
+# Next.js marketing site (site/)
+site/node_modules/
+site/.next/
+site/public/spec/**
+!site/public/spec/archive/
+!site/public/spec/archive/**
 poetry.lock
 .DS_Store
 .texpadtmp
@@ -63,3 +70,4 @@ code/lib/
 code/include
 */__pycache__
 /.idea/LNKD.tech Editor.xml
+.vercel
