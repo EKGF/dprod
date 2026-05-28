@@ -46,6 +46,8 @@ dprod-shapes:
 
 dprod-shapes:StatePropertyGroup
   a sh:PropertyShape ;
+  sh:name "state" ;
+  sh:description "Optional lifecycle state, restricted to the four-value DPROD enumeration (Pending, Active, Fulfilled, Violated). Reused by every shape that constrains a stateful resource (duties, offers, contracts)."@en ;
   sh:path dprod:state ;
   sh:maxCount 1 ;
   sh:in (dprod:Pending dprod:Active dprod:Fulfilled dprod:Violated) ;
@@ -54,6 +56,8 @@ dprod-shapes:StatePropertyGroup
 
 dprod-shapes:ProfilePropertyGroup
   a sh:PropertyShape ;
+  sh:name "profile" ;
+  sh:description "The ODRL profile token a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes."@en ;
   sh:path odrl:profile ;
   sh:minCount 1 ;
   sh:hasValue <https://www.omg.org/spec/DPROD/> ;
