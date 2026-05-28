@@ -3,14 +3,14 @@ import os
 import shutil
 import subprocess
 
-from rdflib import XSD, OWL, PROV, RDFS
+from rdflib import XSD, OWL, PROV, RDFS, SH
 
 from functions import *
 from node_shape import NodeShape
 from property_shape import PropertyShape
 from jinja import generate_spec_page
 
-from globals import ontology_namespace_iri, shapes_graph_ns_iri, LINKEDIN
+from globals import ontology_namespace_iri, shapes_graph_ns_iri, contracts_shapes_ns_iri, LINKEDIN
 
 
 def detect_branch() -> str:
@@ -34,6 +34,17 @@ def add_to_context(g, node_shape_iri, node_shapes: dict):
     if not is_node_shape(g, node_shape_iri):  # we're at this point only interested in the NodeShapes
         return
     if node_shapes.get(node_shape_iri) is not None:
+        return
+    # Helper NodeShapes (e.g. NonEmptyClausesConstraint, RejectXoneShape)
+    # have no sh:targetClass — they are referenced via sh:node or
+    # sh:targetSubjectOf. Skip them: they are not class definitions.
+    if g.value(node_shape_iri, SH.targetClass) is None:
+        return
+    # Reject*Shape NodeShapes are profile-level forbid rules that
+    # target an ODRL class only to ban its use; they are not DPROD
+    # vocabulary entries and would otherwise render as empty sections.
+    local_name = str(node_shape_iri).rsplit('/', 1)[-1].rsplit('#', 1)[-1]
+    if local_name.startswith("Reject") and local_name.endswith("Shape"):
         return
 
     node_shape = NodeShape(shape_iri=node_shape_iri, g=g)
@@ -66,7 +77,20 @@ def main():
         'DataProductLifecycleStatus',
         'InformationSensitivityClassification',
         'SecuritySchemaType',
-        'Enumeration'
+        'Enumeration',
+        # DPROD Contracts (ODRL 2.2 profile)
+        'DataOffer',
+        'DataContract',
+        'Policy',
+        'Set',
+        'Offer',
+        'Agreement',
+        'Permission',
+        'Prohibition',
+        'Duty',
+        'Constraint',
+        'LogicalConstraint',
+        'LeftOperand',
     ])
 
     if os.path.exists('dist'):
@@ -174,6 +198,12 @@ def main():
     shutil.copy2('ontology/dprod/dprod-ontology.ttl', 'dist/dprod.ttl')
     print("Copying dprod-shapes.ttl")
     shutil.copy2('ontology/dprod/dprod-shapes.ttl', 'dist/dprod-shapes.ttl')
+    print("Copying dprod-contracts.ttl")
+    shutil.copy2('dprod-contracts/dprod-contracts.ttl', 'dist/dprod-contracts.ttl')
+    print("Copying dprod-contracts-shapes.ttl")
+    shutil.copy2('dprod-contracts/dprod-contracts-shapes.ttl', 'dist/dprod-contracts-shapes.ttl')
+    print("Copying dprod-contracts-prof.ttl")
+    shutil.copy2('dprod-contracts/dprod-contracts-prof.ttl', 'dist/dprod-contracts-prof.ttl')
 
     print("Specification generated successfully!")
 

@@ -1,7 +1,7 @@
-# baseURI: https://ekgf.github.io/dprod/
+# baseURI: https://www.omg.org/spec/DPROD/
 # prefix: dprod
 
-@prefix dprod: <https://ekgf.github.io/dprod/> .
+@prefix dprod: <https://www.omg.org/spec/DPROD/> .
 @prefix prof: <http://www.w3.org/ns/dx/prof/> .
 @prefix role: <http://www.w3.org/ns/dx/prof/role/> .
 @prefix dct: <http://purl.org/dc/terms/> .
@@ -21,7 +21,7 @@ odrl:core
 
 ############################# DPROD Profile (ODRL 2.2) #########################
 
-<https://ekgf.github.io/dprod/>
+<https://www.omg.org/spec/DPROD/>
   a prof:Profile ;
   dct:title "DPROD"@en ;
   dct:description
@@ -37,12 +37,12 @@ odrl:core
     dct:title "DPROD Contracts Ontology"@en ;
     prof:hasRole role:vocabulary ;
     dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
-    prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-contracts.ttl>
+    prof:hasArtifact <https://www.omg.org/spec/DPROD/contracts/dprod-contracts.ttl>
   ] , [
     a prof:ResourceDescriptor ;
     dct:title "DPROD Contracts SHACL Shapes"@en ;
     prof:hasRole role:validation ;
     dct:conformsTo <http://www.w3.org/ns/shacl#> ;
-    prof:hasArtifact <https://ekgf.github.io/dprod/contracts/dprod-contracts-shapes.ttl>
+    prof:hasArtifact <https://www.omg.org/spec/DPROD/contracts/dprod-contracts-shapes.ttl>
   ] ;
 .

@@ -30,12 +30,12 @@ A minimal data use policy:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:target ex:customerData ;
 
     odrl:permission [
@@ -435,7 +435,7 @@ A `LogicalConstraint` must have exactly one of `odrl:and`, `odrl:or`, or `dprod:
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:target ex:data ;
 
     odrl:permission [
@@ -521,7 +521,7 @@ odrl:obligation [
 
 ## 10. Policy Review Checklist
 
-1. Every policy declares `odrl:profile <https://ekgf.github.io/dprod/>`
+1. Every policy declares `odrl:profile <https://www.omg.org/spec/DPROD/>`
 2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
 3. Policy has at least one `odrl:target`
 4. Each permission and prohibition has exactly one `odrl:action` and one effective `odrl:target` -- either declared on the rule or inherited from the policy-level target (rule-level `odrl:target` may be omitted when a policy-level target exists)

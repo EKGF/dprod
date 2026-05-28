@@ -20,17 +20,22 @@ def load_ontologies():
     nm = NamespaceManager(g, bind_namespaces="rdflib")
     nm.bind("dprod", globals.DPROD)
     nm.bind("dprod-shape", globals.DPROD_SHAPES)
+    nm.bind("dprod-contracts-shapes", globals.DPROD_CONTRACTS_SHAPES)
     nm.bind("dcat", DCAT)
     nm.bind("dct", DCTERMS)
+    nm.bind("odrl", ODRL2)
     nm.bind("linkedin", globals.LINKEDIN)
     g.parse('./ontology/dprod/dprod-ontology.ttl', format='ttl')
     g.parse('./ontology/dprod/dprod-shapes.ttl', format='ttl')
+    g.parse('./dprod-contracts/dprod-contracts.ttl', format='ttl')
+    g.parse('./dprod-contracts/dprod-contracts-shapes.ttl', format='ttl')
+    g.parse('./dprod-contracts/dprod-contracts-prof.ttl', format='ttl')
     g.parse('https://www.w3.org/ns/dcat2.ttl', format='ttl')
     return g
 
 
 def load_dprod_ontology():
-    """Load JUST the OWL ontology into an RDFlib graph"""
+    """Load JUST the OWL ontology (core + contracts) into an RDFlib graph"""
     g = Graph()
     nm = NamespaceManager(g, bind_namespaces="rdflib")
     nm.bind("dprod", globals.DPROD)
@@ -39,19 +44,22 @@ def load_dprod_ontology():
     nm.bind("odrl", ODRL2)
     nm.bind("linkedin", globals.LINKEDIN)
     g.parse('./ontology/dprod/dprod-ontology.ttl', format='ttl')
+    g.parse('./dprod-contracts/dprod-contracts.ttl', format='ttl')
     return g
 
 def load_dprod_shapes():
-    """Load JUST the SHACL ontology into an RDFlib graph"""
+    """Load JUST the SHACL ontology (core + contracts) into an RDFlib graph"""
     g = Graph()
     nm = NamespaceManager(g, bind_namespaces="rdflib")
     nm.bind("dprod", globals.DPROD)
     nm.bind("dprod-shapes", globals.DPROD_SHAPES)
+    nm.bind("dprod-contracts-shapes", globals.DPROD_CONTRACTS_SHAPES)
     nm.bind("dcat", DCAT)
     nm.bind("dct", DCTERMS)
     nm.bind("odrl", ODRL2)
     nm.bind("linkedin", globals.LINKEDIN)
     g.parse('./ontology/dprod/dprod-shapes.ttl', format='ttl')
+    g.parse('./dprod-contracts/dprod-contracts-shapes.ttl', format='ttl')
     return g
 
 

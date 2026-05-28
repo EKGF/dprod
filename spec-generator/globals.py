@@ -8,6 +8,9 @@ DPROD = Namespace(ontology_namespace_iri)
 shapes_graph_ns_iri = "https://www.omg.org/spec/DPROD/shapes/"
 DPROD_SHAPES = Namespace(shapes_graph_ns_iri)
 
+contracts_shapes_ns_iri = "https://www.omg.org/spec/DPROD/contracts/shapes/"
+DPROD_CONTRACTS_SHAPES = Namespace(contracts_shapes_ns_iri)
+
 linkedin_ns_iri = "https://www.linkedin.com/in/"
 LINKEDIN = Namespace(linkedin_ns_iri)
 

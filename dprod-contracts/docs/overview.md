@@ -19,12 +19,12 @@ DPROD Contracts is designed for organizations that need:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     odrl:obligation [
@@ -46,12 +46,12 @@ A `dprod:DataContract` activates an offer, binding both parties:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:agreement a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:quantResearch ;
@@ -88,7 +88,7 @@ ex:agreement a dprod:DataContract ;
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:target ex:employeeData ;
     odrl:permission [
         a odrl:Permission ;
@@ -184,7 +184,7 @@ Domain Vocabulary
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.github.io/dprod/` | Core extensions (lifecycle, operand resolution, contract types) |
+| `dprod:` | `https://www.omg.org/spec/DPROD/` | Core extensions (lifecycle, operand resolution, contract types) |
 | `ex:` | (domain-specific) | Domain actions, operands, and concept values |
 
 ---

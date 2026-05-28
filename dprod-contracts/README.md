@@ -131,7 +131,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.github.io/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path, select, hierarchy) + domain-specific actions, operands, and concept values |
+| `dprod:` | `https://www.omg.org/spec/DPROD/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path, select, hierarchy) + domain-specific actions, operands, and concept values |
 
 ---
 

@@ -42,7 +42,7 @@ I would suggest you change the prod:recurrence to work - basically - like it doe
 
       New grammars can be defined by third parties via dct:conformsTo."""@en ;                                                                                                                                                                                                    
 
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;                                                                                                                                                                                                                  
+    rdfs:isDefinedBy <https://www.omg.org/spec/DPROD/contracts/> ;                                                                                                                                                                                                                  
 
     rdfs:label "recurrence spec" ;
 
@@ -62,7 +62,7 @@ I would suggest you change the prod:recurrence to work - basically - like it doe
 
     dct:description "RFC 5545 iCalendar RRULE grammar."@en ;                                                                                                                                                                                                                    
 
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;                                                                                                                                                                                                                  
+    rdfs:isDefinedBy <https://www.omg.org/spec/DPROD/contracts/> ;                                                                                                                                                                                                                  
 
     rdfs:label "RRule scheme" ;
 
@@ -78,7 +78,7 @@ I would suggest you change the prod:recurrence to work - basically - like it doe
 
     dct:description "Unix crontab expression grammar (minute hour dom month dow)."@en ;
 
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;                                                                                                                                                                                                                  
+    rdfs:isDefinedBy <https://www.omg.org/spec/DPROD/contracts/> ;                                                                                                                                                                                                                  
 
     rdfs:label "crontab scheme" ;                                                                                                                                                                                                                                                 
 
@@ -114,7 +114,7 @@ I would suggest you change the prod:recurrence to work - basically - like it doe
 
       Any iCal-compliant library can parse the value."""@en ;                                                                                                                                                                                                                     
 
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;                                                                                                                                                                                                                  
+    rdfs:isDefinedBy <https://www.omg.org/spec/DPROD/contracts/> ;                                                                                                                                                                                                                  
 
     rdfs:domain odrl:Duty ;                                     
 
@@ -180,7 +180,7 @@ I would suggest you change the prod:recurrence to work - basically - like it doe
 
       individual and using it as the dct:conformsTo value."""@en ;                                                                                                                                                                                                              
 
-    rdfs:isDefinedBy <https://ekgf.github.io/dprod/contracts/> ;                                                                                                                                                                                                                  
+    rdfs:isDefinedBy <https://www.omg.org/spec/DPROD/contracts/> ;                                                                                                                                                                                                                  
 
     rdfs:domain odrl:Duty ;                                                                                                                                                                                                                                                       
 

@@ -23,8 +23,8 @@ This document is a vocabulary reference for implementers. It defines every class
 
 ```turtle
 @prefix odrl:        <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/> .
-@prefix dprod-shapes: <https://ekgf.github.io/dprod/contracts/shapes/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
+@prefix dprod-shapes: <https://www.omg.org/spec/DPROD/contracts/shapes/> .
 @prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:         <http://www.w3.org/2002/07/owl#> .
@@ -102,7 +102,7 @@ Active  -> Violated  (deadline passed without performance)
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:state dprod:Active ;
@@ -139,7 +139,7 @@ ex:contract a dprod:DataOffer ;
 
 ```turtle
 ex:subscription a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;

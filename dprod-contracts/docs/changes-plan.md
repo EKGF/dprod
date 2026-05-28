@@ -227,7 +227,7 @@ Source: 19da58f8 (full proposal in recurrence-redesign.md).
 - Steps:
   1. Copy the class definition from `recurrence-redesign.md` lines 9-51 into the ontology.
   2. Add `prov:Plan` superclass if you want recurrence specs to participate in PROV (open question — see 5.x).
-- Verify: ontology parses; `RecurrenceSpec` resolves under `https://ekgf.github.io/dprod/`.
+- Verify: ontology parses; `RecurrenceSpec` resolves under `https://www.omg.org/spec/DPROD/`.
 
 ### 4.2 Add `dprod:RRuleScheme` and `dprod:CrontabScheme` named individuals
 - Where: same file, after the new class.
@@ -314,8 +314,8 @@ Source: 19da58f8 (full proposal in recurrence-redesign.md).
 - Decision: keep `dct:Standard`, add `voaf:Vocabulary`, or replace.
 - CORRECTION (2026-05-10): the plan's premise is partly wrong. Nothing in DPROD-contracts is typed `dct:Standard`. The `dct:Standard` at `dprod-contracts-prof.ttl:16` is on `odrl:core` (the upstream ODRL spec), which is the correct primitive for "this is the reference specification we extend". The three actual root resources are:
   - `odrl:core` → `dct:Standard` (correct as-is; the upstream spec)
-  - `<https://ekgf.github.io/dprod/>` (DPROD profile) → `prof:Profile` in `dprod-contracts-prof.ttl:24-25`
-  - `<https://ekgf.github.io/dprod/contracts/>` (contracts ontology) → `owl:Ontology` in `dprod-contracts.ttl:23-24`
+  - `<https://www.omg.org/spec/DPROD/>` (DPROD profile) → `prof:Profile` in `dprod-contracts-prof.ttl:24-25`
+  - `<https://www.omg.org/spec/DPROD/contracts/>` (contracts ontology) → `owl:Ontology` in `dprod-contracts.ttl:23-24`
   Reframed, the real question is whether to *add* `voaf:Vocabulary` (for LOV discoverability) to the contracts ontology root, the profile node, or neither.
 - DONE (2026-05-10): **Option D — do nothing.** Current `prof:Profile` + `owl:Ontology` typing is correct and DXPROF-compliant. `voaf:Vocabulary` would only matter for LOV-style auto-discovery, which isn't a priority. Revisit cheap if LOV indexing becomes a goal.
 

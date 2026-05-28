@@ -82,12 +82,12 @@ Every contract starts with a type, profile declaration, and provider identity.
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://ekgf.github.io/dprod/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:state dprod:Active .
@@ -166,7 +166,7 @@ When a consumer accepts the offer, create a DataContract (Agreement) referencing
 
 ```turtle
 ex:subscription a dprod:DataContract ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;
@@ -284,7 +284,7 @@ Read-only access, no recurrence, no consumer duties. Target inherited from polic
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:referenceData ;
     odrl:permission [
@@ -303,7 +303,7 @@ Daily delivery, schema conformance, display + non-display, monthly reporting. Ta
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:customerData ;
     odrl:obligation [
@@ -345,7 +345,7 @@ High-frequency delivery with quality SLA and change notification. Target inherit
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:riskMetrics ;
     odrl:obligation [
@@ -390,7 +390,7 @@ A single contract covering multiple targets. When a policy has multiple targets,
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.github.io/dprod/> ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices , ex:referenceData , ex:riskMetrics ;
     odrl:permission [
@@ -545,7 +545,7 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 
 ## Validation Checklist
 
-1. Every policy declares `odrl:profile <https://ekgf.github.io/dprod/>`
+1. Every policy declares `odrl:profile <https://www.omg.org/spec/DPROD/>`
 2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
 3. DataOffer has `odrl:assigner` (provider)
 4. DataContract has both `odrl:assigner` and `odrl:assignee`
