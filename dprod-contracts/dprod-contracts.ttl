@@ -1,0 +1,333 @@
+# All DPROD-contracts terms are minted in the core dprod: namespace
+# (https://www.omg.org/spec/DPROD/); this file contributes additional
+# axioms to the DPROD ontology rather than minting under a separate
+# contracts namespace.
+# imports: https://www.omg.org/spec/DPROD/
+# imports: http://www.w3.org/ns/odrl/2/
+# prefix: dprod
+
+@prefix dprod: <https://www.omg.org/spec/DPROD/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dct:description a owl:AnnotationProperty .
+dct:contributor a owl:AnnotationProperty .
+dct:license a owl:AnnotationProperty .
+dct:modified a owl:AnnotationProperty .
+
+<https://www.omg.org/spec/DPROD/contracts/>
+  a owl:Ontology ;
+  dct:title "DPROD Data Contracts — ODRL 2.2 Profile Extension"@en ;
+  rdfs:label "DPROD contracts ontology"@en ;
+  dct:description
+    """DPROD Data Contracts: a proper ODRL 2.2 profile for deterministic data governance.
+
+    Uses ODRL terms for all standard constructs (Rule types, Policy types,
+    Constraint types, operators, core properties). Adds only:
+    - Explicit duty lifecycle (Pending -> Active -> Fulfilled/Violated)
+    - Deadline property on odrl:Duty
+    - Recurrence property on odrl:Duty (RFC 5545 RRULE)
+    - Duty party roles (subject = duty bearer, object = affected party)
+    - Data offer and data contract subtypes
+    - Asset/party hierarchy properties
+    - Structured operand resolution via SPARQL-style property paths
+    - Runtime references for dynamic right-operand values
+    - Logical negation (not) on LogicalConstraint
+
+    DPROD contract policies are valid ODRL 2.2 policies. Any ODRL processor
+    can partially understand them; DPROD-aware processors handle the
+    extensions."""@en ;
+  dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  dct:modified "2026-02-26"^^xsd:date ;
+  dct:publisher <https://www.omg.org/> ;
+  dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
+  dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
+  dct:contributor <https://www.linkedin.com/in/peterivett> ;
+  dct:contributor <https://www.linkedin.com/in/jgeluk> ;
+  dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043> ;
+  dct:contributor <https://www.linkedin.com/in/matthias-jurisch> ;
+  dct:contributor <https://www.linkedin.com/in/tonyseale> ;
+  dct:contributor <https://www.linkedin.com/in/joshuacornejo> ;
+  owl:imports dprod: ;
+  owl:imports odrl: ;
+  owl:versionInfo "0.7" ;
+  rdfs:seeAlso <http://www.w3.org/ns/odrl/2/> ;
+.
+
+
+############################# DPROD Contracts Classes #########################
+
+
+dprod:State
+  a owl:Class ;
+  dct:description
+    "Unified lifecycle state for duties and contracts."@en ;
+  rdfs:comment
+    """Four states cover both duty and contract lifecycles.
+
+    On duties (evaluated during Eval):
+    - Pending: condition not yet satisfied
+    - Active: condition met, action required
+    - Fulfilled: action performed
+    - Violated: deadline passed without performance
+
+    On offers/contracts (administrative, not evaluated at request time):
+    - Pending: not yet in force
+    - Active: in force
+    - Fulfilled: obligations complete
+    - Violated: breached"""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "state" ;
+.
+
+dprod:Pending
+  a dprod:State ;
+  dct:description "Condition not yet satisfied; not yet in force."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "pending" ;
+.
+
+dprod:Active
+  a dprod:State ;
+  dct:description "Condition satisfied, action required; in force."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "active" ;
+.
+
+dprod:Fulfilled
+  a dprod:State ;
+  dct:description "Action performed; obligations complete."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "fulfilled" ;
+.
+
+dprod:Violated
+  a dprod:State ;
+  dct:description "Deadline passed without performance; breached."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "violated" ;
+.
+
+dprod:DataOffer
+  a owl:Class ;
+  dct:description "Policy offer defining data access terms."@en ;
+  rdfs:comment
+    """A DataOffer is an Offer from a data provider.
+    It defines permissions, duties, and prohibitions for data access.
+    When accepted by a consumer, becomes a DataContract (Agreement)."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data offer" ;
+  rdfs:subClassOf odrl:Offer ;
+.
+
+dprod:DataContract
+  a owl:Class ;
+  dct:description "Activated data offer binding provider and consumer."@en ;
+  rdfs:comment
+    """A DataContract is an activated DataOffer.
+    - assigner: data provider (from offer)
+    - assignee: data consumer
+    Bilateral: both parties may have active duties."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "data contract" ;
+  rdfs:subClassOf odrl:Agreement ;
+  owl:disjointWith dprod:DataOffer ;
+.
+
+dprod:RuntimeReference
+  a owl:Class ;
+  dct:description "Value resolved at evaluation time."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "runtime reference" ;
+.
+
+ 
+#############################  DPROD Contracts Properties ################
+
+
+dprod:state
+  a owl:ObjectProperty ;
+  dct:description "Current lifecycle state."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain [ owl:unionOf (odrl:Duty dprod:DataOffer dprod:DataContract) ] ;
+  rdfs:range dprod:State ;
+  rdfs:label "state" ;
+.
+
+dprod:deadline
+  a owl:DatatypeProperty ;
+  dct:description "Time constraint for duty fulfillment."@en ;
+  rdfs:comment
+    """Supports multiple forms:
+    - xsd:dateTime: absolute deadline (e.g., 2026-12-31T23:59:59Z)
+    - xsd:duration: relative to activation (e.g., P30D, PT24H)
+    For duration: deadline = activationTime + duration.
+    No rdfs:range declared because the range is a union of datatypes;
+    SHACL enforces the allowed types."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain odrl:Duty ;
+  rdfs:label "deadline" ;
+.
+
+dprod:recurrence
+  a owl:DatatypeProperty ;
+  dct:description "RFC 5545 RRULE defining when duty instances are generated."@en ;
+  rdfs:comment
+    """An RFC 5545 RRULE string (e.g., FREQ=DAILY;BYHOUR=6;BYMINUTE=0).
+    Defines the schedule on which duty instances are created.
+    Each instance follows the standard duty lifecycle independently.
+    The deadline property defines the per-instance fulfillment window.
+    Any iCal-compliant library can parse the value."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain odrl:Duty ;
+  rdfs:range xsd:string ;
+  rdfs:label "recurrence" ;
+.
+
+dprod:acceptsOffer
+  a owl:ObjectProperty ;
+  dct:description "The offer this contract activates."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataContract ;
+  rdfs:range dprod:DataOffer ;
+  rdfs:label "accepts offer" ;
+.
+
+dprod:effectiveDate
+  a owl:DatatypeProperty ;
+  dct:description "When the offer or contract becomes effective."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
+  rdfs:range xsd:dateTime ;
+  rdfs:label "effective date" ;
+.
+
+dprod:expirationDate
+  a owl:DatatypeProperty ;
+  dct:description "When the offer or contract expires."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
+  rdfs:range xsd:dateTime ;
+  rdfs:label "expiration date" ;
+.
+
+dprod:partOf
+  a owl:ObjectProperty, owl:TransitiveProperty ;
+  dct:description "Asset contained in larger asset."@en ;
+  rdfs:comment
+    """Transitive asset hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Asset, so the inferred odrl:partOf triples only ever connect asset to asset — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf odrl:partOf ;
+  rdfs:domain odrl:Asset ;
+  rdfs:range odrl:Asset ;
+  rdfs:label "part of" ;
+.
+
+dprod:memberOf
+  a owl:ObjectProperty, owl:TransitiveProperty ;
+  dct:description "Party member of group or organization."@en ;
+  rdfs:comment
+    """Transitive party hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Party, so the inferred odrl:partOf triples only ever connect party to party — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf odrl:partOf ;
+  rdfs:domain odrl:Party ;
+  rdfs:range odrl:Party ;
+  rdfs:label "member of" ;
+.
+
+dprod:subjectOfDuty
+  a owl:ObjectProperty ;
+  dct:description "Party bearing the duty (must perform the action)."@en ;
+  rdfs:comment
+    "The duty bearer. Sub-property of odrl:function for ODRL processor compatibility."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf odrl:function ;
+  rdfs:domain odrl:Duty ;
+  rdfs:range odrl:Party ;
+  rdfs:label "subject" ;
+.
+
+dprod:objectOfDuty
+  a owl:ObjectProperty ;
+  dct:description "Party affected by the duty action."@en ;
+  rdfs:comment
+    "The party affected by or receiving the result of the duty action. Sub-property of odrl:function for ODRL processor compatibility."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf odrl:function ;
+  rdfs:domain odrl:Duty ;
+  rdfs:range odrl:Party ;
+  rdfs:label "object" ;
+.
+
+dprod:path
+  a rdf:Property ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "resolution path" ;
+  dct:description "SPARQL-style property path from evaluation context to operand value."@en ;
+  rdfs:comment
+    """Simple paths are a single property IRI; sequence paths are RDF lists.
+    Context operands: dprod:path dprod:environment (direct property on request)
+    Asset operands: dprod:path (odrl:target dprod:timeliness) (via target)
+    Agent operands: dprod:path (odrl:assignee dprod:role) (via assignee)"""@en ;
+  rdfs:domain odrl:LeftOperand ;
+.
+
+dprod:select
+  a owl:DatatypeProperty ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "resolution query" ;
+  dct:description "SPARQL query for operand value resolution."@en ;
+  rdfs:comment
+    """Optional SPARQL SELECT that resolves the operand value.
+    Binds $request to the evaluation context. Result variable is ?value.
+    Example: SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }"""@en ;
+  rdfs:domain odrl:LeftOperand ;
+  rdfs:range xsd:string ;
+.
+
+dprod:not
+  a owl:ObjectProperty ;
+  dct:description "Logical negation on a constraint."@en ;
+  rdfs:comment
+    """ODRL defines odrl:and and odrl:or on LogicalConstraint but lacks
+    negation. DPROD adds dprod:not following the same pattern:
+      _:lc a odrl:LogicalConstraint ;
+          dprod:not _:c1 ."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain odrl:LogicalConstraint ;
+  rdfs:range [ owl:unionOf (odrl:Constraint odrl:LogicalConstraint) ] ;
+  rdfs:label "not" ;
+.
+
+
+#############################  DPROD Runtime References ################
+
+
+dprod:currentAgent
+  a dprod:RuntimeReference, odrl:Party ;
+  dct:description "The requesting agent."@en ;
+  rdfs:comment
+    """Reserved for constraint identity comparisons. Typed as both
+    RuntimeReference and odrl:Party for ODRL processor compatibility.
+    For rules applying to any requesting agent, omit odrl:assignee
+    (standard ODRL); do not use currentAgent as assignee."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "current agent" ;
+.
+
+dprod:currentDateTime
+  a odrl:LeftOperand, dprod:RuntimeReference ;
+  dct:description "Evaluation timestamp."@en ;
+  rdfs:comment
+    """Canonical DPROD operand for the evaluation timestamp. Dual-typed as dprod:RuntimeReference so that resolveRuntime binds it to the evaluator's clock at evaluation time. odrl:dateTime is the upstream ODRL equivalent; DPROD evaluators MUST canonicalise odrl:dateTime to dprod:currentDateTime before resolution. Equivalence is documented via rdfs:seeAlso rather than owl:sameAs, so DPROD evaluation does not require an OWL reasoner."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "current date time" ;
+  rdfs:seeAlso odrl:dateTime ;
+.

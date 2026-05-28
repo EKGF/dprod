@@ -1,0 +1,818 @@
+# =============================================================================
+# DPROD Contracts Baseline Test Data
+# =============================================================================
+# Comprehensive test dataset: 5 organizations, 8+ assets, 8 DataOffers,
+# 2 DataContracts, 6+ Duty instances with lifecycle state tracking.
+#
+# Covers all DPROD contract patterns:
+#   - Recurring delivery with deadline
+#   - Schema conformance
+#   - Quality SLA (conformTo + constraint)
+#   - Change notification with lead time
+#   - Consumer reporting duty
+#   - Display / non-display / derivation permissions
+#   - Purpose, classification, environment constraints
+#   - Asset hierarchy (partOf) and party hierarchy (memberOf)
+#   - Contract versioning (prov:wasRevisionOf)
+#   - DataContract with bilateral duties
+# =============================================================================
+
+@prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov:     <http://www.w3.org/ns/prov#> .
+@prefix ex:       <https://example.org/> .
+
+
+############################# Inline Domain Vocabulary #########################
+# Only the operands, actions, and concept values used in this file.
+
+ex:scheme
+  a skos:ConceptScheme ;
+  rdfs:label "DPROD vocabulary" ;
+  dct:description "Concept scheme for the DPROD vocabulary."@en ;
+.
+
+# --- Purpose operand ---
+odrl:purpose
+  dprod:path odrl:purpose ;
+.
+
+# --- Actions ---
+ex:deliver
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "deliver" ;
+  dct:description "Deliver data to consumer."@en ;
+  odrl:includedIn odrl:distribute ;
+.
+
+ex:conformTo
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "conform to" ;
+  dct:description "Conform to a schema or specification."@en ;
+.
+
+ex:nonDisplay
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "non-display" ;
+  dct:description "Use data for automated/programmatic purposes."@en ;
+  odrl:includedIn odrl:use ;
+.
+
+ex:report
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "report" ;
+  dct:description "Submit usage reports."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+ex:notify
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notify" ;
+  dct:description "Notify relevant parties."@en ;
+  odrl:includedIn odrl:inform ;
+.
+
+ex:query
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "query" ;
+  dct:description "Query/select data."@en ;
+  odrl:includedIn odrl:read ;
+.
+
+ex:export
+  a odrl:Action, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "export" ;
+  dct:description "Export data outside the system."@en ;
+  odrl:includedIn odrl:distribute ;
+.
+
+# --- Operands ---
+ex:derivationType
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "derivation type" ;
+  dct:description "Type of derivation being performed."@en ;
+  dprod:path ex:derivationType ;
+.
+
+ex:recipientType
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "recipient type" ;
+  dct:description "Type of data recipient."@en ;
+  dprod:path (odrl:assignee ex:recipientType) ;
+.
+
+ex:processingMode
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "processing mode" ;
+  dct:description "How data is processed."@en ;
+  dprod:path ex:processingMode ;
+.
+
+ex:timeliness
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "timeliness" ;
+  dct:description "Required data freshness category."@en ;
+  dprod:path (odrl:target ex:timeliness) ;
+.
+
+ex:retentionPeriod
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "retention period" ;
+  dct:description "Maximum time data may be retained."@en ;
+  dprod:path (odrl:target ex:retentionPeriod) ;
+  dprod:select "SELECT ?v WHERE { $request odrl:target/ex:retentionPeriod ?v }" ;
+.
+
+ex:environment
+  a odrl:LeftOperand, skos:Concept ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "environment" ;
+  dct:description "Execution environment."@en ;
+  dprod:path ex:environment ;
+.
+
+# --- Concept values ---
+ex:nonSubstitutive
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "non-substitutive" ;
+  dct:description "Derived data cannot substitute for original."@en ;
+.
+
+ex:internal
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "internal" ;
+.
+
+ex:modelTraining
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "model training" ;
+.
+
+ex:realtime
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "real-time" ;
+  dct:description "Data with minimal latency (sub-second)."@en ;
+.
+
+ex:production
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "production" ;
+.
+
+ex:operations
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "operations" ;
+  dct:description "Operational use."@en ;
+.
+
+ex:compliance
+  a skos:Concept ;
+  skos:inScheme ex:scheme ;
+  rdfs:label "compliance" ;
+  dct:description "Regulatory compliance."@en ;
+.
+
+
+############################# Organizations (5 parties) #########################
+
+<https://example.org/agents/data-platform> a odrl:Party ;
+    rdfs:label "Data Platform Team" .
+
+<https://example.org/agents/trading-data> a odrl:Party ;
+    rdfs:label "Trading Data Team" ;
+    dprod:memberOf <https://example.org/agents/trading-division> .
+
+<https://example.org/agents/trading-division> a odrl:Party ;
+    rdfs:label "Trading Division" .
+
+<https://example.org/agents/analytics> a odrl:Party ;
+    rdfs:label "Analytics Team" ;
+    dprod:memberOf <https://example.org/agents/trading-division> .
+
+<https://example.org/agents/finance> a odrl:Party ;
+    rdfs:label "Finance Team" .
+
+<https://example.org/agents/hr> a odrl:Party ;
+    rdfs:label "HR Team" .
+
+
+############################# Assets (with hierarchy) #########################
+
+<https://example.org/assets/market-data-lake> a odrl:Asset ;
+    rdfs:label "Market Data Lake" .
+
+<https://example.org/assets/market-prices> a odrl:Asset ;
+    rdfs:label "Market Price Data" ;
+    dprod:partOf <https://example.org/assets/market-data-lake> .
+
+<https://example.org/assets/customer-data> a odrl:Asset ;
+    rdfs:label "Customer Data" .
+
+<https://example.org/assets/reference-data> a odrl:Asset ;
+    rdfs:label "Reference Data" .
+
+<https://example.org/assets/country-codes> a odrl:Asset ;
+    rdfs:label "Country Reference Table" ;
+    dprod:partOf <https://example.org/assets/reference-data> .
+
+<https://example.org/assets/transaction-files> a odrl:Asset ;
+    rdfs:label "Transaction Files" .
+
+<https://example.org/assets/employee-directory> a odrl:Asset ;
+    rdfs:label "Employee Directory" .
+
+<https://example.org/assets/risk-metrics> a odrl:Asset ;
+    rdfs:label "Risk Metrics" .
+
+<https://example.org/assets/audit-logs> a odrl:Asset ;
+    rdfs:label "Audit Log Archive" .
+
+<https://example.org/assets/multi-asset-bundle> a odrl:Asset ;
+    rdfs:label "Multi-Asset Data Bundle" .
+
+# Ancillary assets (targets for duties)
+<https://example.org/assets/customer-api-schema> a odrl:Asset ;
+    rdfs:label "Customer API Schema v2" .
+
+<https://example.org/assets/market-data-schema> a odrl:Asset ;
+    rdfs:label "Market Data Schema" .
+
+<https://example.org/assets/risk-metrics-schema> a odrl:Asset ;
+    rdfs:label "Risk Metrics Schema" .
+
+<https://example.org/assets/schema-changes> a odrl:Asset ;
+    rdfs:label "Schema Change Notifications" .
+
+<https://example.org/assets/usage-stats> a odrl:Asset ;
+    rdfs:label "Usage Statistics" .
+
+<https://example.org/assets/monthly-report> a odrl:Asset ;
+    rdfs:label "Monthly Transaction Report" .
+
+
+############################# Contract 1: Customer API v2 #########################
+# Daily delivery + recurrence + deadline + schema
+
+<https://example.org/offers/customer-api-v1> a dprod:DataOffer ;
+    rdfs:label "Customer API v1 (retired)" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/data-platform> ;
+    odrl:target <https://example.org/assets/customer-data> ;
+    dprod:state dprod:Fulfilled ;
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:use
+    ] .
+
+<https://example.org/offers/customer-api-v2> a dprod:DataOffer ;
+    rdfs:label "Customer API v2" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/data-platform> ;
+    odrl:target <https://example.org/assets/customer-data> ;
+    dprod:state dprod:Active ;
+    dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    prov:wasRevisionOf <https://example.org/offers/customer-api-v1> ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Daily customer data delivery" ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+        odrl:action ex:deliver ;
+        dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+        dprod:deadline "PT30M"^^xsd:duration
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema conformance" ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+        odrl:action ex:conformTo ;
+        odrl:target <https://example.org/assets/customer-api-schema>
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:derivationType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:nonSubstitutive
+        ]
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        odrl:action ex:report ;
+        odrl:target <https://example.org/assets/usage-stats> ;
+        dprod:deadline "P30D"^^xsd:duration
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute
+    ] .
+
+
+############################# Contract 2: Market Data Feed #########################
+# High-frequency, display + nonDisplay
+
+<https://example.org/offers/market-data-feed> a dprod:DataOffer ;
+    rdfs:label "Market Data Feed" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/trading-data> ;
+    odrl:target <https://example.org/assets/market-prices> ;
+    dprod:state dprod:Active ;
+    dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "15-minute market data delivery" ;
+        dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
+        odrl:action ex:deliver ;
+        dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+        dprod:deadline "PT5M"^^xsd:duration
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Market data schema conformance" ;
+        dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
+        odrl:action ex:conformTo ;
+        odrl:target <https://example.org/assets/market-data-schema>
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Display access" ;
+        odrl:action odrl:display
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        rdfs:label "Non-display use" ;
+        odrl:action ex:nonDisplay ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:internal
+        ]
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute
+    ] .
+
+
+############################# Contract 3: Country Reference SQL #########################
+# Simple read-only, no recurrence
+
+<https://example.org/offers/country-ref> a dprod:DataOffer ;
+    rdfs:label "Country Reference Data" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/data-platform> ;
+    odrl:target <https://example.org/assets/country-codes> ;
+    dprod:state dprod:Active ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action ex:query
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:modify
+    ] .
+
+
+############################# Contract 4: Transaction Files #########################
+# Monthly delivery, consumer reporting
+
+<https://example.org/offers/transaction-files> a dprod:DataOffer ;
+    rdfs:label "Transaction Files" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/finance> ;
+    odrl:target <https://example.org/assets/transaction-files> ;
+    dprod:state dprod:Active ;
+    dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly transaction file delivery" ;
+        dprod:subjectOfDuty <https://example.org/agents/finance> ;
+        odrl:action ex:deliver ;
+        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
+        dprod:deadline "P3D"^^xsd:duration
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Monthly reconciliation report" ;
+        odrl:action ex:report ;
+        odrl:target <https://example.org/assets/monthly-report> ;
+        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=15" ;
+        dprod:deadline "P5D"^^xsd:duration
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action ex:export
+    ] .
+
+
+############################# Contract 5: Employee Directory #########################
+# Change notification, prohibition on distribute
+
+<https://example.org/offers/employee-directory> a dprod:DataOffer ;
+    rdfs:label "Employee Directory" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/hr> ;
+    odrl:target <https://example.org/assets/employee-directory> ;
+    dprod:state dprod:Active ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema change notification (90 days)" ;
+        dprod:subjectOfDuty <https://example.org/agents/hr> ;
+        odrl:action ex:notify ;
+        odrl:target <https://example.org/assets/schema-changes> ;
+        dprod:deadline "P90D"^^xsd:duration
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:operations
+        ]
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:use ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:processingMode ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:modelTraining
+        ]
+    ] .
+
+
+############################# Contract 6: Risk Metrics #########################
+# Quality SLA via conformTo + constraint
+
+<https://example.org/offers/risk-metrics> a dprod:DataOffer ;
+    rdfs:label "Risk Metrics" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/data-platform> ;
+    odrl:target <https://example.org/assets/risk-metrics> ;
+    dprod:state dprod:Active ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Real-time risk metrics delivery" ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+        odrl:action ex:deliver ;
+        dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
+        dprod:deadline "PT30S"^^xsd:duration
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Quality SLA: real-time conformance" ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+        odrl:action ex:conformTo ;
+        odrl:target <https://example.org/assets/risk-metrics-schema> ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:timeliness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:realtime
+        ]
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "Schema change notification" ;
+        dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+        odrl:action ex:notify ;
+        odrl:target <https://example.org/assets/schema-changes> ;
+        dprod:deadline "P14D"^^xsd:duration
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:display
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action ex:nonDisplay
+    ] .
+
+
+############################# Contract 7: Audit Logs #########################
+# Read-only, retention, purpose restriction
+
+<https://example.org/offers/audit-logs> a dprod:DataOffer ;
+    rdfs:label "Audit Log Archive" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/data-platform> ;
+    odrl:target <https://example.org/assets/audit-logs> ;
+    dprod:state dprod:Active ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand odrl:purpose ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:compliance
+        ]
+    ] ;
+
+    odrl:obligation [
+        a odrl:Duty ;
+        rdfs:label "7-year retention limit" ;
+        odrl:action odrl:delete ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:retentionPeriod ;
+            odrl:operator odrl:gt ;
+            odrl:rightOperand "P7Y"^^xsd:duration
+        ]
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:modify
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action ex:export
+    ] .
+
+
+############################# Contract 8: Multi-Asset Bundle #########################
+# Multiple targets, multiple permissions
+
+<https://example.org/offers/multi-asset> a dprod:DataOffer ;
+    rdfs:label "Multi-Asset Data Bundle" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:assigner <https://example.org/agents/data-platform> ;
+    odrl:target <https://example.org/assets/market-prices> ,
+               <https://example.org/assets/reference-data> ,
+               <https://example.org/assets/risk-metrics> ;
+    dprod:state dprod:Active ;
+    dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
+    dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:target <https://example.org/assets/market-prices>
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:target <https://example.org/assets/reference-data>
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:read ;
+        odrl:target <https://example.org/assets/risk-metrics>
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action odrl:aggregate ;
+        odrl:target <https://example.org/assets/multi-asset-bundle> ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:environment ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:production
+        ]
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:action ex:nonDisplay ;
+        odrl:target <https://example.org/assets/multi-asset-bundle> ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:internal
+        ]
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute ;
+        odrl:target <https://example.org/assets/market-prices>
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute ;
+        odrl:target <https://example.org/assets/reference-data>
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:action odrl:distribute ;
+        odrl:target <https://example.org/assets/risk-metrics>
+    ] .
+
+
+############################# DataContract 1: Analytics → Customer API v2 #########################
+
+<https://example.org/agreements/analytics-customer-2026> a dprod:DataContract ;
+    rdfs:label "Analytics Customer Data 2026" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    dprod:acceptsOffer <https://example.org/offers/customer-api-v2> ;
+    odrl:assigner <https://example.org/agents/data-platform> ;
+    odrl:assignee <https://example.org/agents/analytics> ;
+    odrl:target <https://example.org/assets/customer-data> ;
+    dprod:effectiveDate "2026-02-01T00:00:00Z"^^xsd:dateTime ;
+    dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    odrl:obligation <https://example.org/duties/cust-delivery-2026-001> ;
+    odrl:obligation <https://example.org/duties/cust-schema-2026-001> ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://example.org/agents/analytics> ;
+        odrl:action odrl:read
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://example.org/agents/analytics> ;
+        odrl:action odrl:derive ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:derivationType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:nonSubstitutive
+        ]
+    ] ;
+
+    odrl:obligation <https://example.org/duties/cust-report-2026-001> ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assignee <https://example.org/agents/analytics> ;
+        odrl:action odrl:distribute
+    ] .
+
+
+############################# DataContract 2: Trading → Market Data Feed #########################
+
+<https://example.org/agreements/trading-market-data-2026> a dprod:DataContract ;
+    rdfs:label "Trading Market Data 2026" ;
+    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    dprod:acceptsOffer <https://example.org/offers/market-data-feed> ;
+    odrl:assigner <https://example.org/agents/trading-data> ;
+    odrl:assignee <https://example.org/agents/analytics> ;
+    odrl:target <https://example.org/assets/market-prices> ;
+    dprod:effectiveDate "2026-01-15T00:00:00Z"^^xsd:dateTime ;
+    dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
+
+    odrl:obligation <https://example.org/duties/mkt-delivery-2026-001> ;
+    odrl:obligation <https://example.org/duties/mkt-schema-2026-001> ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://example.org/agents/analytics> ;
+        odrl:action odrl:display
+    ] ;
+
+    odrl:permission [
+        a odrl:Permission ;
+        odrl:assignee <https://example.org/agents/analytics> ;
+        odrl:action ex:nonDisplay ;
+        odrl:constraint [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:recipientType ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:internal
+        ]
+    ] ;
+
+    odrl:prohibition [
+        a odrl:Prohibition ;
+        odrl:assignee <https://example.org/agents/analytics> ;
+        odrl:action odrl:distribute
+    ] .
+
+
+############################# Duty Instances (with lifecycle state) #########################
+
+<https://example.org/duties/cust-delivery-2026-001> a odrl:Duty ;
+    rdfs:label "Customer data delivery (2026-02-04)" ;
+    dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
+    odrl:action ex:deliver ;
+    odrl:target <https://example.org/assets/customer-data> ;
+    dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+    dprod:deadline "PT30M"^^xsd:duration ;
+    dprod:state dprod:Fulfilled .
+
+<https://example.org/duties/cust-schema-2026-001> a odrl:Duty ;
+    rdfs:label "Customer API schema conformance" ;
+    dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
+    odrl:action ex:conformTo ;
+    odrl:target <https://example.org/assets/customer-api-schema> ;
+    dprod:state dprod:Active .
+
+<https://example.org/duties/cust-report-2026-001> a odrl:Duty ;
+    rdfs:label "Analytics usage report (February)" ;
+    dprod:subjectOfDuty <https://example.org/agents/analytics> ;
+    dprod:objectOfDuty <https://example.org/agents/data-platform> ;
+    odrl:action ex:report ;
+    odrl:target <https://example.org/assets/usage-stats> ;
+    dprod:deadline "P30D"^^xsd:duration ;
+    dprod:state dprod:Active .
+
+<https://example.org/duties/mkt-delivery-2026-001> a odrl:Duty ;
+    rdfs:label "Market data delivery (latest interval)" ;
+    dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
+    odrl:action ex:deliver ;
+    odrl:target <https://example.org/assets/market-prices> ;
+    dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    dprod:deadline "PT5M"^^xsd:duration ;
+    dprod:state dprod:Fulfilled .
+
+<https://example.org/duties/mkt-schema-2026-001> a odrl:Duty ;
+    rdfs:label "Market data schema conformance" ;
+    dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
+    dprod:objectOfDuty <https://example.org/agents/analytics> ;
+    odrl:action ex:conformTo ;
+    odrl:target <https://example.org/assets/market-data-schema> ;
+    dprod:state dprod:Active .
+
+<https://example.org/duties/mkt-delivery-2026-late> a odrl:Duty ;
+    rdfs:label "Market data delivery (missed interval)" ;
+    dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
+    odrl:action ex:deliver ;
+    odrl:target <https://example.org/assets/market-prices> ;
+    dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    dprod:deadline "PT5M"^^xsd:duration ;
+    dprod:state dprod:Violated .
