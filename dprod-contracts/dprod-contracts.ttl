@@ -37,7 +37,7 @@ dct:modified a owl:AnnotationProperty .
     - Duty party roles (subject = duty bearer, object = affected party)
     - Data offer and data contract subtypes
     - Asset/party hierarchy properties
-    - Structured operand resolution via SHACL-style property paths
+    - Structured operand resolution via SPARQL-style property paths
     - Runtime references for dynamic right-operand values
     - Logical negation (not) on LogicalConstraint
 
@@ -47,12 +47,14 @@ dct:modified a owl:AnnotationProperty .
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
   dct:modified "2026-02-26"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
+  dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
   dct:contributor <https://www.linkedin.com/in/peterivett> ;
   dct:contributor <https://www.linkedin.com/in/jgeluk> ;
   dct:contributor <https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043> ;
   dct:contributor <https://www.linkedin.com/in/matthias-jurisch> ;
   dct:contributor <https://www.linkedin.com/in/tonyseale> ;
+  dct:contributor <https://www.linkedin.com/in/joshuacornejo> ;
   owl:imports dprod: ;
   owl:imports odrl: ;
   owl:versionInfo "0.7" ;
@@ -268,7 +270,7 @@ dprod:path
   a rdf:Property ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "resolution path" ;
-  dct:description "SHACL-style property path from evaluation context to operand value."@en ;
+  dct:description "SPARQL-style property path from evaluation context to operand value."@en ;
   rdfs:comment
     """Simple paths are a single property IRI; sequence paths are RDF lists.
     Context operands: dprod:path dprod:environment (direct property on request)

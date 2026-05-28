@@ -269,7 +269,7 @@ Transitive: if person `memberOf` team and team `memberOf` division, then person 
 | **Type** | `rdf:Property` |
 | **Domain** | `odrl:LeftOperand` |
 | **Cardinality** | 0..1 |
-| **Definition** | SHACL-style property path from evaluation context to operand value |
+| **Definition** | SPARQL-style property path from evaluation context to operand value |
 
 Simple paths are a single property IRI; sequence paths are RDF lists:
 

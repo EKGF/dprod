@@ -12,7 +12,7 @@ DPROD Contracts is an ODRL 2.2 profile. It uses ODRL terms for all standard cons
 2. **Bilateral agreements**: Both assigner and assignee may have duties
 3. **Deterministic evaluation**: Total functions, no undefined states
 4. **Formal verification target**: Amenable to Dafny, Why3, Coq
-5. **Structured operand resolution**: SHACL-style `dprod:path` property paths
+5. **Structured operand resolution**: SPARQL-style `dprod:path` property paths
 6. **Recurring duties**: `recurrence` via RFC 5545 RRULE for scheduled obligations
 
 DPROD Contracts is **specification-first**. The semantics document defines what any conformant implementation must do. Every DPROD policy is a valid ODRL 2.2 policy.
@@ -88,7 +88,7 @@ An `odrl:Duty` progresses through `dprod:State` values. A `dprod:DataOffer` shar
 
 ### 5. Structured Operand Resolution
 
-Operands resolve via `dprod:path` -- SHACL-style property paths from the evaluation context:
+Operands resolve via `dprod:path` -- SPARQL-style property paths from the evaluation context:
 
 ```turtle
 # Context-rooted (single-step): direct property on request

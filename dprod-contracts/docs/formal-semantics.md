@@ -25,7 +25,7 @@ DPROD Contracts provides:
 - Bilateral agreement evaluation (grantor and grantee duties)
 - Total evaluation functions (always terminate with defined result)
 - Clear separation of Condition (pre-requisite) from Duty (obligation)
-- Property-path-based operand resolution with SHACL-style traversal semantics
+- Property-path-based operand resolution with SPARQL-style traversal semantics
 
 ### 1.1 Scope and Runtime Boundary
 
@@ -564,7 +564,7 @@ Profiles define domain-specific left operands with property paths:
 
 #### traverse : PropertyPath × Node → Value
 
-The function `traverse(path, node)` follows a SHACL-style property path to retrieve a value. This is the **primary mechanism for resolving profile-declared operands** via `dprod:path`.
+The function `traverse(path, node)` follows a SPARQL-style property path to retrieve a value. This is the **primary mechanism for resolving profile-declared operands** via `dprod:path`.
 
 **Property Path Types** (normative):
 

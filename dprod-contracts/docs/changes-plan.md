@@ -7,7 +7,7 @@ Buckets, in suggested execution order:
 1. Quick textual fixes (low risk, no semantics)
 2. SHACL shape improvements (mechanical)
 3. DCON remnant cleanup (documentation)
-4. Recurrence redesign (one large change; spec already drafted in `temp.md`)
+4. Recurrence redesign (one large change; spec already drafted in `recurrence-redesign.md`)
 5. Ontology design decisions
 6. Deferred / needs more info
 
@@ -52,7 +52,7 @@ Cross-cutting status pass over all items in this plan. Verified line numbers and
 - **2.3** — SHACL shape for `dprod:path` value structure: mechanical if you keep it SHACL-Core. Soft-blocks on 5.4 only if 5.4 changes how `dprod:path` is OWL-typed.
 
 ### Large but spec'd — schedule, do not re-decide
-- **Bucket 4 (recurrence redesign)** — `temp.md` exists (213 lines) and contains the design. Execute as one PR. The former item 1.2 (line-34 header rewording) is now item 4.6 and travels with this PR.
+- **Bucket 4 (recurrence redesign)** — `recurrence-redesign.md` exists (213 lines) and contains the design. Execute as one PR. The former item 1.2 (line-34 header rewording) is now item 4.6 and travels with this PR.
 
 ### Deferred — needs external input
 - **6.1** — fetch `fixme.md` Gmail attachment for message `19d7952e` before triaging.
@@ -79,7 +79,7 @@ Cross-cutting status pass over all items in this plan. Verified line numbers and
   2. Replace "SHACL-style property paths" -> "SPARQL-style property paths" wherever it describes `dprod:path`.
   3. Update `dprod-contracts.ttl:38` (header description bullet) and any docs hits.
 - Verify: `rg -n "SHACL-style" dprod-contracts/` returns nothing.
-- PASS
+- PASS (re-swept 2026-05-28: six remaining occurrences across `dprod-contracts.ttl`, `README.md`, `docs/specification.md`, `docs/formal-semantics.md` replaced; only `changes-plan.md` itself still mentions the historical phrase to describe this task).
 
 ### 1.2 Ontology header: recurrence description (line 34)
 - MOVED (2026-05-10) to item 4.6 in Bucket 4. The rewording only makes sense once the property definition at `dprod-contracts.ttl:175-188` has been updated, so it travels with the recurrence redesign rather than as a standalone textual fix.
@@ -218,21 +218,21 @@ They should subclass from the DPROD enumeration)
 
 ## Bucket 4 — Recurrence redesign (large)
 
-The spec is already drafted in `dprod-contracts/docs/temp.md`. This section operationalises that spec.
+The spec is already drafted in `dprod-contracts/docs/recurrence-redesign.md`. This section operationalises that spec.
 
-Source: 19da58f8 (full proposal in temp.md).
+Source: 19da58f8 (full proposal in recurrence-redesign.md).
 
 ### 4.1 Add `dprod:RecurrenceSpec` class
 - Where: `dprod-contracts.ttl`, after `dprod:RuntimeReference` block.
 - Steps:
-  1. Copy the class definition from `temp.md` lines 9-51 into the ontology.
+  1. Copy the class definition from `recurrence-redesign.md` lines 9-51 into the ontology.
   2. Add `prov:Plan` superclass if you want recurrence specs to participate in PROV (open question — see 5.x).
 - Verify: ontology parses; `RecurrenceSpec` resolves under `https://ekgf.github.io/dprod/`.
 
 ### 4.2 Add `dprod:RRuleScheme` and `dprod:CrontabScheme` named individuals
 - Where: same file, after the new class.
 - Steps:
-  1. Copy individual definitions from `temp.md` lines 61-89.
+  1. Copy individual definitions from `recurrence-redesign.md` lines 61-89.
   2. Sanity-check the `rdfs:seeAlso` URLs still resolve (RFC 5545 §3.3.10, opengroup crontab spec).
 - Verify: each is `a dprod:RecurrenceSpec` and has `rdfs:seeAlso`.
 
@@ -240,7 +240,7 @@ Source: 19da58f8 (full proposal in temp.md).
 - Where: `dprod-contracts.ttl:176-189` (current `owl:DatatypeProperty` form).
 - Steps:
   1. Delete the current `dprod:recurrence` block.
-  2. Insert the replacement block from `temp.md:133-193` (`owl:ObjectProperty` with `rdfs:range dprod:RecurrenceSpec`).
+  2. Insert the replacement block from `recurrence-redesign.md:133-193` (`owl:ObjectProperty` with `rdfs:range dprod:RecurrenceSpec`).
 - Verify: ontology parses; range is `dprod:RecurrenceSpec`.
 
 ### 4.4 Update SHACL shapes for recurrence
@@ -253,12 +253,12 @@ Source: 19da58f8 (full proposal in temp.md).
 ### 4.5 Update examples
 - Where: `dprod-contracts/examples/*.ttl` and `dprod-contracts/examples/odcs.ttl` in particular (uncommitted exploratory edits already there — see `git status`).
 - Steps:
-  1. Reconcile the uncommitted `odcs.ttl` edits with the canonical pattern from `temp.md`. The existing edits use names like `dprod:IcalRecurrence` / `dprod:CronRecurrence` and `dc:conformsTo` — these need to become `dprod:RRuleScheme` / `dprod:CrontabScheme` and `dct:conformsTo`.
+  1. Reconcile the uncommitted `odcs.ttl` edits with the canonical pattern from `recurrence-redesign.md`. The existing edits use names like `dprod:IcalRecurrence` / `dprod:CronRecurrence` and `dc:conformsTo` — these need to become `dprod:RRuleScheme` / `dprod:CrontabScheme` and `dct:conformsTo`.
   2. Add at least one expression-based and one vocabulary-based recurrence example.
 - Verify: examples parse; SHACL validation passes; the chosen names match the ontology.
 
 ### 4.6 Update header bullet at `dprod-contracts.ttl:34`
-- Source: 19da58f8 (also referenced in `temp.md` section "Also update the ontology header description (line 34)").
+- Source: 19da58f8 (also referenced in `recurrence-redesign.md` section "Also update the ontology header description (line 34)").
 - Why: Header still says "RFC 5545 RRULE" but the redesign permits crontab and frequency URIs too. Apply this last in the Bucket-4 PR so the description matches the property definition that 4.3 introduces.
 - Where: `dprod-contracts/dprod-contracts.ttl:34`.
 - Steps:
@@ -273,7 +273,7 @@ Source: 19da58f8 (full proposal in temp.md).
   2. Reframe as "either a structured `RecurrenceSpec` (RRULE/crontab/...) or a frequency URI".
 - Verify: docs no longer claim "must be an RRULE string".
 
-### 4.8 Delete `dprod-contracts/docs/temp.md` once 4.1-4.7 are merged.
+### 4.8 Delete `dprod-contracts/docs/recurrence-redesign.md` once 4.1-4.7 are merged.
 - Verify: `git status` clean.
 
 ---
