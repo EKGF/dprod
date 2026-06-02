@@ -27,7 +27,7 @@ dprod:
     "The ontology utilizes the notion of Datasets as defined from DCAT vocabulary."@en ;
   rdfs:comment "DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2024-08-31"^^xsd:date ;
+  dct:modified "2026-06-01"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -38,7 +38,7 @@ dprod:
   dct:contributor <https://www.linkedin.com/in/tonyseale> ;
   dct:contributor <https://www.linkedin.com/in/joshuacornejo> ;
   owl:imports dcat: ;
-  owl:versionInfo "OMG Request For Comments Errata 2" ;
+  owl:versionIRI <https://www.omg.org/spec/DPROD/2026-06-01/> ;
 .
 
 ############################# DPROD Classes  #########################

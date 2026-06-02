@@ -26,7 +26,7 @@ dprod-shapes:
   dct:description "SHACL shapes for DPROD, including the DCAT classes and properties to be used."@en ;
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
-  dct:modified "2024-08-31"^^xsd:date ;
+  dct:modified "2026-06-01"^^xsd:date ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
   dct:contributor <https://www.linkedin.com/in/peterivett> ;
   dct:contributor <https://www.linkedin.com/in/jgeluk> ;
@@ -36,7 +36,7 @@ dprod-shapes:
   owl:imports dcat: ;
   owl:imports sh: ;
   owl:imports dprod: ;
-  owl:versionInfo "OMG Request For Comments Errata 2" ;
+  owl:versionIRI <https://www.omg.org/spec/DPROD/2026-06-01/shapes/> ;
   sh:declare [
     sh:prefix "dprod" ;
     sh:namespace "https://www.omg.org/spec/DPROD/" ;
