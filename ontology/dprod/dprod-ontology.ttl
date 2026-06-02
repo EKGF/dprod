@@ -38,7 +38,7 @@ dprod:
   dct:contributor <https://www.linkedin.com/in/tonyseale> ;
   dct:contributor <https://www.linkedin.com/in/joshuacornejo> ;
   owl:imports dcat: ;
-  owl:versionIRI <https://www.omg.org/spec/DPROD/2026-06-01> ;
+  owl:versionIRI <https://www.omg.org/spec/DPROD/2026-06-01/> ;
 .
 
 ############################# DPROD Classes  #########################

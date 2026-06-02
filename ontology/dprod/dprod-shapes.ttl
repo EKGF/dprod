@@ -36,7 +36,7 @@ dprod-shapes:
   owl:imports dcat: ;
   owl:imports sh: ;
   owl:imports dprod: ;
-  owl:versionIRI <https://www.omg.org/spec/DPROD/shapes/2026-06-01> ;
+  owl:versionIRI <https://www.omg.org/spec/DPROD/2026-06-01/shapes/> ;
   sh:declare [
     sh:prefix "dprod" ;
     sh:namespace "https://www.omg.org/spec/DPROD/" ;
