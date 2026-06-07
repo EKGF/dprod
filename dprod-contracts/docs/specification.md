@@ -39,16 +39,9 @@ This document is a vocabulary reference for implementers. It defines every class
 
 ## 3. Class Definitions
 
-### 3.1 dprod:State
+### 3.1 Example Lifecycle Concept Scheme
 
-| Property | Value |
-|----------|-------|
-| **Type** | `owl:Class` |
-| **Label** | State |
-| **Definition** | Unified lifecycle state for duties and contracts |
-| **Enumeration** | `dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated` |
-
-**Individuals**:
+DPROD ships an example `skos:ConceptScheme` — **`dprod:DataContractLifeCycleStatus`** — covering four common lifecycle states. This scheme is one ready-made vocabulary that policy authors can plug into any of the three lifecycle properties (`dprod:offerLifeCycleStatus`, `dprod:contractLifeCycleStatus`, `dprod:dutyState`). Each property's range is the open `skos:Concept` class, so implementations are free to use this scheme as-is, extend it via `skos:inScheme`, or use a different vocabulary entirely. The state machine described in [formal-semantics.md](formal-semantics.md) §5 is one possible interpretation of these concepts; it is not a requirement of the properties themselves.
 
 | Individual | Label | Definition |
 |------------|-------|------------|
@@ -57,13 +50,15 @@ This document is a vocabulary reference for implementers. It defines every class
 | `dprod:Fulfilled` | Fulfilled | Action performed; obligations complete |
 | `dprod:Violated` | Violated | Deadline passed without performance; breached |
 
-**State transitions** (see [formal-semantics.md](formal-semantics.md) for formal definition):
+**Duty-state transitions** (see [formal-semantics.md](formal-semantics.md) for the formal definition):
 
 ```
 Pending -> Active    (condition becomes true)
 Active  -> Fulfilled (action performed)
 Active  -> Violated  (deadline passed without performance)
 ```
+
+For administrative offer/contract lifecycle (`dprod:offerLifeCycleStatus`, `dprod:contractLifeCycleStatus`), the same four concepts are used to represent: `Pending` (not yet in force), `Active` (in force), `Fulfilled` (obligations complete), `Violated` (breached). These transitions are administrative — they are not evaluated at request time.
 
 ### 3.2 dprod:DataOffer
 
@@ -86,7 +81,7 @@ Active  -> Violated  (deadline passed without performance)
 | Property | Source | Cardinality |
 |----------|--------|-------------|
 | `odrl:target` | ODRL | 1..* |
-| `dprod:state` | DPROD | 0..1 |
+| `dprod:offerLifeCycleStatus` | DPROD | 0..1 |
 | `dprod:effectiveDate` | DPROD | 0..1 |
 | `dprod:expirationDate` | DPROD | 0..1 |
 
@@ -105,7 +100,7 @@ ex:contract a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime .
 ```
 
@@ -131,7 +126,7 @@ ex:contract a dprod:DataOffer ;
 
 | Property | Source | Cardinality |
 |----------|--------|-------------|
-| `dprod:state` | DPROD | 0..1 |
+| `dprod:contractLifeCycleStatus` | DPROD | 0..1 |
 | `dprod:effectiveDate` | DPROD | 0..1 |
 | `dprod:expirationDate` | DPROD | 0..1 |
 
@@ -166,15 +161,15 @@ ex:subscription a dprod:DataContract ;
 
 ## 4. Property Definitions
 
-### 4.1 dprod:state
+### 4.1 dprod:offerLifeCycleStatus, dprod:contractLifeCycleStatus, dprod:dutyState
 
-| Property | Value |
-|----------|-------|
-| **Type** | `owl:ObjectProperty` |
-| **Domain** | `odrl:Duty` | `dprod:DataOffer` | `dprod:DataContract` |
-| **Range** | `dprod:State` |
-| **Cardinality** | 0..1 |
-| **Definition** | Current lifecycle state |
+| Property | Domain | Range | Cardinality | Definition |
+|----------|--------|-------|-------------|------------|
+| `dprod:offerLifeCycleStatus` | `dprod:DataOffer` | `skos:Concept` | 0..1 | Administrative lifecycle status of a data offer (not evaluated at request time) |
+| `dprod:contractLifeCycleStatus` | `dprod:DataContract` | `skos:Concept` | 0..1 | Administrative lifecycle status of a data contract (not evaluated at request time) |
+| `dprod:dutyState` | `odrl:Duty` | `skos:Concept` | 0..1 | Evaluated state of a duty (set by the standard evaluation algorithm; see §5 of formal-semantics.md) |
+
+All three properties are `owl:ObjectProperty`. The four DPROD-defined canonical concepts (`dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`) form the default vocabulary for each; profiles MAY introduce further `skos:Concept` values.
 
 ### 4.2 dprod:deadline
 
@@ -280,24 +275,6 @@ Simple paths are a single property IRI; sequence paths are RDF lists:
 | Agent-rooted | `dprod:path (odrl:assignee ex:recipientType)` | Via assignee | `?request odrl:assignee ?agent . ?agent ex:recipientType ?value` |
 | ODRL operand | `dprod:path odrl:purpose` | Direct property on request | `?request odrl:purpose ?value` |
 
-### 4.9b dprod:select
-
-| Property | Value |
-|----------|-------|
-| **Type** | `owl:DatatypeProperty` |
-| **Domain** | `odrl:LeftOperand` |
-| **Range** | `xsd:string` |
-| **Cardinality** | 0..1 |
-| **Definition** | SPARQL query for operand value resolution |
-
-Optional SPARQL SELECT that resolves the operand value. Binds `$request` to the evaluation context. Result variable is `?v`. Typically used alongside `dprod:path` for multi-step paths:
-
-```turtle
-ex:timeliness
-  dprod:path (odrl:target ex:timeliness) ;
-  dprod:select "SELECT ?v WHERE { $request odrl:target/ex:timeliness ?v }" .
-```
-
 ### 4.10 dprod:not
 
 | Property | Value |
@@ -388,7 +365,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` | `dprod:path` 0..1; `dprod:select` 0..1 (xsd:string) |
+| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` | `dprod:path` 0..1 (IRI or `rdf:List` of IRIs) |
 
 ### Rejection shapes
 
@@ -412,7 +389,9 @@ Which DPROD properties are valid on which classes:
 
 | Property | Duty | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
 |----------|------|-------------|-------------|-------------|-------------------|-------|-------|
-| `dprod:state` | Yes | Yes | Yes | | | | |
+| `dprod:dutyState` | Yes | | | | | | |
+| `dprod:offerLifeCycleStatus` | | Yes | | | | | |
+| `dprod:contractLifeCycleStatus` | | | Yes | | | | |
 | `dprod:deadline` | Yes | | | | | | |
 | `dprod:recurrence` | Yes | | | | | | |
 | `dprod:subjectOfDuty` | Yes | | | | | | |
@@ -421,7 +400,6 @@ Which DPROD properties are valid on which classes:
 | `dprod:effectiveDate` | | Yes | Yes | | | | |
 | `dprod:expirationDate` | | Yes | Yes | | | | |
 | `dprod:path` | | | | Yes | | | |
-| `dprod:select` | | | | Yes | | | |
 | `dprod:not` | | | | | Yes | | |
 | `dprod:partOf` | | | | | | Yes | |
 | `dprod:memberOf` | | | | | | | Yes |

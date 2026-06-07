@@ -36,7 +36,7 @@ See [examples/](examples/) for complete working policies:
 | Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
-| Operand resolution | Implicit | Explicit `dprod:path` property paths (+ `dprod:select` for complex resolution) |
+| Operand resolution | Implicit | Explicit `dprod:path` property paths (SHACL-Core predicate + sequence subset) |
 | Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
 | Contract types | -- | `DataOffer` (subclass of Offer), `DataContract` (subclass of Agreement) |
 
@@ -84,7 +84,7 @@ Pending ──────────────> Active
                    Fulfilled  Violated
 ```
 
-An `odrl:Duty` progresses through `dprod:State` values. A `dprod:DataOffer` shares the same state machine.
+An `odrl:Duty` progresses through `dprod:dutyState` values (evaluated at runtime). A `dprod:DataOffer` carries `dprod:offerLifeCycleStatus` and a `dprod:DataContract` carries `dprod:contractLifeCycleStatus` (administrative). All three properties have range `skos:Concept`; the four DPROD-defined concepts (`dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`) are the canonical vocabulary.
 
 ### 5. Structured Operand Resolution
 
@@ -98,7 +98,7 @@ ex:environment  dprod:path ex:environment .
 ex:timeliness   dprod:path (odrl:target ex:timeliness) .
 
 # Agent-rooted (two-step): via odrl:assignee
-ex:recipientType dprod:select "SELECT ?v WHERE { $request odrl:assignee/ex:recipientType ?v }" .
+ex:recipientType dprod:path (odrl:assignee ex:recipientType) .
 ```
 
 ---

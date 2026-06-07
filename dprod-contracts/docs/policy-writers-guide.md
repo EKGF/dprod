@@ -269,7 +269,7 @@ odrl:constraint [
 
 ## 6. Operands Quick Reference
 
-All operands are `odrl:LeftOperand` with `dprod:path` (and optionally `dprod:select` for multi-step paths).
+All operands are `odrl:LeftOperand` with `dprod:path` — either a single property IRI for direct properties on the request, or an `rdf:List` of property IRIs for multi-step traversal (SHACL-Core predicate + sequence path subset).
 
 ### Context Operands (single-step — direct property on request)
 
