@@ -57,10 +57,12 @@ ex:contract-v2 a dprod:DataOffer ;
 ### Contract Status
 
 **Business term:** `status`, `state`, `lifecycle state`
-**DPROD property:** `dprod:state`
-**Used on:** `dprod:DataOffer`, `dprod:DataContract`, `odrl:Duty`
-**Cardinality:** 0..1
-**Values:** `dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`
+**DPROD properties:**
+- `dprod:offerLifeCycleStatus` on `dprod:DataOffer` (administrative)
+- `dprod:contractLifeCycleStatus` on `dprod:DataContract` (administrative)
+- `dprod:dutyState` on `odrl:Duty` (evaluated at runtime)
+**Cardinality:** 0..1 each
+**Range:** `skos:Concept`. DPROD-defined canonical values: `dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`. Profiles MAY introduce additional `skos:Concept` values; the standard evaluation algorithm only transitions between the four canonical concepts.
 **Source:** DPROD
 ---
 
@@ -363,7 +365,9 @@ odrl:permission [
 | Covered data | `odrl:target` | ODRL |
 | Start date | `dprod:effectiveDate` | DPROD |
 | End date | `dprod:expirationDate` | DPROD |
-| Status | `dprod:state` | DPROD |
+| Status (offer) | `dprod:offerLifeCycleStatus` (`skos:Concept`) | DPROD |
+| Status (contract) | `dprod:contractLifeCycleStatus` (`skos:Concept`) | DPROD |
+| Status (duty) | `dprod:dutyState` (`skos:Concept`) | DPROD |
 | Delivery SLA | Duty + `deliver` + `recurrence` + `deadline` | DPROD |
 | Schema guarantee | Duty + `conformTo` | DPROD |
 | Quality SLA | Duty + `conformTo` + constraint | DPROD |

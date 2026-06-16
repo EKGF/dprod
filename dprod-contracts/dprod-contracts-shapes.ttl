@@ -12,6 +12,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 dprod-shapes:
@@ -44,14 +45,34 @@ dprod-shapes:
 ############################# Reusable Property Groups #########################
 
 
-dprod-shapes:StatePropertyGroup
+dprod-shapes:OfferLifeCycleStatusPropertyGroup
   a sh:PropertyShape ;
-  sh:name "state" ;
-  sh:description "Optional lifecycle state, restricted to the four-value DPROD enumeration (Pending, Active, Fulfilled, Violated). Reused by every shape that constrains a stateful resource (duties, offers, contracts)."@en ;
-  sh:path dprod:state ;
+  sh:name "offer lifecycle status" ;
+  sh:description "Optional administrative lifecycle status for a DataOffer. Value must be a skos:Concept; the four DPROD-defined concepts (Pending, Active, Fulfilled, Violated) are the canonical vocabulary, but profiles MAY introduce further skos:Concept values."@en ;
+  sh:path dprod:offerLifeCycleStatus ;
   sh:maxCount 1 ;
-  sh:in (dprod:Pending dprod:Active dprod:Fulfilled dprod:Violated) ;
-  sh:message "State must be Pending, Active, Fulfilled, or Violated." ;
+  sh:nodeKind sh:IRI ;
+  sh:message "offerLifeCycleStatus, if present, must be a single skos:Concept value." ;
+.
+
+dprod-shapes:ContractLifeCycleStatusPropertyGroup
+  a sh:PropertyShape ;
+  sh:name "contract lifecycle status" ;
+  sh:description "Optional administrative lifecycle status for a DataContract. Value must be a skos:Concept; the four DPROD-defined concepts (Pending, Active, Fulfilled, Violated) are the canonical vocabulary, but profiles MAY introduce further skos:Concept values."@en ;
+  sh:path dprod:contractLifeCycleStatus ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+  sh:message "contractLifeCycleStatus, if present, must be a single skos:Concept value." ;
+.
+
+dprod-shapes:DutyStatePropertyGroup
+  a sh:PropertyShape ;
+  sh:name "duty state" ;
+  sh:description "Optional evaluated state for a Duty. Value must be a skos:Concept; the four DPROD-defined concepts (Pending, Active, Fulfilled, Violated) are the canonical vocabulary that the standard evaluation algorithm transitions between."@en ;
+  sh:path dprod:dutyState ;
+  sh:maxCount 1 ;
+  sh:nodeKind sh:IRI ;
+  sh:message "dutyState, if present, must be a single skos:Concept value." ;
 .
 
 dprod-shapes:ProfilePropertyGroup
@@ -226,7 +247,7 @@ dprod-shapes:DutyShape
     sh:class odrl:Party ;
     sh:message "Duty object must be a single odrl:Party."
   ] ;
-  sh:property dprod-shapes:StatePropertyGroup ;
+  sh:property dprod-shapes:DutyStatePropertyGroup ;
 .
 
 
@@ -290,7 +311,7 @@ dprod-shapes:DataOfferShape
     sh:maxCount 1 ;
     sh:message "DataOffer must have exactly one assigner."
   ] ;
-  sh:property dprod-shapes:StatePropertyGroup ;
+  sh:property dprod-shapes:OfferLifeCycleStatusPropertyGroup ;
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
@@ -332,7 +353,7 @@ dprod-shapes:DataContractShape
     sh:class dprod:DataOffer ;
     sh:message "DataContract must reference exactly one DataOffer."
   ] ;
-  sh:property dprod-shapes:StatePropertyGroup ;
+  sh:property dprod-shapes:ContractLifeCycleStatusPropertyGroup ;
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
@@ -351,6 +372,24 @@ dprod-shapes:DataContractShape
 ############################# Operand Shapes #########################
 
 
+# Helper shape: validates a non-empty rdf:List whose members are all IRIs.
+# Used by LeftOperandShape to constrain dprod:path sequence values
+# (the SHACL-Core property-path subset DPROD uses; see dprod:path in dprod-contracts.ttl).
+# Implemented with the SHACL property path (rdf:rest)*/rdf:first so the full list is
+# walked in one shape evaluation without shape recursion.
+dprod-shapes:RdfListOfIris
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "rdf:List of IRIs shape" ;
+  sh:property [
+    sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:minCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:message "Members of a dprod:path sequence must be IRIs and the sequence must be non-empty."
+  ] ;
+.
+
+
 dprod-shapes:LeftOperandShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
@@ -360,13 +399,11 @@ dprod-shapes:LeftOperandShape
   sh:property [
     sh:path dprod:path ;
     sh:maxCount 1 ;
-    sh:message "LeftOperand may have at most one dprod:path."
-  ] ;
-  sh:property [
-    sh:path dprod:select ;
-    sh:maxCount 1 ;
-    sh:datatype xsd:string ;
-    sh:message "LeftOperand may have at most one dprod:select."
+    sh:or (
+      [ sh:nodeKind sh:IRI ]
+      [ sh:node dprod-shapes:RdfListOfIris ]
+    ) ;
+    sh:message "dprod:path must be a property IRI or an rdf:List of property IRIs (at most one value)."
   ] ;
 .
 

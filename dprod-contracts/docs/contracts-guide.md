@@ -90,7 +90,7 @@ ex:contract a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
-    dprod:state dprod:Active .
+    dprod:offerLifeCycleStatus dprod:Active .
 ```
 
 ### Step 2: Add Provider Duties (SLAs)

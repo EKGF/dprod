@@ -199,7 +199,7 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 | Agreement evaluation | Assignee duties only | Both assigner and assignee duties (bilateral) |
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
-| Operand resolution | Implicit | Explicit `dprod:path` property paths (+ `dprod:select` for complex resolution) |
+| Operand resolution | Implicit | Explicit `dprod:path` property paths (SHACL-Core predicate + sequence subset) |
 | Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |
 | Contract types | Generic Offer/Agreement | `DataOffer` (Offer) / `DataContract` (Agreement) |
 | Logical negation | Not supported | `dprod:not` on LogicalConstraint |

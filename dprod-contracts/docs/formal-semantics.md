@@ -193,7 +193,7 @@ RuntimeRef ::= currentAgent | currentDateTime
 **Notes**:
 
 - `leftOperand` is drawn from profile-defined operands with `dprod:path`, or dual-typed `RuntimeReference` operands (e.g., `currentDateTime`)
-- Dynamic value resolution on the left side uses `LeftOperand` with `dprod:path` (and optionally `dprod:select`) or dual-typed `RuntimeReference` operands resolved via `resolveRuntime`
+- Dynamic value resolution on the left side uses `LeftOperand` with `dprod:path`, or dual-typed `RuntimeReference` operands resolved via `resolveRuntime`
 - Right operands are literal values. Identity binding via runtime references in right-operand position is deferred to RL2 (`rl2:rightOperandRef`)
 
 ### 3.4 Policies
@@ -530,23 +530,17 @@ resolve(op, Env) =
         _ | op.path ≠ ⊥ →
             traverse(op.path, Env.request)
 
-        -- Profile-declared operands with dprod:select
-        _ | op.select ≠ ⊥ →
-            sparqlEval(op.select, {$request → Env.request})
-
         -- Dual-typed operands (LeftOperand ∩ RuntimeReference)
         _ | op ∈ RuntimeRef →
             resolveRuntime(op, Env)
 
-        -- No path, no select, and not a runtime reference
+        -- No path and not a runtime reference
         _ → ⊥
 ```
 
 Where:
 * `op.path` — property path declared on the operand via `dprod:path`
-* `op.select` — SPARQL SELECT query declared on the operand via `dprod:select`
-* `sparqlEval(query, bindings)` — evaluates the SPARQL SELECT with the given variable bindings and returns the `?value` binding from the first result row (or `⊥` if no results)
-* `op ∈ RuntimeRef` — the operand is also typed as `dprod:RuntimeReference` (e.g., `currentDateTime`); resolution delegates to `resolveRuntime` (§6.2). Path-based resolution takes precedence over SPARQL-based resolution.
+* `op ∈ RuntimeRef` — the operand is also typed as `dprod:RuntimeReference` (e.g., `currentDateTime`); resolution delegates to `resolveRuntime` (§6.2)
 * `⊥` indicates undefined (condition evaluates to `false` when encountered — see §6.1)
 
 **Architectural Principle**: All contextual data access MUST go through declared `odrl:LeftOperand` instances with explicit `dprod:path`, or through dual-typed `RuntimeReference` operands resolved via `resolveRuntime`. This ensures:
@@ -899,16 +893,14 @@ ex:environment dprod:path ex:environment .
 
 # Asset-rooted: via odrl:target (two-step sequence path)
 ex:timeliness a odrl:LeftOperand ;
-    dprod:path (odrl:target ex:timeliness) ;
-    dprod:select "SELECT ?v WHERE { $request odrl:target/ex:timeliness ?v }" .
+    dprod:path (odrl:target ex:timeliness) .
 
 # Agent-rooted: via odrl:assignee (two-step sequence path)
 ex:recipientType a odrl:LeftOperand ;
-    dprod:path (odrl:assignee ex:recipientType) ;
-    dprod:select "SELECT ?v WHERE { $request odrl:assignee/ex:recipientType ?v }" .
+    dprod:path (odrl:assignee ex:recipientType) .
 ```
 
-SHACL validation enforces cardinality on path and select:
+SHACL validation enforces value form and cardinality on `dprod:path`:
 
 ```turtle
 dprod-shapes:LeftOperandShape a sh:NodeShape ;
@@ -916,13 +908,11 @@ dprod-shapes:LeftOperandShape a sh:NodeShape ;
     sh:property [
         sh:path dprod:path ;
         sh:maxCount 1 ;
-        sh:message "LeftOperand may have at most one dprod:path."
-    ] ;
-    sh:property [
-        sh:path dprod:select ;
-        sh:maxCount 1 ;
-        sh:datatype xsd:string ;
-        sh:message "LeftOperand may have at most one dprod:select."
+        sh:or (
+            [ sh:nodeKind sh:IRI ]
+            [ sh:node dprod-shapes:RdfListOfIris ]
+        ) ;
+        sh:message "dprod:path must be a property IRI or an rdf:List of property IRIs (at most one value)."
     ] .
 ```
 

@@ -64,57 +64,6 @@ dct:modified a owl:AnnotationProperty .
 
 ############################# DPROD Contracts Classes #########################
 
-
-dprod:State
-  a owl:Class ;
-  dct:description
-    "Unified lifecycle state for duties and contracts."@en ;
-  rdfs:comment
-    """Four states cover both duty and contract lifecycles.
-
-    On duties (evaluated during Eval):
-    - Pending: condition not yet satisfied
-    - Active: condition met, action required
-    - Fulfilled: action performed
-    - Violated: deadline passed without performance
-
-    On offers/contracts (administrative, not evaluated at request time):
-    - Pending: not yet in force
-    - Active: in force
-    - Fulfilled: obligations complete
-    - Violated: breached"""@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "state" ;
-.
-
-dprod:Pending
-  a dprod:State ;
-  dct:description "Condition not yet satisfied; not yet in force."@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "pending" ;
-.
-
-dprod:Active
-  a dprod:State ;
-  dct:description "Condition satisfied, action required; in force."@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "active" ;
-.
-
-dprod:Fulfilled
-  a dprod:State ;
-  dct:description "Action performed; obligations complete."@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "fulfilled" ;
-.
-
-dprod:Violated
-  a dprod:State ;
-  dct:description "Deadline passed without performance; breached."@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "violated" ;
-.
-
 dprod:DataOffer
   a owl:Class ;
   dct:description "Policy offer defining data access terms."@en ;
@@ -148,17 +97,104 @@ dprod:RuntimeReference
   rdfs:label "runtime reference" ;
 .
 
- 
+
+############################# DPROD Lifecycle Status Vocabulary #########################
+# An example skos:ConceptScheme provided with DPROD covering common lifecycle states.
+# Implementations are free to use it as-is, extend it, or substitute a different
+# vocabulary; the three lifecycle/state properties below accept any skos:Concept.
+
+
+dprod:DataContractLifeCycleStatus
+  a skos:ConceptScheme ;
+  dct:title "DPROD Data Contract Life Cycle Status"@en ;
+  rdfs:label "DPROD data contract life cycle status" ;
+  dct:description
+    """Example concept scheme covering common lifecycle states (Pending, Active,
+    Fulfilled, Violated). Provided with DPROD as a starting point for the three
+    lifecycle/state properties (dprod:offerLifeCycleStatus,
+    dprod:contractLifeCycleStatus, dprod:dutyState); implementations are free
+    to use it, extend it via skos:inScheme, or use a different skos:ConceptScheme
+    entirely."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  skos:hasTopConcept dprod:Pending , dprod:Active , dprod:Fulfilled , dprod:Violated ;
+.
+
+dprod:Pending
+  a skos:Concept ;
+  dct:description "Condition not yet satisfied; not yet in force."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "pending" ;
+  skos:prefLabel "pending"@en ;
+  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+.
+
+dprod:Active
+  a skos:Concept ;
+  dct:description "Condition satisfied, action required; in force."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "active" ;
+  skos:prefLabel "active"@en ;
+  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+.
+
+dprod:Fulfilled
+  a skos:Concept ;
+  dct:description "Action performed; obligations complete."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "fulfilled" ;
+  skos:prefLabel "fulfilled"@en ;
+  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+.
+
+dprod:Violated
+  a skos:Concept ;
+  dct:description "Deadline passed without performance; breached."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "violated" ;
+  skos:prefLabel "violated"@en ;
+  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+.
+
+
 #############################  DPROD Contracts Properties ################
 
 
-dprod:state
+dprod:offerLifeCycleStatus
   a owl:ObjectProperty ;
-  dct:description "Current lifecycle state."@en ;
+  dct:description "Where this offer sits in its publication lifecycle — typically drafted, published, withdrawn, or superseded; assigned by the publisher."@en ;
+  rdfs:comment
+    """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
+    example concept scheme shipped with DPROD."""@en ;
   rdfs:isDefinedBy dprod: ;
-  rdfs:domain [ owl:unionOf (odrl:Duty dprod:DataOffer dprod:DataContract) ] ;
-  rdfs:range dprod:State ;
-  rdfs:label "state" ;
+  rdfs:domain dprod:DataOffer ;
+  rdfs:range skos:Concept ;
+  rdfs:label "offer lifecycle status" ;
+.
+
+dprod:contractLifeCycleStatus
+  a owl:ObjectProperty ;
+  dct:description "Where this contract sits in its administrative lifecycle — typically pre-effective, in force, completed, or breached; assigned by the contract management process."@en ;
+  rdfs:comment
+    """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
+    example concept scheme shipped with DPROD."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:DataContract ;
+  rdfs:range skos:Concept ;
+  rdfs:label "contract lifecycle status" ;
+.
+
+dprod:dutyState
+  a owl:ObjectProperty ;
+  dct:description "The latest evaluation result for this duty, computed by an evaluator from observable facts; recomputed on demand rather than authored."@en ;
+  rdfs:comment
+    """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
+    example concept scheme shipped with DPROD, and the state machine in
+    formal-semantics §5 is one possible interpretation. Implementations are
+    free to use a different vocabulary and/or state machine."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain odrl:Duty ;
+  rdfs:range skos:Concept ;
+  rdfs:label "duty state" ;
 .
 
 dprod:deadline
@@ -270,26 +306,19 @@ dprod:path
   a rdf:Property ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "resolution path" ;
-  dct:description "SPARQL-style property path from evaluation context to operand value."@en ;
+  dct:description "SHACL-style property path from evaluation context to operand value."@en ;
   rdfs:comment
-    """Simple paths are a single property IRI; sequence paths are RDF lists.
+    """Value MUST be either a property IRI (simple predicate path) or an rdf:List of property IRIs (sequence path).
+    This is the SHACL Core property-path subset (W3C SHACL spec, §2.3) restricted to predicate and sequence paths;
+    inverse, alternative, and cardinality path forms (sh:inversePath, sh:alternativePath, sh:zeroOrMorePath,
+    sh:oneOrMorePath, sh:zeroOrOnePath) are not used in DPROD contracts.
+    Value form is enforced by dprod-shapes:LeftOperandShape via sh:or; no rdfs:range is declared because the
+    permitted value set (IRI ∪ rdf:List of IRIs) is not expressible as a single RDFS class, mirroring SHACL's
+    own choice for sh:path.
     Context operands: dprod:path dprod:environment (direct property on request)
     Asset operands: dprod:path (odrl:target dprod:timeliness) (via target)
     Agent operands: dprod:path (odrl:assignee dprod:role) (via assignee)"""@en ;
   rdfs:domain odrl:LeftOperand ;
-.
-
-dprod:select
-  a owl:DatatypeProperty ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "resolution query" ;
-  dct:description "SPARQL query for operand value resolution."@en ;
-  rdfs:comment
-    """Optional SPARQL SELECT that resolves the operand value.
-    Binds $request to the evaluation context. Result variable is ?value.
-    Example: SELECT ?v WHERE { $request odrl:target/dprod:timeliness ?v }"""@en ;
-  rdfs:domain odrl:LeftOperand ;
-  rdfs:range xsd:string ;
 .
 
 dprod:not

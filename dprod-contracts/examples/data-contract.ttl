@@ -117,7 +117,7 @@ ex:internal
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     prov:wasRevisionOf <https://example.org/offers/market-prices-v1> ;
 
@@ -257,7 +257,7 @@ ex:internal
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration ;
-    dprod:state dprod:Fulfilled .
+    dprod:dutyState dprod:Fulfilled .
 
 <https://example.org/duties/notify-2026-001> a odrl:Duty ;
     rdfs:label "Schema notification duty" ;
@@ -266,7 +266,7 @@ ex:internal
     odrl:action ex:notify ;
     odrl:target <https://example.org/assets/schema-changes> ;
     dprod:deadline "P14D"^^xsd:duration ;
-    dprod:state dprod:Pending .
+    dprod:dutyState dprod:Pending .
 
 <https://example.org/duties/report-2026-001> a odrl:Duty ;
     rdfs:label "January usage report" ;
@@ -275,4 +275,4 @@ ex:internal
     odrl:action ex:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;
-    dprod:state dprod:Active .
+    dprod:dutyState dprod:Active .

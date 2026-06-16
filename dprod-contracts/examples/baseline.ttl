@@ -136,7 +136,6 @@ ex:retentionPeriod
   rdfs:label "retention period" ;
   dct:description "Maximum time data may be retained."@en ;
   dprod:path (odrl:target ex:retentionPeriod) ;
-  dprod:select "SELECT ?v WHERE { $request odrl:target/ex:retentionPeriod ?v }" ;
 .
 
 ex:environment
@@ -280,7 +279,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
-    dprod:state dprod:Fulfilled ;
+    dprod:offerLifeCycleStatus dprod:Fulfilled ;
     odrl:permission [
         a odrl:Permission ;
         odrl:action odrl:use
@@ -291,7 +290,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     prov:wasRevisionOf <https://example.org/offers/customer-api-v1> ;
 
@@ -349,7 +348,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
 
@@ -402,7 +401,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/country-codes> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
 
     odrl:permission [
         a odrl:Permission ;
@@ -428,7 +427,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/finance> ;
     odrl:target <https://example.org/assets/transaction-files> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
 
     odrl:obligation [
@@ -468,7 +467,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/hr> ;
     odrl:target <https://example.org/assets/employee-directory> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
 
     odrl:obligation [
         a odrl:Duty ;
@@ -515,7 +514,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/risk-metrics> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
 
     odrl:obligation [
         a odrl:Duty ;
@@ -568,7 +567,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/audit-logs> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
 
     odrl:permission [
         a odrl:Permission ;
@@ -614,7 +613,7 @@ ex:compliance
     odrl:target <https://example.org/assets/market-prices> ,
                <https://example.org/assets/reference-data> ,
                <https://example.org/assets/risk-metrics> ;
-    dprod:state dprod:Active ;
+    dprod:offerLifeCycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
 
@@ -771,7 +770,7 @@ ex:compliance
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
     dprod:deadline "PT30M"^^xsd:duration ;
-    dprod:state dprod:Fulfilled .
+    dprod:dutyState dprod:Fulfilled .
 
 <https://example.org/duties/cust-schema-2026-001> a odrl:Duty ;
     rdfs:label "Customer API schema conformance" ;
@@ -779,7 +778,7 @@ ex:compliance
     dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:conformTo ;
     odrl:target <https://example.org/assets/customer-api-schema> ;
-    dprod:state dprod:Active .
+    dprod:dutyState dprod:Active .
 
 <https://example.org/duties/cust-report-2026-001> a odrl:Duty ;
     rdfs:label "Analytics usage report (February)" ;
@@ -788,7 +787,7 @@ ex:compliance
     odrl:action ex:report ;
     odrl:target <https://example.org/assets/usage-stats> ;
     dprod:deadline "P30D"^^xsd:duration ;
-    dprod:state dprod:Active .
+    dprod:dutyState dprod:Active .
 
 <https://example.org/duties/mkt-delivery-2026-001> a odrl:Duty ;
     rdfs:label "Market data delivery (latest interval)" ;
@@ -798,7 +797,7 @@ ex:compliance
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
     dprod:deadline "PT5M"^^xsd:duration ;
-    dprod:state dprod:Fulfilled .
+    dprod:dutyState dprod:Fulfilled .
 
 <https://example.org/duties/mkt-schema-2026-001> a odrl:Duty ;
     rdfs:label "Market data schema conformance" ;
@@ -806,7 +805,7 @@ ex:compliance
     dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:conformTo ;
     odrl:target <https://example.org/assets/market-data-schema> ;
-    dprod:state dprod:Active .
+    dprod:dutyState dprod:Active .
 
 <https://example.org/duties/mkt-delivery-2026-late> a odrl:Duty ;
     rdfs:label "Market data delivery (missed interval)" ;
@@ -815,4 +814,4 @@ ex:compliance
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
     dprod:deadline "PT5M"^^xsd:duration ;
-    dprod:state dprod:Violated .
+    dprod:dutyState dprod:Violated .

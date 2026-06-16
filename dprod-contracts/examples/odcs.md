@@ -122,7 +122,7 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 | ODCS Section | DPROD Contracts | Notes |
 |---|---|---|
 | `kind: DataContract` | `a dprod:DataOffer` | Subclass of `odrl:Offer` |
-| `status` | `dprod:state` | 4-state lifecycle (Pending, Active, Fulfilled, Violated) |
+| `status` | `dprod:offerLifeCycleStatus` (or `dprod:contractLifeCycleStatus` for Agreements) | Range `skos:Concept`; DPROD provides Pending, Active, Fulfilled, Violated as canonical values |
 | `version` | `dct:hasVersion` | Standard Dublin Core |
 | `domain` / `dataProduct` | Core DPROD `dprod:DataProduct` | Linked via `odrl:hasPolicy` |
 | `description.purpose` | `odrl:purpose` constraint | On permission or duty |
