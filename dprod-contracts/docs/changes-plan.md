@@ -343,6 +343,7 @@ Source: 19da58f8 (full proposal in recurrence-redesign.md).
 - Decision: **(a)** Change `dprod-shapes:DataContractShape` `dprod:acceptsOffer` to `sh:minCount 1` only (drop `sh:maxCount`), accepting the basket model. Or **(b)** Keep `1`, document the workaround (one mega-offer + selective obligation refs). Or **(c)** Add a sibling property `dprod:acceptsOffers` (plural, basket) and keep `acceptsOffer` as the single-offer shorthand.
 - Coupling: depends on 5.8. Whatever is decided here, the formal-semantics resolve algorithm (norm matching across the contract's offers) needs an explicit rule.
 
+## TSNOTE:  for now we're rejecting 5.8 and 5.9 as it seems to increase complexity rather than reduce it. Interest here from Stephen on the justifications. 
 ---
 
 ## Bucket 6 — Deferred / needs more info

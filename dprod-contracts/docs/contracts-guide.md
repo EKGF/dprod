@@ -396,18 +396,8 @@ ex:contract a dprod:DataOffer ;
     odrl:permission [
         a odrl:Permission ;
         odrl:action odrl:read ;
-        odrl:target ex:marketPrices
     ] ;
-    odrl:permission [
-        a odrl:Permission ;
-        odrl:action odrl:read ;
-        odrl:target ex:referenceData
-    ] ;
-    odrl:permission [
-        a odrl:Permission ;
-        odrl:action odrl:read ;
-        odrl:target ex:riskMetrics
-    ] .
+.
 ```
 
 ---
