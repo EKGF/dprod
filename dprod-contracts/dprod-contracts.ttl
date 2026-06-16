@@ -159,8 +159,27 @@ dprod:Violated
 #############################  DPROD Contracts Properties ################
 
 
+# Abstract super-property establishing the default DPROD pattern for lifecycle
+# status properties. Concrete lifecycle statuses (offer, contract, data product)
+# are sub-properties of this one with the same skos:Concept range but a
+# domain-specific class. New DPROD properties expressing "where is this thing
+# in its lifecycle" SHOULD follow this pattern.
+dprod:lifeCycleStatus
+  a owl:ObjectProperty ;
+  dct:description "Abstract: the current position of a DPROD resource in its lifecycle."@en ;
+  rdfs:comment
+    """Default DPROD pattern for lifecycle status properties. A concrete
+    sub-property pins the property to a specific resource class via
+    rdfs:domain and SHOULD keep skos:Concept as its range — letting each
+    domain plug in an appropriate skos:ConceptScheme."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:range skos:Concept ;
+  rdfs:label "life cycle status" ;
+.
+
 dprod:offerLifeCycleStatus
   a owl:ObjectProperty ;
+  rdfs:subPropertyOf dprod:lifeCycleStatus ;
   dct:description "Where this offer sits in its publication lifecycle — typically drafted, published, withdrawn, or superseded; assigned by the publisher."@en ;
   rdfs:comment
     """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
@@ -173,6 +192,7 @@ dprod:offerLifeCycleStatus
 
 dprod:contractLifeCycleStatus
   a owl:ObjectProperty ;
+  rdfs:subPropertyOf dprod:lifeCycleStatus ;
   dct:description "Where this contract sits in its administrative lifecycle — typically pre-effective, in force, completed, or breached; assigned by the contract management process."@en ;
   rdfs:comment
     """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
@@ -360,3 +380,21 @@ dprod:currentDateTime
   rdfs:label "current date time" ;
   rdfs:seeAlso odrl:dateTime ;
 .
+
+
+############################# Compatibility axioms against main DPROD ################
+# These axioms fold pre-existing main-DPROD terms into the lifecycle-status pattern
+# established above. They live here (rather than in main dprod-ontology.ttl) because
+# this file is the contract for "additional axioms against the DPROD ontology", and
+# the pattern itself was introduced with dprod-contracts.
+
+# Make the existing dprod:lifecycleStatus (data product) a sub-property of the new
+# abstract dprod:lifeCycleStatus. The existing property's range (dprod:DataProductLifecycleStatus)
+# is narrower than skos:Concept, so the next axiom is needed to keep values valid
+# under both the existing and the inherited range constraints.
+dprod:lifecycleStatus rdfs:subPropertyOf dprod:lifeCycleStatus .
+
+# Fold the existing enumeration class into SKOS so that any
+# dprod:DataProductLifecycleStatus individual is also a skos:Concept (and therefore
+# a valid value of dprod:lifeCycleStatus and any sub-property thereof).
+dprod:DataProductLifecycleStatus rdfs:subClassOf skos:Concept .

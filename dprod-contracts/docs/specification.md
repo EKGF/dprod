@@ -161,15 +161,40 @@ ex:subscription a dprod:DataContract ;
 
 ## 4. Property Definitions
 
-### 4.1 dprod:offerLifeCycleStatus, dprod:contractLifeCycleStatus, dprod:dutyState
+### 4.1 Lifecycle status properties
 
-| Property | Domain | Range | Cardinality | Definition |
-|----------|--------|-------|-------------|------------|
-| `dprod:offerLifeCycleStatus` | `dprod:DataOffer` | `skos:Concept` | 0..1 | Administrative lifecycle status of a data offer (not evaluated at request time) |
-| `dprod:contractLifeCycleStatus` | `dprod:DataContract` | `skos:Concept` | 0..1 | Administrative lifecycle status of a data contract (not evaluated at request time) |
-| `dprod:dutyState` | `odrl:Duty` | `skos:Concept` | 0..1 | Evaluated state of a duty (set by the standard evaluation algorithm; see §5 of formal-semantics.md) |
+DPROD uses a single abstract super-property — **`dprod:lifeCycleStatus`** — as the default pattern for "where is this resource in its lifecycle" properties. Concrete lifecycle statuses pin the property to a specific resource class via `rdfs:domain` and keep `skos:Concept` as the range, so each domain can plug in an appropriate `skos:ConceptScheme` without re-closing the value set.
 
-All three properties are `owl:ObjectProperty`. The four DPROD-defined canonical concepts (`dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`) form the default vocabulary for each; profiles MAY introduce further `skos:Concept` values.
+| Property | Super-property | Domain | Range | Cardinality | Definition |
+|----------|---------------|--------|-------|-------------|------------|
+| `dprod:lifeCycleStatus` | — (abstract) | — | `skos:Concept` | 0..1 | Abstract: position of any DPROD resource in its lifecycle |
+| `dprod:offerLifeCycleStatus` | `dprod:lifeCycleStatus` | `dprod:DataOffer` | `skos:Concept` | 0..1 | Publication lifecycle position of a data offer; assigned by the publisher |
+| `dprod:contractLifeCycleStatus` | `dprod:lifeCycleStatus` | `dprod:DataContract` | `skos:Concept` | 0..1 | Administrative lifecycle position of a data contract; assigned by the contract management process |
+| `dprod:lifecycleStatus` | `dprod:lifeCycleStatus` | `dprod:DataProduct` | `dprod:DataProductLifecycleStatus` (⊆ `skos:Concept`) | 0..1 | Development lifecycle of a data product (main DPROD; pre-existing) |
+
+The data-product property `dprod:lifecycleStatus` predates the SKOS-based pattern; it is folded into the family by two compatibility axioms in `dprod-contracts.ttl`: `dprod:lifecycleStatus rdfs:subPropertyOf dprod:lifeCycleStatus` and `dprod:DataProductLifecycleStatus rdfs:subClassOf skos:Concept`. Existing data-product values remain valid.
+
+The `dprod:DataContractLifeCycleStatus` concept scheme (§3.1) is the default vocabulary for `offerLifeCycleStatus` and `contractLifeCycleStatus`; the `dprod:DataProductLifecycleStatus` enumeration is the default for `lifecycleStatus`. Profiles MAY use either as-is, extend them via `skos:inScheme`, or supply their own scheme.
+
+#### Why `dprod:dutyState` is not part of this hierarchy
+
+`dprod:dutyState` is **not** a sub-property of `dprod:lifeCycleStatus`. Lifecycle statuses are *authored* — the value is assigned by a known actor (publisher, contract manager, data product owner) and stays put until that actor changes it. `dprod:dutyState`, by contrast, is *computed* — the value is the latest output of an evaluator running against observable facts. Mixing the two under a common super-property would obscure the most useful distinction: who owns the value and when it changes.
+
+### 4.1.1 Pattern for new lifecycle status properties
+
+When a new DPROD resource needs a lifecycle status, follow this pattern:
+
+```turtle
+dprod:someResourceLifeCycleStatus
+  a owl:ObjectProperty ;
+  rdfs:subPropertyOf dprod:lifeCycleStatus ;
+  rdfs:domain dprod:SomeResource ;
+  rdfs:range skos:Concept ;
+  rdfs:label "some resource life cycle status" ;
+.
+```
+
+A matching `skos:ConceptScheme` SHOULD be supplied as the default vocabulary, but the property MUST NOT re-close its range as an `owl:Class` enumeration — the open `skos:Concept` range is what lets profiles plug in their own concepts without breaking conformance.
 
 ### 4.2 dprod:deadline
 
