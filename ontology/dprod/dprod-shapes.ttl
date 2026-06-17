@@ -1,7 +1,7 @@
 # baseURI: https://www.omg.org/spec/DPROD/shapes/
 # imports: http://www.w3.org/ns/dcat#
 # imports: http://www.w3.org/ns/shacl#
-# imports: https://www.omg.org/spec/DPROD/
+# imports: https://www.omg.org/spec/DPROD/dprod/
 # prefix: dprod-shapes
 
 
@@ -39,7 +39,7 @@ dprod-shapes:
   owl:versionIRI <https://www.omg.org/spec/DPROD/20260601/shapes/> ;
   sh:declare [
     sh:prefix "dprod" ;
-    sh:namespace "https://www.omg.org/spec/DPROD/" ;
+    sh:namespace "https://www.omg.org/spec/DPROD/dprod/" ;
    ] ;
   sh:declare [
     sh:prefix "dprod-shapes" ;

@@ -1,4 +1,4 @@
-# baseURI: https://www.omg.org/spec/DPROD/
+# baseURI: https://www.omg.org/spec/DPROD/dprod/
 # imports: http://www.w3.org/ns/dcat#
 # prefix: dprod
 

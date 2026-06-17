@@ -1,8 +1,8 @@
 # All DPROD-contracts terms are minted in the core dprod: namespace
-# (https://www.omg.org/spec/DPROD/); this file contributes additional
+# (https://www.omg.org/spec/DPROD/dprod/); this file contributes additional
 # axioms to the DPROD ontology rather than minting under a separate
 # contracts namespace.
-# imports: https://www.omg.org/spec/DPROD/
+# imports: https://www.omg.org/spec/DPROD/dprod/
 # imports: http://www.w3.org/ns/odrl/2/
 # prefix: dprod
 
