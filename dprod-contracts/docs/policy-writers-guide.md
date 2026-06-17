@@ -30,7 +30,7 @@ A minimal data use policy:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 

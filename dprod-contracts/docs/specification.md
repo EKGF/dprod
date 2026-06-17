@@ -23,7 +23,7 @@ This document is a vocabulary reference for implementers. It defines every class
 
 ```turtle
 @prefix odrl:        <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
 @prefix dprod-shapes: <https://www.omg.org/spec/DPROD/contracts/shapes/> .
 @prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .

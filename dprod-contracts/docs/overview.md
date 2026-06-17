@@ -19,7 +19,7 @@ DPROD Contracts is designed for organizations that need:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
@@ -46,7 +46,7 @@ A `dprod:DataContract` activates an offer, binding both parties:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
@@ -184,7 +184,7 @@ Domain Vocabulary
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://www.omg.org/spec/DPROD/` | Core extensions (lifecycle, operand resolution, contract types) |
+| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Core extensions (lifecycle, operand resolution, contract types) |
 | `ex:` | (domain-specific) | Domain actions, operands, and concept values |
 
 ---
