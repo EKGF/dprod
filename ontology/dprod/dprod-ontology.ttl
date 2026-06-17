@@ -2,8 +2,8 @@
 # imports: http://www.w3.org/ns/dcat#
 # prefix: dprod
 
-@base <https://www.omg.org/spec/DPROD/> .
-@prefix dprod: <https://www.omg.org/spec/DPROD/> .
+@base <https://www.omg.org/spec/DPROD/dprod/> .
+@prefix dprod: <https://www.omg.org/spec/DPROD/dprod/> .
 @prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -38,7 +38,7 @@ dprod:
   dct:contributor <https://www.linkedin.com/in/tonyseale> ;
   dct:contributor <https://www.linkedin.com/in/joshuacornejo> ;
   owl:imports dcat: ;
-  owl:versionIRI <https://www.omg.org/spec/DPROD/2026-06-01/> ;
+  owl:versionIRI <https://www.omg.org/spec/DPROD/20260601/dprod/> ;
 .
 
 ############################# DPROD Classes  #########################
