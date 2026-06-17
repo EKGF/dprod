@@ -29,7 +29,7 @@ dprod-shapes:
   owl:versionInfo "0.7" ;
   sh:declare [
     sh:prefix "dprod" ;
-    sh:namespace "https://www.omg.org/spec/DPROD/" ;
+    sh:namespace "https://www.omg.org/spec/DPROD/dprod/" ;
   ] ;
   sh:declare [
     sh:prefix "dprod-shapes" ;
