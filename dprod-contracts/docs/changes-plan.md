@@ -356,7 +356,7 @@ Source: 19da58f8 (full proposal in recurrence-redesign.md).
 - Source: 19d08a1d "hardening" note.
 - Issue: An earlier prototype by Adalbert constrained `dprod:path` with a formal grammar that excluded back-references and circular paths. The current ontology dropped it. Whether to restore is partly a security question (untrusted policy authors) and partly a complexity question.
 - Action: revisit after Bucket 5 decisions are made; this is downstream of 5.4.
-
+# TS NOTE: we are rejecting this one. It seems like probably quite a minor issue, and restricting it here doesn't seem necessary at this stage. We could always introduce something later on down the road once we know more about how the usage goes. 
 ---
 
 ## Suggested execution order
@@ -370,3 +370,387 @@ Source: 19da58f8 (full proposal in recurrence-redesign.md).
 7. Bucket 6 once attachments are read.
 
 After each bucket: `riot --validate` on every `.ttl`, run any SHACL conformance suite under `dprod-contracts/examples/`.
+
+---
+
+## Appendix A — §5.8 / §5.9 modelling comparison (for the 2026-06-18 meeting)
+
+Scenario used in every example below: one provider (`ex:dataPlatform`) wants to give one consumer (`ex:analytics`) access to **three datasets** — `ex:marketPrices`, `ex:referenceData`, `ex:riskMetrics` — with the following rules:
+
+- `read` permission on each dataset
+- `distribute` prohibition on each dataset
+- one cross-cutting permission: `aggregate` on the bundle, restricted to `environment = production`
+
+Prefixes elided for brevity (`@prefix ex:`, `odrl:`, `dprod:`, `xsd:`).
+
+### Option A — Status quo: multi-target offer (current shape allows this)
+
+ODRL 2.2 §2.4 lets a child rule omit `odrl:target` and inherit every target declared at the policy level. DPROD's `dprod-shapes:PermissionShape` and `ProhibitionShape` already encode this (`sh:maxCount 1` on `odrl:target`, no `minCount`, message: *"inherits from policy if absent"*). So a rule that should apply to *all* the policy's targets simply omits its target; a rule that should apply to a different asset declares its own. The example below uses that — the three blanket rules ("read", "distribute" prohibition) inherit; only the cross-cutting `aggregate` rule names `ex:multiAssetBundle` explicitly because that asset isn't at the policy level.
+
+```turtle
+ex:multiAssetOffer a dprod:DataOffer ;
+    odrl:profile dprod: ;
+    odrl:assigner ex:dataPlatform ;
+    odrl:target ex:marketPrices , ex:referenceData , ex:riskMetrics ;
+    odrl:permission   [ a odrl:Permission   ; odrl:action odrl:read ] ;         # inherits all 3 targets
+    odrl:prohibition  [ a odrl:Prohibition  ; odrl:action odrl:distribute ] ;   # inherits all 3 targets
+    odrl:permission   [ a odrl:Permission   ; odrl:action odrl:aggregate ;
+                        odrl:target ex:multiAssetBundle ;
+                        odrl:constraint [ odrl:leftOperand ex:environment ;
+                                          odrl:operator odrl:eq ;
+                                          odrl:rightOperand ex:production ] ] .
+
+ex:contract a dprod:DataContract ;
+    odrl:profile dprod: ;
+    dprod:acceptsOffer ex:multiAssetOffer ;
+    odrl:assigner ex:dataPlatform ;
+    odrl:assignee ex:analytics .
+```
+
+**Subject IRI count**: 2 (offer + contract). **Blank-node rules on the offer**: 3. **Lines**: ~10 substantive.
+
+**Pros**:
+- Genuinely compact thanks to target inheritance — one rule covers all targets it semantically applies to.
+- ODRL-native: this is exactly what the upstream `odrl:Set` / `odrl:Offer` shape was designed to express.
+- One place to read the whole "what data is offered, what can/can't be done".
+- Cross-cutting rules are still expressible by declaring an explicit `odrl:target` on the rule (as the `aggregate` example shows).
+
+**Cons**:
+- Reuse is poor: if a second consumer wants only `ex:marketPrices`, the provider either accepts that this consumer gets the whole bundle (wrong rules apply) or authors a second offer that duplicates the marketPrices rules.
+- "Which rules apply to which dataset" requires evaluating inheritance — a tool computing "rules for `ex:marketPrices`" walks both rule-level and policy-level targets.
+- When the policy has many targets and rules should apply to *different subsets* of them (not "all" or "one different asset"), inheritance can't help — you have to enumerate. The example here is the kindest case; a busy real-world catalogue may not be.
+- Cross-cutting rules (aggregate on `ex:multiAssetBundle`) sit alongside per-target-set rules with no structural distinction.
+
+### Option B — §5.8 alone: single-target offers, but `dprod:acceptsOffer` still 1:1
+
+This is dysfunctional but illustrative. To cover three datasets you need **three separate contracts**, because `dprod:acceptsOffer` is capped at 1.
+
+```turtle
+ex:marketPricesOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:marketPrices ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:referenceDataOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:referenceData ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:riskMetricsOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:riskMetrics ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:bundleOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:multiAssetBundle ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:aggregate ;
+        odrl:constraint [ odrl:leftOperand ex:environment ; odrl:operator odrl:eq ; odrl:rightOperand ex:production ] ] .
+
+# Four separate contracts, one per accepted offer:
+ex:contract-marketPrices a dprod:DataContract ;
+    dprod:acceptsOffer ex:marketPricesOffer ; odrl:assigner ex:dataPlatform ; odrl:assignee ex:analytics .
+
+ex:contract-referenceData a dprod:DataContract ;
+    dprod:acceptsOffer ex:referenceDataOffer ; odrl:assigner ex:dataPlatform ; odrl:assignee ex:analytics .
+
+ex:contract-riskMetrics a dprod:DataContract ;
+    dprod:acceptsOffer ex:riskMetricsOffer ; odrl:assigner ex:dataPlatform ; odrl:assignee ex:analytics .
+
+ex:contract-bundle a dprod:DataContract ;
+    dprod:acceptsOffer ex:bundleOffer ; odrl:assigner ex:dataPlatform ; odrl:assignee ex:analytics .
+```
+
+**Subject IRI count**: 8 (4 offers + 4 contracts). **Blank-node rules**: 7 (one per ODRL rule, same as Option A). **Lines**: ~25 substantive.
+
+**Pros**:
+- Offers are reusable: another consumer who only wants `ex:marketPrices` accepts that one offer.
+- Rule semantics are unambiguous: each rule inherits the offer's single `odrl:target`.
+
+**Cons**:
+- **Contract explosion**: one "subscription relationship" becomes four contracts. Renewal, billing, audit and lifecycle tracking all multiply by 4.
+- This is the worst of both worlds and we should **not** ship it. It only exists here to illustrate why §5.8 has to land with §5.9 or not at all.
+
+### Option C — §5.8 + §5.9 together: single-target offers, basket contract
+
+```turtle
+ex:marketPricesOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:marketPrices ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:referenceDataOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:referenceData ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:riskMetricsOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:riskMetrics ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:bundleOffer a dprod:DataOffer ;
+    odrl:assigner ex:dataPlatform ; odrl:target ex:multiAssetBundle ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:aggregate ;
+        odrl:constraint [ odrl:leftOperand ex:environment ; odrl:operator odrl:eq ; odrl:rightOperand ex:production ] ] .
+
+ex:contract a dprod:DataContract ;
+    odrl:profile dprod: ;
+    dprod:acceptsOffer ex:marketPricesOffer , ex:referenceDataOffer , ex:riskMetricsOffer , ex:bundleOffer ;
+    odrl:assigner ex:dataPlatform ;
+    odrl:assignee ex:analytics .
+```
+
+**Subject IRI count**: 5 (4 offers + 1 contract). **Blank-node rules**: 7. **Lines**: ~18 substantive.
+
+**Pros**:
+- Offers are reusable across consumers; contracts are mix-and-match baskets.
+- Each rule's target is implicit from its offer — no per-rule `odrl:target` boilerplate.
+- "Which rules apply to `ex:marketPrices`" is a graph query: `?contract dprod:acceptsOffer ?o . ?o odrl:target ex:marketPrices . ?o (odrl:permission|odrl:prohibition|odrl:obligation) ?rule`.
+- Cross-cutting rules sit in their own offer (`ex:bundleOffer`), structurally separated from per-dataset rules.
+
+**Cons**:
+- **Indirection cost**: to understand "what does this contract grant?" a reader/tool must follow `dprod:acceptsOffer` to four other subjects. Compare Option A where it's all in one place.
+- Requires the basket-union rule in formal-semantics (rule-set = union of offers' rules). New machinery; new edge cases (e.g. cross-offer conflict between a permission in offer X and a prohibition in offer Y over the same `(action, target)`).
+- 4 IRIs to mint and govern per "subscription relationship" instead of 1. Naming and lifecycle of bundleOffer specifically is awkward — it isn't really an offer in the everyday sense, it's a holder for cross-cutting rules.
+- ODRL processors that don't know DPROD will see "an Agreement that accepts an Offer" 4 times — the basket semantics is DPROD-specific, not ODRL-native.
+
+### Option D — Asymmetric: keep multi-target offers but allow 1..* on `dprod:acceptsOffer`
+
+Don't tighten §5.8 (offers can still be multi-target), but do open §5.9 (contracts can accept multiple offers). This gives provider authors the choice: ship one mega-offer (Option A style), ship lots of small offers and let consumers basket (Option C style), or mix.
+
+```turtle
+# Multi-target offer (as Option A) OR
+# Several single-target offers (as Option C) — either is valid.
+# The contract can accept one offer or many.
+ex:contract a dprod:DataContract ;
+    dprod:acceptsOffer ex:multiAssetOffer .                 # picks the big one
+# or
+ex:contract a dprod:DataContract ;
+    dprod:acceptsOffer ex:marketPricesOffer , ex:bundleOffer .  # picks two small ones
+```
+
+**Pros**:
+- Doesn't force a refactor for existing multi-target offers.
+- Provider chooses granularity per use case (broad-spectrum offer vs catalogue of small offers).
+- The basket-union rule still buys composition for consumers who want it.
+
+**Cons**:
+- Two competing patterns coexist in the spec. Reviewers have to learn both. Tools that compute "all rules applicable to consumer X" need both code paths.
+- Conflict resolution gets more complex: cross-offer conflicts AND multi-target-within-offer conflicts (which currently have unambiguous semantics) both need rules.
+- Doesn't solve Stephen's original motivation (catalogue reuse) any better than Option C — and arguably worse, because providers can shortcut to a multi-target mega-offer and skip the reuse benefits.
+
+### Discussion seed
+
+The pivot question for the meeting is **what does a "DataOffer" represent**:
+
+- If a DataOffer is a **product** (Stephen's lean) — one offer per dataset, basket contracts for shopping-cart subscriptions, catalogue-style reuse. Pushes us to Option C.
+- If a DataOffer is a **deal** (current shape's lean) — one offer per provider/consumer relationship, multi-target if the deal covers many things, no basket. Stays at Option A.
+
+DPROD's data-product framing favours the first reading; ODRL's `Offer` term favours the second. The basket-union rule is the bridge between "DataOffer = product" and "DataContract = subscription". Whether we want to build that bridge — and pay the indirection cost — is the call.
+
+**Secondary points for the meeting:**
+
+1. Is `ex:bundleOffer` (the holder for cross-cutting rules) a legitimate use of `DataOffer`, or is it a smell that suggests we need a separate construct for cross-cutting rules?
+2. If §5.9 lands, do we require all accepted offers to share `odrl:assigner` (so the contract's provider is well-defined), or do we permit multi-provider baskets (which raise their own bilateral-duty questions)?
+3. Migration: does §5.8 break existing DPROD adopters with multi-target offers? If so, ship a v2 schema with the constraint and keep v1 multi-target-tolerant?
+
+---
+
+### Catalogue / shopping-basket scenario
+
+The single-customer scenario above made Option A look very compact. The picture changes for **catalogue-style** providers — Stephen's original motivating use case. A provider has, say, 100 distributions; different consumers subscribe to different subsets.
+
+In what follows: the provider `ex:dataPlatform` publishes 5 distributions (`ex:marketPrices`, `ex:referenceData`, `ex:riskMetrics`, `ex:customerData`, `ex:transactionFiles`) with the same "read permitted, distribute prohibited" rule on each. Consumer **A** wants `{marketPrices, customerData}`. Consumer **B** wants `{referenceData, riskMetrics, transactionFiles}`. Consumer **C** wants `{marketPrices, riskMetrics}` — a third subset, overlapping both.
+
+**Option A (status quo) — provider-authored, consumer-specific offers**
+
+To express "consumer A gets these 2; consumer B gets those 3; consumer C gets that overlapping pair", the provider has to mint a fresh offer for each subscription, because ODRL has no native way for a single contract to accept a strict subset of a multi-target offer's targets:
+
+```turtle
+ex:offerA a dprod:DataOffer ; odrl:assigner ex:dataPlatform ;
+    odrl:target ex:marketPrices , ex:customerData ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:offerB a dprod:DataOffer ; odrl:assigner ex:dataPlatform ;
+    odrl:target ex:referenceData , ex:riskMetrics , ex:transactionFiles ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:offerC a dprod:DataOffer ; odrl:assigner ex:dataPlatform ;
+    odrl:target ex:marketPrices , ex:riskMetrics ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:contractA dprod:acceptsOffer ex:offerA ; odrl:assignee ex:consumerA .
+ex:contractB dprod:acceptsOffer ex:offerB ; odrl:assignee ex:consumerB .
+ex:contractC dprod:acceptsOffer ex:offerC ; odrl:assignee ex:consumerC .
+```
+
+Three offers — one per subscription. Add a fourth consumer `D` with a different subset and you mint `ex:offerD`. The same "read permitted / distribute prohibited" rule pair is **duplicated three times** (it would be five, six, ten as more subscribers arrive). The marketing-friendly notion of a *catalogue* (5 distributions to choose from) is not present in the data — there's no IRI for "the marketPrices distribution as an offer the provider makes". When the provider updates the read/distribute rule (e.g., adds a new prohibition), every customer-specific offer has to be re-authored.
+
+**Option C (basket) — one catalogue, many baskets**
+
+The provider mints one offer per distribution (the catalogue). Each consumer's contract is a basket that picks the subset they want:
+
+```turtle
+ex:marketPricesOffer    a dprod:DataOffer ; odrl:assigner ex:dataPlatform ; odrl:target ex:marketPrices ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:referenceDataOffer   a dprod:DataOffer ; odrl:assigner ex:dataPlatform ; odrl:target ex:referenceData ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:riskMetricsOffer     a dprod:DataOffer ; odrl:assigner ex:dataPlatform ; odrl:target ex:riskMetrics ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:customerDataOffer    a dprod:DataOffer ; odrl:assigner ex:dataPlatform ; odrl:target ex:customerData ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:transactionFilesOffer a dprod:DataOffer ; odrl:assigner ex:dataPlatform ; odrl:target ex:transactionFiles ;
+    odrl:permission [ a odrl:Permission ; odrl:action odrl:read ] ;
+    odrl:prohibition [ a odrl:Prohibition ; odrl:action odrl:distribute ] .
+
+ex:contractA dprod:acceptsOffer ex:marketPricesOffer , ex:customerDataOffer ;             odrl:assignee ex:consumerA .
+ex:contractB dprod:acceptsOffer ex:referenceDataOffer , ex:riskMetricsOffer ,
+                                  ex:transactionFilesOffer ;                              odrl:assignee ex:consumerB .
+ex:contractC dprod:acceptsOffer ex:marketPricesOffer , ex:riskMetricsOffer ;              odrl:assignee ex:consumerC .
+```
+
+**Sub-counts** for this scenario (provider with 5 distributions, 3 consumers):
+
+| Cost dimension | Option A | Option C |
+|---|---|---|
+| DataOffer IRIs | 1 per subscription = **3** (grows linearly with consumers) | 1 per distribution = **5** (grows with catalogue, fixed wrt consumers) |
+| Rule blank-nodes | 2 rules × 3 offers = **6** | 2 rules × 5 offers = **10** |
+| Rule duplication | "read"/"distribute" duplicated per offer | "read"/"distribute" duplicated per offer |
+| Add a 4th consumer with a new subset | **new offer required** | new contract only |
+| Update the "no distribute" rule | edit **3 offers** | edit **5 offers** |
+
+Rule duplication is similar in both, because the rule live on the offers in both cases. The decisive difference is the **left column under "Add a 4th consumer"**: under Option A, every new subscription is a new authored asset; under Option C, the catalogue is fixed and consumers compose. For a 100-distribution catalogue with 200 consumers, Option A approaches 200 customer-specific offers; Option C stays at 100 offers + 200 contracts.
+
+(Note: rule duplication across offers in Option C is a real cost; both columns inherit it. The cleaner solution would be a fourth modelling option where the "read permitted, distribute prohibited" rule pair is itself a reusable resource that each offer references — but ODRL doesn't have first-class shared-rule semantics, and that proposal is outside §5.8/§5.9 scope.)
+
+---
+
+### Query complexity comparison
+
+Same scenario as above. SPARQL queries against each model. Prefixes elided.
+
+#### Q1 — "What assets does contract `C` cover?"
+
+Both models, identical structure:
+
+```sparql
+SELECT ?asset WHERE {
+  :C dprod:acceptsOffer ?offer .
+  ?offer odrl:target ?asset .
+}
+```
+
+Option A returns the assets directly off the (one) accepted offer's multi-valued `odrl:target`. Option C returns the assets, one each, off the (several) accepted offers. **Query complexity: identical.** Result-set semantics: identical.
+
+#### Q2 — "Can consumer `Z` read asset `T` under contract `C`?"
+
+**Option A** — must compute effective rule target by ODRL inheritance (rule-level target if present, else policy-level target):
+
+```sparql
+ASK {
+  :C dprod:acceptsOffer ?offer ;
+     odrl:assignee :Z .
+  ?offer odrl:permission ?p .
+  ?p odrl:action odrl:read .
+
+  # Effective target of the rule = rule's own target if present, else inherited from the offer.
+  {
+    ?p odrl:target :T .
+  } UNION {
+    FILTER NOT EXISTS { ?p odrl:target ?anyT }
+    ?offer odrl:target :T .
+  }
+}
+```
+
+The `UNION` + `FILTER NOT EXISTS` is the inheritance computation. Either the rule has the explicit target, or the rule has *no* target and the offer carries it. Conceptually two cases joined; in practice three triple patterns plus a negation.
+
+**Option C** — target is always at the offer level (single-target offer), so there's no inheritance:
+
+```sparql
+ASK {
+  :C dprod:acceptsOffer ?offer ;
+     odrl:assignee :Z .
+  ?offer odrl:target :T ;
+         odrl:permission ?p .
+  ?p odrl:action odrl:read .
+}
+```
+
+Four triple patterns. **No `UNION`, no `FILTER NOT EXISTS`.** This is the query complexity argument for §5.8 — single-target offers eliminate the inheritance branch.
+
+#### Q3 — "Which contracts grant any consumer access to asset `T`?"
+
+**Option A**:
+
+```sparql
+SELECT DISTINCT ?contract WHERE {
+  ?contract dprod:acceptsOffer ?offer ;
+            odrl:assignee ?consumer .
+  ?offer odrl:permission ?p .
+  ?p odrl:action odrl:read .
+  {
+    ?p odrl:target :T .
+  } UNION {
+    FILTER NOT EXISTS { ?p odrl:target ?anyT }
+    ?offer odrl:target :T .
+  }
+}
+```
+
+**Option C**:
+
+```sparql
+SELECT DISTINCT ?contract WHERE {
+  ?contract dprod:acceptsOffer ?offer .
+  ?offer odrl:target :T ;
+         odrl:permission ?p .
+  ?p odrl:action odrl:read .
+}
+```
+
+Same inheritance asymmetry. Same shape difference.
+
+#### Q4 — "Reuse audit: how many contracts include `:marketPricesOffer`?"
+
+**Option C** — trivial, expresses the catalogue-reuse intent directly:
+
+```sparql
+SELECT (COUNT(DISTINCT ?contract) AS ?reuses) WHERE {
+  ?contract dprod:acceptsOffer :marketPricesOffer .
+}
+```
+
+**Option A** — **cannot be expressed**. There is no shared `:marketPricesOffer` IRI to count against; each consumer-specific offer is its own subject. The closest approximation is "count contracts whose accepted offer's target set contains `:marketPrices`":
+
+```sparql
+SELECT (COUNT(DISTINCT ?contract) AS ?contractsCovering) WHERE {
+  ?contract dprod:acceptsOffer ?offer .
+  ?offer odrl:target :marketPrices .
+}
+```
+
+But that's a different question: it counts subscriptions that *happen to include* marketPrices, not reuses of a single canonical offer — because in Option A there is no canonical offer. This is the structural query that Option A cannot express, and it's exactly the analysis Stephen wants for catalogue management ("how many of my customers take this distribution?").
+
+#### Summary
+
+| Query | Option A | Option C |
+|---|---|---|
+| Q1 — assets in a contract | 2 triple patterns | 2 triple patterns |
+| Q2 — does consumer have read on asset? | 4 patterns + `UNION` + `FILTER NOT EXISTS` | 4 patterns |
+| Q3 — which contracts grant asset access? | same as Q2 + `DISTINCT` | 4 patterns + `DISTINCT` |
+| Q4 — offer reuse count | **not expressible**; only "contracts covering an asset" | 1 pattern + `COUNT` |
+
+So §5.8 buys query simplicity for Q2/Q3 (eliminates the inheritance branch), and §5.9 buys a new query (Q4) that cannot be asked of Option A at all.
+
