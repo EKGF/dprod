@@ -335,7 +335,7 @@ dprod:path
     Value form is enforced by dprod-shapes:LeftOperandShape via sh:or; no rdfs:range is declared because the
     permitted value set (IRI ∪ rdf:List of IRIs) is not expressible as a single RDFS class, mirroring SHACL's
     own choice for sh:path.
-    Context operands: dprod:path dprod:environment (direct property on request)
+    Context operands: dprod:path ex:environment (direct property on Request)
     Asset operands: dprod:path (odrl:target dprod:timeliness) (via target)
     Agent operands: dprod:path (odrl:assignee dprod:role) (via assignee)"""@en ;
   rdfs:domain odrl:LeftOperand ;
