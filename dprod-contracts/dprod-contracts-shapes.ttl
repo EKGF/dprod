@@ -457,18 +457,6 @@ dprod-shapes:RejectTicketShape
   ] ;
 .
 
-dprod-shapes:RejectRequestShape
-  a sh:NodeShape ;
-  sh:targetClass odrl:Request ;
-  sh:sparql [
-    sh:message "DPROD contracts do not support odrl:Request." ;
-    sh:severity sh:Violation ;
-    sh:select """
-      SELECT $this WHERE { $this a odrl:Request }
-    """ ;
-  ] ;
-.
-
 dprod-shapes:RejectAssetCollectionShape
   a sh:NodeShape ;
   sh:targetClass odrl:AssetCollection ;
