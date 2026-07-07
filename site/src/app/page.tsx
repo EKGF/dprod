@@ -142,9 +142,9 @@ export default function HomePage() {
                 {
                   color: "#ff6f00",
                   title:
-                    "agnos.ai: AI Agents Don't Read Brochures—why the data economy needs enforceable meaning",
+                    "Jacobus Geluk: AI Agents Don't Read Brochures—why the data economy needs enforceable meaning",
                   description:
-                    "AI agents are becoming the primary consumers of data products—and a probabilistic reading of your terms of use is not authorization. Why DPROD (meaning), ODRL-based data contracts (terms), and Solid/LWS (custody) form the machine-operable foundation of a real data economy.",
+                    "The founder of the DPROD workgroup on why AI agents—soon the primary consumers of data products—make enforceable semantics non-optional: a probabilistic reading of your terms of use is not authorization. DPROD (meaning), ODRL-based data contracts (terms), and Solid/LWS (custody) form the machine-operable foundation of a real data economy.",
                   linkHref:
                     "https://agnos.ai/insights/article/ai-agents-dont-read-brochures",
                   linkLabel: "Read the article",
