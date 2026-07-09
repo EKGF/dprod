@@ -349,9 +349,8 @@ dprod-shapes:DataContractShape
   sh:property [
     sh:path dprod:acceptsOffer ;
     sh:minCount 1 ;
-    sh:maxCount 1 ;
     sh:class dprod:DataOffer ;
-    sh:message "DataContract must reference exactly one DataOffer."
+    sh:message "DataContract must reference at least one DataOffer. Composition pattern: if using single-resource-per-offer DataOffers, accept one offer; if using multi-resource DataOffers, they may be composed through multiple acceptances—maintain one approach consistently."
   ] ;
   sh:property dprod-shapes:ContractLifeCycleStatusPropertyGroup ;
   sh:property [
