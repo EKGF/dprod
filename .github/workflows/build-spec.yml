@@ -39,6 +39,8 @@ jobs:
         run: |
           echo "Installing dependencies..."
           pip install -r requirements.txt
+          echo "Running contracts tests..."
+          python -m unittest discover -s dprod-contracts/tests
           echo "Running spec generator..."
           python spec-generator/main.py
       - name: Upload artifact

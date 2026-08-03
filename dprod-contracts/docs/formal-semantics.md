@@ -220,6 +220,8 @@ Request ::= Request(agent: Agent, action: Action, asset: Asset, context: Context
 Context ::= Map<String, Value>
 ```
 
+The formal `Request` evaluation input is not an RDF `odrl:Request` policy. It is an abstract runtime authorization query evaluated against supported policy types. Until DPROD defines a transition model connecting `odrl:Offer`, `odrl:Request`, and `odrl:Agreement`, an RDF `odrl:Request` is outside the supported policy grammar and MUST be rejected by SHACL validation.
+
 **Note**: Context properties correspond to the leaf of `dprod:path` declarations (e.g., `dprod:path odrl:purpose` resolves `?request odrl:purpose ?value`).
 
 ---
