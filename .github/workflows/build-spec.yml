@@ -33,6 +33,8 @@ jobs:
         with:
           python-version: '3.13'
           cache: 'pip' # caching pip dependencies
+      - name: Enforce repository policy
+        run: python -m unittest discover -s tests
       - name: Install dependencies and run generator
         run: |
           echo "Installing dependencies..."

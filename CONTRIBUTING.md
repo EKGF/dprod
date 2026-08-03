@@ -11,22 +11,26 @@ OMG balloting process.
 - **`develop`** &mdash; The working branch where the
   [Enterprise Knowledge Graph Forum (EKGF)](https://www.ekgf.org),
   an OMG community, continues to evolve the standard.
-- **Issue branches** &mdash; Created from `develop` for each issue,
-  named after the OMG JIRA issue number (e.g., `DPROD-16`).
+- **Issue branches** &mdash; Created from `develop` for exactly one GitHub
+  issue. Use `issue/<number>-<slug>` for GitHub-only work (for example,
+  `issue/213-github-issues-source-of-truth`) or the OMG JIRA issue number
+  when one exists (for example, `DPROD-16`).
 - **Ballot branches** &mdash; Created by the ballot administrator
   to group issue branches for a formal vote (e.g., `ballot/3`).
 
 ## 1. Issue Branches
 
 - **Create a branch**: For every issue you work on, create a dedicated
-  branch from `develop`. Name it after the OMG JIRA issue number
-  (e.g., `DPROD-16`).
+  branch from `develop` using the naming convention above.
 - **Isolate changes**: Only commit changes related to the specific issue
   on that branch. Keep commits concise and focused.
-- **No pull requests for issue branches**: Do not create a pull request
-  for your issue branch. Issue branches are included in a ballot branch
-  by the ballot administrator, and only the ballot branch gets a pull
-  request.
+- **Open a pull request**: Open a draft pull request early, link the
+  GitHub issue, and keep the branch and pull request limited to that
+  issue. Mark it ready only after its regression tests pass and the
+  issue's acceptance criteria are satisfied.
+- **Do not use branches as backlogs**: A long-lived branch must not
+  accumulate unrelated pending decisions or work items. Split them into
+  GitHub issues and issue branches instead.
 
 ## 2. Keeping Your Branch Up-to-Date
 
@@ -73,14 +77,19 @@ OMG balloting process.
 
 ## 6. Important Considerations
 
+- **Canonical backlog**: GitHub Issues is the canonical and exclusive backlog for all outstanding DPROD work and design decisions. Do not maintain issue lists, status tables, execution plans, or decision queues in repository Markdown files or branches. Put rationale, alternatives, acceptance criteria, and reviewer discussion on the relevant issue.
 - **Commit messages**: Write clear and informative commit messages that
   explain *why* the change was made, not just what changed.
-- **Issue tracking**: Keep both
-  [GitHub Issues](https://github.com/EKGF/dprod/issues) and
-  [OMG JIRA](https://issues.omg.org/browse/DPROD) updated with the
-  status of your work. Reference the OMG JIRA issue number in your
-  branch name and commit messages (e.g., `DPROD-16`), and reference the
-  GitHub issue number where applicable (e.g., `#29`).
+- **Issue tracking**: Keep the
+  [GitHub issue](https://github.com/EKGF/dprod/issues) updated with work
+  status and link every pull request to it. When an
+  [OMG JIRA](https://issues.omg.org/browse/DPROD) item exists, reference
+  its identifier in the GitHub issue, branch, and commit messages rather
+  than maintaining a second backlog in repository files.
+- **Cleanup**: Delete merged, superseded, or abandoned branches after
+  verifying that they contain no unique work. Close duplicate or stale
+  pull requests with a comment linking the surviving issue or pull
+  request.
 - **Communication**: Communicate with the ballot administrator and other
   team members throughout the process, especially if you have questions
   or encounter issues.
