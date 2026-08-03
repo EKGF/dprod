@@ -461,7 +461,7 @@ dprod-shapes:RejectRequestShape
   a sh:NodeShape ;
   sh:targetClass odrl:Request ;
   sh:sparql [
-    sh:message "DPROD contracts do not support odrl:Request." ;
+    sh:message "DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred." ;
     sh:severity sh:Violation ;
     sh:select """
       SELECT $this WHERE { $this a odrl:Request }

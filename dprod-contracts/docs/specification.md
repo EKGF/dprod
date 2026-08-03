@@ -375,7 +375,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:RejectRemedyShape` | `odrl:remedy` | Noted as future extension |
 | `dprod-shapes:RejectConsequenceShape` | `odrl:consequence` | Noted as future extension |
 | `dprod-shapes:RejectTicketShape` | `odrl:Ticket` | Not supported |
-| `dprod-shapes:RejectRequestShape` | `odrl:Request` | Not supported |
+| `dprod-shapes:RejectRequestShape` | `odrl:Request` | DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. |
 | `dprod-shapes:RejectAssetCollectionShape` | `odrl:AssetCollection` | Use `dprod:partOf` instead |
 | `dprod-shapes:RejectPartyCollectionShape` | `odrl:PartyCollection` | Use `dprod:memberOf` instead |
 | `dprod-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
@@ -417,10 +417,12 @@ DPROD Contracts restricts certain ODRL features:
 | `odrl:remedy` | Rejected | Noted as future extension |
 | `odrl:consequence` | Rejected | Noted as future extension |
 | `odrl:Ticket` | Not used | Not applicable to data governance |
-| `odrl:Request` | Not used | Not applicable |
+| `odrl:Request` | Rejected (support deferred) | Offer-Request-Agreement semantics are undefined; accepting it would imply unsupported semantics. |
 | `odrl:assignee` (on Duty) | Replaced by `dprod:subjectOfDuty` | `dprod:subjectOfDuty rdfs:subPropertyOf odrl:function` -- avoids role overloading on duties |
 | `odrl:AssetCollection` | Not used | Use `dprod:partOf` hierarchy instead (`rdfs:subPropertyOf odrl:partOf` bridges to ODRL) |
 | `odrl:PartyCollection` | Not used | Use `dprod:memberOf` hierarchy instead (`rdfs:subPropertyOf odrl:partOf` bridges to ODRL) |
+
+DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. An `odrl:Request` MUST fail SHACL validation until the profile defines how it relates to `odrl:Offer` and `odrl:Agreement` and what evaluator behavior follows.
 
 ---
 
