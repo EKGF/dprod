@@ -117,7 +117,7 @@ ex:internal
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     prov:wasRevisionOf <https://example.org/offers/market-prices-v1> ;
 

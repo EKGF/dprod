@@ -74,7 +74,6 @@ def main():
         'DataService',
         'Distribution',
         'Dataset',
-        'DataProductLifecycleStatus',
         'InformationSensitivityClassification',
         'SecuritySchemaType',
         'Enumeration',

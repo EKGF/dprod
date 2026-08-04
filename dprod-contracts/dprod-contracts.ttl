@@ -45,7 +45,7 @@ dct:modified a owl:AnnotationProperty .
     can partially understand them; DPROD-aware processors handle the
     extensions."""@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-02-26"^^xsd:date ;
+  dct:modified "2026-08-04"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -99,22 +99,21 @@ dprod:RuntimeReference
 
 
 ############################# DPROD Lifecycle Status Vocabulary #########################
-# An example skos:ConceptScheme provided with DPROD covering common lifecycle states.
-# Implementations are free to use it as-is, extend it, or substitute a different
-# vocabulary; the three lifecycle/state properties below accept any skos:Concept.
+# An optional skos:ConceptScheme covering common values. Implementations are free
+# to use it as-is, extend it, or substitute a different vocabulary. Authored
+# lifecycle statuses and evaluator-computed duty state remain distinct properties.
 
 
-dprod:DataContractLifeCycleStatus
+dprod:DataContractLifecycleStatus
   a skos:ConceptScheme ;
-  dct:title "DPROD Data Contract Life Cycle Status"@en ;
-  rdfs:label "DPROD data contract life cycle status" ;
+  dct:title "DPROD Data Contract Lifecycle Status"@en ;
+  rdfs:label "DPROD data contract lifecycle status" ;
   dct:description
-    """Example concept scheme covering common lifecycle states (Pending, Active,
-    Fulfilled, Violated). Provided with DPROD as a starting point for the three
-    lifecycle/state properties (dprod:offerLifeCycleStatus,
-    dprod:contractLifeCycleStatus, dprod:dutyState); implementations are free
-    to use it, extend it via skos:inScheme, or use a different skos:ConceptScheme
-    entirely."""@en ;
+    """Optional reference concept scheme covering common statuses (Pending,
+    Active, Fulfilled, Violated). It can be used with authored offer and contract
+    lifecycle-status properties. Implementations are free to use it, extend it,
+    or use a different skos:ConceptScheme entirely. dprod:dutyState is an
+    evaluator-computed state and is not part of the lifecycle-status hierarchy."""@en ;
   rdfs:isDefinedBy dprod: ;
   skos:hasTopConcept dprod:Pending , dprod:Active , dprod:Fulfilled , dprod:Violated ;
 .
@@ -125,7 +124,7 @@ dprod:Pending
   rdfs:isDefinedBy dprod: ;
   rdfs:label "pending" ;
   skos:prefLabel "pending"@en ;
-  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+  skos:topConceptOf dprod:DataContractLifecycleStatus ;
 .
 
 dprod:Active
@@ -134,7 +133,7 @@ dprod:Active
   rdfs:isDefinedBy dprod: ;
   rdfs:label "active" ;
   skos:prefLabel "active"@en ;
-  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+  skos:topConceptOf dprod:DataContractLifecycleStatus ;
 .
 
 dprod:Fulfilled
@@ -143,7 +142,7 @@ dprod:Fulfilled
   rdfs:isDefinedBy dprod: ;
   rdfs:label "fulfilled" ;
   skos:prefLabel "fulfilled"@en ;
-  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+  skos:topConceptOf dprod:DataContractLifecycleStatus ;
 .
 
 dprod:Violated
@@ -152,32 +151,34 @@ dprod:Violated
   rdfs:isDefinedBy dprod: ;
   rdfs:label "violated" ;
   skos:prefLabel "violated"@en ;
-  skos:topConceptOf dprod:DataContractLifeCycleStatus ;
+  skos:topConceptOf dprod:DataContractLifecycleStatus ;
 .
 
 
 #############################  DPROD Contracts Properties ################
 
 
-dprod:offerLifeCycleStatus
+dprod:offerLifecycleStatus
   a owl:ObjectProperty ;
   dct:description "Where this offer sits in its publication lifecycle — typically drafted, published, withdrawn, or superseded; assigned by the publisher."@en ;
   rdfs:comment
-    """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
+    """Value is any skos:Concept; dprod:DataContractLifecycleStatus is one
     example concept scheme shipped with DPROD."""@en ;
   rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf dprod:lifecycleStatus ;
   rdfs:domain dprod:DataOffer ;
   rdfs:range skos:Concept ;
   rdfs:label "offer lifecycle status" ;
 .
 
-dprod:contractLifeCycleStatus
+dprod:contractLifecycleStatus
   a owl:ObjectProperty ;
   dct:description "Where this contract sits in its administrative lifecycle — typically pre-effective, in force, completed, or breached; assigned by the contract management process."@en ;
   rdfs:comment
-    """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
+    """Value is any skos:Concept; dprod:DataContractLifecycleStatus is one
     example concept scheme shipped with DPROD."""@en ;
   rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf dprod:lifecycleStatus ;
   rdfs:domain dprod:DataContract ;
   rdfs:range skos:Concept ;
   rdfs:label "contract lifecycle status" ;
@@ -187,10 +188,10 @@ dprod:dutyState
   a owl:ObjectProperty ;
   dct:description "The latest evaluation result for this duty, computed by an evaluator from observable facts; recomputed on demand rather than authored."@en ;
   rdfs:comment
-    """Value is any skos:Concept; dprod:DataContractLifeCycleStatus is one
-    example concept scheme shipped with DPROD, and the state machine in
-    formal-semantics §5 is one possible interpretation. Implementations are
-    free to use a different vocabulary and/or state machine."""@en ;
+    """Value is any skos:Concept. The state machine in formal-semantics §5 is
+    one possible interpretation. Implementations are free to use a different
+    state vocabulary and/or state machine. This evaluator-computed property is
+    deliberately separate from the authored dprod:lifecycleStatus hierarchy."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain odrl:Duty ;
   rdfs:range skos:Concept ;

@@ -228,7 +228,7 @@ The formal `Request` evaluation input is not an RDF `odrl:Request` policy. It is
 
 ## 4. Semantic Domains
 
-### 4.1 State
+### 4.1 Duty State
 
 ```
 Σ = {
@@ -243,7 +243,7 @@ State ::= Pending | Active | Fulfilled | Violated
 
 **Notes**:
 
-- `State` is a unified lifecycle enum shared by duties, contracts, and subscriptions. The formal semantics tracks duty state during evaluation; contract and subscription state is administrative (not evaluated at request time).
+- The formal `State` domain contains evaluator-computed duty states only. It does not model authored data-product, offer, or contract lifecycle statuses; those are open SKOS concepts asserted through domain-specific subproperties of `dprod:lifecycleStatus` and remain outside evaluation state Σ.
 - Terminal states (`Fulfilled`, `Violated`) are permanent — see §9.4.
 
 **Initial state** Σ₀:

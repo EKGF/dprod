@@ -279,7 +279,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
-    dprod:offerLifeCycleStatus dprod:Fulfilled ;
+    dprod:offerLifecycleStatus dprod:Fulfilled ;
     odrl:permission [
         a odrl:Permission ;
         odrl:action odrl:use
@@ -290,7 +290,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     prov:wasRevisionOf <https://example.org/offers/customer-api-v1> ;
 
@@ -348,7 +348,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
 
@@ -401,7 +401,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/country-codes> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
 
     odrl:permission [
         a odrl:Permission ;
@@ -427,7 +427,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/finance> ;
     odrl:target <https://example.org/assets/transaction-files> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
 
     odrl:obligation [
@@ -467,7 +467,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/hr> ;
     odrl:target <https://example.org/assets/employee-directory> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
 
     odrl:obligation [
         a odrl:Duty ;
@@ -514,7 +514,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/risk-metrics> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
 
     odrl:obligation [
         a odrl:Duty ;
@@ -567,7 +567,7 @@ ex:compliance
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/audit-logs> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
 
     odrl:permission [
         a odrl:Permission ;
@@ -613,7 +613,7 @@ ex:compliance
     odrl:target <https://example.org/assets/market-prices> ,
                <https://example.org/assets/reference-data> ,
                <https://example.org/assets/risk-metrics> ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime ;
     dprod:expirationDate "2026-12-31T23:59:59Z"^^xsd:dateTime ;
 
