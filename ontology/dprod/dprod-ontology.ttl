@@ -10,6 +10,7 @@
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL
@@ -27,7 +28,7 @@ dprod:
     "The ontology utilizes the notion of Datasets as defined from DCAT vocabulary."@en ;
   rdfs:comment "DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-06-01"^^xsd:date ;
+  dct:modified "2026-08-04"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -54,13 +55,13 @@ dprod:DataProduct
 .
 
 dprod:DataProductLifecycleStatus
-  a owl:Class, rdfs:Class ;
+  a skos:ConceptScheme ;
+  dct:title "DPROD Data Product Lifecycle Status"@en ;
   dct:description
-    "The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume, Retire)."@en ;
-  rdfs:comment "The lifecycle of the data product as defined by EDM Council CDMC"@en ;
+    "An optional reference taxonomy for data product lifecycle statuses. Enterprises may use, extend, or replace this scheme with their own skos:ConceptScheme."@en ;
+  rdfs:comment "DPROD does not prescribe a closed set of data product lifecycle statuses."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "data product lifecycle status" ;
-  rdfs:subClassOf dprod:Enumeration ;
   rdfs:seeAlso <https://edmcouncil.org/wp-content/uploads/2024/03/EDMWebinar_DPSIG_04-30-Presentation.pdf#page=7> ;
 .
 
@@ -105,12 +106,26 @@ dprod:dataProductOwner
 dprod:lifecycleStatus
   a rdf:Property, owl:ObjectProperty ;
 # a rdfs:subPropertyOf adms:status ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:domain dprod:DataProduct ;
-  rdfs:range dprod:DataProductLifecycleStatus ;
   dct:description
-    "The development status of the data product. "@en ;
+    "The authored position of a DPROD resource in its lifecycle."@en ;
+  rdfs:comment
+    "Abstract super-property for authored lifecycle statuses. Concrete sub-properties define their resource-specific domains; values come from an open SKOS taxonomy."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:range skos:Concept ;
   rdfs:label "lifecycle status" ;
+.
+
+dprod:dataProductLifecycleStatus
+  a rdf:Property, owl:ObjectProperty ;
+  dct:description
+    "The authored development lifecycle status of a data product."@en ;
+  rdfs:comment
+    "Values are SKOS concepts. DPROD supplies dprod:DataProductLifecycleStatus as an optional reference concept scheme; enterprises may use another scheme."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:subPropertyOf dprod:lifecycleStatus ;
+  rdfs:domain dprod:DataProduct ;
+  rdfs:range skos:Concept ;
+  rdfs:label "data product lifecycle status" ;
 .
 
 dprod:informationSensitivityClassification

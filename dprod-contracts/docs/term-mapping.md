@@ -54,15 +54,23 @@ ex:contract-v2 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v1 .
 ```
 
-### Contract Status
+### Lifecycle Status and Duty State
 
-**Business term:** `status`, `state`, `lifecycle state`
-**DPROD properties:**
-- `dprod:offerLifeCycleStatus` on `dprod:DataOffer` (administrative)
-- `dprod:contractLifeCycleStatus` on `dprod:DataContract` (administrative)
-- `dprod:dutyState` on `odrl:Duty` (evaluated at runtime)
+**Business term:** `status`, `lifecycle status`
+**DPROD status properties:**
+- `dprod:dataProductLifecycleStatus` on `dprod:DataProduct` (authored)
+- `dprod:offerLifecycleStatus` on `dprod:DataOffer` (administrative)
+- `dprod:contractLifecycleStatus` on `dprod:DataContract` (administrative)
 **Cardinality:** 0..1 each
-**Range:** `skos:Concept`. DPROD-defined canonical values: `dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`. Profiles MAY introduce additional `skos:Concept` values; the standard evaluation algorithm only transitions between the four canonical concepts.
+**Super-property:** `dprod:lifecycleStatus`
+**Range:** `skos:Concept`. DPROD schemes are optional; enterprises MAY supply their own SKOS taxonomies.
+
+**Business term:** `duty state`
+**DPROD state property:** `dprod:dutyState` on `odrl:Duty` (evaluator-computed at runtime)
+**Cardinality:** 0..1
+**Range:** `skos:Concept`. The standard evaluation algorithm transitions between `dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, and `dprod:Violated`.
+
+`dprod:dutyState` is not a sub-property of `dprod:lifecycleStatus`: state is computed, while lifecycle status is authored.
 **Source:** DPROD
 ---
 
@@ -365,9 +373,10 @@ odrl:permission [
 | Covered data | `odrl:target` | ODRL |
 | Start date | `dprod:effectiveDate` | DPROD |
 | End date | `dprod:expirationDate` | DPROD |
-| Status (offer) | `dprod:offerLifeCycleStatus` (`skos:Concept`) | DPROD |
-| Status (contract) | `dprod:contractLifeCycleStatus` (`skos:Concept`) | DPROD |
-| Status (duty) | `dprod:dutyState` (`skos:Concept`) | DPROD |
+| Status (data product) | `dprod:dataProductLifecycleStatus` (`skos:Concept`) | DPROD |
+| Status (offer) | `dprod:offerLifecycleStatus` (`skos:Concept`) | DPROD |
+| Status (contract) | `dprod:contractLifecycleStatus` (`skos:Concept`) | DPROD |
+| State (duty) | `dprod:dutyState` (`skos:Concept`) | DPROD |
 | Delivery SLA | Duty + `deliver` + `recurrence` + `deadline` | DPROD |
 | Schema guarantee | Duty + `conformTo` | DPROD |
 | Quality SLA | Duty + `conformTo` + constraint | DPROD |
@@ -386,4 +395,4 @@ odrl:permission [
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-02-04
+**Version**: 0.7 | **Date**: 2026-08-04

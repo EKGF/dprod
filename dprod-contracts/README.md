@@ -8,7 +8,7 @@
 
 DPROD Contracts is an ODRL 2.2 profile. It uses ODRL terms for all standard constructs (Permission, Duty, Prohibition, Agreement, etc.) and only adds extensions where ODRL 2.2 leaves behavior undefined:
 
-1. **Explicit lifecycle**: Pending -> Active -> Fulfilled/Violated (unified for duties and contracts)
+1. **Explicit duty state**: Pending -> Active -> Fulfilled/Violated, computed by an evaluator
 2. **Bilateral agreements**: Both assigner and assignee may have duties
 3. **Deterministic evaluation**: Total functions, no undefined states
 4. **Formal verification target**: Amenable to Dafny, Why3, Coq
@@ -32,7 +32,7 @@ See [examples/](examples/) for complete working policies:
 
 | Extension | ODRL 2.2 | What DPROD Adds |
 |-----------|----------|-----------------|
-| Duty lifecycle | Undefined | Pending -> Active -> Fulfilled/Violated |
+| Duty state | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
@@ -71,9 +71,9 @@ Result = {
 }
 ```
 
-### 4. Unified Lifecycle State
+### 4. Authored Status and Computed State Are Separate
 
-Duties and contracts share four states:
+An evaluator computes the state of a duty:
 
 ```
          condition true
@@ -84,7 +84,7 @@ Pending ──────────────> Active
                    Fulfilled  Violated
 ```
 
-An `odrl:Duty` progresses through `dprod:dutyState` values (evaluated at runtime). A `dprod:DataOffer` carries `dprod:offerLifeCycleStatus` and a `dprod:DataContract` carries `dprod:contractLifeCycleStatus` (administrative). All three properties have range `skos:Concept`; the four DPROD-defined concepts (`dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`) are the canonical vocabulary.
+An `odrl:Duty` progresses through evaluator-computed `dprod:dutyState` values. In contrast, a publisher authors `dprod:offerLifecycleStatus`, and a contract-management process authors `dprod:contractLifecycleStatus`. The status properties are sub-properties of the core `dprod:lifecycleStatus`; `dprod:dutyState` deliberately is not. All values are open `skos:Concept` values, so enterprises may use their own taxonomies.
 
 ### 5. Structured Operand Resolution
 
@@ -156,4 +156,4 @@ An implementation conforms to DPROD Contracts if:
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-02-04
+**Version**: 0.7 | **Date**: 2026-08-04

@@ -15,7 +15,7 @@ DataOffer (Offer)          DataContract (Agreement)
 | Consumer rights          |  | Consumer rights          |
 | Prohibitions             |  | Consumer duties          |
 | Recurrence rules         |  | Prohibitions             |
-+--------------------------+  | State tracking           |
++--------------------------+  | Status + duty state      |
               accept          +--------------------------+
             -------->
 ```
@@ -41,7 +41,8 @@ A `dprod:DataContract` is a subclass of `odrl:Agreement`. It adds:
 
 - **Consumer** (`odrl:assignee`): the subscribing team
 - **Effective/expiration dates**: contract period
-- **State tracking**: lifecycle state on duties and the subscription itself
+- **Lifecycle status**: authored administrative status of the contract
+- **Duty state**: evaluator-computed state of each obligation
 
 ### Provider Duties
 
@@ -90,7 +91,7 @@ ex:contract a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
-    dprod:offerLifeCycleStatus dprod:Active .
+    dprod:offerLifecycleStatus dprod:Active .
 ```
 
 ### Step 2: Add Provider Duties (SLAs)

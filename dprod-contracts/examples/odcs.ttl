@@ -234,7 +234,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:seller-data-team ;
     odrl:target ex:seller-data ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
 
 
 # =============================================================================

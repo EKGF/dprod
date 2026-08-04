@@ -39,9 +39,9 @@ This document is a vocabulary reference for implementers. It defines every class
 
 ## 3. Class Definitions
 
-### 3.1 Example Lifecycle Concept Scheme
+### 3.1 Optional Lifecycle Concept Scheme
 
-DPROD ships an example `skos:ConceptScheme` — **`dprod:DataContractLifeCycleStatus`** — covering four common lifecycle states. This scheme is one ready-made vocabulary that policy authors can plug into any of the three lifecycle properties (`dprod:offerLifeCycleStatus`, `dprod:contractLifeCycleStatus`, `dprod:dutyState`). Each property's range is the open `skos:Concept` class, so implementations are free to use this scheme as-is, extend it via `skos:inScheme`, or use a different vocabulary entirely. The state machine described in [formal-semantics.md](formal-semantics.md) §5 is one possible interpretation of these concepts; it is not a requirement of the properties themselves.
+DPROD ships an optional `skos:ConceptScheme` — **`dprod:DataContractLifecycleStatus`** — covering four common values. Policy authors may use it for `dprod:offerLifecycleStatus` and `dprod:contractLifecycleStatus`, extend it, or replace it with an enterprise taxonomy. The properties range over the open `skos:Concept` class; conformance never requires membership in the DPROD scheme.
 
 | Individual | Label | Definition |
 |------------|-------|------------|
@@ -58,7 +58,7 @@ Active  -> Fulfilled (action performed)
 Active  -> Violated  (deadline passed without performance)
 ```
 
-For administrative offer/contract lifecycle (`dprod:offerLifeCycleStatus`, `dprod:contractLifeCycleStatus`), the same four concepts are used to represent: `Pending` (not yet in force), `Active` (in force), `Fulfilled` (obligations complete), `Violated` (breached). These transitions are administrative — they are not evaluated at request time.
+The formal evaluator may also use these concept IRIs as `dprod:dutyState` values. Reusing a concept does not merge the properties: offer and contract statuses are authored administrative facts, while duty state is computed from observable facts. `dprod:dutyState` is not part of the lifecycle-status property hierarchy.
 
 ### 3.2 dprod:DataOffer
 
@@ -81,7 +81,7 @@ For administrative offer/contract lifecycle (`dprod:offerLifeCycleStatus`, `dpro
 | Property | Source | Cardinality |
 |----------|--------|-------------|
 | `odrl:target` | ODRL | 1..* |
-| `dprod:offerLifeCycleStatus` | DPROD | 0..1 |
+| `dprod:offerLifecycleStatus` | DPROD | 0..1 |
 | `dprod:effectiveDate` | DPROD | 0..1 |
 | `dprod:expirationDate` | DPROD | 0..1 |
 
@@ -100,7 +100,7 @@ ex:contract a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
-    dprod:offerLifeCycleStatus dprod:Active ;
+    dprod:offerLifecycleStatus dprod:Active ;
     dprod:effectiveDate "2026-01-01T00:00:00Z"^^xsd:dateTime .
 ```
 
@@ -126,7 +126,7 @@ ex:contract a dprod:DataOffer ;
 
 | Property | Source | Cardinality |
 |----------|--------|-------------|
-| `dprod:contractLifeCycleStatus` | DPROD | 0..1 |
+| `dprod:contractLifecycleStatus` | DPROD | 0..1 |
 | `dprod:effectiveDate` | DPROD | 0..1 |
 | `dprod:expirationDate` | DPROD | 0..1 |
 
@@ -161,15 +161,19 @@ ex:subscription a dprod:DataContract ;
 
 ## 4. Property Definitions
 
-### 4.1 dprod:offerLifeCycleStatus, dprod:contractLifeCycleStatus, dprod:dutyState
+### 4.1 Lifecycle Status and Duty State
 
-| Property | Domain | Range | Cardinality | Definition |
-|----------|--------|-------|-------------|------------|
-| `dprod:offerLifeCycleStatus` | `dprod:DataOffer` | `skos:Concept` | 0..1 | Administrative lifecycle status of a data offer (not evaluated at request time) |
-| `dprod:contractLifeCycleStatus` | `dprod:DataContract` | `skos:Concept` | 0..1 | Administrative lifecycle status of a data contract (not evaluated at request time) |
-| `dprod:dutyState` | `odrl:Duty` | `skos:Concept` | 0..1 | Evaluated state of a duty (set by the standard evaluation algorithm; see §5 of formal-semantics.md) |
+| Property | Super-property | Domain | Range | Cardinality | Definition |
+|----------|----------------|--------|-------|-------------|------------|
+| `dprod:lifecycleStatus` | — | — | `skos:Concept` | — | Core abstract super-property for authored lifecycle statuses |
+| `dprod:dataProductLifecycleStatus` | `dprod:lifecycleStatus` | `dprod:DataProduct` | `skos:Concept` | 0..1 | Authored development lifecycle status of a data product |
+| `dprod:offerLifecycleStatus` | `dprod:lifecycleStatus` | `dprod:DataOffer` | `skos:Concept` | 0..1 | Authored publication lifecycle status of a data offer |
+| `dprod:contractLifecycleStatus` | `dprod:lifecycleStatus` | `dprod:DataContract` | `skos:Concept` | 0..1 | Authored administrative lifecycle status of a data contract |
+| `dprod:dutyState` | — | `odrl:Duty` | `skos:Concept` | 0..1 | Evaluator-computed state of a duty; see §5 of formal-semantics.md |
 
-All three properties are `owl:ObjectProperty`. The four DPROD-defined canonical concepts (`dprod:Pending`, `dprod:Active`, `dprod:Fulfilled`, `dprod:Violated`) form the default vocabulary for each; profiles MAY introduce further `skos:Concept` values.
+The generic property and `dprod:dataProductLifecycleStatus` are defined by the core ontology. The contracts module defines only its domain-specific sub-properties. `dprod:dutyState` is deliberately outside the hierarchy because it is computed rather than authored.
+
+All five properties are `owl:ObjectProperty`. Their values come from open SKOS taxonomies: DPROD's concept schemes are optional starting points, and profiles MAY introduce additional `skos:Concept` values. The former mixed-capitalization spellings of the offer and contract properties are obsolete and fail SHACL validation.
 
 ### 4.2 dprod:deadline
 
@@ -380,29 +384,35 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:RejectPartyCollectionShape` | `odrl:PartyCollection` | Use `dprod:memberOf` instead |
 | `dprod-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
 | `dprod-shapes:RejectInheritFromShape` | `odrl:inheritFrom` | Not supported |
+| `dprod-shapes:RejectMixedLifecycleStatusOnDataOfferShape` | Non-offer lifecycle properties on `dprod:DataOffer` | Use `dprod:offerLifecycleStatus` |
+| `dprod-shapes:RejectMixedLifecycleStatusOnDataContractShape` | Non-contract lifecycle properties on `dprod:DataContract` | Use `dprod:contractLifecycleStatus` |
+| `dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape` | Contract lifecycle properties on `dprod:DataProduct` | Use `dprod:dataProductLifecycleStatus` |
+| `dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
+| `dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
 
 ---
 
 ## 6. Property Usage Matrix
 
-Which DPROD properties are valid on which classes:
+Which concrete DPROD properties are valid on which classes (`dprod:lifecycleStatus` is an abstract super-property and is omitted):
 
-| Property | Duty | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
-|----------|------|-------------|-------------|-------------|-------------------|-------|-------|
-| `dprod:dutyState` | Yes | | | | | | |
-| `dprod:offerLifeCycleStatus` | | Yes | | | | | |
-| `dprod:contractLifeCycleStatus` | | | Yes | | | | |
-| `dprod:deadline` | Yes | | | | | | |
-| `dprod:recurrence` | Yes | | | | | | |
-| `dprod:subjectOfDuty` | Yes | | | | | | |
-| `dprod:objectOfDuty` | Yes | | | | | | |
-| `dprod:acceptsOffer` | | | Yes | | | | |
-| `dprod:effectiveDate` | | Yes | Yes | | | | |
-| `dprod:expirationDate` | | Yes | Yes | | | | |
-| `dprod:path` | | | | Yes | | | |
-| `dprod:not` | | | | | Yes | | |
-| `dprod:partOf` | | | | | | Yes | |
-| `dprod:memberOf` | | | | | | | Yes |
+| Property | Duty | DataProduct | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
+|----------|------|-------------|-----------|--------------|-------------|-------------------|-------|-------|
+| `dprod:dutyState` | Yes | | | | | | | |
+| `dprod:dataProductLifecycleStatus` | | Yes | | | | | | |
+| `dprod:offerLifecycleStatus` | | | Yes | | | | | |
+| `dprod:contractLifecycleStatus` | | | | Yes | | | | |
+| `dprod:deadline` | Yes | | | | | | | |
+| `dprod:recurrence` | Yes | | | | | | | |
+| `dprod:subjectOfDuty` | Yes | | | | | | | |
+| `dprod:objectOfDuty` | Yes | | | | | | | |
+| `dprod:acceptsOffer` | | | | Yes | | | | |
+| `dprod:effectiveDate` | | | Yes | Yes | | | | |
+| `dprod:expirationDate` | | | Yes | Yes | | | | |
+| `dprod:path` | | | | | Yes | | | |
+| `dprod:not` | | | | | | Yes | | |
+| `dprod:partOf` | | | | | | | Yes | |
+| `dprod:memberOf` | | | | | | | | Yes |
 
 ---
 
@@ -426,4 +436,4 @@ DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics ar
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-02-04
+**Version**: 0.7 | **Date**: 2026-08-04

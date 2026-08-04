@@ -23,7 +23,7 @@ dprod-shapes:
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-02-26"^^xsd:date ;
+  dct:modified "2026-08-04"^^xsd:date ;
   owl:imports <https://www.omg.org/spec/DPROD/contracts/> ;
   owl:imports sh: ;
   owl:versionInfo "0.7" ;
@@ -45,24 +45,26 @@ dprod-shapes:
 ############################# Reusable Property Groups #########################
 
 
-dprod-shapes:OfferLifeCycleStatusPropertyGroup
+dprod-shapes:OfferLifecycleStatusPropertyGroup
   a sh:PropertyShape ;
   sh:name "offer lifecycle status" ;
-  sh:description "Optional administrative lifecycle status for a DataOffer. Value must be a skos:Concept; the four DPROD-defined concepts (Pending, Active, Fulfilled, Violated) are the canonical vocabulary, but profiles MAY introduce further skos:Concept values."@en ;
-  sh:path dprod:offerLifeCycleStatus ;
+  sh:description "Optional authored lifecycle status for a DataOffer. The value must be a skos:Concept; DPROD's scheme is optional and profiles may use an enterprise taxonomy."@en ;
+  sh:path dprod:offerLifecycleStatus ;
   sh:maxCount 1 ;
   sh:nodeKind sh:IRI ;
-  sh:message "offerLifeCycleStatus, if present, must be a single skos:Concept value." ;
+  sh:class skos:Concept ;
+  sh:message "offerLifecycleStatus, if present, must be a single skos:Concept value." ;
 .
 
-dprod-shapes:ContractLifeCycleStatusPropertyGroup
+dprod-shapes:ContractLifecycleStatusPropertyGroup
   a sh:PropertyShape ;
   sh:name "contract lifecycle status" ;
-  sh:description "Optional administrative lifecycle status for a DataContract. Value must be a skos:Concept; the four DPROD-defined concepts (Pending, Active, Fulfilled, Violated) are the canonical vocabulary, but profiles MAY introduce further skos:Concept values."@en ;
-  sh:path dprod:contractLifeCycleStatus ;
+  sh:description "Optional authored lifecycle status for a DataContract. The value must be a skos:Concept; DPROD's scheme is optional and profiles may use an enterprise taxonomy."@en ;
+  sh:path dprod:contractLifecycleStatus ;
   sh:maxCount 1 ;
   sh:nodeKind sh:IRI ;
-  sh:message "contractLifeCycleStatus, if present, must be a single skos:Concept value." ;
+  sh:class skos:Concept ;
+  sh:message "contractLifecycleStatus, if present, must be a single skos:Concept value." ;
 .
 
 dprod-shapes:DutyStatePropertyGroup
@@ -72,6 +74,7 @@ dprod-shapes:DutyStatePropertyGroup
   sh:path dprod:dutyState ;
   sh:maxCount 1 ;
   sh:nodeKind sh:IRI ;
+  sh:class skos:Concept ;
   sh:message "dutyState, if present, must be a single skos:Concept value." ;
 .
 
@@ -311,7 +314,7 @@ dprod-shapes:DataOfferShape
     sh:maxCount 1 ;
     sh:message "DataOffer must have exactly one assigner."
   ] ;
-  sh:property dprod-shapes:OfferLifeCycleStatusPropertyGroup ;
+  sh:property dprod-shapes:OfferLifecycleStatusPropertyGroup ;
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
@@ -353,7 +356,7 @@ dprod-shapes:DataContractShape
     sh:class dprod:DataOffer ;
     sh:message "DataContract must reference exactly one DataOffer."
   ] ;
-  sh:property dprod-shapes:ContractLifeCycleStatusPropertyGroup ;
+  sh:property dprod-shapes:ContractLifecycleStatusPropertyGroup ;
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
@@ -365,6 +368,57 @@ dprod-shapes:DataContractShape
     sh:maxCount 1 ;
     sh:datatype xsd:dateTime ;
     sh:message "expirationDate, if present, must be a single xsd:dateTime value."
+  ] ;
+.
+
+dprod-shapes:RejectMixedLifecycleStatusOnDataOfferShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "reject mixed lifecycle status on data offer shape" ;
+  sh:targetClass dprod:DataOffer ;
+  sh:property [
+    sh:path dprod:dataProductLifecycleStatus ;
+    sh:maxCount 0 ;
+    sh:message "DataOffer must not use dprod:dataProductLifecycleStatus."
+  ] ;
+  sh:property [
+    sh:path dprod:contractLifecycleStatus ;
+    sh:maxCount 0 ;
+    sh:message "DataOffer must not use dprod:contractLifecycleStatus."
+  ] ;
+.
+
+dprod-shapes:RejectMixedLifecycleStatusOnDataContractShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "reject mixed lifecycle status on data contract shape" ;
+  sh:targetClass dprod:DataContract ;
+  sh:property [
+    sh:path dprod:dataProductLifecycleStatus ;
+    sh:maxCount 0 ;
+    sh:message "DataContract must not use dprod:dataProductLifecycleStatus."
+  ] ;
+  sh:property [
+    sh:path dprod:offerLifecycleStatus ;
+    sh:maxCount 0 ;
+    sh:message "DataContract must not use dprod:offerLifecycleStatus."
+  ] ;
+.
+
+dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "data product lifecycle status separation shape" ;
+  sh:targetClass dprod:DataProduct ;
+  sh:property [
+    sh:path dprod:offerLifecycleStatus ;
+    sh:maxCount 0 ;
+    sh:message "DataProduct must not use dprod:offerLifecycleStatus."
+  ] ;
+  sh:property [
+    sh:path dprod:contractLifecycleStatus ;
+    sh:maxCount 0 ;
+    sh:message "DataProduct must not use dprod:contractLifecycleStatus."
   ] ;
 .
 
@@ -410,6 +464,29 @@ dprod-shapes:LeftOperandShape
 
 ############################# Rejection Shapes #########################
 # Reject unsupported ODRL constructs
+
+
+dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape
+  a sh:NodeShape ;
+  sh:targetSubjectsOf dprod:offerLifeCycleStatus ;
+  sh:property [
+    sh:path dprod:offerLifeCycleStatus ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "dprod:offerLifeCycleStatus is obsolete; use dprod:offerLifecycleStatus."
+  ] ;
+.
+
+dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape
+  a sh:NodeShape ;
+  sh:targetSubjectsOf dprod:contractLifeCycleStatus ;
+  sh:property [
+    sh:path dprod:contractLifeCycleStatus ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "dprod:contractLifeCycleStatus is obsolete; use dprod:contractLifecycleStatus."
+  ] ;
+.
 
 
 dprod-shapes:RejectXoneShape
