@@ -270,7 +270,8 @@ before evaluation. Policies do not traverse through `odrl:target` or party nodes
     clock       : Time,
     state       : Duty → State,
     activatedAt : Duty → Time?,           // When duty became Active
-    performed   : Set<(Agent, Action, Asset, Time)>
+    performed   : Set<(Agent, Action, Asset, Time)>,
+    processors  : ScheduleFormat → Processor?   // Registered schedule processors
 }
 
 State ::= Pending | Active | Fulfilled | Violated
@@ -288,18 +289,24 @@ State ::= Pending | Active | Fulfilled | Violated
     clock       = currentSystemTime,
     state       = λd. Pending,
     activatedAt = λd. ⊥,
-    performed   = ∅
+    performed   = ∅,
+    processors  = configuredProcessorRegistry
 }
 ```
+
+`processors` is the deployment's registry of schedule-format processors. It is
+part of the evaluation state so that schedule expansion (§5.5) is a function of
+Σ alone: two evaluators with the same Σ — including the same registry — produce
+the same occurrences or the same explicit error.
 
 **State Update Notation**: We use `Σ[f ↦ v]` to denote state update:
 
 ```
 Σ[state(d) ↦ Active] =
-    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt, Σ.performed)
+    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt, Σ.performed, Σ.processors)
 
 Σ[state(d) ↦ Active, activatedAt(d) ↦ t] =
-    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt[d ↦ t], Σ.performed)
+    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt[d ↦ t], Σ.performed, Σ.processors)
 ```
 
 ### 4.2 Evaluation Environment
@@ -383,6 +390,12 @@ Result = {
 }
 ```
 
+A schedule that cannot be processed (§5.5) is not reported in a `Result`. It
+freezes its duty (§5.2) and, where the decision would otherwise be `Permit`,
+gives `Failure` with the schedule error (§7.1, §7.2). Conformant processors
+MUST surface the error and MUST NOT silently drop, fulfill, or violate the
+affected duty.
+
 ---
 
 ## 5. Duty Lifecycle
@@ -441,6 +454,22 @@ performed(duty.subject, duty.action, duty.asset, Σ) = false
 
 Violation is **time-driven**: when the deadline passes without fulfillment, the duty is violated.
 
+**Rule D-FREEZE** (schedule error — no transition):
+
+```
+d.schedule ≠ ⊥
+occurrences(d, Σ) = Error(e)
+─────────────────────────────
+Σ' = Σ    ∧    e ∈ E₅   (§7.2)
+```
+
+A duty whose schedule cannot be processed (§5.5) is **frozen**: it makes no
+state transition — in particular it never becomes Violated for want of
+occurrences — and the error is collected in E₅, which gives `Failure` on
+the `Permit` path (§7.2). Freezing is deliberate: an unprocessable schedule is a configuration
+defect of the deployment, not a breach by the obligated party, and every
+conformant processor reaches the same frozen state instead of diverging.
+
 **Algorithmic form** (for implementation):
 
 ```
@@ -448,7 +477,9 @@ updateDutyStates(duties, Env, Σ) =
     foldl(updateOneDuty(Env), Σ, duties)
 
 updateOneDuty(Env)(Σ, d) =
-    case Σ.state(d) of
+    if d.schedule ≠ ⊥ ∧ occurrences(d, Σ) = Error(e)
+    then Σ                                   -- D-FREEZE: no transition
+    else case Σ.state(d) of
         Pending → if (d.condition = ⊥ ∨ ⟦d.condition⟧(Env)) = true
                   then Σ[state(d) ↦ Active, activatedAt(d) ↦ Σ.clock]
                   else Σ
@@ -506,18 +537,19 @@ it occurs.
 ScheduleError ::= UnrecognizedScheduleFormat(format: IRI)
                 | InvalidScheduleExpression(schedule: IRI, reason: String)
 
-expand : Schedule × Time → Set<Time> | ScheduleError
+expand : Schedule × (ScheduleFormat → Processor?) × Time → Set<Time> | ScheduleError
 
-expand(schedule, clock) =
-    case processorFor(schedule.format) of
+expand(schedule, processors, clock) =
+    case processors(schedule.format) of
         None    → UnrecognizedScheduleFormat(schedule.format)
         Some(p) → case p.parse(schedule.expression, schedule.timeZone) of
                       Error(reason) → InvalidScheduleExpression(schedule.identifier, reason)
                       Valid(rule)   → p.occurrences(rule, clock)
 ```
 
-`expand` is a **pure function**: given the same Schedule, processor set, and
-clock value, it produces the same occurrence times or the same explicit error.
+`expand` is a **pure function**: given the same Schedule, processor registry,
+and clock value, it produces the same occurrence times or the same explicit
+error. The registry is `Σ.processors` (§4.1), so expansion depends only on Σ.
 An unknown format, missing processor, malformed expression, missing anchor, or
 missing timezone is a hard error. It MUST NOT be interpreted as an empty
 schedule. SHACL catches structural errors before evaluation; the selected
@@ -533,11 +565,15 @@ runtime has an explicitly registered processor for their format IRI.
 
 ```
 occurrences(duty, Σ) =
-    case expand(duty.schedule, Σ.clock) of
+    case expand(duty.schedule, Σ.processors, Σ.clock) of
         Error(e) → Error(e)
         times    → { t ∈ times |
                      duty.condition = ⊥ ∨ ⟦duty.condition⟧(Σ.env) }
 ```
+
+An `Error` result freezes the duty (Rule D-FREEZE, §5.2) and is collected in
+E₅ (§7.2). No lifecycle rule consumes an errored schedule as if it had
+occurrences.
 
 **Per-Instance Lifecycle**:
 
@@ -734,7 +770,7 @@ apply(op, left, right) =
 ```
 EvaluationOutcome ::= Success(Result) | Failure(EvaluationError)
 
-EvaluationError = Set<ResolutionError>      -- non-empty
+EvaluationError = Set<ResolutionError | ScheduleError>      -- non-empty
 
 Eval : Request × Set<Policy> × Σ × WorldSnapshot → EvaluationOutcome
 ```
@@ -770,8 +806,11 @@ Eval(request, policies, Σ, world) =
     let granteeDuties = allDuties \ grantorDuties
 
     // Step 3: Update duty states. A pending duty whose activation condition
-    // is in error has an unknown state (E₃) and stays Pending in Σ'.
+    // is in error has an unknown state (E₃) and stays Pending in Σ'. A duty
+    // whose schedule cannot be processed is frozen (Rule D-FREEZE) and its
+    // schedule error is collected in E₅.
     let E₃ = errors({ ⟦d.condition⟧(Env) | d ∈ allDuties, Σ.state(d) = Pending, d.condition ≠ ⊥ })
+    let E₅ = { e | d ∈ allDuties, d.schedule ≠ ⊥, occurrences(d, Σ) = Error(e) }
     let Σ' = updateDutyStates(allDuties, Env, Σ)
 
     // Step 4: Prohibition overrides. An active prohibition denies, even if
@@ -800,10 +839,10 @@ Eval(request, policies, Σ, world) =
     if violatedGrantee ≠ ∅ then
         return {decision: Deny, violations: violatedGrantee ∪ violatedGrantor, ...}
 
-    // Step 7: A duty in an unknown state, or one of a policy that might
-    // grant, could be active or violated
-    if E₃ ∪ E₄ ≠ ∅ then
-        return Failure(E₃ ∪ E₄)
+    // Step 7: A duty in an unknown state, a frozen duty, or a duty of a
+    // policy that might grant, could be active or violated
+    if E₃ ∪ E₄ ∪ E₅ ≠ ∅ then
+        return Failure(E₃ ∪ E₄ ∪ E₅)
 
     // Step 8: Collect active duties for both parties
     let activeGrantor = { d ∈ grantorDuties | Σ'.state(d) = Active }
@@ -819,7 +858,7 @@ Eval(request, policies, Σ, world) =
 
 A duty is not matched against the request: its action and asset are what the bearer must do, not what is requested. A request to display `ex:marketData` engages a contract's duty to report on `ex:usageStats`. Duties are collected from every policy that grants the request, that is, has a permission in force for it. A duty borne by a third party is reported with the grantee's duties, since it conditions the grantee's permission. Because every duty of a granting policy is collected, a provider's missed delivery is a violation in every later evaluation; it is reported in `violations`, and only violations by the grantee's side deny.
 
-Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation of a request its policy grants. An error in a pending duty's activation condition (E₃), or in a permission of a policy that does not otherwise grant (E₄), gives `Failure` only on the `Permit` path (Step 7). It cannot change a `Deny` or `NotApplicable`: resolving it can only add duties, a duty that becomes active is not yet violated, and more violations still deny.
+Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation of a request its policy grants. An error in a pending duty's activation condition (E₃), in a permission of a policy that does not otherwise grant (E₄), or in a duty's schedule (E₅), gives `Failure` only on the `Permit` path (Step 7). It cannot change a `Deny` or `NotApplicable`: resolving it can only add duties, a duty that becomes active is not yet violated, and more violations still deny.
 
 ### 7.3 Policy Applicability
 
@@ -894,14 +933,20 @@ No specificity ordering within norm types. All matching norms contribute. An act
 
 ## 9. Correctness Properties
 
-**Note on schedules**: All four theorems below hold for well-formed, processable
-schedules. `expand` is deterministic and returns either occurrences or an
-explicit error (§5.5); it never hides an invalid schedule as an empty set. Each
-generated duty instance follows the standard lifecycle independently.
+**Note on schedules**: The theorems below hold for all well-formed inputs,
+including those whose schedules cannot be processed. `expand` is deterministic
+and returns either occurrences or an explicit error (§5.5); it never hides an
+invalid schedule as an empty set. An unprocessable schedule freezes its duty
+(Rule D-FREEZE, §5.2), and its error is reported by `Failure` on the
+`Permit` path (§7.2), so it changes the outcome, never whether one exists.
+Each generated duty instance follows the standard lifecycle independently.
 
 ### 9.1 Totality
 
-**Theorem**: For all well-formed inputs, `Eval` terminates with a defined result.
+**Theorem**: For all well-formed inputs, `Eval` terminates with a defined
+outcome. When a schedule is unprocessable, the outcome is a decision that
+does not depend on it, or `Failure` carrying the schedule error; there is no
+undefined branch.
 
 ```
 ∀ request, policies, Σ, world.
@@ -987,7 +1032,7 @@ It follows from §6.1 (each connective is a function of the set of its operand v
 
 ### 9.7 Error Soundness
 
-**Theorem**: A successful decision never depends on an error. A *completion* replaces every `Err` produced by an atomic constraint with `true` or `false`.
+**Theorem**: A successful decision never depends on an error. A *completion* replaces every `Err` produced by an atomic constraint with `true` or `false`, and every schedule error with some set of occurrence times.
 
 ```
 ∀ request, policies, Σ, world, r.
