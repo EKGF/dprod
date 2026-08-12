@@ -155,7 +155,7 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 | `dimension: uniqueness` | Constraint on `ex:conformTo` | Custom quality constraint |
 | `severity` | Not directly modeled | Operational metadata |
 | `businessImpact` | Not directly modeled | Operational metadata |
-| `schedule` / `scheduler` | `dprod:recurrence` on duty | RFC 5545 RRULE |
+| `schedule` / `scheduler` | Identified `dprod:Schedule` referenced by the duty | Exact format declared with `dct:conformsTo` |
 
 ### SLA Properties
 
@@ -164,7 +164,7 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 | `latency` | `ex:latency` + constraint | On conformance duty |
 | `availability` | `ex:availability` + constraint | On conformance duty |
 | `throughput` | `ex:throughput` + constraint | On conformance duty |
-| `frequency` | `dprod:recurrence` on delivery duty | RFC 5545 RRULE string |
+| `frequency` | `dprod:schedule` on delivery duty | Reusable RFC 5545 or POSIX crontab schedule |
 | `timeOfAvailability` | `dprod:deadline` on delivery duty | XSD duration |
 | `retention` | `odrl:Duty` + `odrl:delete` + `ex:retentionPeriod` | Retention as obligation |
 | `generalAvailability` | `dprod:effectiveDate` | Contract start date |
@@ -239,4 +239,4 @@ The bridge between them is the core DPROD ontology: a `dprod:DataProduct` links 
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-02-26
+**Version**: 0.7 | **Date**: 2026-08-12
