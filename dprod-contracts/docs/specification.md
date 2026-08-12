@@ -183,6 +183,32 @@ Operand bindings select one of three closed sources:
 `odrl:dateTime` binds `contextSource` to `dprod:clock`; DPROD does not define a
 duplicate clock operand.
 
+### 3.5 dprod:Schedule
+
+| Property | Value |
+|----------|-------|
+| **Type** | `owl:Class` |
+| **Label** | Schedule |
+| **Definition** | Reusable, identified definition of scheduled occurrences |
+
+A Schedule determines **when**, without determining **what** happens. Any DPROD
+or ODRL resource may refer to it through `dprod:schedule`; that resource retains
+the business meaning of the occurrences. Every Schedule has an IRI, exactly one
+`dct:conformsTo` format, and exactly one `dprod:scheduleExpression`.
+
+### 3.6 dprod:ScheduleFormat
+
+| Property | Value |
+|----------|-------|
+| **Type** | `owl:Class` |
+| **Label** | Schedule Format |
+| **Definition** | Exact grammar and interpretation rules for schedule expressions |
+
+Built-in individuals are `dprod:Rfc5545ScheduleFormat` and
+`dprod:PosixCrontabScheduleFormat`. Extensions may define additional identified
+formats, but must provide matching validation rules and a processor. A general
+label such as “cron” is not an exact format.
+
 ---
 
 ## 4. Property Definitions
@@ -218,18 +244,40 @@ Two forms:
 | Absolute | `xsd:dateTime` | Fixed deadline | `"2026-12-31T23:59:59Z"^^xsd:dateTime` |
 | Relative | `xsd:duration` | Offset from activation | `"P30D"^^xsd:duration` |
 
-### 4.3 dprod:recurrence
+### 4.3 Scheduling
 
 | Property | Value |
 |----------|-------|
-| **Type** | `owl:DatatypeProperty` |
-| **Domain** | `odrl:Duty` |
-| **Range** | `xsd:string` |
-| **Cardinality** | 0..1 |
-| **Pattern** | `^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)` |
-| **Definition** | RFC 5545 RRULE defining when duty instances are generated |
+| **Property** | `dprod:schedule` |
+| **Type** | `owl:ObjectProperty` |
+| **Domain** | None; reusable across DPROD and ODRL resources |
+| **Range** | `dprod:Schedule` |
+| **Duty cardinality** | 0..1 |
+| **Definition** | Link to an identified reusable Schedule |
 
-Each generated instance follows the standard duty lifecycle independently (Pending -> Active -> Fulfilled/Violated). The `deadline` property defines the per-instance fulfillment window. Any iCal-compliant library can parse the value.
+| Schedule property | Type | Cardinality | Definition |
+|-------------------|------|-------------|------------|
+| `dct:conformsTo` | IRI of `dprod:ScheduleFormat` | 1 | Exact grammar/dialect |
+| `dprod:scheduleExpression` | `xsd:string` | 1 | Authoritative expression |
+| `dprod:scheduleTimeZone` | IANA timezone string | 0..1 | Required when the format does not carry a timezone |
+
+```turtle
+ex:daily-delivery a dprod:Schedule ;
+    rdfs:label "Daily delivery at 06:00 London time" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
+
+ex:delivery-duty a odrl:Duty ;
+    odrl:action ex:deliver ;
+    dprod:schedule ex:daily-delivery .
+```
+
+An RFC 5545 schedule must contain anchored `DTSTART` and `RRULE` content with
+timezone context. A POSIX crontab schedule contains exactly five time fields and
+declares `dprod:scheduleTimeZone`. Unknown formats, malformed expressions, and
+missing context are errors, not empty schedules. Bare frequency vocabulary
+entries such as `dct:accrualPeriodicity` remain descriptive catalog metadata and
+are not executable schedules.
 
 ### 4.4 dprod:acceptsOffer
 
@@ -372,7 +420,14 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 |-------|--------|-----------------|
 | `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
 | `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `recurrence` 0..1 (RRULE pattern); `state` 0..1 |
+| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
+
+### Schedule shapes
+
+| Shape | Target | Key Constraints |
+|-------|--------|-----------------|
+| `dprod-shapes:ScheduleReferenceShape` | Subjects using `dprod:schedule` | Values are IRIs identifying `dprod:Schedule` resources |
+| `dprod-shapes:ScheduleShape` | `dprod:Schedule` | IRI identifier; one exact format; one string expression; built-in format requirements |
 
 ### Constraint-level shapes
 
@@ -423,6 +478,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape` | Contract lifecycle properties on `dprod:DataProduct` | Use `dprod:dataProductLifecycleStatus` |
 | `dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
 | `dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
+| `dprod-shapes:RejectObsoleteRecurrenceShape` | Legacy `dprod:recurrence` property | Use `dprod:schedule` and an identified Schedule |
 
 ---
 
@@ -432,22 +488,27 @@ Which concrete authoring properties are valid on which policy classes
 (`dprod:lifecycleStatus` is abstract; runtime-only EvaluationContext roots are
 documented in §3.4 and omitted):
 
-| Property | Duty | DataProduct | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
-|----------|------|-------------|-----------|--------------|-------------|-------------------|-------|-------|
-| `dprod:dutyState` | Yes | | | | | | | |
-| `dprod:dataProductLifecycleStatus` | | Yes | | | | | | |
-| `dprod:offerLifecycleStatus` | | | Yes | | | | | |
-| `dprod:contractLifecycleStatus` | | | | Yes | | | | |
-| `dprod:deadline` | Yes | | | | | | | |
-| `dprod:recurrence` | Yes | | | | | | | |
-| `dprod:subjectOfDuty` | Yes | | | | | | | |
-| `dprod:objectOfDuty` | Yes | | | | | | | |
-| `dprod:acceptsOffer` | | | | Yes | | | | |
-| `dprod:effectiveDate` | | | Yes | Yes | | | | |
-| `dprod:expirationDate` | | | Yes | Yes | | | | |
-| `dprod:operandSource` | | | | | Yes | | | |
-| `dprod:operandProperty` | | | | | Yes | | | |
-| `dprod:not` | | | | | | Yes | | |
+| Property | Duty | Schedule | DataProduct | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
+|----------|------|----------|-------------|-----------|--------------|-------------|-------------------|-------|-------|
+| `dprod:dutyState` | Yes | | | | | | | | |
+| `dprod:dataProductLifecycleStatus` | | | Yes | | | | | | |
+| `dprod:offerLifecycleStatus` | | | | Yes | | | | | |
+| `dprod:contractLifecycleStatus` | | | | | Yes | | | | |
+| `dprod:deadline` | Yes | | | | | | | | |
+| `dprod:schedule` | Yes* | | | | | | | | |
+| `dprod:scheduleExpression` | | Yes | | | | | | | |
+| `dprod:scheduleTimeZone` | | Yes | | | | | | | |
+| `dprod:subjectOfDuty` | Yes | | | | | | | | |
+| `dprod:objectOfDuty` | Yes | | | | | | | | |
+| `dprod:acceptsOffer` | | | | | Yes | | | | |
+| `dprod:effectiveDate` | | | | Yes | Yes | | | | |
+| `dprod:expirationDate` | | | | Yes | Yes | | | | |
+| `dprod:operandSource` | | | | | | Yes | | | |
+| `dprod:operandProperty` | | | | | | Yes | | | |
+| `dprod:not` | | | | | | | Yes | | |
+
+\* `dprod:schedule` has no OWL domain and may be used by other resources. The
+table shows the duty use whose operational semantics are defined by this profile.
 
 ---
 
