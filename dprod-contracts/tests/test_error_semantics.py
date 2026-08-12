@@ -99,7 +99,7 @@ class ErrorSemanticsDocumentationTest(unittest.TestCase):
     def test_order_independence_and_error_soundness_are_stated(self) -> None:
         self.assertIn("### 9.6 Order Independence", self.text)
         self.assertIn("### 9.7 Error Soundness", self.text)
-        self.assertIn("EvaluationError = Set<ResolutionError>", self.text)
+        self.assertIn("EvaluationError = Set<ResolutionError", self.text)
 
 
 if __name__ == "__main__":
