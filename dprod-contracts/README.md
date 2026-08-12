@@ -10,7 +10,10 @@ DPROD Contracts is an ODRL 2.2 profile. It uses ODRL terms for all standard cons
 
 1. **Explicit duty state**: Pending -> Active -> Fulfilled/Violated, computed by an evaluator
 2. **Bilateral agreements**: Both assigner and assignee may have duties
-3. **Deterministic evaluation**: Total functions, no undefined states
+3. **Deterministic evaluation**: Total functions, no undefined states — an
+   unprocessable schedule freezes its duty and surfaces an explicit error in
+   the result (formal-semantics §5.2, §7.2), it never yields an undefined
+   outcome or a silent violation
 4. **Formal verification target**: Amenable to Dafny, Why3, Coq
 5. **Structured operand resolution**: SPARQL-style `dprod:path` property paths
 6. **Reusable schedules**: identified `dprod:Schedule` resources with pluggable,
@@ -68,7 +71,8 @@ Result = {
     decision: Permit | Deny | NotApplicable,
     assignerDuties: Set<Duty>,   // Provider obligations (SLAs)
     assigneeDuties: Set<Duty>,   // Consumer obligations
-    violations: Set<Duty>
+    violations: Set<Duty>,
+    errors: Set<ScheduleError>   // Unprocessable schedules, surfaced explicitly
 }
 ```
 
@@ -143,7 +147,7 @@ An implementation conforms to DPROD Contracts if:
 1. It accepts policies that validate against `dprod-contracts-shapes.ttl`
 2. It uses `odrl:Permission`, `odrl:Duty`, `odrl:Prohibition`, `odrl:Agreement` for standard constructs
 3. Its evaluation function produces identical results for identical inputs
-4. All functions are total (no undefined behavior)
+4. All functions are total (no undefined behavior); unprocessable schedules freeze the affected duty and surface an explicit error, and are never treated as empty schedules or violations
 5. State transitions match the operational semantics
 6. Agreement evaluation returns duties for both assigner and assignee
 

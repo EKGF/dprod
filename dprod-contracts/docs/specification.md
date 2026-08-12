@@ -179,9 +179,12 @@ the business meaning of the occurrences. Every Schedule has an IRI, exactly one
 | **Definition** | Exact grammar and interpretation rules for schedule expressions |
 
 Built-in individuals are `dprod:Rfc5545ScheduleFormat` and
-`dprod:PosixCrontabScheduleFormat`. Extensions may define additional identified
-formats, but must provide matching validation rules and a processor. A general
-label such as “cron” is not an exact format.
+`dprod:PosixCrontabScheduleFormat`. Every ScheduleFormat declares
+`dprod:carriesTimeZone`: whether its expressions embed their own timezone
+(true for RFC 5545, false for POSIX crontab). Extensions may define additional
+identified formats, but must declare `dprod:carriesTimeZone` and provide
+matching validation rules and a processor. A general label such as “cron” is
+not an exact format.
 
 ---
 
@@ -233,7 +236,7 @@ Two forms:
 |-------------------|------|-------------|------------|
 | `dct:conformsTo` | IRI of `dprod:ScheduleFormat` | 1 | Exact grammar/dialect |
 | `dprod:scheduleExpression` | `xsd:string` | 1 | Authoritative expression |
-| `dprod:scheduleTimeZone` | IANA timezone string | 0..1 | Required when the format does not carry a timezone |
+| `dprod:scheduleTimeZone` | IANA timezone string | 0..1 | Required when the format carries no timezone (`dprod:carriesTimeZone false`); when the format embeds a timezone, must match the embedded value if present |
 
 ```turtle
 ex:daily-delivery a dprod:Schedule ;
@@ -246,8 +249,10 @@ ex:delivery-duty a odrl:Duty ;
     dprod:schedule ex:daily-delivery .
 ```
 
-An RFC 5545 schedule must contain anchored `DTSTART` and `RRULE` content with
-timezone context. A POSIX crontab schedule contains exactly five time fields and
+An RFC 5545 schedule must contain anchored `DTSTART` (with `TZID`) and `RRULE`
+content, optionally followed by `EXDATE`/`RDATE` lines; the embedded `TZID` is
+the timezone authority. A POSIX crontab schedule contains exactly five time
+fields, separated by spaces or tabs, and
 declares `dprod:scheduleTimeZone`. Unknown formats, malformed expressions, and
 missing context are errors, not empty schedules. Bare frequency vocabulary
 entries such as `dct:accrualPeriodicity` remain descriptive catalog metadata and

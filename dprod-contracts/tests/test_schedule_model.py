@@ -7,9 +7,11 @@ from rdflib.namespace import DCTERMS, OWL, RDF, RDFS, SH, XSD
 
 
 CONTRACTS_DIR = Path(__file__).resolve().parents[1]
+REPOSITORY_ROOT = CONTRACTS_DIR.parent
 ONTOLOGY_FILE = CONTRACTS_DIR / "dprod-contracts.ttl"
 SHAPES_FILE = CONTRACTS_DIR / "dprod-contracts-shapes.ttl"
 FORMAL_SEMANTICS_FILE = CONTRACTS_DIR / "docs" / "formal-semantics.md"
+SPECIFICATION_FILE = CONTRACTS_DIR / "docs" / "specification.md"
 
 DPROD = Namespace("https://www.omg.org/spec/DPROD/dprod/")
 DPROD_CONTRACTS_SHAPES = Namespace(
@@ -60,6 +62,28 @@ class ScheduleOntologyTest(unittest.TestCase):
                     self.ontology,
                 )
 
+    def test_every_format_declares_whether_it_carries_a_timezone(self) -> None:
+        self.assertIn(
+            (DPROD.carriesTimeZone, RDF.type, OWL.DatatypeProperty),
+            self.ontology,
+        )
+        self.assertIn(
+            (DPROD.carriesTimeZone, RDFS.domain, DPROD.ScheduleFormat),
+            self.ontology,
+        )
+        self.assertIn(
+            (DPROD.carriesTimeZone, RDFS.range, XSD.boolean),
+            self.ontology,
+        )
+        carries = {
+            schedule_format: value.toPython()
+            for schedule_format, value in self.ontology.subject_objects(
+                DPROD.carriesTimeZone
+            )
+        }
+        self.assertTrue(carries[DPROD.Rfc5545ScheduleFormat])
+        self.assertFalse(carries[DPROD.PosixCrontabScheduleFormat])
+
     def test_obsolete_recurrence_property_is_removed(self) -> None:
         self.assertFalse(any(self.ontology.triples((DPROD.recurrence, None, None))))
         self.assertIn(
@@ -81,20 +105,25 @@ class ScheduleOntologyTest(unittest.TestCase):
             )
         )
 
+        # Same authored-artifact sweep as test_lifecycle_status_model.py.
+        # specification.md is allowed exactly one mention: the table row that
+        # documents RejectObsoleteRecurrenceShape itself.
         authored_files = [
+            REPOSITORY_ROOT / "ontology" / "dprod" / "dprod-ontology.ttl",
+            REPOSITORY_ROOT / "ontology" / "dprod" / "dprod-shapes.ttl",
+            REPOSITORY_ROOT / "examples" / "dprod-example.json",
+            REPOSITORY_ROOT / "respec" / "template.html",
             ONTOLOGY_FILE,
             CONTRACTS_DIR / "README.md",
-            *sorted(
-                path
-                for path in (CONTRACTS_DIR / "docs").glob("*.md")
-                if path.name != "specification.md"
-            ),
+            *sorted((CONTRACTS_DIR / "docs").glob("*.md")),
             *sorted((CONTRACTS_DIR / "examples").glob("*.md")),
             *sorted((CONTRACTS_DIR / "examples").glob("*.ttl")),
         ]
         for path in authored_files:
             with self.subTest(path=path):
-                self.assertNotIn("dprod:recurrence", path.read_text(encoding="utf-8"))
+                mentions = path.read_text(encoding="utf-8").count("dprod:recurrence")
+                allowed = 1 if path == SPECIFICATION_FILE else 0
+                self.assertLessEqual(mentions, allowed)
 
     def test_formal_semantics_rejects_unprocessable_schedules(self) -> None:
         semantics = FORMAL_SEMANTICS_FILE.read_text(encoding="utf-8")
@@ -102,6 +131,11 @@ class ScheduleOntologyTest(unittest.TestCase):
         self.assertIn("UnrecognizedScheduleFormat", semantics)
         self.assertIn("InvalidScheduleExpression", semantics)
         self.assertNotIn("an invalid RRULE yields ∅", semantics)
+        # Schedule errors must be consumed by the lifecycle and evaluation
+        # rules: frozen duty, error surfaced in the result, registry in Σ.
+        self.assertIn("D-FREEZE", semantics)
+        self.assertIn("errors        : Set<ScheduleError>", semantics)
+        self.assertIn("expand(duty.schedule, Σ.processors, Σ.clock)", semantics)
 
 
 class ScheduleValidationTest(unittest.TestCase):
@@ -110,7 +144,12 @@ class ScheduleValidationTest(unittest.TestCase):
         cls.ontology = Graph().parse(ONTOLOGY_FILE, format="turtle")
         cls.shapes = Graph().parse(SHAPES_FILE, format="turtle")
 
-    def validate_schedule(self, schedule: str, reference: str = "ex:schedule"):
+    def validate_schedule(
+        self,
+        schedule: str,
+        reference: str = "ex:schedule",
+        with_ontology: bool = True,
+    ):
         data = Graph().parse(
             data=f"""
                 @prefix dprod: <https://www.omg.org/spec/DPROD/dprod/> .
@@ -127,22 +166,39 @@ class ScheduleValidationTest(unittest.TestCase):
             """,
             format="turtle",
         )
+        if with_ontology:
+            return validate(
+                data_graph=data,
+                shacl_graph=self.shapes,
+                ont_graph=self.ontology,
+                inference="rdfs",
+                advanced=True,
+            )
+        # The documented CLI invocation validates shapes against bare data,
+        # with no ontology graph and no inference; sh:class checks must hold
+        # on explicitly asserted types alone.
         return validate(
             data_graph=data,
             shacl_graph=self.shapes,
-            ont_graph=self.ontology,
-            inference="rdfs",
             advanced=True,
         )
 
     def assert_conforms(self, schedule: str) -> None:
-        conforms, _, report = self.validate_schedule(schedule)
-        self.assertTrue(conforms, report)
+        for with_ontology in (True, False):
+            with self.subTest(with_ontology=with_ontology):
+                conforms, _, report = self.validate_schedule(
+                    schedule, with_ontology=with_ontology
+                )
+                self.assertTrue(conforms, report)
 
     def assert_rejected(self, schedule: str, message: str, reference="ex:schedule") -> None:
         conforms, _, report = self.validate_schedule(schedule, reference)
         self.assertFalse(conforms, report)
         self.assertIn(message, report)
+        conforms, _, report = self.validate_schedule(
+            schedule, reference, with_ontology=False
+        )
+        self.assertFalse(conforms, report)
 
     def test_rfc5545_schedule_is_accepted(self) -> None:
         self.assert_conforms(
@@ -236,13 +292,44 @@ class ScheduleValidationTest(unittest.TestCase):
         self.assert_conforms(
             """
             ex:CustomScheduleFormat a dprod:ScheduleFormat ;
+                dct:conformsTo <https://example.org/schedule-specification> ;
+                dprod:carriesTimeZone false .
+
+            ex:schedule
+                a dprod:Schedule ;
+                dct:conformsTo ex:CustomScheduleFormat ;
+                dprod:scheduleTimeZone "Europe/London" ;
+                dprod:scheduleExpression "custom schedule expression" .
+            """
+        )
+
+    def test_extension_format_must_declare_carries_timezone(self) -> None:
+        self.assert_rejected(
+            """
+            ex:CustomScheduleFormat a dprod:ScheduleFormat ;
                 dct:conformsTo <https://example.org/schedule-specification> .
 
             ex:schedule
                 a dprod:Schedule ;
                 dct:conformsTo ex:CustomScheduleFormat ;
                 dprod:scheduleExpression "custom schedule expression" .
+            """,
+            "A ScheduleFormat must declare dprod:carriesTimeZone",
+        )
+
+    def test_extension_format_without_timezone_requires_schedule_timezone(self) -> None:
+        self.assert_rejected(
             """
+            ex:CustomScheduleFormat a dprod:ScheduleFormat ;
+                dct:conformsTo <https://example.org/schedule-specification> ;
+                dprod:carriesTimeZone false .
+
+            ex:schedule
+                a dprod:Schedule ;
+                dct:conformsTo ex:CustomScheduleFormat ;
+                dprod:scheduleExpression "custom schedule expression" .
+            """,
+            "must declare one IANA timezone",
         )
 
     def test_bare_dcat_frequency_is_not_an_executable_schedule(self) -> None:
@@ -283,8 +370,97 @@ class ScheduleValidationTest(unittest.TestCase):
                 dct:conformsTo dprod:PosixCrontabScheduleFormat ;
                 dprod:scheduleExpression "0 6 * * *" .
             """,
-            "POSIX crontab schedules must declare one IANA timezone",
+            "must declare one IANA timezone",
         )
+
+    def test_posix_crontab_accepts_tab_separated_fields(self) -> None:
+        self.assert_conforms(
+            """
+            ex:schedule
+                a dprod:Schedule ;
+                dct:conformsTo dprod:PosixCrontabScheduleFormat ;
+                dprod:scheduleTimeZone "Europe/London" ;
+                dprod:scheduleExpression "0\\t6\\t*\\t*\\t*" .
+            """
+        )
+
+    def test_posix_crontab_rejects_smuggled_command(self) -> None:
+        for expression in (
+            "0 20 * * *\\t/usr/bin/reboot",
+            "0 6 * * *\\rcommand",
+            "0 6 * * *\\ncommand",
+        ):
+            with self.subTest(expression=expression):
+                self.assert_rejected(
+                    f"""
+                    ex:schedule
+                        a dprod:Schedule ;
+                        dct:conformsTo dprod:PosixCrontabScheduleFormat ;
+                        dprod:scheduleTimeZone "Europe/London" ;
+                        dprod:scheduleExpression "{expression}" .
+                    """,
+                    "POSIX crontab schedules must contain exactly five time fields",
+                )
+
+    def test_rfc5545_schedule_accepts_exception_dates(self) -> None:
+        self.assert_conforms(
+            '''
+            ex:schedule
+                a dprod:Schedule ;
+                dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+                dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260810T060000\\nRRULE:FREQ=DAILY\\nEXDATE;TZID=Europe/London:20261225T060000" .
+            '''
+        )
+
+    def test_rfc5545_schedule_rejects_duplicate_freq(self) -> None:
+        self.assert_rejected(
+            '''
+            ex:schedule
+                a dprod:Schedule ;
+                dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+                dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260810T060000\\nRRULE:FREQ=DAILY;FREQ=WEEKLY" .
+            ''',
+            "RFC 5545 schedules must include DTSTART with TZID and RRULE",
+        )
+
+    def test_rfc5545_schedule_rejects_conflicting_timezone(self) -> None:
+        self.assert_rejected(
+            '''
+            ex:schedule
+                a dprod:Schedule ;
+                dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+                dprod:scheduleTimeZone "America/New_York" ;
+                dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260810T060000\\nRRULE:FREQ=DAILY" .
+            ''',
+            "scheduleTimeZone must match the TZID embedded in the RFC 5545 expression",
+        )
+
+    def test_rfc5545_schedule_accepts_matching_redundant_timezone(self) -> None:
+        self.assert_conforms(
+            '''
+            ex:schedule
+                a dprod:Schedule ;
+                dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+                dprod:scheduleTimeZone "Europe/London" ;
+                dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260810T060000\\nRRULE:FREQ=DAILY" .
+            '''
+        )
+
+    def test_untyped_schedule_is_rejected_without_inference(self) -> None:
+        # Guards the sh:class constraints: with the ontology graph and RDFS
+        # inference, rdfs:range would type the reference implicitly, so this
+        # must be checked in the bare-CLI configuration.
+        conforms, _, report = self.validate_schedule(
+            """
+            ex:schedule
+                dct:conformsTo dprod:PosixCrontabScheduleFormat ;
+                dprod:scheduleTimeZone "Europe/London" ;
+                dprod:scheduleExpression "0 6 * * *" .
+            """,
+            with_ontology=False,
+        )
+        self.assertFalse(conforms, report)
+        self.assertIn("dprod:Schedule", report)
 
 
 if __name__ == "__main__":

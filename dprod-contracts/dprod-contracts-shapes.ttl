@@ -270,13 +270,38 @@ dprod-shapes:ScheduleReferenceShape
   ] ;
 .
 
+# The IRI-identifier requirement lives in its own shape so its message is
+# attached only to nodeKind violations, not to every ScheduleShape result.
+dprod-shapes:ScheduleIdentifierShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "schedule identifier shape" ;
+  sh:targetClass dprod:Schedule ;
+  sh:nodeKind sh:IRI ;
+  sh:message "A Schedule must have an IRI identifier." ;
+.
+
+# Every ScheduleFormat, including third-party extensions, must state whether
+# its expressions embed a timezone; the ScheduleShape timezone rule keys on it.
+dprod-shapes:ScheduleFormatShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "schedule format shape" ;
+  sh:targetClass dprod:ScheduleFormat ;
+  sh:property [
+    sh:path dprod:carriesTimeZone ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:boolean ;
+    sh:message "A ScheduleFormat must declare dprod:carriesTimeZone so validators can enforce timezone completeness."
+  ] ;
+.
+
 dprod-shapes:ScheduleShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
   rdfs:label "schedule shape" ;
   sh:targetClass dprod:Schedule ;
-  sh:nodeKind sh:IRI ;
-  sh:message "A Schedule must have an IRI identifier." ;
   sh:property [
     sh:path dct:conformsTo ;
     sh:minCount 1 ;
@@ -303,7 +328,7 @@ dprod-shapes:ScheduleShape
     sh:message "scheduleTimeZone must be one IANA timezone name."
   ] ;
   sh:sparql [
-    sh:message "RFC 5545 schedules must include DTSTART with TZID and RRULE." ;
+    sh:message "RFC 5545 schedules must include DTSTART with TZID and RRULE (optionally EXDATE/RDATE lines); RRULE parts must be standard and must not repeat FREQ." ;
     sh:select """
       PREFIX dct: <http://purl.org/dc/terms/>
       PREFIX dprod: <https://www.omg.org/spec/DPROD/dprod/>
@@ -313,8 +338,23 @@ dprod-shapes:ScheduleShape
               dprod:scheduleExpression ?expression .
         FILTER (!REGEX(
           STR(?expression),
-          "^DTSTART;TZID=[A-Za-z0-9._+-]+(/[A-Za-z0-9._+-]+)*:[0-9]{8}T[0-9]{6}\\r?\\nRRULE:FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)(;[^;\\r\\n=]+=[^;\\r\\n]+)*$"
+          "^DTSTART;TZID=[A-Za-z0-9._+-]+(/[A-Za-z0-9._+-]+)*:[0-9]{8}T[0-9]{6}(\\r?\\n(EXDATE|RDATE)(;[A-Za-z0-9-]+=[^:;\\r\\n]+)*:[^\\r\\n]+)*\\r?\\nRRULE:FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)(;(UNTIL|COUNT|INTERVAL|BYSECOND|BYMINUTE|BYHOUR|BYDAY|BYMONTHDAY|BYYEARDAY|BYWEEKNO|BYMONTH|BYSETPOS|WKST)=[^;\\r\\n]+)*(\\r?\\n(EXDATE|RDATE)(;[A-Za-z0-9-]+=[^:;\\r\\n]+)*:[^\\r\\n]+)*$"
         ))
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    sh:message "scheduleTimeZone must match the TZID embedded in the RFC 5545 expression." ;
+    sh:select """
+      PREFIX dct: <http://purl.org/dc/terms/>
+      PREFIX dprod: <https://www.omg.org/spec/DPROD/dprod/>
+      SELECT $this
+      WHERE {
+        $this dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+              dprod:scheduleExpression ?expression ;
+              dprod:scheduleTimeZone ?timeZone .
+        BIND (REPLACE(STR(?expression), "^DTSTART;TZID=([^:]+):(.|\\n|\\r)*$", "$1") AS ?embedded)
+        FILTER (STR(?timeZone) != ?embedded)
       }
     """ ;
   ] ;
@@ -328,20 +368,23 @@ dprod-shapes:ScheduleShape
         $this dct:conformsTo dprod:PosixCrontabScheduleFormat ;
               dprod:scheduleExpression ?expression .
         FILTER (
-          !REGEX(STR(?expression), "^([^ ]+ +){4}[^ ]+$") ||
-          CONTAINS(STR(?expression), "\\n")
+          !REGEX(STR(?expression), "^([^ \\t\\r\\n]+[ \\t]+){4}[^ \\t\\r\\n]+$") ||
+          CONTAINS(STR(?expression), "\\n") ||
+          CONTAINS(STR(?expression), "\\r")
         )
       }
     """ ;
   ] ;
   sh:sparql [
-    sh:message "POSIX crontab schedules must declare one IANA timezone." ;
+    sh:message "Schedules whose format carries no timezone must declare one IANA timezone." ;
     sh:select """
       PREFIX dct: <http://purl.org/dc/terms/>
       PREFIX dprod: <https://www.omg.org/spec/DPROD/dprod/>
       SELECT $this
       WHERE {
-        $this dct:conformsTo dprod:PosixCrontabScheduleFormat .
+        $this dct:conformsTo ?format .
+        FILTER (?format = dprod:PosixCrontabScheduleFormat ||
+                EXISTS { ?format dprod:carriesTimeZone false })
         FILTER NOT EXISTS { $this dprod:scheduleTimeZone ?timeZone }
       }
     """ ;

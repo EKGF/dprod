@@ -130,6 +130,7 @@ dprod:Rfc5545ScheduleFormat
   a dprod:ScheduleFormat ;
   dct:conformsTo <https://www.rfc-editor.org/rfc/rfc5545> ;
   dct:description "RFC 5545 iCalendar content containing DTSTART and RRULE."@en ;
+  dprod:carriesTimeZone true ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "RFC 5545 schedule format" ;
   rdfs:seeAlso <https://www.rfc-editor.org/rfc/rfc5545#section-3.3.10> ;
@@ -139,6 +140,7 @@ dprod:PosixCrontabScheduleFormat
   a dprod:ScheduleFormat ;
   dct:conformsTo <https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html> ;
   dct:description "Five-field POSIX crontab time specification without a command."@en ;
+  dprod:carriesTimeZone false ;
   rdfs:comment
     """The expression contains minute, hour, day-of-month, month, and
     day-of-week fields. The Schedule separately declares an IANA timezone so
@@ -289,11 +291,28 @@ dprod:scheduleTimeZone
   a owl:DatatypeProperty ;
   dct:description "IANA timezone used to interpret a schedule expression."@en ;
   rdfs:comment
-    "Required when the selected schedule format does not carry its own timezone."@en ;
+    """Required when the selected schedule format does not carry its own
+    timezone (dprod:carriesTimeZone false). When the format embeds a timezone
+    in the expression, the expression is authoritative and this property, if
+    present, must agree with it."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:Schedule ;
   rdfs:range xsd:string ;
   rdfs:label "schedule timezone" ;
+.
+
+dprod:carriesTimeZone
+  a owl:DatatypeProperty ;
+  dct:description "Whether expressions in this schedule format embed their own timezone."@en ;
+  rdfs:comment
+    """Declared by every dprod:ScheduleFormat. When false, each Schedule using
+    the format must declare dprod:scheduleTimeZone; when true, the expression
+    is the timezone authority. This flag lets validation enforce timezone
+    completeness for extension formats without knowing their grammar."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ScheduleFormat ;
+  rdfs:range xsd:boolean ;
+  rdfs:label "carries timezone" ;
 .
 
 dprod:acceptsOffer
