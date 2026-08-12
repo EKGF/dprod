@@ -33,7 +33,7 @@ dct:modified a owl:AnnotationProperty .
     Constraint types, operators, core properties). Adds only:
     - Explicit duty lifecycle (Pending -> Active -> Fulfilled/Violated)
     - Deadline property on odrl:Duty
-    - Recurrence property on odrl:Duty (RFC 5545 RRULE)
+    - Reusable schedules with pluggable, explicitly identified formats
     - Duty party roles (subject = duty bearer, object = affected party)
     - Data offer and data contract subtypes
     - Asset/party hierarchy properties
@@ -45,7 +45,7 @@ dct:modified a owl:AnnotationProperty .
     can partially understand them; DPROD-aware processors handle the
     extensions."""@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-04"^^xsd:date ;
+  dct:modified "2026-08-12"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -95,6 +95,56 @@ dprod:RuntimeReference
   dct:description "Value resolved at evaluation time."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "runtime reference" ;
+.
+
+dprod:Schedule
+  a owl:Class ;
+  dct:description "Reusable, identified definition of scheduled occurrences."@en ;
+  rdfs:comment
+    """A Schedule defines when something occurs without defining what occurs or
+    what the occurrence means. DPROD resources refer to it through
+    dprod:schedule; the referring resource and property retain the business
+    meaning. Each Schedule has one authoritative expression and identifies its
+    exact representation through dct:conformsTo. Format-specific profiles may
+    extend the built-in RFC 5545 and POSIX crontab formats."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "schedule" ;
+.
+
+dprod:ScheduleFormat
+  a owl:Class ;
+  dct:description "Identified grammar and interpretation rules for schedule expressions."@en ;
+  rdfs:comment
+    """A ScheduleFormat identifies an exact schedule grammar or dialect rather
+    than a general implementation family. Third parties may define additional
+    formats and supply corresponding validation and processing profiles."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "schedule format" ;
+.
+
+
+############################# DPROD Schedule Formats #########################
+
+
+dprod:Rfc5545ScheduleFormat
+  a dprod:ScheduleFormat ;
+  dct:conformsTo <https://www.rfc-editor.org/rfc/rfc5545> ;
+  dct:description "RFC 5545 iCalendar content containing DTSTART and RRULE."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "RFC 5545 schedule format" ;
+  rdfs:seeAlso <https://www.rfc-editor.org/rfc/rfc5545#section-3.3.10> ;
+.
+
+dprod:PosixCrontabScheduleFormat
+  a dprod:ScheduleFormat ;
+  dct:conformsTo <https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html> ;
+  dct:description "Five-field POSIX crontab time specification without a command."@en ;
+  rdfs:comment
+    """The expression contains minute, hour, day-of-month, month, and
+    day-of-week fields. The Schedule separately declares an IANA timezone so
+    evaluation does not depend on the processor's local timezone."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "POSIX crontab schedule format" ;
 .
 
 
@@ -213,19 +263,37 @@ dprod:deadline
   rdfs:label "deadline" ;
 .
 
-dprod:recurrence
-  a owl:DatatypeProperty ;
-  dct:description "RFC 5545 RRULE defining when duty instances are generated."@en ;
+dprod:schedule
+  a owl:ObjectProperty ;
+  dct:description "Reusable schedule governing occurrences associated with a resource."@en ;
   rdfs:comment
-    """An RFC 5545 RRULE string (e.g., FREQ=DAILY;BYHOUR=6;BYMINUTE=0).
-    Defines the schedule on which duty instances are created.
-    Each instance follows the standard duty lifecycle independently.
-    The deadline property defines the per-instance fulfillment window.
-    Any iCal-compliant library can parse the value."""@en ;
+    """Links any DPROD or ODRL resource to an identified dprod:Schedule.
+    This property deliberately has no domain: duties, permissions, maintenance
+    arrangements, backup obligations, and other resources may all refer to a
+    schedule. The referring resource determines what the occurrences mean."""@en ;
   rdfs:isDefinedBy dprod: ;
-  rdfs:domain odrl:Duty ;
+  rdfs:range dprod:Schedule ;
+  rdfs:label "schedule" ;
+.
+
+dprod:scheduleExpression
+  a owl:DatatypeProperty ;
+  dct:description "The single authoritative expression of a schedule."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:Schedule ;
   rdfs:range xsd:string ;
-  rdfs:label "recurrence" ;
+  rdfs:label "schedule expression" ;
+.
+
+dprod:scheduleTimeZone
+  a owl:DatatypeProperty ;
+  dct:description "IANA timezone used to interpret a schedule expression."@en ;
+  rdfs:comment
+    "Required when the selected schedule format does not carry its own timezone."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:Schedule ;
+  rdfs:range xsd:string ;
+  rdfs:label "schedule timezone" ;
 .
 
 dprod:acceptsOffer

@@ -13,7 +13,8 @@ DPROD Contracts is an ODRL 2.2 profile. It uses ODRL terms for all standard cons
 3. **Deterministic evaluation**: Total functions, no undefined states
 4. **Formal verification target**: Amenable to Dafny, Why3, Coq
 5. **Structured operand resolution**: SPARQL-style `dprod:path` property paths
-6. **Recurring duties**: `recurrence` via RFC 5545 RRULE for scheduled obligations
+6. **Reusable schedules**: identified `dprod:Schedule` resources with pluggable,
+   exact formats such as RFC 5545 and POSIX crontab
 
 DPROD Contracts is **specification-first**. The semantics document defines what any conformant implementation must do. Every DPROD policy is a valid ODRL 2.2 policy.
 
@@ -37,7 +38,7 @@ See [examples/](examples/) for complete working policies:
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
 | Operand resolution | Implicit | Explicit `dprod:path` property paths (SHACL-Core predicate + sequence subset) |
-| Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
+| Scheduling | -- | Reusable `dprod:Schedule` resources with format-specific expressions |
 | Contract types | -- | `DataOffer` (subclass of Offer), `DataContract` (subclass of Agreement) |
 
 **Note**: DPROD Contracts is an ODRL profile, not a parallel vocabulary. Standard ODRL processors can parse DPROD policies; DPROD-aware processors additionally enforce lifecycle, bilateral duties, and deterministic evaluation.
@@ -111,7 +112,7 @@ dprod-contracts/
 ├── dprod-contracts-shapes.ttl       # SHACL validation shapes
 ├── dprod-contracts-prof.ttl         # DXPROF profile declaration
 ├── examples/
-│   ├── data-contract.ttl            # Complete contract example (with recurrence)
+│   ├── data-contract.ttl            # Complete contract example (with schedule)
 │   ├── data-use-policy.ttl          # Access control example
 │   └── baseline.ttl                 # Comprehensive test data (8 offers, 2 contracts)
 └── docs/
@@ -131,7 +132,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path, select, hierarchy) + domain-specific actions, operands, and concept values |
+| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, Schedule, DataOffer, DataContract, path, select, hierarchy) + domain-specific actions, operands, and concept values |
 
 ---
 
@@ -156,4 +157,4 @@ An implementation conforms to DPROD Contracts if:
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-04
+**Version**: 0.7 | **Date**: 2026-08-12

@@ -15,6 +15,14 @@
 @prefix ex:       <https://example.org/> .
 
 
+############################# Reusable Schedules #############################
+
+ex:daily-0600-london a dprod:Schedule ;
+    rdfs:label "Daily at 06:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
+
+
 ############################# Inline Domain Vocabulary #########################
 # Only the operands, actions, and concept values used in this file.
 
@@ -123,14 +131,14 @@ ex:internal
 
     # ----- PROVIDER COMMITMENTS (Subject Duties) -----
 
-    # SLA: Daily delivery by 6:30 AM (recurrence handles scheduling)
+    # SLA: Daily delivery by 6:30 AM (the reusable Schedule handles timing)
     # Target inherited from policy (market-prices)
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Daily data delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0600-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
 
@@ -255,7 +263,7 @@ ex:internal
     dprod:objectOfDuty <https://example.org/agents/quant-research> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0600-london ;
     dprod:deadline "PT30M"^^xsd:duration ;
     dprod:dutyState dprod:Fulfilled .
 
