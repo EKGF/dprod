@@ -3,8 +3,8 @@
         "@version": 1.1,
         "dcat": "http://www.w3.org/ns/dcat#",
         "dct": "http://purl.org/dc/terms/",
-        "dprod": "https://ekgf.github.io/dprod/",
-        "dprod-shapes": "https://ekgf.github.io/dprod/shapes/",
+        "dprod": "https://www.omg.org/spec/DPROD/dprod/",
+        "dprod-shapes": "https://www.omg.org/spec/DPROD/shapes/",
         "linkedin": "https://www.linkedin.com/in/",
         "odrl": "http://www.w3.org/ns/odrl/2/",
         "owl": "http://www.w3.org/2002/07/owl#",
@@ -237,12 +237,12 @@
         },
         {
             "@id": "_:n1808fdfa142d49ab87b594308213bcf0b1",
-            "sh:namespace": "https://ekgf.github.io/dprod/",
+            "sh:namespace": "https://www.omg.org/spec/DPROD/dprod/",
             "sh:prefix": "dprod"
         },
         {
             "@id": "_:n1808fdfa142d49ab87b594308213bcf0b2",
-            "sh:namespace": "https://ekgf.github.io/dprod/shapes/",
+            "sh:namespace": "https://www.omg.org/spec/DPROD/shapes/",
             "sh:prefix": "dprod-shapes"
         },
         {
