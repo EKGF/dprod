@@ -3,9 +3,9 @@ from rdflib import Namespace, RDF, RDFS, SH, SKOS, OWL, XSD, DCAT, DCTERMS
 debug = False
 show_source = False
 
-ontology_namespace_iri = "https://ekgf.github.io/dprod/"
+ontology_namespace_iri = "https://www.omg.org/spec/DPROD/dprod/"
 DPROD = Namespace(ontology_namespace_iri)
-shapes_graph_ns_iri = "https://ekgf.github.io/dprod/shapes/"
+shapes_graph_ns_iri = "https://www.omg.org/spec/DPROD/shapes/"
 DPROD_SHAPES = Namespace(shapes_graph_ns_iri)
 
 linkedin_ns_iri = "https://www.linkedin.com/in/"
