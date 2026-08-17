@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF xml:base="https://ekgf.github.io/dprod/"
+<rdf:RDF xml:base="https://www.omg.org/spec/DPROD/dprod/"
   xmlns:sh="http://www.w3.org/ns/shacl#"
   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:sdo="http://schema.org/"
@@ -33,13 +33,13 @@
         <sh:declare>
           <rdf:Description rdf:nodeID="n405cb4d2f31a489d81be2bf558c2b0d5b1">
             <sh:prefix>dprod</sh:prefix>
-            <sh:namespace>https://ekgf.github.io/dprod/</sh:namespace>
+            <sh:namespace>https://www.omg.org/spec/DPROD/dprod/</sh:namespace>
           </rdf:Description>
         </sh:declare>
         <sh:declare>
           <rdf:Description rdf:nodeID="n405cb4d2f31a489d81be2bf558c2b0d5b2">
             <sh:prefix>dprod-shapes</sh:prefix>
-            <sh:namespace>https://ekgf.github.io/dprod/shapes/</sh:namespace>
+            <sh:namespace>https://www.omg.org/spec/DPROD/shapes/</sh:namespace>
           </rdf:Description>
         </sh:declare>
         <sh:declare>
