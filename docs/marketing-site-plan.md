@@ -26,7 +26,7 @@ Consequences for this plan:
   }
   ```
   Every other branch gets preview deployments; `main` does not.
-- The only reachable URL for the frozen 1.0 is the existing GitHub Pages site: <https://ekgf.github.io/dprod/>. That remains the canonical artifact forever (or until a deliberate archival step is taken — not in scope here).
+- The frozen 1.0 is served from the archived snapshot at <https://ekgf.org/dprod/spec/archive/1.0/> (also `/spec/main`). The original GitHub Pages site (`ekgf.github.io/dprod`) is retired and returns 404.
 - `/spec/main` in the new marketing site is served from a one-time static snapshot committed into `develop` under `site/public/spec/archive/1.0/`, downloaded verbatim from GitHub Pages and never regenerated. No rewrite, no external runtime dependency.
 - The 1.0 snapshot is downloaded from GitHub Pages once and committed at `site/public/spec/archive/1.0/` as part of phase 5. This makes the site self-contained — if Pages is ever retired, the archived content is already in the repo and nothing breaks.
 - The working-group-facing `bash build.sh` is only ever run against branches that descend from `develop`. CI must not invoke it on `main`.
@@ -114,7 +114,7 @@ Reviewers and readers need to jump between spec versions: the frozen OMG 1.0, th
 
 - **`/spec/`** — always serves the current deployment's *own* generated spec. On the production (develop) deployment this is develop's latest; on a PR preview it's that PR's spec. Reviewers clicking "Spec" in the nav of a PR preview get the right thing without thinking about it. This is what the `sync-spec` step above populates.
 - **`/spec/<version>`** — a cross-branch reference implemented as a Next.js `rewrite` (in `site/next.config.ts`) to the corresponding Vercel preview deployment's `/spec/`. Vercel preview URLs are stable per branch (`dprod-git-<branch>-ekgf.vercel.app`), so rewrites can target them by hostname. Branch slashes are normalised: `ballot/4` → `ballot-4` in the host, but the URL path `/spec/ballot/4` is preserved for readability.
-- **`/spec/main`** — served from a one-time static snapshot committed into the `develop` branch at `site/public/spec/archive/1.0/`. The content is downloaded verbatim from <https://ekgf.github.io/dprod/> (wget/curl of the full site), committed once, and never touched again. No rewrite, no proxy, no runtime external dependency, no separate branch needed. The Python generator is never invoked to produce this content.
+- **`/spec/main`** — served from a one-time static snapshot committed into the `develop` branch at `site/public/spec/archive/1.0/`. The content was downloaded verbatim from the now-retired GitHub Pages site (wget/curl of the full site) and committed once; its retired-URL references were later rewritten to their successors so the archive serves no dead links. No rewrite, no proxy, no runtime external dependency, no separate branch needed. The Python generator is never invoked to produce this content.
 
 Crucially, `/spec/` and `/spec/main` are both plain static routes — no rewrites involved. Only `/spec/<other-branch>` routes invoke Vercel rewrites to other deployments.
 
@@ -230,7 +230,7 @@ By the end of phase 4, the dprod repo holds **every piece of content** currently
 - Add `site/src/lib/spec-versions.ts` with the initial list (develop = self-or-vercel-branch, main = github-pages).
 - Generate `rewrites()` in `next.config.ts` from `SPEC_VERSIONS`.
 - Build the `<VersionPicker>` chrome at `site/src/app/spec/layout.tsx`, including the preview banner driven by `VERCEL_GIT_COMMIT_REF`.
-- Download the current https://ekgf.github.io/dprod/ output with `wget -m -p -k` (or `curl` equivalent) and commit it verbatim into `site/public/spec/archive/1.0/`. This is a one-time manual step; it is not part of the build.
+- Download the then-current GitHub Pages output with `wget -m -p -k` (or `curl` equivalent) and commit it verbatim into `site/public/spec/archive/1.0/`. This is a one-time manual step; it is not part of the build. (Done; the source site has since been retired.)
 - Verify `/spec/main` serves the archived 1.0 content (pure static route — works immediately, no Vercel dependency).
 - Verify `/spec/develop` rewrite works. This can only be end-to-end tested once #175 (Vercel project) is live — until then, verify locally by temporarily hard-coding the rewrite destination.
 

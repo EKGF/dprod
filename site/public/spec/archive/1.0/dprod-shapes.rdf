@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF xml:base="https://ekgf.github.io/dprod/shapes/"
+<rdf:RDF xml:base="https://www.omg.org/spec/DPROD/shapes/"
   xmlns:sh="http://www.w3.org/ns/shacl#"
   xmlns:dct="http://purl.org/dc/terms/"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
@@ -25,18 +25,18 @@
         <dct:contributor rdf:resource="https://www.linkedin.com/in/tonyseale"/>
         <owl:imports rdf:resource="http://www.w3.org/ns/dcat#"/>
         <owl:imports rdf:resource="http://www.w3.org/ns/shacl#"/>
-        <owl:imports rdf:resource="https://ekgf.github.io/dprod/"/>
+        <owl:imports rdf:resource="https://www.omg.org/spec/DPROD/dprod/"/>
         <owl:versionInfo>OMG Request For Comments Errata 2</owl:versionInfo>
         <sh:declare>
           <rdf:Description rdf:nodeID="n1808fdfa142d49ab87b594308213bcf0b1">
             <sh:prefix>dprod</sh:prefix>
-            <sh:namespace>https://ekgf.github.io/dprod/</sh:namespace>
+            <sh:namespace>https://www.omg.org/spec/DPROD/dprod/</sh:namespace>
           </rdf:Description>
         </sh:declare>
         <sh:declare>
           <rdf:Description rdf:nodeID="n1808fdfa142d49ab87b594308213bcf0b2">
             <sh:prefix>dprod-shapes</sh:prefix>
-            <sh:namespace>https://ekgf.github.io/dprod/shapes/</sh:namespace>
+            <sh:namespace>https://www.omg.org/spec/DPROD/shapes/</sh:namespace>
           </rdf:Description>
         </sh:declare>
         <sh:declare>
@@ -47,14 +47,14 @@
         </sh:declare>
       </owl:Ontology>
     </rdfs:isDefinedBy>
-    <sh:targetClass rdf:resource="https://ekgf.github.io/dprod/InformationSensitivityClassification"/>
+    <sh:targetClass rdf:resource="https://www.omg.org/spec/DPROD/dprod/InformationSensitivityClassification"/>
   </sh:NodeShape>
   <sh:NodeShape rdf:about="DataProductShape">
     <dct:description xml:lang="en">A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle.</dct:description>
     <rdfs:comment xml:lang="en">A data product may have input and output ports, code and metadata</rdfs:comment>
     <rdfs:isDefinedBy rdf:resource=""/>
     <rdfs:label>data product shape</rdfs:label>
-    <sh:targetClass rdf:resource="https://ekgf.github.io/dprod/DataProduct"/>
+    <sh:targetClass rdf:resource="https://www.omg.org/spec/DPROD/dprod/DataProduct"/>
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-label">
         <rdfs:isDefinedBy rdf:resource=""/>
@@ -76,7 +76,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-dataProductOwner">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/dataProductOwner"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/dataProductOwner"/>
         <sh:class rdf:resource="http://www.w3.org/ns/prov#Agent"/>
         <dct:description xml:lang="en">The agent that is accountable overall for the data product, including managing it through its lifecycle.</dct:description>
         <rdfs:label>data product owner shape</rdfs:label>
@@ -85,7 +85,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-domain">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/domain"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/domain"/>
         <dct:description xml:lang="en">The business or information area supported by the data product.</dct:description>
         <rdfs:comment xml:lang="en">The target class is left open</rdfs:comment>
         <rdfs:label>data product domain shape</rdfs:label>
@@ -94,7 +94,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-inputPort">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/inputPort"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/inputPort"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#DataService"/>
         <dct:description xml:lang="en">A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports.</dct:description>
         <rdfs:label>data product input port shape</rdfs:label>
@@ -103,7 +103,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-outputPort">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/outputPort"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/outputPort"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#DataService"/>
         <dct:description xml:lang="en">A set of services exposed by a data product to share the generated data in a way that can be understood and trusted.</dct:description>
         <rdfs:label>data product output port shape</rdfs:label>
@@ -112,7 +112,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-inputDataset">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/inputDataset"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/inputDataset"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
         <dct:description xml:lang="en">The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports.</dct:description>
         <rdfs:label>data product input dataset shape</rdfs:label>
@@ -121,7 +121,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-outputDataset">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/outputDataset"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/outputDataset"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
         <dct:description xml:lang="en">The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports.</dct:description>
         <rdfs:label>data product output dataset shape</rdfs:label>
@@ -130,7 +130,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-purpose">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/purpose"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/purpose"/>
         <sh:datatype rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
         <dct:description xml:lang="en">A description of the objectives and intended usage of the data product.</dct:description>
         <rdfs:label>data product purpose shape</rdfs:label>
@@ -148,8 +148,8 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataProduct-lifecycleStatus">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/lifecycleStatus"/>
-        <sh:class rdf:resource="https://ekgf.github.io/dprod/DataProductLifecycleStatus"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/lifecycleStatus"/>
+        <sh:class rdf:resource="https://www.omg.org/spec/DPROD/dprod/DataProductLifecycleStatus"/>
         <dct:description xml:lang="en">The development status of the data product. </dct:description>
         <rdfs:label>data product lifecycle status shape</rdfs:label>
       </sh:PropertyShape>
@@ -159,7 +159,7 @@
     <rdfs:label>protocol shape</rdfs:label>
     <dct:description xml:lang="en">A detailed specification, possibly including a specific version, for how to communicate with a service.</dct:description>
     <rdfs:isDefinedBy rdf:resource=""/>
-    <sh:targetClass rdf:resource="https://ekgf.github.io/dprod/Protocol"/>
+    <sh:targetClass rdf:resource="https://www.omg.org/spec/DPROD/dprod/Protocol"/>
   </sh:NodeShape>
   <sh:NodeShape rdf:about="DatasetShape">
     <rdfs:isDefinedBy rdf:resource=""/>
@@ -220,8 +220,8 @@
     <sh:property>
       <sh:PropertyShape rdf:about="http://www.w3.org/ns/dcat#Dataset-informationSensitivityClassification">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/informationSensitivityClassification"/>
-        <sh:class rdf:resource="https://ekgf.github.io/dprod/InformationSensitivityClassification"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/informationSensitivityClassification"/>
+        <sh:class rdf:resource="https://www.omg.org/spec/DPROD/dprod/InformationSensitivityClassification"/>
         <dct:description xml:lang="en">More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization.</dct:description>
         <rdfs:label>dataset information sensitivity classification shape</rdfs:label>
       </sh:PropertyShape>
@@ -231,7 +231,7 @@
     <rdfs:label>security schema type shape</rdfs:label>
     <dct:description xml:lang="en">A classification encompassing a set of rules used for authentication and communication.</dct:description>
     <rdfs:isDefinedBy rdf:resource=""/>
-    <sh:targetClass rdf:resource="https://ekgf.github.io/dprod/SecuritySchemaType"/>
+    <sh:targetClass rdf:resource="https://www.omg.org/spec/DPROD/dprod/SecuritySchemaType"/>
   </sh:NodeShape>
   <sh:NodeShape rdf:about="DataServiceShape">
     <rdfs:isDefinedBy rdf:resource=""/>
@@ -241,7 +241,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataService-isAccessServiceOf">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/isAccessServiceOf"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/isAccessServiceOf"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
         <dct:description xml:lang="en">The dataset distribution that is being offered through this data service.</dct:description>
         <rdfs:label>data service is access service of shape</rdfs:label>
@@ -250,7 +250,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataService-protocol">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/protocol"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/protocol"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#Protocol"/>
         <dct:description xml:lang="en">A protocol (possibly one of many options) used to communicate with this data service.</dct:description>
         <rdfs:label>data service protocol shape</rdfs:label>
@@ -259,7 +259,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="DataService-securitySchemaType">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/securitySchemaType"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/securitySchemaType"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#SecuritySchemaType"/>
         <dct:description xml:lang="en">The security schema type used for authentication and communication with this Data Service.</dct:description>
         <rdfs:label>data service security schema type shape</rdfs:label>
@@ -313,7 +313,7 @@
     <sh:property>
       <sh:PropertyShape rdf:about="Distribution-isDistributionOf">
         <rdfs:isDefinedBy rdf:resource=""/>
-        <sh:path rdf:resource="https://ekgf.github.io/dprod/isDistributionOf"/>
+        <sh:path rdf:resource="https://www.omg.org/spec/DPROD/dprod/isDistributionOf"/>
         <sh:class rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
         <dct:description xml:lang="en">The dataset that this distribution makes available.</dct:description>
         <rdfs:label>distribution is distribution of shape</rdfs:label>
@@ -331,7 +331,7 @@
   <sh:NodeShape rdf:about="DataProductLifecycleStatusShape">
     <rdfs:label>data product lifecycle status shape</rdfs:label>
     <dct:description xml:lang="en">The development status of the data product taken from a controlled list (e.g. Ideation, Design, Build, Deploy, Consume).</dct:description>
-    <sh:targetClass rdf:resource="https://ekgf.github.io/dprod/DataProductLifecycleStatus"/>
+    <sh:targetClass rdf:resource="https://www.omg.org/spec/DPROD/dprod/DataProductLifecycleStatus"/>
     <rdfs:isDefinedBy rdf:resource=""/>
   </sh:NodeShape>
 </rdf:RDF>
