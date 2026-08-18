@@ -115,17 +115,20 @@ dprod:deadline "2026-12-31T23:59:59Z"^^xsd:dateTime .
 dprod:deadline "P30D"^^xsd:duration .
 ```
 
-### Recurrence Schedule
+### Schedule
 
 **Business term:** `schedule`, `frequency`, `how often`
-**DPROD property:** `dprod:recurrence`
-**Used on:** `odrl:Duty`
-**Cardinality:** 0..1
-**Datatype:** `xsd:string` (RFC 5545 RRULE)
+**DPROD property:** `dprod:schedule`
+**Used on:** Any resource whose meaning includes scheduled occurrences; duties use 0..1
+**Value:** IRI of a `dprod:Schedule`
 **Source:** DPROD
 **Example:**
 ```turtle
-dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" .
+ex:daily-0600-london a dprod:Schedule ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
+
+ex:deliveryDuty dprod:schedule ex:daily-0600-london .
 ```
 
 ---
@@ -219,7 +222,7 @@ ex:marketDataSchema a odrl:Asset ;
 ### Delivery SLA
 
 **Business term:** `data delivery`, `SLA`, `timeliness guarantee`
-**DPROD pattern:** `odrl:Duty` with `ex:deliver` + `dprod:recurrence` + `dprod:deadline`
+**DPROD pattern:** `odrl:Duty` with `ex:deliver` + `dprod:schedule` + `dprod:deadline`
 **Example:**
 ```turtle
 odrl:obligation [
@@ -227,7 +230,7 @@ odrl:obligation [
     dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:deliver ;
     odrl:target ex:marketPrices ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0600-london ;
     dprod:deadline "PT30M"^^xsd:duration
 ] .
 ```
@@ -377,7 +380,7 @@ odrl:permission [
 | Status (offer) | `dprod:offerLifecycleStatus` (`skos:Concept`) | DPROD |
 | Status (contract) | `dprod:contractLifecycleStatus` (`skos:Concept`) | DPROD |
 | State (duty) | `dprod:dutyState` (`skos:Concept`) | DPROD |
-| Delivery SLA | Duty + `deliver` + `recurrence` + `deadline` | DPROD |
+| Delivery SLA | Duty + `deliver` + `schedule` + `deadline` | DPROD |
 | Schema guarantee | Duty + `conformTo` | DPROD |
 | Quality SLA | Duty + `conformTo` + constraint | DPROD |
 | Change notice | Duty + `notify` + `deadline` | DPROD |
@@ -389,10 +392,10 @@ odrl:permission [
 | Team membership | `dprod:memberOf` | DPROD |
 | Data hierarchy | `dprod:partOf` | DPROD |
 | Version chain | `prov:wasRevisionOf` | W3C PROV |
-| Schedule | `dprod:recurrence` (RRULE) | DPROD |
+| Schedule | `dprod:schedule` → identified `dprod:Schedule` | DPROD |
 | Deadline | `dprod:deadline` | DPROD |
 | Contract link | `dprod:acceptsOffer` | DPROD |
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-04
+**Version**: 0.7 | **Date**: 2026-08-12

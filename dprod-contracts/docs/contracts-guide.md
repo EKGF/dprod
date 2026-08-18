@@ -14,7 +14,7 @@ DataOffer (Offer)          DataContract (Agreement)
 | Provider duties          |  | Provider duties          |
 | Consumer rights          |  | Consumer rights          |
 | Prohibitions             |  | Consumer duties          |
-| Recurrence rules         |  | Prohibitions             |
+| Schedule rules           |  | Prohibitions             |
 +--------------------------+  | Status + duty state      |
               accept          +--------------------------+
             -------->
@@ -84,8 +84,15 @@ Every contract starts with a type, profile declaration, and provider identity.
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
 @prefix ex:       <https://example.org/> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+ex:daily-0600-london a dprod:Schedule ;
+    rdfs:label "Daily at 06:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
 
 ex:contract a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
@@ -106,7 +113,7 @@ Rules inherit `odrl:target` from the policy unless they target a different asset
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0600-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
 
@@ -190,7 +197,7 @@ odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:deliver ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0600-london ;
     dprod:deadline "PT30M"^^xsd:duration
 ] .
 ```
@@ -247,31 +254,59 @@ The constraint can check any DPROD operand -- timeliness, classification, enviro
 
 ---
 
-## Recurrence
+## Schedule
 
-Recurring duties use `dprod:recurrence` -- an RFC 5545 RRULE string. Combined with `dprod:deadline`, this defines a schedule and fulfillment window.
+`dprod:schedule` links a duty or another DPROD resource to an identified,
+reusable `dprod:Schedule`. The Schedule declares exactly one representation
+through `dct:conformsTo` and exactly one `dprod:scheduleExpression`. The
+referring resource defines what the occurrences mean. On a duty, the Schedule
+and `dprod:deadline` define instance generation and the fulfillment window.
 
 ```turtle
+ex:daily-0600-london a dprod:Schedule ;
+    rdfs:label "Daily at 06:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
+
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:deliver ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0600-london ;
     dprod:deadline "PT30M"^^xsd:duration
 ] .
 ```
 
 This means: deliver market prices daily at 06:00 (target inherited from policy), with a 30-minute window to fulfill.
 
-### Common RRULE Patterns
+The built-in formats are `dprod:Rfc5545ScheduleFormat` and
+`dprod:PosixCrontabScheduleFormat`. POSIX crontab schedules also declare
+`dprod:scheduleTimeZone`, because the five-field expression does not carry a
+timezone. RFC 5545 expressions carry their timezone in `TZID`;
+`dprod:scheduleTimeZone` is then redundant and, if present, must match the
+embedded `TZID`. Extension formats must identify an exact dialect, declare
+`dprod:carriesTimeZone` so validators know whether `dprod:scheduleTimeZone`
+is required, and provide their own SHACL and processor profile. Unknown or
+malformed formats fail validation or processing; they never silently produce
+an empty schedule.
 
-| Pattern | RRULE |
-|---------|-------|
-| Daily at 06:00 | `FREQ=DAILY;BYHOUR=6;BYMINUTE=0` |
-| Weekly on Monday | `FREQ=WEEKLY;BYDAY=MO` |
-| Monthly on the 1st | `FREQ=MONTHLY;BYMONTHDAY=1` |
-| Every 15 minutes | `FREQ=MINUTELY;INTERVAL=15` |
-| Hourly | `FREQ=HOURLY` |
+### Common RFC 5545 Schedule Expressions
+
+An RFC 5545 `dprod:scheduleExpression` is iCalendar content: a `DTSTART` line
+that anchors the first occurrence, the time of day, and the timezone (`TZID`),
+followed by an `RRULE` line that defines the recurrence. Optional `EXDATE` /
+`RDATE` lines remove or add specific occurrences. Time of day comes from
+`DTSTART`, not from `BYHOUR`/`BYMINUTE` rule parts. The `\n` below is the
+Turtle escape for the newline separating the lines, as in the example above.
+
+| Pattern | `dprod:scheduleExpression` |
+|---------|----------------------------|
+| Daily at 06:00 | `DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY` |
+| Weekly on Monday at 09:00 | `DTSTART;TZID=Europe/London:20260105T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO` |
+| Monthly on the 1st | `DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=1` |
+| Every 15 minutes | `DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MINUTELY;INTERVAL=15` |
+| Hourly | `DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=HOURLY` |
+| Daily at 06:00, skipping Christmas Day | `DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY\nEXDATE;TZID=Europe/London:20261225T060000` |
 
 Each generated instance follows the standard duty lifecycle independently (Pending -> Active -> Fulfilled/Violated).
 
@@ -281,7 +316,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 
 ### Simple File Drop
 
-Read-only access, no recurrence, no consumer duties. Target inherited from policy.
+Read-only access, no schedule, no consumer duties. Target inherited from policy.
 
 ```turtle
 ex:contract a dprod:DataOffer ;
@@ -303,6 +338,11 @@ ex:contract a dprod:DataOffer ;
 Daily delivery, schema conformance, display + non-display, monthly reporting. Target inherited from policy unless overridden.
 
 ```turtle
+ex:daily-0700-london a dprod:Schedule ;
+    rdfs:label "Daily at 07:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T070000\nRRULE:FREQ=DAILY" .
+
 ex:contract a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
@@ -311,7 +351,7 @@ ex:contract a dprod:DataOffer ;
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0700-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
     odrl:obligation [
@@ -345,6 +385,12 @@ ex:contract a dprod:DataOffer ;
 High-frequency delivery with quality SLA and change notification. Target inherited from policy unless overridden.
 
 ```turtle
+ex:every-minute-london a dprod:Schedule ;
+    rdfs:label "Every minute Europe/London" ;
+    dct:conformsTo dprod:PosixCrontabScheduleFormat ;
+    dprod:scheduleTimeZone "Europe/London" ;
+    dprod:scheduleExpression "* * * * *" .
+
 ex:contract a dprod:DataOffer ;
     odrl:profile <https://www.omg.org/spec/DPROD/> ;
     odrl:assigner ex:dataTeam ;
@@ -353,7 +399,7 @@ ex:contract a dprod:DataOffer ;
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
+        dprod:schedule ex:every-minute-london ;
         dprod:deadline "PT30S"^^xsd:duration
     ] ;
     odrl:obligation [
@@ -538,7 +584,7 @@ ex:subscription dprod:acceptsOffer ex:contract-v2 .
 
 ## Complete Example
 
-See [examples/data-contract.ttl](../examples/data-contract.ttl) for a full working contract with bilateral duties, recurrence, schema conformance, and subscription.
+See [examples/data-contract.ttl](../examples/data-contract.ttl) for a full working contract with bilateral duties, schedule, schema conformance, and subscription.
 
 For comprehensive test data covering all patterns, see [examples/baseline.ttl](../examples/baseline.ttl).
 
@@ -555,10 +601,11 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 7. Each permission and prohibition has exactly one `odrl:action` and one `odrl:target`
 8. Provider duties have `dprod:subjectOfDuty` set to the provider
 9. Deadlines use `xsd:dateTime` or `xsd:duration`
-10. Recurrence uses a valid RFC 5545 RRULE starting with `FREQ=`
-11. Constraints have `leftOperand`, `operator`, and `rightOperand`
-12. LogicalConstraints use exactly one of `odrl:and`, `odrl:or`, or `dprod:not`
-13. Validate against SHACL shapes:
+10. Schedule references use IRIs; each Schedule has one exact format and one expression
+11. RFC 5545 schedules include `DTSTART` with `TZID`; schedules whose format carries no timezone (such as POSIX crontab) declare an IANA timezone; extension formats declare `dprod:carriesTimeZone`
+12. Constraints have `leftOperand`, `operator`, and `rightOperand`
+13. LogicalConstraints use exactly one of `odrl:and`, `odrl:or`, or `dprod:not`
+14. Validate against SHACL shapes:
 
 ```bash
 shacl validate --shapes dprod-contracts-shapes.ttl --data my-contract.ttl

@@ -3,7 +3,7 @@ title: "DPROD Contracts Formal Semantics"
 subtitle: "Deterministic Policy Evaluation for Data Governance"
 version: "0.7"
 status: "Draft"
-date: 2026-02-03
+date: 2026-08-12
 abstract: |
   DPROD Contracts is a proper ODRL 2.2 profile with deterministic, total evaluation
   semantics and bilateral agreement support. This document specifies the formal
@@ -76,7 +76,8 @@ Where Γ is a typing context mapping identifiers to types.
 ### 2.2 Types
 
 ```
-τ ::= Agent | Action | Asset | Condition | Time | Duration | Boolean | Value | Norm | State | Policy
+τ ::= Agent | Action | Asset | Condition | Time | Duration | Boolean | Value
+    | Schedule | ScheduleFormat | Norm | State | Policy
 ```
 
 ### 2.3 Key Typing Rules
@@ -93,9 +94,9 @@ Duty:
 
 ```
 Γ ⊢ a : Agent     Γ ⊢ x : Action     Γ ⊢ s : Asset
-Γ ⊢ c : Condition     Γ ⊢ dl : Deadline     Γ ⊢ r : Recurrence
+Γ ⊢ c : Condition     Γ ⊢ dl : Deadline     Γ ⊢ sc : Schedule
 --------------------------------------------------------------------------
-        Γ ⊢ Duty(a, x, s, c, dl, r) : Norm
+        Γ ⊢ Duty(a, x, s, c, dl, sc) : Norm
 ```
 
 Prohibition:
@@ -138,13 +139,16 @@ We define DPROD Contracts's abstract syntax using a typed algebraic grammar.
 ```
 Norm ::= Permission(subject: Agent, action: Action, asset: Asset, condition: Condition?)
        | Duty(subject: Agent, action: Action, asset: Asset,
-              object: Agent?, condition: Condition?, deadline: Deadline?, recurrence: Recurrence?)
+              object: Agent?, condition: Condition?, deadline: Deadline?, schedule: Schedule?)
        | Prohibition(subject: Agent, action: Action, asset: Asset, condition: Condition?)
 
 Deadline ::= AbsoluteDeadline(time: Time)
            | RelativeDeadline(duration: Duration)
 
-Recurrence ::= RRule(rule: String)
+Schedule ::= Schedule(identifier: IRI, format: ScheduleFormat,
+                      expression: String, timeZone: String?)
+
+ScheduleFormat ::= Rfc5545 | PosixCrontab | Extension(identifier: IRI)
 ```
 
 **Notes**:
@@ -173,7 +177,10 @@ Recurrence ::= RRule(rule: String)
 | `Agreement` | `odrl:Agreement` | `DataContract` is a subtype |
 | `lte` | `odrl:lteq` | |
 | `gte` | `odrl:gteq` | |
-| `recurrence` | `dprod:recurrence` | RFC 5545 RRULE string |
+| `schedule` | `dprod:schedule` | IRI of a reusable `dprod:Schedule` |
+| `format` | `dct:conformsTo` | Exact `dprod:ScheduleFormat` identifier |
+| `expression` | `dprod:scheduleExpression` | One authoritative schedule expression |
+| `timeZone` | `dprod:scheduleTimeZone` | IANA timezone when the format does not carry one |
 
 ### 3.3 Conditions
 
@@ -235,7 +242,8 @@ The formal `Request` evaluation input is not an RDF `odrl:Request` policy. It is
     clock       : Time,
     state       : Duty → State,
     activatedAt : Duty → Time?,           // When duty became Active
-    performed   : Set<(Agent, Action, Asset, Time)>
+    performed   : Set<(Agent, Action, Asset, Time)>,
+    processors  : ScheduleFormat → Processor?   // Registered schedule processors
 }
 
 State ::= Pending | Active | Fulfilled | Violated
@@ -253,18 +261,24 @@ State ::= Pending | Active | Fulfilled | Violated
     clock       = currentSystemTime,
     state       = λd. Pending,
     activatedAt = λd. ⊥,
-    performed   = ∅
+    performed   = ∅,
+    processors  = configuredProcessorRegistry
 }
 ```
+
+`processors` is the deployment's registry of schedule-format processors. It is
+part of the evaluation state so that schedule expansion (§5.5) is a function of
+Σ alone: two evaluators with the same Σ — including the same registry — produce
+the same occurrences or the same explicit error.
 
 **State Update Notation**: We use `Σ[f ↦ v]` to denote state update:
 
 ```
 Σ[state(d) ↦ Active] =
-    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt, Σ.performed)
+    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt, Σ.performed, Σ.processors)
 
 Σ[state(d) ↦ Active, activatedAt(d) ↦ t] =
-    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt[d ↦ t], Σ.performed)
+    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt[d ↦ t], Σ.performed, Σ.processors)
 ```
 
 ### 4.2 Environment
@@ -307,9 +321,15 @@ Result = {
     grantorDuties : Set<Duty>,    // Duties on the grantor (data provider)
     granteeDuties : Set<Duty>,    // Duties on the grantee (data consumer)
     violations    : Set<Duty>,
+    errors        : Set<ScheduleError>,   // Schedules that could not be processed (§5.5)
     explanation   : Explanation
 }
 ```
+
+A result with `errors ≠ ∅` is a **defined** outcome, not undefined behavior:
+the duties whose schedules raised the errors are frozen (§5.2) and the caller
+is told exactly why. Conformant processors MUST surface the errors and MUST
+NOT silently drop, fulfill, or violate the affected duties.
 
 ---
 
@@ -369,6 +389,22 @@ performed(duty.subject, duty.action, duty.asset, Σ) = false
 
 Violation is **time-driven**: when the deadline passes without fulfillment, the duty is violated.
 
+**Rule D-FREEZE** (schedule error — no transition):
+
+```
+d.schedule ≠ ⊥
+occurrences(d, Σ) = Error(e)
+─────────────────────────────
+Σ' = Σ    ∧    e ∈ Eval(...).errors
+```
+
+A duty whose schedule cannot be processed (§5.5) is **frozen**: it makes no
+state transition — in particular it never becomes Violated for want of
+occurrences — and the error is surfaced in the evaluation result (§4.4,
+§7.2). Freezing is deliberate: an unprocessable schedule is a configuration
+defect of the deployment, not a breach by the obligated party, and every
+conformant processor reaches the same frozen state instead of diverging.
+
 **Algorithmic form** (for implementation):
 
 ```
@@ -376,7 +412,9 @@ updateDutyStates(duties, Env, Σ) =
     foldl(updateOneDuty(Env), Σ, duties)
 
 updateOneDuty(Env)(Σ, d) =
-    case Σ.state(d) of
+    if d.schedule ≠ ⊥ ∧ occurrences(d, Σ) = Error(e)
+    then Σ                                   -- D-FREEZE: no transition
+    else case Σ.state(d) of
         Pending → if d.condition = ⊥ ∨ ⟦d.condition⟧(Env)
                   then Σ[state(d) ↦ Active, activatedAt(d) ↦ Σ.clock]
                   else Σ
@@ -427,29 +465,57 @@ performed(a, x, s, Σ) :=
 
 `Σ.performed` records exact actions as they occur. `performed()` is the query-time subsumption check used in all fulfillment and violation rules. This is a bounded graph traversal over the `odrl:includedIn` hierarchy.
 
-### 5.5 Recurrence Semantics
+### 5.5 Schedule Semantics
 
-A duty with a `recurrence` field defines a recurring obligation. The recurrence value is an RFC 5545 RRULE string (e.g., `FREQ=DAILY;BYHOUR=6;BYMINUTE=0`).
+A duty with a `schedule` field is a template for obligations generated at the
+schedule's occurrences. The schedule is an identified resource, independent of
+the duty and reusable by other resources. The resource that refers to the
+schedule determines what an occurrence means; the Schedule only determines when
+it occurs.
 
 **Instance Generation**:
 
 ```
-expand : Recurrence × Time → Set<Time>
+ScheduleError ::= UnrecognizedScheduleFormat(format: IRI)
+                | InvalidScheduleExpression(schedule: IRI, reason: String)
 
-expand(RRule(rule), clock) =
-    The set of occurrence times generated by parsing rule as an
-    RFC 5545 RRULE, evaluated relative to clock.
+expand : Schedule × (ScheduleFormat → Processor?) × Time → Set<Time> | ScheduleError
+
+expand(schedule, processors, clock) =
+    case processors(schedule.format) of
+        None    → UnrecognizedScheduleFormat(schedule.format)
+        Some(p) → case p.parse(schedule.expression, schedule.timeZone) of
+                      Error(reason) → InvalidScheduleExpression(schedule.identifier, reason)
+                      Valid(rule)   → p.occurrences(rule, clock)
 ```
 
-`expand` is a **pure function**: given the same `RRule` value and clock value, it always produces the same set of occurrence times. It is total (an invalid RRULE yields ∅) and deterministic.
+`expand` is a **pure function**: given the same Schedule, processor registry,
+and clock value, it produces the same occurrence times or the same explicit
+error. The registry is `Σ.processors` (§4.1), so expansion depends only on Σ.
+An unknown format, missing processor, malformed expression, missing anchor, or
+missing timezone is a hard error. It MUST NOT be interpreted as an empty
+schedule. SHACL catches structural errors before evaluation; the selected
+format processor performs complete grammar validation.
+
+The built-in `Rfc5545` processor consumes RFC 5545 content containing an
+anchored `DTSTART` with `TZID` and an `RRULE`. The built-in `PosixCrontab`
+processor consumes exactly five time fields and requires
+`dprod:scheduleTimeZone`. Extension formats are processable only when the
+runtime has an explicitly registered processor for their format IRI.
 
 **Condition Guard**: If the duty template has a condition, instances are only generated for occurrence times where the condition holds:
 
 ```
 occurrences(duty, Σ) =
-    let times = expand(duty.recurrence, Σ.clock)
-    in  { t ∈ times | duty.condition = ⊥ ∨ ⟦duty.condition⟧(Σ.env) }
+    case expand(duty.schedule, Σ.processors, Σ.clock) of
+        Error(e) → Error(e)
+        times    → { t ∈ times |
+                     duty.condition = ⊥ ∨ ⟦duty.condition⟧(Σ.env) }
 ```
+
+An `Error` result freezes the duty (Rule D-FREEZE, §5.2) and is surfaced in
+the evaluation result's `errors` field (§4.4, §7.2). No lifecycle rule
+consumes an errored schedule as if it had occurrences.
 
 **Per-Instance Lifecycle**:
 
@@ -463,11 +529,14 @@ instantiate(duty, t) =
          object     = duty.object,
          condition  = ⊥,
          deadline   = duty.deadline,
-         recurrence = ⊥)
+         schedule   = ⊥)
     with activationTime = t
 ```
 
-Fields carried from the template: `subject`, `action`, `asset`, `object`, `deadline`. Fields dropped: `condition` (the template condition gates instance generation, not individual instances) and `recurrence` (instances are not themselves recurring).
+Fields carried from the template: `subject`, `action`, `asset`, `object`,
+`deadline`. Fields dropped: `condition` (the template condition gates instance
+generation, not individual instances) and `schedule` (instances are not
+themselves scheduled templates).
 
 Each instance follows the standard lifecycle (§5.1–§5.2) independently:
 - Activation occurs at the occurrence time `t`
@@ -476,9 +545,10 @@ Each instance follows the standard lifecycle (§5.1–§5.2) independently:
 
 **Interaction with other fields**:
 
-- `recurrence` defines **when** duty instances are generated (scheduling)
+- `schedule` defines **when** duty instances are generated
 - `deadline` defines **how long** each instance has to be fulfilled (window)
-- Permissions and prohibitions are unaffected by recurrence (recurrence applies only to duties)
+- Other resources may refer to the same Schedule, but their profile must define
+  what schedule occurrences mean for that resource
 
 ---
 
@@ -671,21 +741,25 @@ Eval(request, policies, Σ) =
     let grantorDuties = { d ∈ allDuties | d.subject = policy(d).grantor }
     let granteeDuties = { d ∈ allDuties | d.subject = policy(d).grantee }
 
-    // Step 3: Update duty states
+    // Step 3: Collect schedule errors (frozen duties, Rule D-FREEZE)
+    let errors = { e | d ∈ allDuties, d.schedule ≠ ⊥,
+                       occurrences(d, Σ) = Error(e) }
+
+    // Step 3a: Update duty states (frozen duties make no transition)
     let Σ' = updateDutyStates(allDuties, Env, Σ)
 
     // Step 4: Check for active prohibitions (prohibition overrides)
     if ∃p ∈ prohibitions. NormActive(p, Env) then
-        return {decision: Deny, ...}
+        return {decision: Deny, errors: errors, ...}
 
     // Step 5: Check for granting privilege
     if ∄p ∈ permissions. NormActive(p, Env) then
-        return {decision: NotApplicable, ...}
+        return {decision: NotApplicable, errors: errors, ...}
 
     // Step 6: Check for violations
     let violated = { d ∈ allDuties | Σ'.state(d) = Violated }
     if violated ≠ ∅ then
-        return {decision: Deny, violations: violated, ...}
+        return {decision: Deny, violations: violated, errors: errors, ...}
 
     // Step 7: Collect active duties for both parties
     let activeGrantor = { d ∈ grantorDuties | Σ'.state(d) = Active }
@@ -695,9 +769,16 @@ Eval(request, policies, Σ) =
         decision: Permit,
         grantorDuties: activeGrantor,
         granteeDuties: activeGrantee,
-        violations: ∅
+        violations: ∅,
+        errors: errors
     }
 ```
+
+Every return path carries `errors`. A frozen duty (Rule D-FREEZE) never
+appears in `violated`, `activeGrantor`, or `activeGrantee`; its schedule
+error appears in `errors` instead, so unprocessable schedules are visible in
+the result rather than influencing the decision in implementation-defined
+ways.
 
 ### 7.3 Policy Applicability
 
@@ -765,11 +846,19 @@ No specificity ordering within norm types. All matching norms contribute.
 
 ## 9. Correctness Properties
 
-**Note on recurrence**: All four theorems below hold in the presence of `recurrence`. The `expand` function is total and deterministic (§5.5), each generated instance follows the standard lifecycle independently, and recurrence applies only to duties — permissions and prohibitions are unaffected.
+**Note on schedules**: The theorems below hold for all well-formed inputs,
+including those whose schedules cannot be processed. `expand` is deterministic
+and returns either occurrences or an explicit error (§5.5); it never hides an
+invalid schedule as an empty set. An unprocessable schedule freezes its duty
+(Rule D-FREEZE, §5.2) and surfaces the error in the result's `errors` field
+(§7.2), so it changes what the result contains, never whether a result exists.
+Each generated duty instance follows the standard lifecycle independently.
 
 ### 9.1 Totality
 
-**Theorem**: For all well-formed inputs, `Eval` terminates with a defined result.
+**Theorem**: For all well-formed inputs, `Eval` terminates with a defined
+result. When a schedule is unprocessable, the defined result carries the
+schedule error explicitly; there is no undefined branch.
 
 ```
 ∀ request, policies, Σ.

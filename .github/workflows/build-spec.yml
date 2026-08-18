@@ -43,5 +43,7 @@ jobs:
           pip install -r requirements.txt
           echo "Running contracts tests..."
           python -m unittest discover -s dprod-contracts/tests
+          echo "Validating contracts examples against SHACL shapes..."
+          python dprod-contracts/validate.py
           echo "Running spec generator..."
           python spec-generator/main.py

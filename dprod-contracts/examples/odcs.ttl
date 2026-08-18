@@ -25,6 +25,25 @@
 @prefix ex:       <https://example.org/> .
 
 
+############################# Reusable Schedules #############################
+
+ex:daily-0900-london a dprod:Schedule ;
+    rdfs:label "Daily at 09:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T090000\nRRULE:FREQ=DAILY" .
+
+ex:daily-2000-london a dprod:Schedule ;
+    rdfs:label "Daily at 20:00 Europe/London" ;
+    dct:conformsTo dprod:PosixCrontabScheduleFormat ;
+    dprod:scheduleExpression "0 20 * * *" ;
+    dprod:scheduleTimeZone "Europe/London" .
+
+ex:monthly-day-5-london a dprod:Schedule ;
+    rdfs:label "Monthly on day 5 in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260105T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=5" .
+
+
 ############################# Inline Domain Vocabulary #########################
 # Only the operands, actions, and concept values used in this file.
 
@@ -262,7 +281,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         rdfs:label "Daily data delivery by 09:00" ;
         dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=9;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0900-london ;
         dprod:deadline "PT1H"^^xsd:duration ;
         odrl:constraint [
             a odrl:Constraint ;
@@ -351,7 +370,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
 # DPROD Contracts:
 #   The quality rule becomes a conformance duty with a completeness constraint.
 #   ODCS severity/businessImpact are operational metadata, not policy.
-#   ODCS schedule (cron) maps to dprod:recurrence (RFC 5545 RRULE).
+#   ODCS schedule (cron) maps to an identified dprod:schedule.
 
     odrl:obligation [
         a odrl:Duty ;
@@ -359,7 +378,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:conformTo ;
         odrl:target ex:tbl-core-payments ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
+        dprod:schedule ex:daily-2000-london ;
         odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand ex:completeness ;
@@ -399,7 +418,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:conformTo ;
         odrl:target ex:tbl-core-payments ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
+        dprod:schedule ex:daily-2000-london ;
         odrl:constraint [
             a odrl:Constraint ;
             odrl:leftOperand ex:volumeCount ;
@@ -696,7 +715,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Monthly usage reporting" ;
         odrl:action ex:report ;
-        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=5" ;
+        dprod:schedule ex:monthly-day-5-london ;
         dprod:deadline "P5D"^^xsd:duration
     ] .
 
