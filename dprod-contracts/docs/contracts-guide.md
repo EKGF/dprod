@@ -459,14 +459,16 @@ ex:contract odrl:target ex:asset1 , ex:asset2 ;
 
 ### Team Delegation
 
-Use `dprod:memberOf` to model team hierarchies. A permission granted to a team applies to its members via hierarchy subsumption during evaluation:
+Use `odrl:partOf` with explicit `odrl:PartyCollection` nodes to model team hierarchies. A permission granted to a team applies to its members through DPROD's typed transitive collection matching:
 
 ```turtle
 ex:analyst a odrl:Party ;
-    dprod:memberOf ex:analyticsTeam .
+    odrl:partOf ex:analyticsTeam .
 
-ex:analyticsTeam a odrl:Party ;
-    dprod:memberOf ex:tradingDivision .
+ex:analyticsTeam a odrl:PartyCollection ;
+    odrl:partOf ex:tradingDivision .
+
+ex:tradingDivision a odrl:PartyCollection .
 ```
 
 ### Version Chains

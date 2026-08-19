@@ -235,33 +235,22 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Cardinality** | 0..1 |
 | **Definition** | When the contract/subscription expires |
 
-### 4.7 dprod:partOf
+### 4.7 odrl:partOf Collection Membership
 
-| Property | Value |
-|----------|-------|
-| **Type** | `owl:ObjectProperty`, `owl:TransitiveProperty` |
-| **SubPropertyOf** | `odrl:partOf` |
-| **Domain** | `odrl:Asset` |
-| **Range** | `odrl:Asset` |
-| **Cardinality** | 0..* |
-| **Definition** | Asset contained in a larger asset |
+DPROD reuses `odrl:partOf` instead of defining parallel asset and party hierarchy properties. The relation is type-constrained by SHACL:
 
-Transitive: if table `partOf` schema and schema `partOf` database, then table `partOf` database. Declared `rdfs:subPropertyOf odrl:partOf` so ODRL processors with RDFS reasoning can interpret DPROD asset hierarchies.
+| Subject | Object |
+|---------|--------|
+| `odrl:Asset` | `odrl:AssetCollection` |
+| `odrl:AssetCollection` | `odrl:AssetCollection` |
+| `odrl:Party` | `odrl:PartyCollection` |
+| `odrl:PartyCollection` | `odrl:PartyCollection` |
 
-### 4.8 dprod:memberOf
+DPROD evaluators MUST apply the transitive closure of valid, same-kind `odrl:partOf` paths. This is profile evaluation semantics, not a redeclaration of the ODRL property as `owl:TransitiveProperty`. Cross-kind paths fail validation. Collections are explicit: `odrl:source` resolution and collection `odrl:refinement` are unsupported and fail validation.
 
-| Property | Value |
-|----------|-------|
-| **Type** | `owl:ObjectProperty`, `owl:TransitiveProperty` |
-| **SubPropertyOf** | `odrl:partOf` |
-| **Domain** | `odrl:Party` |
-| **Range** | `odrl:Party` |
-| **Cardinality** | 0..* |
-| **Definition** | Party member of a group or organization |
+The removed `dprod:partOf` and `dprod:memberOf` properties are breaking changes. Their use fails validation so obsolete contracts cannot silently acquire different semantics.
 
-Transitive: if person `memberOf` team and team `memberOf` division, then person `memberOf` division. Declared `rdfs:subPropertyOf odrl:partOf` so ODRL processors with RDFS reasoning can interpret DPROD party hierarchies.
-
-### 4.9 dprod:path
+### 4.8 dprod:path
 
 | Property | Value |
 |----------|-------|
@@ -279,7 +268,7 @@ Simple paths are a single property IRI; sequence paths are RDF lists:
 | Agent-rooted | `dprod:path (odrl:assignee ex:recipientType)` | Via assignee | `?request odrl:assignee ?agent . ?agent ex:recipientType ?value` |
 | ODRL operand | `dprod:path odrl:purpose` | Direct property on request | `?request odrl:purpose ?value` |
 
-### 4.10 dprod:not
+### 4.9 dprod:not
 
 | Property | Value |
 |----------|-------|
@@ -291,7 +280,7 @@ Simple paths are a single property IRI; sequence paths are RDF lists:
 
 ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `dprod:not` following the same pattern.
 
-### 4.11 dprod:subjectOfDuty
+### 4.10 dprod:subjectOfDuty
 
 | Property | Value |
 |----------|-------|
@@ -304,7 +293,7 @@ ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `
 
 The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading -- in a bilateral agreement, the data provider is `odrl:assigner` at the policy level but would also need to be `odrl:assignee` on their own delivery duty. `dprod:subjectOfDuty` removes this confusion. Bridges to ODRL via `rdfs:subPropertyOf odrl:function` (the abstract umbrella for party-roles in a Rule), so ODRL processors retain a generic role link without inheriting the contested `odrl:assignee` semantics. Aligns with `md:subject` (W3C Market Data), which likewise scopes the property to `odrl:Duty`.
 
-### 4.12 dprod:objectOfDuty
+### 4.11 dprod:objectOfDuty
 
 | Property | Value |
 |----------|-------|
@@ -371,6 +360,14 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 |-------|--------|-----------------|
 | `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` | `dprod:path` 0..1 (IRI or `rdf:List` of IRIs) |
 
+### Collection shapes
+
+| Shape | Target | Key Constraints |
+|-------|--------|-----------------|
+| `dprod-shapes:PartOfShape` | Subjects of `odrl:partOf` | Asset membership must end in an `odrl:AssetCollection`; party membership must end in an `odrl:PartyCollection`; collection nesting must remain within the same kind |
+| `dprod-shapes:AssetCollectionShape` | `odrl:AssetCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
+| `dprod-shapes:PartyCollectionShape` | `odrl:PartyCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
+
 ### Rejection shapes
 
 | Shape | Rejects | Message |
@@ -380,8 +377,8 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:RejectConsequenceShape` | `odrl:consequence` | Noted as future extension |
 | `dprod-shapes:RejectTicketShape` | `odrl:Ticket` | Not supported |
 | `dprod-shapes:RejectRequestShape` | `odrl:Request` | DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. |
-| `dprod-shapes:RejectAssetCollectionShape` | `odrl:AssetCollection` | Use `dprod:partOf` instead |
-| `dprod-shapes:RejectPartyCollectionShape` | `odrl:PartyCollection` | Use `dprod:memberOf` instead |
+| `dprod-shapes:RejectObsoleteDprodPartOfShape` | `dprod:partOf` | Use `odrl:partOf` |
+| `dprod-shapes:RejectObsoleteDprodMemberOfShape` | `dprod:memberOf` | Use `odrl:partOf` |
 | `dprod-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
 | `dprod-shapes:RejectInheritFromShape` | `odrl:inheritFrom` | Not supported |
 | `dprod-shapes:RejectMixedLifecycleStatusOnDataOfferShape` | Non-offer lifecycle properties on `dprod:DataOffer` | Use `dprod:offerLifecycleStatus` |
@@ -411,8 +408,6 @@ Which concrete DPROD properties are valid on which classes (`dprod:lifecycleStat
 | `dprod:expirationDate` | | | Yes | Yes | | | | |
 | `dprod:path` | | | | | Yes | | | |
 | `dprod:not` | | | | | | Yes | | |
-| `dprod:partOf` | | | | | | | Yes | |
-| `dprod:memberOf` | | | | | | | | Yes |
 
 ---
 
@@ -429,11 +424,11 @@ DPROD Contracts restricts certain ODRL features:
 | `odrl:Ticket` | Not used | Not applicable to data governance |
 | `odrl:Request` | Rejected (support deferred) | Offer-Request-Agreement semantics are undefined; accepting it would imply unsupported semantics. |
 | `odrl:assignee` (on Duty) | Replaced by `dprod:subjectOfDuty` | `dprod:subjectOfDuty rdfs:subPropertyOf odrl:function` -- avoids role overloading on duties |
-| `odrl:AssetCollection` | Not used | Use `dprod:partOf` hierarchy instead (`rdfs:subPropertyOf odrl:partOf` bridges to ODRL) |
-| `odrl:PartyCollection` | Not used | Use `dprod:memberOf` hierarchy instead (`rdfs:subPropertyOf odrl:partOf` bridges to ODRL) |
+| `odrl:AssetCollection` | Supported with explicit membership | Assets and nested asset collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
+| `odrl:PartyCollection` | Supported with explicit membership | Parties and nested party collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
 
 DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. An `odrl:Request` MUST fail SHACL validation until the profile defines how it relates to `odrl:Offer` and `odrl:Agreement` and what evaluator behavior follows.
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-04
+**Version**: 0.7 | **Date**: 2026-08-19

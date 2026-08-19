@@ -217,12 +217,12 @@ ex:staging
 
 ex:seller-data-team a odrl:Party ;
     rdfs:label "Seller Data Team" ;
-    dprod:memberOf ex:climate-quantum-inc .
+    odrl:partOf ex:climate-quantum-inc .
 
-ex:climate-quantum-inc a odrl:Party ;
+ex:climate-quantum-inc a odrl:PartyCollection ;
     rdfs:label "Climate Quantum Inc" .
 
-ex:seller-data a odrl:Asset ;
+ex:seller-data a odrl:AssetCollection ;
     rdfs:label "Seller Data Product" ;
     dct:description "Views built on top of the seller tables." .
 
@@ -719,11 +719,11 @@ ex:bq-unica-users a odrl:Party ;
 
 ex:tbl-core-payments a odrl:Asset ;
     rdfs:label "Core Payment Metrics" ;
-    dprod:partOf ex:seller-data .
+    odrl:partOf ex:seller-data .
 
 ex:receivers-master a odrl:Asset ;
     rdfs:label "Receivers Master Data" ;
-    dprod:partOf ex:seller-data .
+    odrl:partOf ex:seller-data .
 
 
 # =============================================================================

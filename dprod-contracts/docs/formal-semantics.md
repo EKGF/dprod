@@ -400,22 +400,15 @@ effectiveDeadline(duty, Σ) =
 
 ### 5.4 Match Semantics
 
-Action and asset matching support hierarchy subsumption:
+Action, asset, and party matching support hierarchy subsumption:
 
 ```
 x₁ matches x₂ ⟺ x₁ = x₂ ∨ x₁ includedIn⁺ x₂
 s₁ matches s₂ ⟺ s₁ = s₂ ∨ s₁ partOf⁺ s₂
+a₁ matches a₂ ⟺ a₁ = a₂ ∨ a₁ partOf⁺ a₂
 ```
 
-Where `includedIn⁺` and `partOf⁺` are the transitive closures of `odrl:includedIn` and `dprod:partOf` respectively.
-
-Agent matching supports hierarchy subsumption:
-
-```
-a₁ matches a₂ ⟺ a₁ = a₂ ∨ a₁ memberOf⁺ a₂
-```
-
-Where `memberOf⁺` is the transitive closure of `dprod:memberOf`.
+Where `includedIn⁺` is the transitive closure of `odrl:includedIn` and `partOf⁺` is the typed transitive closure of `odrl:partOf`. Asset paths may traverse only `odrl:Asset` to `odrl:AssetCollection` and `odrl:AssetCollection` to `odrl:AssetCollection` edges. Party paths may traverse only `odrl:Party` to `odrl:PartyCollection` and `odrl:PartyCollection` to `odrl:PartyCollection` edges. Cross-kind paths are invalid.
 
 The subsumption-aware performed check is:
 
@@ -723,13 +716,13 @@ A norm within a policy is active when both the policy is applicable and the norm
 ```
 NormActive(norm, Env) =
     (norm.subject = ⊥ ∨ norm.subject = Env.agent ∨ norm.subject = *
-     ∨ Env.agent memberOf⁺ norm.subject) ∧
+     ∨ Env.agent partOf⁺ norm.subject) ∧
     norm.action matches Env.action ∧
     (norm.asset = ⊥ ∨ norm.asset matches Env.asset) ∧
     (norm.condition = ⊥ ∨ ⟦norm.condition⟧(Env))
 ```
 
-Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and `memberOf⁺` is transitive party membership. In standard ODRL usage, Set and Offer policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
+Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and `partOf⁺` is typed transitive ODRL collection membership. In standard ODRL usage, Set and Offer policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
 
 ---
 
@@ -937,29 +930,43 @@ Evaluators MUST support transitive traversal of `odrl:includedIn`.
 
 ```turtle
 ex:customerTable a odrl:Asset ;
-    dprod:partOf ex:customerSchema .
+    odrl:partOf ex:customerSchema .
+
+ex:customerSchema a odrl:AssetCollection ;
+    odrl:partOf ex:customerData .
+
+ex:customerData a odrl:AssetCollection .
 ```
 
-Asset subsumption is defined by the transitive closure of `dprod:partOf`:
+Asset subsumption is defined by the typed transitive closure of `odrl:partOf`:
 
 ```
-s' ⊑ s  :=  reachable(s', dprod:partOf, s)
+s' ⊑ s  :=  reachableAsset(s', odrl:partOf, s)
 ```
+
+Every object in the path MUST be an `odrl:AssetCollection`. Collection membership is explicit: `odrl:source` and collection `odrl:refinement` are outside this profile and fail validation.
 
 ### 11.4 Agent Hierarchies
 
 ```turtle
-ex:analyst dprod:memberOf ex:analyticsTeam .
-ex:analyticsTeam dprod:memberOf ex:dataDivision .
+ex:analyst a odrl:Party ;
+    odrl:partOf ex:analyticsTeam .
+
+ex:analyticsTeam a odrl:PartyCollection ;
+    odrl:partOf ex:dataDivision .
+
+ex:dataDivision a odrl:PartyCollection .
 ```
 
-Agent subsumption is defined by the transitive closure of `dprod:memberOf`:
+Agent subsumption is defined by the typed transitive closure of `odrl:partOf`:
 
 ```
-a' ⊑ a  :=  reachable(a', dprod:memberOf, a)
+a' ⊑ a  :=  reachableParty(a', odrl:partOf, a)
 ```
 
 Policy on `ex:dataDivision` applies to `ex:analyst` via transitivity.
+
+ODRL does not declare `odrl:partOf` transitive. Transitive closure is a mandatory DPROD evaluation rule for valid, typed collection paths; DPROD does not alter the ODRL vocabulary by redeclaring the property.
 
 ---
 

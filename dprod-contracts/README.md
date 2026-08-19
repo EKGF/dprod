@@ -131,7 +131,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path, select, hierarchy) + domain-specific actions, operands, and concept values |
+| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path, select) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
 
 ---
 
@@ -156,4 +156,4 @@ An implementation conforms to DPROD Contracts if:
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-04
+**Version**: 0.7 | **Date**: 2026-08-19

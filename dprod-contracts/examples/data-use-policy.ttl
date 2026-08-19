@@ -137,9 +137,9 @@ ex:legitimateInterest
 
 <https://example.org/agents/hr-analytics> a odrl:Party ;
     rdfs:label "HR Analytics Team" ;
-    dprod:memberOf <https://example.org/agents/hr-division> .
+    odrl:partOf <https://example.org/agents/hr-division> .
 
-<https://example.org/agents/hr-division> a odrl:Party ;
+<https://example.org/agents/hr-division> a odrl:PartyCollection ;
     rdfs:label "Human Resources Division" .
 
 <https://example.org/agents/compliance-team> a odrl:Party ;
@@ -150,13 +150,13 @@ ex:legitimateInterest
 
 <https://example.org/assets/employee-compensation> a odrl:Asset ;
     rdfs:label "Employee Compensation Data" ;
-    dprod:partOf <https://example.org/assets/employee-data> .
+    odrl:partOf <https://example.org/assets/employee-data> .
 
 <https://example.org/assets/employee-performance> a odrl:Asset ;
     rdfs:label "Employee Performance Reviews" ;
-    dprod:partOf <https://example.org/assets/employee-data> .
+    odrl:partOf <https://example.org/assets/employee-data> .
 
-<https://example.org/assets/employee-data> a odrl:Asset ;
+<https://example.org/assets/employee-data> a odrl:AssetCollection ;
     rdfs:label "Employee Data Lake" .
 
 <https://example.org/assets/access-log> a odrl:Asset ;

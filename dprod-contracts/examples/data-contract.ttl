@@ -81,9 +81,9 @@ ex:internal
 
 <https://example.org/agents/quant-research> a odrl:Party ;
     rdfs:label "Quantitative Research" ;
-    dprod:memberOf <https://example.org/agents/trading-division> .
+    odrl:partOf <https://example.org/agents/trading-division> .
 
-<https://example.org/agents/trading-division> a odrl:Party ;
+<https://example.org/agents/trading-division> a odrl:PartyCollection ;
     rdfs:label "Trading Division" .
 
 
@@ -91,9 +91,9 @@ ex:internal
 
 <https://example.org/assets/market-prices> a odrl:Asset ;
     rdfs:label "Market Price Data" ;
-    dprod:partOf <https://example.org/assets/market-data-lake> .
+    odrl:partOf <https://example.org/assets/market-data-lake> .
 
-<https://example.org/assets/market-data-lake> a odrl:Asset ;
+<https://example.org/assets/market-data-lake> a odrl:AssetCollection ;
     rdfs:label "Market Data Lake" .
 
 <https://example.org/assets/data-ready-notification> a odrl:Asset ;

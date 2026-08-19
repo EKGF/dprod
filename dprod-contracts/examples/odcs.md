@@ -128,7 +128,7 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 | `description.purpose` | `odrl:purpose` constraint | On permission or duty |
 | `description.limitations` | `odrl:Prohibition` + constraints | Express as restrictions |
 | `apiVersion` | `odrl:profile` | Profile URI identifies version |
-| `tenant` | Organization context on `odrl:Party` | Via `dprod:memberOf` |
+| `tenant` | Organization context on `odrl:Party` | Via `odrl:partOf` and `odrl:PartyCollection` |
 | `id` | Resource URI | Inherent in RDF |
 | `contractCreatedTs` | `dct:created` | Standard Dublin Core |
 
@@ -177,7 +177,7 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 
 | ODCS | DPROD Contracts | Notes |
 |---|---|---|
-| `team.members` | `odrl:Party` instances | With `dprod:memberOf` hierarchy |
+| `team.members` | `odrl:Party` instances | With `odrl:partOf` and `odrl:PartyCollection` |
 | `team.members[].role: Owner` | `odrl:assigner` | Data provider |
 | `roles[].role` | `odrl:assignee` on Permission | Role-based access |
 | `roles[].access: read` | `odrl:action odrl:read` | Standard ODRL action |
@@ -211,8 +211,8 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 4. **Duty lifecycle** — 4-state machine tracking fulfillment per obligation instance
 5. **Constraint composition** — `odrl:and` / `odrl:or` / `dprod:not` for complex rules
 6. **Target inheritance** — policy-level target inherited by rules
-7. **Party hierarchies** — `dprod:memberOf` for organizational structures with transitivity
-8. **Asset hierarchies** — `dprod:partOf` for dataset containment with transitivity
+7. **Party collections** — `odrl:partOf` and `odrl:PartyCollection`, with typed transitive evaluation
+8. **Asset collections** — `odrl:partOf` and `odrl:AssetCollection`, with typed transitive evaluation
 9. **Linked data** — SPARQL-queryable, federable across organizations
 10. **DataContracts** — formal bilateral agreements (`dprod:DataContract` as `odrl:Agreement`)
 
