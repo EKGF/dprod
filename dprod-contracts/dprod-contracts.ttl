@@ -45,7 +45,7 @@ dct:modified a owl:AnnotationProperty .
     can partially understand them; DPROD-aware processors handle the
     extensions."""@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-12"^^xsd:date ;
+  dct:modified "2026-08-19"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -259,9 +259,10 @@ dprod:deadline
     - xsd:duration: relative to activation (e.g., P30D, PT24H)
     For duration: deadline = activationTime + duration.
     No rdfs:range declared because the range is a union of datatypes;
-    SHACL enforces the allowed types."""@en ;
+    SHACL enforces both the odrl:Duty subject scope and the allowed types.
+    No rdfs:domain is declared so invalid use does not silently infer an
+    additional odrl:Duty type."""@en ;
   rdfs:isDefinedBy dprod: ;
-  rdfs:domain odrl:Duty ;
   rdfs:label "deadline" ;
 .
 
@@ -370,10 +371,11 @@ dprod:subjectOfDuty
   a owl:ObjectProperty ;
   dct:description "Party bearing the duty (must perform the action)."@en ;
   rdfs:comment
-    "The duty bearer. Sub-property of odrl:function for ODRL processor compatibility."@en ;
+    """The duty bearer. Sub-property of odrl:function for ODRL processor
+    compatibility. SHACL enforces the odrl:Duty subject scope; no rdfs:domain
+    is declared so invalid use does not silently infer an odrl:Duty type."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:subPropertyOf odrl:function ;
-  rdfs:domain odrl:Duty ;
   rdfs:range odrl:Party ;
   rdfs:label "subject" ;
 .
@@ -382,10 +384,12 @@ dprod:objectOfDuty
   a owl:ObjectProperty ;
   dct:description "Party affected by the duty action."@en ;
   rdfs:comment
-    "The party affected by or receiving the result of the duty action. Sub-property of odrl:function for ODRL processor compatibility."@en ;
+    """The party affected by or receiving the result of the duty action.
+    Sub-property of odrl:function for ODRL processor compatibility. SHACL
+    enforces the odrl:Duty subject scope; no rdfs:domain is declared so invalid
+    use does not silently infer an odrl:Duty type."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:subPropertyOf odrl:function ;
-  rdfs:domain odrl:Duty ;
   rdfs:range odrl:Party ;
   rdfs:label "object" ;
 .

@@ -23,7 +23,7 @@ dprod-shapes:
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-12"^^xsd:date ;
+  dct:modified "2026-08-19"^^xsd:date ;
   owl:imports <https://www.omg.org/spec/DPROD/contracts/> ;
   owl:imports sh: ;
   owl:versionInfo "0.7" ;
@@ -208,6 +208,27 @@ dprod-shapes:ProhibitionShape
     sh:maxCount 1 ;
     sh:message "Prohibition may have at most one target (inherits from policy if absent)."
   ] ;
+.
+
+dprod-shapes:DutyOnlyPropertySubjectShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "duty-only property subject shape" ;
+  sh:targetSubjectsOf dprod:deadline ;
+  sh:targetSubjectsOf dprod:subjectOfDuty ;
+  sh:targetSubjectsOf dprod:objectOfDuty ;
+  sh:and (
+    [ sh:class odrl:Duty ]
+    [
+      sh:not [
+        sh:or (
+          [ sh:class odrl:Permission ]
+          [ sh:class odrl:Prohibition ]
+        )
+      ]
+    ]
+  ) ;
+  sh:message "dprod:deadline, dprod:subjectOfDuty, and dprod:objectOfDuty may be used only on odrl:Duty." ;
 .
 
 dprod-shapes:DutyShape
