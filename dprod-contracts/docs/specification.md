@@ -209,7 +209,7 @@ All five properties are `owl:ObjectProperty`. Their values come from open SKOS t
 | Property | Value |
 |----------|-------|
 | **Type** | `owl:DatatypeProperty` |
-| **Domain** | `odrl:Duty` |
+| **Subject scope** | `odrl:Duty` (enforced by SHACL; no `rdfs:domain`) |
 | **Range** | `xsd:dateTime` | `xsd:duration` (enforced by SHACL) |
 | **Cardinality** | 0..1 |
 | **Definition** | Time constraint for duty fulfillment |
@@ -350,7 +350,7 @@ ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `
 |----------|-------|
 | **Type** | `owl:ObjectProperty` |
 | **SubPropertyOf** | `odrl:function` |
-| **Domain** | `odrl:Duty` |
+| **Subject scope** | `odrl:Duty` (enforced by SHACL; no `rdfs:domain`) |
 | **Range** | `odrl:Party` |
 | **Cardinality** | 0..1 |
 | **Definition** | Party bearing the duty (must perform the action) |
@@ -363,7 +363,7 @@ The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading --
 |----------|-------|
 | **Type** | `owl:ObjectProperty` |
 | **SubPropertyOf** | `odrl:function` |
-| **Domain** | `odrl:Duty` |
+| **Subject scope** | `odrl:Duty` (enforced by SHACL; no `rdfs:domain`) |
 | **Range** | `odrl:Party` |
 | **Cardinality** | 0..1 |
 | **Definition** | Party affected by the duty action |
@@ -403,6 +403,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
 | `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
 | `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
+| `dprod-shapes:DutyOnlyPropertySubjectShape` | Subjects using `dprod:deadline`, `dprod:subjectOfDuty`, or `dprod:objectOfDuty` | Subject must be an `odrl:Duty`; Permission and Prohibition use fails validation instead of inferring an additional Duty type |
 
 ### Schedule shapes
 
@@ -502,4 +503,4 @@ DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics ar
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-12
+**Version**: 0.7 | **Date**: 2026-08-19
