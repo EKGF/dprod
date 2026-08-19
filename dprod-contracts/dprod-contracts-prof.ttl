@@ -23,7 +23,8 @@ odrl:core
 
 <https://www.omg.org/spec/DPROD/>
   a prof:Profile ;
-  dct:title "DPROD"@en ;
+  dct:title "DPROD Data Contracts — ODRL 2.2 Profile Extension"@en ;
+  dct:modified "2026-08-19"^^xsd:date ;
   dct:description
     """Proper ODRL 2.2 profile for deterministic data governance.
     Uses ODRL terms for standard constructs; adds lifecycle state,

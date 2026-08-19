@@ -523,8 +523,8 @@ odrl:obligation [
 
 1. Every policy declares `odrl:profile <https://www.omg.org/spec/DPROD/>`
 2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
-3. Policy has at least one `odrl:target`
-4. Each permission and prohibition has exactly one `odrl:action` and one effective `odrl:target` -- either declared on the rule or inherited from the policy-level target (rule-level `odrl:target` may be omitted when a policy-level target exists)
+3. A policy-level `odrl:target` is optional; when present it supplies the inherited target for rules that omit one
+4. Each permission and prohibition has exactly one `odrl:action` and at most one rule-level `odrl:target`; a rule with neither its own nor an inherited target applies to any asset
 5. Each duty has exactly one `odrl:action`
 6. Each constraint has `leftOperand`, `operator`, and `rightOperand`
 7. LogicalConstraints use exactly one of `odrl:and`, `odrl:or`, or `dprod:not`

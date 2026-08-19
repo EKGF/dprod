@@ -80,7 +80,7 @@ The formal evaluator may also use these concept IRIs as `dprod:dutyState` values
 
 | Property | Source | Cardinality |
 |----------|--------|-------------|
-| `odrl:target` | ODRL | 1..* |
+| `odrl:target` | ODRL | 0..* |
 | `dprod:offerLifecycleStatus` | DPROD | 0..1 |
 | `dprod:effectiveDate` | DPROD | 0..1 |
 | `dprod:expirationDate` | DPROD | 0..1 |
@@ -213,7 +213,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataContract` |
 | **Range** | `dprod:DataOffer` |
 | **Cardinality** | 1 |
-| **Definition** | The contract this subscription activates |
+| **Definition** | The offer this contract activates. |
 
 ### 4.5 dprod:effectiveDate
 
@@ -328,7 +328,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
 | `dprod-shapes:PolicyShape` | `odrl:Policy` | Must declare `odrl:profile` (for engines with RDFS inference) |
-| `dprod-shapes:SetShape` | `odrl:Set` | Must declare `odrl:profile`; at least one `odrl:target`; at least one clause |
+| `dprod-shapes:SetShape` | `odrl:Set` | Must declare `odrl:profile`; may declare `odrl:target`; at least one clause |
 | `dprod-shapes:OfferShape` | `odrl:Offer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause |
 | `dprod-shapes:AgreementShape` | `odrl:Agreement` | Must declare `odrl:profile`; exactly one `odrl:assigner` and one `odrl:assignee`; at least one clause |
 

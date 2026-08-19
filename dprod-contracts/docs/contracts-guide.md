@@ -437,7 +437,8 @@ ex:contract a dprod:DataOffer ;
 **Rules**:
 - Single-target policy: rules inherit the target unless they specify a different one
 - Multi-target policy: rules must specify their target (inheritance is ambiguous)
-- Named duty instances (standalone): always specify their target
+- No policy-level target: a rule without its own target applies to any asset
+- Named duties obtain their DPROD profile context from the containing policy that references them. They inherit that policy's target under the same rules as inline duties. A truly uncontained duty has no DPROD profile context and is not independently evaluable as a DPROD policy.
 
 ### Multi-Asset Contracts
 
@@ -554,7 +555,7 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 4. DataContract has both `odrl:assigner` and `odrl:assignee`
 5. DataContract has `dprod:acceptsOffer` referencing a DataOffer
 6. Each duty has exactly one `odrl:action`
-7. Each permission and prohibition has exactly one `odrl:action` and one `odrl:target`
+7. Each permission and prohibition has exactly one `odrl:action` and at most one `odrl:target`; a rule with no effective target applies to any asset
 8. Provider duties have `dprod:subjectOfDuty` set to the provider
 9. Deadlines use `xsd:dateTime` or `xsd:duration`
 10. Recurrence uses a valid RFC 5545 RRULE starting with `FREQ=`

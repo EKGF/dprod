@@ -53,7 +53,7 @@ complete operational protocol layer.
 - `⟦e⟧` for denotation of expression `e`
 - `Γ ⊢ e : τ` for typing judgement ("in context Γ, expression e has type τ")
 
-### 1.2 Document Status
+### 1.3 Document Status
 
 This document is **normative** for DPROD Contracts implementations.
 

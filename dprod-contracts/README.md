@@ -55,7 +55,7 @@ The [formal semantics](docs/formal-semantics.md) is the normative reference.
 Every evaluation terminates with a defined result:
 
 ```
-Eval : Request x PolicySet x State -> Decision x DutySet
+Eval : Request × Set<Policy> × Σ → Result
 ```
 
 ### 3. Bilateral Agreements
@@ -65,9 +65,10 @@ Agreements return duties for **both** parties:
 ```
 Result = {
     decision: Permit | Deny | NotApplicable,
-    assignerDuties: Set<Duty>,   // Provider obligations (SLAs)
-    assigneeDuties: Set<Duty>,   // Consumer obligations
-    violations: Set<Duty>
+    grantorDuties: Set<Duty>,    // Duties on the grantor (data provider)
+    granteeDuties: Set<Duty>,    // Duties on the grantee (data consumer)
+    violations: Set<Duty>,
+    explanation: Explanation
 }
 ```
 
@@ -131,7 +132,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path, select) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
+| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, path) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
 
 ---
 
