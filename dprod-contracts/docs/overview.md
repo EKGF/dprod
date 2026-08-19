@@ -170,7 +170,7 @@ ODRL 2.2 Core (W3C Standard)
          v
 DPROD Core (dprod:)
   State, deadline, recurrence, DataOffer, DataContract,
-  partOf, memberOf, path, select, RuntimeReference, not
+  path, select, RuntimeReference, not
          |
          | domain profiles define (ex:)
          v
@@ -232,4 +232,4 @@ Which document to read next depends on your role:
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-02-04
+**Version**: 0.7 | **Date**: 2026-08-19

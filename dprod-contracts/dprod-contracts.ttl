@@ -36,7 +36,7 @@ dct:modified a owl:AnnotationProperty .
     - Recurrence property on odrl:Duty (RFC 5545 RRULE)
     - Duty party roles (subject = duty bearer, object = affected party)
     - Data offer and data contract subtypes
-    - Asset/party hierarchy properties
+    - Deterministic transitive matching over ODRL collection membership
     - Structured operand resolution via SPARQL-style property paths
     - Runtime references for dynamic right-operand values
     - Logical negation (not) on LogicalConstraint
@@ -45,7 +45,7 @@ dct:modified a owl:AnnotationProperty .
     can partially understand them; DPROD-aware processors handle the
     extensions."""@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-04"^^xsd:date ;
+  dct:modified "2026-08-19"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -253,30 +253,6 @@ dprod:expirationDate
   rdfs:domain [ owl:unionOf (dprod:DataOffer dprod:DataContract) ] ;
   rdfs:range xsd:dateTime ;
   rdfs:label "expiration date" ;
-.
-
-dprod:partOf
-  a owl:ObjectProperty, owl:TransitiveProperty ;
-  dct:description "Asset contained in larger asset."@en ;
-  rdfs:comment
-    """Transitive asset hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Asset, so the inferred odrl:partOf triples only ever connect asset to asset — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:subPropertyOf odrl:partOf ;
-  rdfs:domain odrl:Asset ;
-  rdfs:range odrl:Asset ;
-  rdfs:label "part of" ;
-.
-
-dprod:memberOf
-  a owl:ObjectProperty, owl:TransitiveProperty ;
-  dct:description "Party member of group or organization."@en ;
-  rdfs:comment
-    """Transitive party hierarchy. Sub-property of odrl:partOf for ODRL processor compatibility. The domain and range are deliberately narrowed to odrl:Party, so the inferred odrl:partOf triples only ever connect party to party — DPROD does not produce mixed party-and-asset hierarchies."""@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:subPropertyOf odrl:partOf ;
-  rdfs:domain odrl:Party ;
-  rdfs:range odrl:Party ;
-  rdfs:label "member of" ;
 .
 
 dprod:subjectOfDuty

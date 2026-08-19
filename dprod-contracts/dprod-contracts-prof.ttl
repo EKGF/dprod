@@ -27,7 +27,7 @@ odrl:core
   dct:description
     """Proper ODRL 2.2 profile for deterministic data governance.
     Uses ODRL terms for standard constructs; adds lifecycle state,
-    deadline, recurrence, data contracts, hierarchy extensions,
+    deadline, recurrence, data contracts, transitive ODRL collection matching,
     operand resolution, runtime references, and logical negation."""@en ;
   prof:isProfileOf odrl:core ;
   prof:hasToken "dprod"^^xsd:token ;

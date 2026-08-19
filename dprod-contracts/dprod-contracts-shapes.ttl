@@ -23,7 +23,7 @@ dprod-shapes:
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-04"^^xsd:date ;
+  dct:modified "2026-08-19"^^xsd:date ;
   owl:imports <https://www.omg.org/spec/DPROD/contracts/> ;
   owl:imports sh: ;
   owl:versionInfo "0.7" ;
@@ -546,27 +546,85 @@ dprod-shapes:RejectRequestShape
   ] ;
 .
 
-dprod-shapes:RejectAssetCollectionShape
+dprod-shapes:PartOfShape
   a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "ODRL collection membership shape" ;
+  sh:targetSubjectsOf odrl:partOf ;
+  sh:or (
+    [
+      sh:class odrl:Asset ;
+      sh:property [ sh:path odrl:partOf ; sh:class odrl:AssetCollection ]
+    ]
+    [
+      sh:class odrl:AssetCollection ;
+      sh:property [ sh:path odrl:partOf ; sh:class odrl:AssetCollection ]
+    ]
+    [
+      sh:class odrl:Party ;
+      sh:property [ sh:path odrl:partOf ; sh:class odrl:PartyCollection ]
+    ]
+    [
+      sh:class odrl:PartyCollection ;
+      sh:property [ sh:path odrl:partOf ; sh:class odrl:PartyCollection ]
+    ]
+  ) ;
+  sh:message "odrl:partOf must link an odrl:Asset to an odrl:AssetCollection or an odrl:Party to an odrl:PartyCollection." ;
+.
+
+dprod-shapes:AssetCollectionShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "explicit asset collection shape" ;
   sh:targetClass odrl:AssetCollection ;
-  sh:sparql [
-    sh:message "DPROD contracts do not support odrl:AssetCollection. Use dprod:partOf hierarchy instead." ;
-    sh:severity sh:Violation ;
-    sh:select """
-      SELECT $this WHERE { $this a odrl:AssetCollection }
-    """ ;
+  sh:property [
+    sh:path odrl:source ;
+    sh:maxCount 0 ;
+    sh:message "DPROD contracts support explicit collection membership only; odrl:source collection resolution is not supported."
+  ] ;
+  sh:property [
+    sh:path odrl:refinement ;
+    sh:maxCount 0 ;
+    sh:message "DPROD contracts support explicit collection membership only; collection odrl:refinement is not supported."
   ] ;
 .
 
-dprod-shapes:RejectPartyCollectionShape
+dprod-shapes:PartyCollectionShape
   a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "explicit party collection shape" ;
   sh:targetClass odrl:PartyCollection ;
-  sh:sparql [
-    sh:message "DPROD contracts do not support odrl:PartyCollection. Use dprod:memberOf hierarchy instead." ;
+  sh:property [
+    sh:path odrl:source ;
+    sh:maxCount 0 ;
+    sh:message "DPROD contracts support explicit collection membership only; odrl:source collection resolution is not supported."
+  ] ;
+  sh:property [
+    sh:path odrl:refinement ;
+    sh:maxCount 0 ;
+    sh:message "DPROD contracts support explicit collection membership only; collection odrl:refinement is not supported."
+  ] ;
+.
+
+dprod-shapes:RejectObsoleteDprodPartOfShape
+  a sh:NodeShape ;
+  sh:targetSubjectsOf dprod:partOf ;
+  sh:property [
+    sh:path dprod:partOf ;
+    sh:maxCount 0 ;
     sh:severity sh:Violation ;
-    sh:select """
-      SELECT $this WHERE { $this a odrl:PartyCollection }
-    """ ;
+    sh:message "dprod:partOf is obsolete; use odrl:partOf."
+  ] ;
+.
+
+dprod-shapes:RejectObsoleteDprodMemberOfShape
+  a sh:NodeShape ;
+  sh:targetSubjectsOf dprod:memberOf ;
+  sh:property [
+    sh:path dprod:memberOf ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "dprod:memberOf is obsolete; use odrl:partOf."
   ] ;
 .
 

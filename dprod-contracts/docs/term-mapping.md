@@ -169,16 +169,17 @@ ex:subscription a dprod:DataContract ;
 ### Party Hierarchy
 
 **Business term:** `team membership`, `department`, `division`
-**DPROD property:** `dprod:memberOf`
-**Used on:** `odrl:Party`
+**DPROD property:** `odrl:partOf`
+**Used on:** `odrl:Party`, `odrl:PartyCollection`
 **Cardinality:** 0..*
-**Source:** DPROD
+**Source:** ODRL
 **Example:**
 ```turtle
 ex:analyst a odrl:Party ;
-    dprod:memberOf ex:analyticsTeam .
-ex:analyticsTeam a odrl:Party ;
-    dprod:memberOf ex:tradingDivision .
+    odrl:partOf ex:analyticsTeam .
+ex:analyticsTeam a odrl:PartyCollection ;
+    odrl:partOf ex:tradingDivision .
+ex:tradingDivision a odrl:PartyCollection .
 ```
 
 ---
@@ -200,16 +201,17 @@ ex:contract odrl:target ex:marketPrices .
 ### Asset Hierarchy
 
 **Business term:** `part of`, `contained in`, `sub-asset`
-**DPROD property:** `dprod:partOf`
-**Used on:** `odrl:Asset`
+**DPROD property:** `odrl:partOf`
+**Used on:** `odrl:Asset`, `odrl:AssetCollection`
 **Cardinality:** 0..*
-**Source:** DPROD
+**Source:** ODRL
 **Example:**
 ```turtle
 ex:priceTable a odrl:Asset ;
-    dprod:partOf ex:marketDataSchema .
-ex:marketDataSchema a odrl:Asset ;
-    dprod:partOf ex:marketDataLake .
+    odrl:partOf ex:marketDataSchema .
+ex:marketDataSchema a odrl:AssetCollection ;
+    odrl:partOf ex:marketDataLake .
+ex:marketDataLake a odrl:AssetCollection .
 ```
 
 ---
@@ -386,8 +388,8 @@ odrl:permission [
 | Algo use | Permission + `nonDisplay` | DPROD |
 | Derivation | Permission + `derive` | ODRL |
 | No sharing | Prohibition + `distribute` | ODRL |
-| Team membership | `dprod:memberOf` | DPROD |
-| Data hierarchy | `dprod:partOf` | DPROD |
+| Team membership | `odrl:partOf` + `odrl:PartyCollection` | ODRL |
+| Data hierarchy | `odrl:partOf` + `odrl:AssetCollection` | ODRL |
 | Version chain | `prov:wasRevisionOf` | W3C PROV |
 | Schedule | `dprod:recurrence` (RRULE) | DPROD |
 | Deadline | `dprod:deadline` | DPROD |
@@ -395,4 +397,4 @@ odrl:permission [
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-04
+**Version**: 0.7 | **Date**: 2026-08-19
