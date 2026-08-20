@@ -37,7 +37,7 @@ dct:modified a owl:AnnotationProperty .
     - Duty party roles (subject = duty bearer, object = affected party)
     - Data offer and data contract subtypes
     - Deterministic transitive matching over ODRL collection membership
-    - Structured operand resolution via SPARQL-style property paths
+    - One-hop operand bindings to normalized request, state, or context properties
     - One immutable evaluation context for request and world-state operands
     - Logical negation (not) on LogicalConstraint
 
@@ -94,16 +94,50 @@ dprod:EvaluationContext
   a owl:Class ;
   dct:description "Immutable, provenance-bearing input graph for one policy evaluation."@en ;
   rdfs:comment
-    """The sole root for runtime operand resolution. An evaluator constructs one
-    EvaluationContext for each evaluation and supplies the authorization request,
-    an immutable state-of-the-world snapshot, the requesting agent, and the
-    evaluation clock through the four normative root properties. The context is
-    a prov:Entity so implementations can retain the exact input provenance needed
-    to reproduce and audit a decision. Evaluation never reads a live global graph
-    or dereferences an undeclared source while resolving dprod:path."""@en ;
+    """The immutable container for runtime operand resolution. An evaluator
+    constructs one EvaluationContext for each evaluation and supplies the
+    authorization request, an immutable state-of-the-world snapshot, the
+    requesting agent, and the evaluation clock through the four normative
+    properties. The context is a prov:Entity so implementations can retain the
+    exact input provenance needed to reproduce and audit a decision. Evaluation
+    never reads a live global graph or dereferences an undeclared source while
+    resolving an operand binding."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "evaluation context" ;
   rdfs:subClassOf prov:Entity ;
+.
+
+dprod:OperandSource
+  a owl:Class ;
+  dct:description "Closed set of normalized source nodes from which an operand value may be read."@en ;
+  rdfs:comment
+    """An operand reads one direct property from exactly one normalized source:
+    the authorization request, the immutable world snapshot, or the evaluation
+    context itself. No other source and no graph traversal are supported."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "operand source" ;
+  owl:oneOf (dprod:requestSource dprod:stateSource dprod:contextSource) ;
+.
+
+dprod:requestSource
+  a owl:NamedIndividual, dprod:OperandSource ;
+  dct:description "Normalized authorization request node."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "request source" ;
+.
+
+dprod:stateSource
+  a owl:NamedIndividual, dprod:OperandSource ;
+  dct:description "Immutable normalized state-of-the-world snapshot node."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "state source" ;
+.
+
+dprod:contextSource
+  a owl:NamedIndividual, dprod:OperandSource ;
+  dct:description "Evaluation context node containing built-in agent and clock values."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "context source" ;
 .
 
 
@@ -288,31 +322,38 @@ dprod:objectOfDuty
   rdfs:label "object" ;
 .
 
-dprod:path
-  a rdf:Property ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "resolution path" ;
-  dct:description "SHACL-style property path from the evaluation context to one operand value."@en ;
+dprod:operandSource
+  a owl:ObjectProperty ;
+  dct:description "Normalized graph from which an operand reads its value."@en ;
   rdfs:comment
-    """Value MUST be either a property IRI (simple predicate path) or an rdf:List of property IRIs (sequence path).
-    This is the SHACL Core property-path subset (W3C SHACL spec, §2.3) restricted to predicate and sequence paths;
-    inverse, alternative, and cardinality path forms (sh:inversePath, sh:alternativePath, sh:zeroOrMorePath,
-    sh:oneOrMorePath, sh:zeroOrOnePath) are not used in DPROD contracts.
-    Value form is enforced by dprod-shapes:LeftOperandShape via sh:or; no rdfs:range is declared because the
-    permitted value set (IRI ∪ rdf:List of IRIs) is not expressible as a single RDFS class, mirroring SHACL's
-    own choice for sh:path.
-    Every path starts at exactly one of dprod:request, dprod:state,
-    dprod:agent, or dprod:clock. Request operands use paths such as
-    (dprod:request odrl:purpose). State-of-the-world operands use paths such as
-    (dprod:state ex:marketOpen). Built-in scalar roots use dprod:agent or
-    dprod:clock directly."""@en ;
+    """Exactly one of dprod:requestSource, dprod:stateSource, or
+    dprod:contextSource. The source is selected before the evaluator performs
+    its single property lookup."""@en ;
   rdfs:domain odrl:LeftOperand ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "operand source" ;
+  rdfs:range dprod:OperandSource ;
+.
+
+dprod:operandProperty
+  a rdf:Property ;
+  dct:description "Single property read from an operand's normalized source graph."@en ;
+  rdfs:comment
+    """The property MUST be an IRI and is looked up directly on the node selected
+    by dprod:operandSource. Request and state producers MUST normalize every
+    policy-relevant fact onto their respective source node. RDF lists and
+    multi-step traversal are deliberately unsupported."""@en ;
+  rdfs:domain odrl:LeftOperand ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "operand property" ;
 .
 
 dprod:request
   a owl:ObjectProperty ;
   dct:description "Authorization request supplied for one policy evaluation."@en ;
-  rdfs:comment "Root of all request-property operand paths."@en ;
+  rdfs:comment
+    """Selects the normalized request node used by dprod:requestSource operand
+    bindings."""@en ;
   rdfs:domain dprod:EvaluationContext ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "request" ;
@@ -323,8 +364,9 @@ dprod:state
   a owl:ObjectProperty ;
   dct:description "Immutable state-of-the-world snapshot supplied for one policy evaluation."@en ;
   rdfs:comment
-    """Root of all world-state operand paths. The object is a snapshot supplied by
-    the evaluator, never an instruction to query live external state."""@en ;
+    """Selects the normalized snapshot node used by dprod:stateSource operand
+    bindings. The object is supplied by the evaluator, never an instruction to
+    query live external state."""@en ;
   rdfs:domain dprod:EvaluationContext ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "state" ;
@@ -371,14 +413,18 @@ dprod:currentAgent
   a odrl:LeftOperand ;
   dct:description "The requesting agent."@en ;
   rdfs:comment
-    """A normal path-resolved left operand for constraint identity comparisons.
+    """A normal one-hop left operand for constraint identity comparisons.
     For rules applying to any requesting agent, omit odrl:assignee (standard
     ODRL); do not use currentAgent as assignee."""@en ;
-  dprod:path dprod:agent ;
+  dprod:operandProperty dprod:agent ;
+  dprod:operandSource dprod:contextSource ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "current agent" ;
 .
 
 # ODRL already defines the evaluation-time operand. DPROD binds it to the
 # common context resolver instead of minting a duplicate DPROD clock operand.
-odrl:dateTime dprod:path dprod:clock .
+odrl:dateTime
+  dprod:operandProperty dprod:clock ;
+  dprod:operandSource dprod:contextSource ;
+.

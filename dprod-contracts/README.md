@@ -12,7 +12,7 @@ DPROD Contracts is an ODRL 2.2 profile. It uses ODRL terms for all standard cons
 2. **Bilateral agreements**: Both assigner and assignee may have duties
 3. **Deterministic evaluation**: Total functions, no undefined states
 4. **Formal verification target**: Amenable to Dafny, Why3, Coq
-5. **Structured operand resolution**: one immutable evaluation context and rooted `dprod:path` property paths
+5. **Structured operand resolution**: one-hop bindings over normalized request, state, and context nodes
 6. **Recurring duties**: `recurrence` via RFC 5545 RRULE for scheduled obligations
 
 DPROD Contracts is **specification-first**. The semantics document defines what any conformant implementation must do. Every DPROD policy is a valid ODRL 2.2 policy.
@@ -36,7 +36,7 @@ See [examples/](examples/) for complete working policies:
 | Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
-| Operand resolution | Implicit | Explicit `dprod:path` property paths (SHACL-Core predicate + sequence subset) |
+| Operand resolution | Implicit | Explicit source + property bindings over normalized inputs |
 | Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
 | Contract types | -- | `DataOffer` (subclass of Offer), `DataContract` (subclass of Agreement) |
 
@@ -90,27 +90,34 @@ An `odrl:Duty` progresses through evaluator-computed `dprod:dutyState` values. I
 
 ### 5. Structured Operand Resolution
 
-Operands resolve via `dprod:path` from one immutable evaluation context. Request
-properties and state-of-the-world properties use the same resolver:
+Every operand selects one normalized source and one direct property. Request and
+state producers flatten policy-relevant facts before evaluation:
 
 ```turtle
-# Request-rooted: direct property on the authorization request
-ex:environment dprod:path (dprod:request ex:environment) .
+# Direct property on the normalized authorization request
+ex:environment
+    dprod:operandSource dprod:requestSource ;
+    dprod:operandProperty ex:environment .
 
-# Request-rooted: via the requested asset
-ex:timeliness dprod:path (dprod:request odrl:target ex:timeliness) .
+# Asset facts are flattened onto that same request node
+ex:timeliness
+    dprod:operandSource dprod:requestSource ;
+    dprod:operandProperty ex:timeliness .
 
-# State-of-the-world rooted
-ex:marketOpen dprod:path (dprod:state ex:marketOpen) .
+# Direct property on the immutable world snapshot
+ex:marketOpen
+    dprod:operandSource dprod:stateSource ;
+    dprod:operandProperty ex:marketOpen .
 
-# Built-in scalar roots
-dprod:currentAgent dprod:path dprod:agent .
-odrl:dateTime dprod:path dprod:clock .
+# Built-in context value
+odrl:dateTime
+    dprod:operandSource dprod:contextSource ;
+    dprod:operandProperty dprod:clock .
 ```
 
 Missing, multiple, or ill-typed values are evaluation errors. Resolution never
-queries a live external graph and never turns missing runtime data into an
-ordinary false constraint.
+traverses nested RDF, queries a live external graph, or turns missing runtime
+data into an ordinary false constraint.
 
 ---
 
@@ -142,7 +149,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, EvaluationContext, path) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
+| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, EvaluationContext, operand bindings) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
 
 ---
 

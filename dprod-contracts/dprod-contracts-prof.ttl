@@ -29,7 +29,7 @@ odrl:core
     """Proper ODRL 2.2 profile for deterministic data governance.
     Uses ODRL terms for standard constructs; adds lifecycle state,
     deadline, recurrence, data contracts, transitive ODRL collection matching,
-    rooted operand resolution through one immutable evaluation context, and logical negation."""@en ;
+    one-hop operand bindings over normalized immutable input nodes, and logical negation."""@en ;
   prof:isProfileOf odrl:core ;
   prof:hasToken "dprod"^^xsd:token ;
   odrl:conflict odrl:prohibit ;

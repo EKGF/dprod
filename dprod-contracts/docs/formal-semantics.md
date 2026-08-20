@@ -25,7 +25,7 @@ DPROD Contracts provides:
 - Bilateral agreement evaluation (grantor and grantee duties)
 - Total evaluation functions (always terminate with defined result)
 - Clear separation of Condition (pre-requisite) from Duty (obligation)
-- Property-path-based operand resolution with SPARQL-style traversal semantics
+- One-hop operand resolution over normalized request, state, and context graphs
 
 ### 1.1 Scope and Runtime Boundary
 
@@ -191,10 +191,11 @@ ComparisonOperator ::= eq | neq | lt | lte | gt | gte | isAnyOf | isNoneOf
 
 **Notes**:
 
-- Every `leftOperand` is a profile-declared `odrl:LeftOperand` with exactly one `dprod:path` from the evaluation-context root.
-- Request properties and state-of-the-world properties use the same resolver; their paths begin with `dprod:request` and `dprod:state`, respectively.
-- `dprod:currentAgent` uses `dprod:path dprod:agent`. The standard ODRL `odrl:dateTime` operand uses `dprod:path dprod:clock`; DPROD does not define a duplicate clock operand.
-- Right operands are literal values. ODRL `odrl:rightOperandReference` identifies an externally dereferenced right operand; local evaluation-context paths in right-operand position are not part of this profile.
+- Every `leftOperand` declares exactly one `dprod:operandSource` and one IRI-valued `dprod:operandProperty`.
+- The source is one of `dprod:requestSource`, `dprod:stateSource`, or `dprod:contextSource`; extension sources are not permitted.
+- The evaluator performs exactly one property lookup on the selected normalized source node. RDF-list paths and multi-step traversal are not part of the grammar.
+- `dprod:currentAgent` binds `contextSource` to `dprod:agent`. Standard ODRL `odrl:dateTime` binds `contextSource` to `dprod:clock`; DPROD does not define a duplicate clock operand.
+- Right operands are literal values. ODRL `odrl:rightOperandReference` identifies an externally dereferenced right operand; DPROD source/property bindings are left-operand metadata and are not permitted in right-operand position.
 
 ### 3.4 Policies
 
@@ -229,7 +230,10 @@ Context ::= Map<String, Value>
 
 The formal `Request` evaluation input is not an RDF `odrl:Request` policy. It is an abstract runtime authorization query evaluated against supported policy types. Until DPROD defines a transition model connecting `odrl:Offer`, `odrl:Request`, and `odrl:Agreement`, an RDF `odrl:Request` is outside the supported policy grammar and MUST be rejected by SHACL validation.
 
-**Note**: Request properties are reached from the common evaluation-context root (for example, `dprod:path (dprod:request odrl:purpose)`).
+**Normalization requirement**: `Request.graph` MUST materialize every
+policy-relevant request fact directly on `Request.node`. For example, the
+requested asset's timeliness is copied to `(Request.node, ex:timeliness, value)`
+before evaluation. Policies do not traverse through `odrl:target` or party nodes.
 
 ---
 
@@ -292,8 +296,8 @@ Env = {
 }
 ```
 
-`Env.node` is the sole entry point for `dprod:path` traversal. Its finite RDF graph
-contains exactly these root bindings. `Env.graph` is the union of those bindings,
+`Env.node`, `Env.request.node`, and `Env.world.node` are the three closed operand
+sources. `Env.graph` is the union of their finite graphs and these context bindings:
 `Env.request.graph`, and `Env.world.graph`:
 
 ```
@@ -307,6 +311,11 @@ contains exactly these root bindings. `Env.graph` is the union of those bindings
 the provenance of `Env.node` MUST be retained with the result so the input can be
 reconstructed for audit. Operand resolution MUST NOT read a live global graph,
 perform a network request, or switch snapshots during evaluation.
+
+Like the request, the world snapshot is normalized: every state fact exposed by
+a supported operand is a direct `(WorldSnapshot.node, property, value)` triple.
+Normalization is part of environment construction and fails before policy
+evaluation if a required source fact cannot be produced unambiguously.
 
 **Environment Construction**: Given a Request `R = (a, x, s, ctx)`, duty state Σ,
 and world snapshot W:
@@ -553,88 +562,80 @@ The condition semantics rely on several helper functions. For a verified kernel,
 
 #### resolve : LeftOperand × Env → Value ∪ {ResolutionError}
 
-The function `resolve(leftOperand, Env)` maps every operand through its one
-declared path. There is no second resolver and no fallback branch.
+The function `resolve(leftOperand, Env)` selects one normalized source node and
+reads one property from it. There is no traversal language, second resolver, or
+fallback branch.
 
 ```
 resolve : LeftOperand × Env → Value ∪ {ResolutionError}
 
 resolve(op, Env) =
-    if op.path = ⊥ then
-        ResolutionError(MissingPath, op)
+    if op.operandSource = ⊥ then
+        ResolutionError(MissingSource, op)
+    else if op.operandProperty = ⊥ then
+        ResolutionError(MissingProperty, op)
     else
-        let values = traverse(op.path, Env.node)
-        in case values of
-             TraversalError(e) → ResolutionError(e, op)
-             ∅                 → ResolutionError(MissingValue, op)
-             {v}               → if op.range ≠ ⊥ ∧ ¬conforms(v, op.range)
-                                 then ResolutionError(TypeMismatch, op, v)
-                                 else v
-             _                 → ResolutionError(MultipleValues, op)
+        let node = sourceNode(op.operandSource, Env)
+        in case node of
+             ResolutionError(e) → ResolutionError(e, op)
+             Node(n)            → lookupOne(op.operandProperty, n, Env.graph, op.range)
 ```
 
 **Architectural Principle**: All contextual data access MUST go through declared
-`odrl:LeftOperand` instances with exactly one explicit `dprod:path` from
-`Env.node`. This ensures:
+`odrl:LeftOperand` instances with exactly one source/property binding. This ensures:
 - Type safety (operands can declare expected ranges via `rdfs:range`)
 - Validation (SHACL can verify operand usage at authoring time)
 - Mechanization (clear mapping to formal verification targets)
 - Auditability (all data access points and snapshots are declared and retained)
+- Bounded evaluation (one indexed graph lookup per operand)
 
-Profiles define domain-specific left operands with property paths:
-* `purpose` → `dprod:path (dprod:request odrl:purpose)`
-* `classification` → `dprod:path (dprod:request odrl:target ex:classification)`
-* `recipientType` → `dprod:path (dprod:request odrl:assignee ex:recipientType)`
-* `marketOpen` → `dprod:path (dprod:state ex:marketOpen)`
-* `currentAgent` → `dprod:path dprod:agent`
-* `odrl:dateTime` → `dprod:path dprod:clock`
+Profiles define domain-specific bindings:
+* `purpose` → `(requestSource, odrl:purpose)`
+* `classification` → `(requestSource, ex:classification)`
+* `recipientType` → `(requestSource, ex:recipientType)`
+* `marketOpen` → `(stateSource, ex:marketOpen)`
+* `currentAgent` → `(contextSource, dprod:agent)`
+* `odrl:dateTime` → `(contextSource, dprod:clock)`
 
-#### traverse : PropertyPath × Node → Set<Value> ∪ {TraversalError}
-
-The function `traverse(path, node)` follows a SPARQL-style property path to retrieve a value. This is the **primary mechanism for resolving profile-declared operands** via `dprod:path`.
-It reads only `Env.graph`, denoted `EnvGraph` below.
-
-**Property Path Types** (normative):
-
-| Type | Syntax | Meaning |
-|------|--------|---------|
-| Simple path | One context-root IRI | One-step: `?evaluationContext <root> ?value` |
-| Sequence path | RDF list of IRIs | Multi-step from `?evaluationContext`; the first IRI is a context root |
-
-**Examples**:
-
-| Operand | `dprod:path` | Traversal |
-|---------|-------------|-----------|
-| `dprod:currentAgent` | `dprod:agent` | `?evaluationContext dprod:agent ?value` |
-| `odrl:dateTime` | `dprod:clock` | `?evaluationContext dprod:clock ?value` |
-| `odrl:purpose` | `(dprod:request odrl:purpose)` | `?evaluationContext dprod:request ?request . ?request odrl:purpose ?value` |
-| `ex:marketOpen` | `(dprod:state ex:marketOpen)` | `?evaluationContext dprod:state ?state . ?state ex:marketOpen ?value` |
+#### sourceNode : OperandSource × Env → Node ∪ {ResolutionError}
 
 ```
-traverse : PropertyPath × Node → Set<Value> ∪ {TraversalError}
+sourceNode(source, Env) =
+    case source of
+        requestSource → Env.request.node
+        stateSource   → Env.world.node
+        contextSource → Env.node
+        _             → ResolutionError(UnknownSource, source)
+```
 
-traverse(path, node) =
-    case path of
-        IRI →
-            -- Simple path: single property lookup
-            { v | (node, IRI, v) ∈ EnvGraph }
+The source enumeration is closed. Merely typing another resource as
+`dprod:OperandSource` does not make it valid.
 
-        (IRI₁ IRI₂ ... IRIₙ) →
-            -- Sequence path: fold through properties
-            foldl(step, {node}, [IRI₁, IRI₂, ..., IRIₙ])
+#### lookupOne : IRI × Node × FiniteGraph × Type? → Value ∪ {ResolutionError}
 
-step(nodes, prop) =
-    { v | n ∈ nodes ∧ (n, prop, v) ∈ EnvGraph }
+```
+lookupOne(property, node, graph, expectedType) =
+    if property is not an IRI then
+        ResolutionError(InvalidProperty, property)
+    else
+        let values = { v | (node, property, v) ∈ graph }
+        in case values of
+             ∅   → ResolutionError(MissingValue, node, property)
+             {v} → if expectedType ≠ ⊥ ∧ ¬conforms(v, expectedType)
+                   then ResolutionError(TypeMismatch, property, v)
+                   else v
+             _   → ResolutionError(MultipleValues, node, property)
 ```
 
 **Safety Properties** (normative):
 
-1. **IRI-only**: Path elements MUST be IRIs (not strings, not blank nodes).
-2. **Known root**: The first element MUST be one of `dprod:request`, `dprod:state`, `dprod:agent`, or `dprod:clock`.
-3. **Bounded depth**: Sequence paths have bounded length (recommended ≤ 5 steps).
-4. **No external reads**: Traversal is confined to the immutable evaluation graph.
-5. **Fail fast**: Missing, multiple, ill-typed, or otherwise unresolvable values are `ResolutionError` values; they never become `false`.
-6. **Deterministic**: The same evaluation graph and path produce the same value or the same error.
+1. **Closed sources**: Only request, state, and context sources are valid.
+2. **IRI-only property**: `operandProperty` MUST be one IRI, never an RDF list.
+3. **One hop**: Resolution performs one direct triple lookup and no traversal.
+4. **Normalized inputs**: Nested request or state structure is flattened before evaluation.
+5. **No external reads**: Lookup is confined to the immutable evaluation graph.
+6. **Fail fast**: Missing, multiple, ill-typed, or otherwise unresolvable values are `ResolutionError` values; they never become `false`.
+7. **Deterministic**: The same normalized graph and binding produce the same value or the same error.
 
 #### apply : ComparisonOperator × Value × Value → Boolean
 
@@ -835,27 +836,27 @@ No specificity ordering within norm types. All matching norms contribute.
     WellFormed(Σ) ⟹ |{ s | Σ.state(d) = s }| = 1
 ```
 
-### 9.5 Property Path Traversal Safety
+### 9.5 Operand Lookup Safety
 
-**Theorem**: Traversal is bounded by path length.
-
-```
-∀ path, node.
-    traverse(path, node) terminates in O(|path|) steps
-```
-
-**Theorem**: Traversal uses only declared IRIs.
+**Theorem**: Operand resolution performs exactly one graph lookup.
 
 ```
-∀ path, node.
-    traverse(path, node) ∈ Set<Value> ⟹ all elements of path are IRIs
+∀ op, Env.
+    WellFormed(op) ⟹ graphLookupCount(resolve(op, Env)) = 1
 ```
 
-**Theorem**: Traversal is total and fail-closed.
+**Theorem**: Operand properties are IRIs.
 
 ```
-∀ path, node.
-    traverse(path, node) ∈ Set<Value> ∪ {TraversalError}
+∀ op.
+    WellFormed(op) ⟹ op.operandProperty ∈ IRI
+```
+
+**Theorem**: Lookup is total and fail-fast.
+
+```
+∀ op, Env.
+    resolve(op, Env) ∈ Value ∪ {ResolutionError}
 ```
 
 ---
@@ -874,11 +875,11 @@ DPROD Contracts evaluation is designed to be **polynomial-time** and **total** u
 4. **Finite Σ**: State contains finite sets (performed actions, duty states)
 5. **No recursive policy references**: Policies cannot invoke evaluation of other policies
 
-### 10.2 Path Resolution Constraints
+### 10.2 Operand Resolution Constraints
 
-6. **Bounded path depth**: Maximum 10 segments (enforced by grammar)
-7. **No joins**: Path resolution is single-threaded navigation, not graph pattern matching
-8. **Deterministic navigation**: The complete path resolves to exactly one value or an explicit `ResolutionError`
+6. **Closed source set**: Request, state, or context only
+7. **One property IRI**: RDF lists and traversal expressions are rejected
+8. **One lookup**: Resolution returns exactly one value or an explicit `ResolutionError`
 
 ### 10.3 Complexity Analysis
 
@@ -886,12 +887,12 @@ Given these constraints:
 
 | Operation | Complexity |
 |-----------|------------|
-| Path resolution (`deref`) | O(d) where d = path depth |
-| Condition evaluation | O(n × d) where n = condition tree size |
+| Operand lookup | O(1) with a predicate index |
+| Condition evaluation | O(n) where n = condition tree size |
 | Norm matching | O(\|P\| × m) where m = max clauses per policy |
 | Hierarchy traversal (`matches`) | O(h) where h = hierarchy depth |
 | Conflict resolution | O(k) where k = matched norms |
-| **Total `Eval`** | **O(\|P\| × m × n × d × h)** — polynomial |
+| **Total `Eval`** | **O(\|P\| × m × n × h)** — polynomial |
 
 ### 10.4 Totality Guarantees
 
@@ -907,40 +908,48 @@ Under these constraints, `Eval` is **total**: it terminates for all well-formed 
 
 ### 11.1 Left Operands
 
-Profiles attach DPROD Contracts property paths to operands. Standard ODRL operands (like `odrl:purpose`) are extended in-place; domain-specific operands are declared as new `odrl:LeftOperand` instances:
+Profiles bind operands to one direct property on one normalized source. Standard
+ODRL operands can be extended in place; domain-specific operands are declared as
+new `odrl:LeftOperand` instances:
 
 ```turtle
-# Built-in scalar roots
-dprod:currentAgent dprod:path dprod:agent .
-odrl:dateTime dprod:path dprod:clock .
+# Built-in context values
+dprod:currentAgent
+    dprod:operandSource dprod:contextSource ;
+    dprod:operandProperty dprod:agent .
 
-# Request-rooted: via the requested asset
+odrl:dateTime
+    dprod:operandSource dprod:contextSource ;
+    dprod:operandProperty dprod:clock .
+
+# Direct property on the normalized request
 ex:timeliness a odrl:LeftOperand ;
-    dprod:path (dprod:request odrl:target ex:timeliness) .
+    dprod:operandSource dprod:requestSource ;
+    dprod:operandProperty ex:timeliness .
 
-# State-of-the-world rooted
+# Direct property on the normalized world snapshot
 ex:marketOpen a odrl:LeftOperand ;
-    dprod:path (dprod:state ex:marketOpen) .
+    dprod:operandSource dprod:stateSource ;
+    dprod:operandProperty ex:marketOpen .
 ```
 
-SHACL validation enforces value form and cardinality on `dprod:path`:
+SHACL validation enforces the closed source set and single-property cardinality:
 
 ```turtle
 dprod-shapes:LeftOperandShape a sh:NodeShape ;
     sh:targetClass odrl:LeftOperand ;
     sh:targetObjectsOf odrl:leftOperand ;
     sh:property [
-        sh:path dprod:path ;
+        sh:path dprod:operandSource ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:or (
-            [
-                sh:nodeKind sh:IRI ;
-                sh:in (dprod:request dprod:state dprod:agent dprod:clock)
-            ]
-            [ sh:node dprod-shapes:RdfListOfIris ]
-        ) ;
-        sh:message "Every left operand must declare exactly one rooted dprod:path."
+        sh:in (dprod:requestSource dprod:stateSource dprod:contextSource)
+    ] ;
+    sh:property [
+        sh:path dprod:operandProperty ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI
     ] .
 ```
 
@@ -1095,24 +1104,38 @@ datatype Condition =
 
 datatype ResolutionResult = Resolved(value: Value) | ResolutionFailure(error: ResolutionError)
 
-function Traverse(path: PropertyPath, node: Node, graph: FiniteGraph): set<Value>
+function SourceNode(source: OperandSource, env: Env): ResolutionResult<Node>
 {
-  match path
-    case SimplePath(iri) => LookupAll(graph, node, iri)
-    case SequencePath(iris) => FoldStep(graph, {node}, iris)
+  match source
+    case RequestSource => Resolved(env.request.node)
+    case StateSource => Resolved(env.world.node)
+    case ContextSource => Resolved(env.node)
+    case _ => ResolutionFailure(UnknownSource(source))
+}
+
+function LookupOne(property: IRI, node: Node, graph: FiniteGraph): ResolutionResult
+{
+  var values := LookupAll(graph, node, property);
+  if |values| == 0 then ResolutionFailure(MissingValue(node, property))
+  else if |values| > 1 then ResolutionFailure(MultipleValues(node, property))
+  else Resolved(Choose(values))
 }
 
 function Resolve(op: LeftOperand, env: Env): ResolutionResult
   requires ValidEnv(env)
 {
-  if !op.path.Some? then ResolutionFailure(MissingPath(op))
+  if !op.operandSource.Some? then ResolutionFailure(MissingSource(op))
+  else if !op.operandProperty.Some? then ResolutionFailure(MissingProperty(op))
   else
-    var values := Traverse(op.path.value, env.node, env.graph);
-    if |values| == 0 then ResolutionFailure(MissingValue(op))
-    else if |values| > 1 then ResolutionFailure(MultipleValues(op))
-    else if op.range.Some? && !Conforms(Choose(values), op.range.value)
-      then ResolutionFailure(TypeMismatch(op))
-    else Resolved(Choose(values))
+    match SourceNode(op.operandSource.value, env)
+      case ResolutionFailure(error) => ResolutionFailure(error)
+      case Resolved(node) =>
+        match LookupOne(op.operandProperty.value, node, env.graph)
+          case ResolutionFailure(error) => ResolutionFailure(error)
+          case Resolved(value) =>
+            if op.range.Some? && !Conforms(value, op.range.value)
+              then ResolutionFailure(TypeMismatch(op))
+            else Resolved(value)
 }
 
 function EvalCondition(c: Condition, env: Env): EvaluationResult<bool>
@@ -1151,7 +1174,7 @@ The following properties should be proved for a verified implementation:
 2. **(S2) Totality**: `Eval` terminates for all well-formed inputs
 3. **(S3) Duty-state consistency**: No duty can be simultaneously in two states
 4. **(S4) Terminal permanence**: Fulfilled/Violated states never revert
-5. **(S5) Path safety**: an unresolvable operand produces an explicit `ResolutionError`, never a Boolean result
+5. **(S5) Lookup safety**: an unresolvable operand produces an explicit `ResolutionError`, never a Boolean result
 6. **(S6) Prohibition monotonicity**: Adding policies cannot remove prohibitions
 
 ---

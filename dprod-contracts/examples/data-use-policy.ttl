@@ -27,7 +27,8 @@ ex:scheme
 
 # --- Purpose operand ---
 odrl:purpose
-  dprod:path (dprod:request odrl:purpose) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty odrl:purpose ;
 .
 
 # --- Actions ---
@@ -45,7 +46,8 @@ ex:classification
   rdfs:isDefinedBy ex: ;
   rdfs:label "classification" ;
   dct:description "Data classification level."@en ;
-  dprod:path (dprod:request odrl:target ex:classification) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:classification ;
 .
 
 ex:processingMode
@@ -53,7 +55,8 @@ ex:processingMode
   rdfs:isDefinedBy ex: ;
   rdfs:label "processing mode" ;
   dct:description "How data is processed."@en ;
-  dprod:path (dprod:request ex:processingMode) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:processingMode ;
 .
 
 ex:environment
@@ -61,7 +64,8 @@ ex:environment
   rdfs:isDefinedBy ex: ;
   rdfs:label "environment" ;
   dct:description "Execution environment."@en ;
-  dprod:path (dprod:request ex:environment) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:environment ;
 .
 
 ex:legalBasis
@@ -69,7 +73,8 @@ ex:legalBasis
   rdfs:isDefinedBy ex: ;
   rdfs:label "legal basis" ;
   dct:description "Legal basis for processing."@en ;
-  dprod:path (dprod:request ex:legalBasis) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:legalBasis ;
 .
 
 ex:retentionPeriod
@@ -77,7 +82,8 @@ ex:retentionPeriod
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
   dct:description "Maximum time data may be retained."@en ;
-  dprod:path (dprod:request odrl:target ex:retentionPeriod) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:retentionPeriod ;
 .
 
 # --- Concept values ---

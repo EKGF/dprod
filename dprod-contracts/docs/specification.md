@@ -161,9 +161,17 @@ decision. It has four normative roots:
 | `dprod:agent` | `odrl:Party` | Requesting agent |
 | `dprod:clock` | `xsd:dateTime` | Evaluation timestamp |
 
-All are resolved by `dprod:path`. `dprod:currentAgent` is an `odrl:LeftOperand`
-with `dprod:path dprod:agent`. The standard `odrl:dateTime` operand has
-`dprod:path dprod:clock`; DPROD does not define a duplicate clock operand.
+Operand bindings select one of three closed sources:
+
+| Source | Node selected |
+|--------|---------------|
+| `dprod:requestSource` | Normalized authorization request |
+| `dprod:stateSource` | Immutable normalized world snapshot |
+| `dprod:contextSource` | Evaluation context itself |
+
+`dprod:currentAgent` binds `contextSource` to property `dprod:agent`. Standard
+`odrl:dateTime` binds `contextSource` to `dprod:clock`; DPROD does not define a
+duplicate clock operand.
 
 ---
 
@@ -258,27 +266,26 @@ DPROD evaluators MUST apply the transitive closure of valid, same-kind `odrl:par
 
 The removed `dprod:partOf` and `dprod:memberOf` properties are breaking changes. Their use fails validation so obsolete contracts cannot silently acquire different semantics.
 
-### 4.8 dprod:path
+### 4.8 Operand Bindings
 
-| Property | Value |
-|----------|-------|
-| **Type** | `rdf:Property` |
-| **Domain** | `odrl:LeftOperand` |
-| **Cardinality** | 0..1 |
-| **Definition** | SPARQL-style property path from evaluation context to operand value |
+| Property | Type | Domain | Range | Cardinality | Definition |
+|----------|------|--------|-------|-------------|------------|
+| `dprod:operandSource` | `owl:ObjectProperty` | `odrl:LeftOperand` | `dprod:OperandSource` | exactly 1 | Selects request, state, or context source |
+| `dprod:operandProperty` | `rdf:Property` | `odrl:LeftOperand` | IRI | exactly 1 | Direct property read from the selected source node |
 
-Simple paths are one of the four root properties. Sequence paths are RDF lists
-whose first item is one of those roots:
+The evaluator performs one lookup:
 
-| Path type | Syntax | Meaning | Example |
-|-----------|--------|---------|---------|
-| Request-rooted | `dprod:path (dprod:request ex:environment)` | Direct request property | `?context dprod:request ?request . ?request ex:environment ?value` |
-| Asset-rooted | `dprod:path (dprod:request odrl:target ex:timeliness)` | Via requested target | `?context dprod:request/odrl:target/ex:timeliness ?value` |
-| World-state-rooted | `dprod:path (dprod:state ex:marketOpen)` | Supplied world snapshot | `?context dprod:state/ex:marketOpen ?value` |
-| Built-in scalar | `dprod:path dprod:clock` | Evaluation timestamp | `?context dprod:clock ?value` |
+| Operand | Source | Property | Lookup |
+|---------|--------|----------|--------|
+| `ex:environment` | `requestSource` | `ex:environment` | `?request ex:environment ?value` |
+| `ex:timeliness` | `requestSource` | `ex:timeliness` | `?request ex:timeliness ?value` |
+| `ex:marketOpen` | `stateSource` | `ex:marketOpen` | `?state ex:marketOpen ?value` |
+| `odrl:dateTime` | `contextSource` | `dprod:clock` | `?context dprod:clock ?value` |
 
-Traversal is confined to the supplied finite evaluation graph. Missing paths,
-missing values, multiple values, and type mismatches are hard evaluation errors.
+Request and state producers MUST flatten policy-relevant facts onto their source
+nodes before evaluation. RDF lists, traversal through `odrl:target` or party
+nodes, and extension sources are rejected. Missing bindings, missing or multiple
+values, and type mismatches are hard evaluation errors.
 
 ### 4.9 dprod:not
 
@@ -370,7 +377,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` and objects of `odrl:leftOperand` | Exactly one rooted `dprod:path` (root IRI or `rdf:List` beginning with a root IRI) |
+| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` and objects of `odrl:leftOperand` | Exactly one closed `dprod:operandSource` and one IRI-valued `dprod:operandProperty` |
 | `dprod-shapes:EvaluationContextShape` | `dprod:EvaluationContext` | Exactly one request, immutable state snapshot, requesting agent, and clock |
 
 ### Collection shapes
@@ -390,7 +397,8 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:RejectConsequenceShape` | `odrl:consequence` | Noted as future extension |
 | `dprod-shapes:RejectTicketShape` | `odrl:Ticket` | Not supported |
 | `dprod-shapes:RejectRequestShape` | `odrl:Request` | DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. |
-| `dprod-shapes:RejectRuntimeReferenceShape` | `dprod:RuntimeReference` | Declare a normal `odrl:LeftOperand` with one rooted `dprod:path` |
+| `dprod-shapes:RejectRuntimeReferenceShape` | `dprod:RuntimeReference` | Declare a normal `odrl:LeftOperand` with one source/property binding |
+| `dprod-shapes:RejectOperandPathShape` | `dprod:path` | Normalize the input and use `dprod:operandSource` plus `dprod:operandProperty` |
 | `dprod-shapes:RejectObsoleteDprodPartOfShape` | `dprod:partOf` | Use `odrl:partOf` |
 | `dprod-shapes:RejectObsoleteDprodMemberOfShape` | `dprod:memberOf` | Use `odrl:partOf` |
 | `dprod-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
@@ -422,7 +430,8 @@ documented in §3.4 and omitted):
 | `dprod:acceptsOffer` | | | | Yes | | | | |
 | `dprod:effectiveDate` | | | Yes | Yes | | | | |
 | `dprod:expirationDate` | | | Yes | Yes | | | | |
-| `dprod:path` | | | | | Yes | | | |
+| `dprod:operandSource` | | | | | Yes | | | |
+| `dprod:operandProperty` | | | | | Yes | | | |
 | `dprod:not` | | | | | | Yes | | |
 
 ---

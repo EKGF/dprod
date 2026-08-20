@@ -44,18 +44,55 @@ class EvaluationContextOntologyTest(unittest.TestCase):
                     (prop, RDFS.domain, DPROD.EvaluationContext), self.ontology
                 )
 
-    def test_builtins_use_the_same_path_resolver_as_profile_operands(self) -> None:
+    def test_operand_bindings_replace_property_paths(self) -> None:
+        self.assertNotIn((DPROD.path, None, None), self.ontology)
+        self.assertIn((DPROD.OperandSource, RDF.type, OWL.Class), self.ontology)
+
+        for source in (
+            DPROD.requestSource,
+            DPROD.stateSource,
+            DPROD.contextSource,
+        ):
+            with self.subTest(source=source):
+                self.assertIn((source, RDF.type, DPROD.OperandSource), self.ontology)
+
+        self.assertIn(
+            (DPROD.operandSource, RDF.type, OWL.ObjectProperty), self.ontology
+        )
+        self.assertIn(
+            (DPROD.operandProperty, RDF.type, RDF.Property), self.ontology
+        )
+        for prop in (DPROD.operandSource, DPROD.operandProperty):
+            self.assertIn((prop, RDFS.domain, ODRL.LeftOperand), self.ontology)
+
+    def test_builtins_use_the_same_binding_resolver_as_profile_operands(self) -> None:
         self.assertIn((DPROD.currentAgent, RDF.type, ODRL.LeftOperand), self.ontology)
-        self.assertIn((DPROD.currentAgent, DPROD.path, DPROD.agent), self.ontology)
+        self.assertIn(
+            (DPROD.currentAgent, DPROD.operandSource, DPROD.contextSource),
+            self.ontology,
+        )
+        self.assertIn(
+            (DPROD.currentAgent, DPROD.operandProperty, DPROD.agent),
+            self.ontology,
+        )
         self.assertNotIn((DPROD.currentAgent, RDF.type, ODRL.Party), self.ontology)
 
-        self.assertIn((ODRL.dateTime, DPROD.path, DPROD.clock), self.ontology)
+        self.assertIn(
+            (ODRL.dateTime, DPROD.operandSource, DPROD.contextSource),
+            self.ontology,
+        )
+        self.assertIn(
+            (ODRL.dateTime, DPROD.operandProperty, DPROD.clock), self.ontology
+        )
 
     def test_formal_semantics_has_one_fail_fast_resolver(self) -> None:
         self.assertNotIn("RuntimeRef ::=", self.formal_semantics)
         self.assertNotIn("resolveRuntime", self.formal_semantics)
         self.assertNotIn("Unknown runtime reference", self.formal_semantics)
-        self.assertIn("traverse(op.path, Env.node)", self.formal_semantics)
+        self.assertNotIn("PropertyPath", self.formal_semantics)
+        self.assertNotIn("traverse(", self.formal_semantics)
+        self.assertIn("sourceNode(op.operandSource, Env)", self.formal_semantics)
+        self.assertIn("lookupOne(op.operandProperty", self.formal_semantics)
         self.assertIn("ResolutionError", self.formal_semantics)
         self.assertIn("must not be converted to `false`", self.formal_semantics)
 
@@ -119,26 +156,44 @@ class EvaluationContextValidationTest(unittest.TestCase):
             advanced=True,
         )
 
-    def test_request_and_world_state_paths_share_one_rooted_shape(self) -> None:
-        for path in (
-            "dprod:path (dprod:request odrl:purpose)",
-            "dprod:path (dprod:state ex:marketOpen)",
-            "dprod:path dprod:agent",
-            "dprod:path dprod:clock",
+    def test_request_state_and_context_use_one_binding_shape(self) -> None:
+        for binding in (
+            "dprod:operandSource dprod:requestSource ; dprod:operandProperty odrl:purpose",
+            "dprod:operandSource dprod:stateSource ; dprod:operandProperty ex:marketOpen",
+            "dprod:operandSource dprod:contextSource ; dprod:operandProperty dprod:agent",
+            "dprod:operandSource dprod:contextSource ; dprod:operandProperty dprod:clock",
         ):
-            with self.subTest(path=path):
-                conforms, _, report = self.validate_operand(path)
+            with self.subTest(binding=binding):
+                conforms, _, report = self.validate_operand(binding)
                 self.assertTrue(conforms, str(report))
 
-    def test_unrooted_operand_path_is_rejected(self) -> None:
-        conforms, _, report = self.validate_operand("dprod:path ex:marketOpen")
+    def test_unknown_operand_source_is_rejected(self) -> None:
+        conforms, _, report = self.validate_operand(
+            "dprod:operandSource ex:liveNetwork ; dprod:operandProperty ex:marketOpen"
+        )
         self.assertFalse(conforms, str(report))
-        self.assertIn("evaluation-context root", str(report))
+        self.assertIn("requestSource, stateSource, or contextSource", str(report))
 
-    def test_operand_without_path_is_rejected(self) -> None:
-        conforms, _, report = self.validate_operand("rdfs:label \"missing path\"")
+    def test_operand_without_source_is_rejected(self) -> None:
+        conforms, _, report = self.validate_operand(
+            "dprod:operandProperty ex:marketOpen"
+        )
         self.assertFalse(conforms, str(report))
-        self.assertIn("exactly one dprod:path", str(report))
+        self.assertIn("exactly one dprod:operandSource", str(report))
+
+    def test_operand_without_property_is_rejected(self) -> None:
+        conforms, _, report = self.validate_operand(
+            "dprod:operandSource dprod:stateSource"
+        )
+        self.assertFalse(conforms, str(report))
+        self.assertIn("exactly one dprod:operandProperty", str(report))
+
+    def test_obsolete_list_valued_path_is_rejected(self) -> None:
+        conforms, _, report = self.validate_operand(
+            "dprod:path (dprod:request odrl:target ex:timeliness)"
+        )
+        self.assertFalse(conforms, str(report))
+        self.assertIn("dprod:path is obsolete", str(report))
 
     def test_complete_evaluation_context_is_accepted(self) -> None:
         conforms, _, report = self.validate_context(

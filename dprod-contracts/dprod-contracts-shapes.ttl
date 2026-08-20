@@ -465,29 +465,6 @@ dprod-shapes:EvaluationContextShape
 .
 
 
-# Helper shape: validates a non-empty rdf:List whose members are all IRIs.
-# Used by LeftOperandShape to constrain dprod:path sequence values
-# (the SHACL-Core property-path subset DPROD uses; see dprod:path in dprod-contracts.ttl).
-# Implemented with the SHACL property path (rdf:rest)*/rdf:first so the full list is
-# walked in one shape evaluation without shape recursion.
-dprod-shapes:RdfListOfIris
-  a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
-  rdfs:label "rdf:List of IRIs shape" ;
-  sh:property [
-    sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
-    sh:minCount 1 ;
-    sh:nodeKind sh:IRI ;
-    sh:message "Members of a dprod:path sequence must be IRIs and the sequence must be non-empty."
-  ] ;
-  sh:property [
-    sh:path rdf:first ;
-    sh:in (dprod:request dprod:state dprod:agent dprod:clock) ;
-    sh:message "A dprod:path sequence must start with an evaluation-context root: dprod:request, dprod:state, dprod:agent, or dprod:clock."
-  ] ;
-.
-
-
 dprod-shapes:LeftOperandShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
@@ -495,19 +472,31 @@ dprod-shapes:LeftOperandShape
   sh:targetClass odrl:LeftOperand ;
   sh:targetObjectsOf odrl:leftOperand ;
   sh:name "Left Operand Shape" ;
-  sh:property [
-    sh:path dprod:path ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:or (
-      [
+  sh:or (
+    [ sh:in (dprod:currentAgent odrl:dateTime) ]
+    [
+      sh:property [
+        sh:path dprod:operandSource ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
         sh:nodeKind sh:IRI ;
-        sh:in (dprod:request dprod:state dprod:agent dprod:clock)
+        sh:in (dprod:requestSource dprod:stateSource dprod:contextSource)
       ]
-      [ sh:node dprod-shapes:RdfListOfIris ]
-    ) ;
-    sh:message "Every left operand must declare exactly one dprod:path rooted at an evaluation-context root: dprod:request, dprod:state, dprod:agent, or dprod:clock."
-  ] ;
+    ]
+  ) ;
+  sh:message "Every left operand must declare exactly one dprod:operandSource: requestSource, stateSource, or contextSource." ;
+  sh:or (
+    [ sh:in (dprod:currentAgent odrl:dateTime) ]
+    [
+      sh:property [
+        sh:path dprod:operandProperty ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI
+      ]
+    ]
+  ) ;
+  sh:message "Every left operand must declare exactly one dprod:operandProperty, which must be IRI-valued." ;
 .
 
 
@@ -524,7 +513,20 @@ dprod-shapes:RejectRuntimeReferenceShape
     sh:path rdf:type ;
     sh:maxCount 0 ;
     sh:severity sh:Violation ;
-    sh:message "dprod:RuntimeReference is obsolete; declare an odrl:LeftOperand with one rooted dprod:path."
+    sh:message "dprod:RuntimeReference is obsolete; declare an odrl:LeftOperand with one source/property binding."
+  ] ;
+.
+
+dprod-shapes:RejectOperandPathShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "obsolete operand path rejection shape" ;
+  sh:targetSubjectsOf dprod:path ;
+  sh:property [
+    sh:path dprod:path ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "dprod:path is obsolete; normalize the source graph and use dprod:operandSource plus dprod:operandProperty."
   ] ;
 .
 
