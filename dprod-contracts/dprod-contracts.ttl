@@ -38,14 +38,14 @@ dct:modified a owl:AnnotationProperty .
     - Data offer and data contract subtypes
     - Deterministic transitive matching over ODRL collection membership
     - Structured operand resolution via SPARQL-style property paths
-    - Runtime references for dynamic right-operand values
+    - One immutable evaluation context for request and world-state operands
     - Logical negation (not) on LogicalConstraint
 
     DPROD contract policies are valid ODRL 2.2 policies. Any ODRL processor
     can partially understand them; DPROD-aware processors handle the
     extensions."""@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-19"^^xsd:date ;
+  dct:modified "2026-08-20"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -90,11 +90,20 @@ dprod:DataContract
   owl:disjointWith dprod:DataOffer ;
 .
 
-dprod:RuntimeReference
+dprod:EvaluationContext
   a owl:Class ;
-  dct:description "Value resolved at evaluation time."@en ;
+  dct:description "Immutable, provenance-bearing input graph for one policy evaluation."@en ;
+  rdfs:comment
+    """The sole root for runtime operand resolution. An evaluator constructs one
+    EvaluationContext for each evaluation and supplies the authorization request,
+    an immutable state-of-the-world snapshot, the requesting agent, and the
+    evaluation clock through the four normative root properties. The context is
+    a prov:Entity so implementations can retain the exact input provenance needed
+    to reproduce and audit a decision. Evaluation never reads a live global graph
+    or dereferences an undeclared source while resolving dprod:path."""@en ;
   rdfs:isDefinedBy dprod: ;
-  rdfs:label "runtime reference" ;
+  rdfs:label "evaluation context" ;
+  rdfs:subClassOf prov:Entity ;
 .
 
 
@@ -283,7 +292,7 @@ dprod:path
   a rdf:Property ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "resolution path" ;
-  dct:description "SHACL-style property path from evaluation context to operand value."@en ;
+  dct:description "SHACL-style property path from the evaluation context to one operand value."@en ;
   rdfs:comment
     """Value MUST be either a property IRI (simple predicate path) or an rdf:List of property IRIs (sequence path).
     This is the SHACL Core property-path subset (W3C SHACL spec, §2.3) restricted to predicate and sequence paths;
@@ -292,10 +301,52 @@ dprod:path
     Value form is enforced by dprod-shapes:LeftOperandShape via sh:or; no rdfs:range is declared because the
     permitted value set (IRI ∪ rdf:List of IRIs) is not expressible as a single RDFS class, mirroring SHACL's
     own choice for sh:path.
-    Context operands: dprod:path ex:environment (direct property on request)
-    Asset operands: dprod:path (odrl:target ex:timeliness) (via target)
-    Agent operands: dprod:path (odrl:assignee ex:role) (via assignee)"""@en ;
+    Every path starts at exactly one of dprod:request, dprod:state,
+    dprod:agent, or dprod:clock. Request operands use paths such as
+    (dprod:request odrl:purpose). State-of-the-world operands use paths such as
+    (dprod:state ex:marketOpen). Built-in scalar roots use dprod:agent or
+    dprod:clock directly."""@en ;
   rdfs:domain odrl:LeftOperand ;
+.
+
+dprod:request
+  a owl:ObjectProperty ;
+  dct:description "Authorization request supplied for one policy evaluation."@en ;
+  rdfs:comment "Root of all request-property operand paths."@en ;
+  rdfs:domain dprod:EvaluationContext ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "request" ;
+  rdfs:range rdfs:Resource ;
+.
+
+dprod:state
+  a owl:ObjectProperty ;
+  dct:description "Immutable state-of-the-world snapshot supplied for one policy evaluation."@en ;
+  rdfs:comment
+    """Root of all world-state operand paths. The object is a snapshot supplied by
+    the evaluator, never an instruction to query live external state."""@en ;
+  rdfs:domain dprod:EvaluationContext ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "state" ;
+  rdfs:range prov:Entity ;
+.
+
+dprod:agent
+  a owl:ObjectProperty ;
+  dct:description "Requesting agent supplied for one policy evaluation."@en ;
+  rdfs:domain dprod:EvaluationContext ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "agent" ;
+  rdfs:range odrl:Party ;
+.
+
+dprod:clock
+  a owl:DatatypeProperty ;
+  dct:description "Immutable timestamp at which policy evaluation occurs."@en ;
+  rdfs:domain dprod:EvaluationContext ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "clock" ;
+  rdfs:range xsd:dateTime ;
 .
 
 dprod:not
@@ -313,27 +364,21 @@ dprod:not
 .
 
 
-#############################  DPROD Runtime References ################
+#############################  DPROD Context Operands ################
 
 
 dprod:currentAgent
-  a dprod:RuntimeReference, odrl:Party ;
+  a odrl:LeftOperand ;
   dct:description "The requesting agent."@en ;
   rdfs:comment
-    """Reserved for constraint identity comparisons. Typed as both
-    RuntimeReference and odrl:Party for ODRL processor compatibility.
-    For rules applying to any requesting agent, omit odrl:assignee
-    (standard ODRL); do not use currentAgent as assignee."""@en ;
+    """A normal path-resolved left operand for constraint identity comparisons.
+    For rules applying to any requesting agent, omit odrl:assignee (standard
+    ODRL); do not use currentAgent as assignee."""@en ;
+  dprod:path dprod:agent ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "current agent" ;
 .
 
-dprod:currentDateTime
-  a odrl:LeftOperand, dprod:RuntimeReference ;
-  dct:description "Evaluation timestamp."@en ;
-  rdfs:comment
-    """Canonical DPROD operand for the evaluation timestamp. Dual-typed as dprod:RuntimeReference so that resolveRuntime binds it to the evaluator's clock at evaluation time. odrl:dateTime is the upstream ODRL equivalent; DPROD evaluators MUST canonicalise odrl:dateTime to dprod:currentDateTime before resolution. Equivalence is documented via rdfs:seeAlso rather than owl:sameAs, so DPROD evaluation does not require an OWL reasoner."""@en ;
-  rdfs:isDefinedBy dprod: ;
-  rdfs:label "current date time" ;
-  rdfs:seeAlso odrl:dateTime ;
-.
+# ODRL already defines the evaluation-time operand. DPROD binds it to the
+# common context resolver instead of minting a duplicate DPROD clock operand.
+odrl:dateTime dprod:path dprod:clock .

@@ -9,6 +9,7 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -23,7 +24,7 @@ dprod-shapes:
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-19"^^xsd:date ;
+  dct:modified "2026-08-20"^^xsd:date ;
   owl:imports <https://www.omg.org/spec/DPROD/contracts/> ;
   owl:imports sh: ;
   owl:versionInfo "0.7" ;
@@ -426,6 +427,44 @@ dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape
 ############################# Operand Shapes #########################
 
 
+dprod-shapes:EvaluationContextShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "evaluation context shape" ;
+  sh:targetClass dprod:EvaluationContext ;
+  sh:property [
+    sh:path dprod:request ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
+    sh:message "An evaluation context must have exactly one dprod:request graph root."
+  ] ;
+  sh:property [
+    sh:path dprod:state ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
+    sh:class prov:Entity ;
+    sh:message "An evaluation context must have exactly one immutable dprod:state snapshot, typed as prov:Entity."
+  ] ;
+  sh:property [
+    sh:path dprod:agent ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:class odrl:Party ;
+    sh:message "An evaluation context must have exactly one dprod:agent typed as odrl:Party."
+  ] ;
+  sh:property [
+    sh:path dprod:clock ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+    sh:message "An evaluation context must have exactly one dprod:clock xsd:dateTime."
+  ] ;
+.
+
+
 # Helper shape: validates a non-empty rdf:List whose members are all IRIs.
 # Used by LeftOperandShape to constrain dprod:path sequence values
 # (the SHACL-Core property-path subset DPROD uses; see dprod:path in dprod-contracts.ttl).
@@ -441,6 +480,11 @@ dprod-shapes:RdfListOfIris
     sh:nodeKind sh:IRI ;
     sh:message "Members of a dprod:path sequence must be IRIs and the sequence must be non-empty."
   ] ;
+  sh:property [
+    sh:path rdf:first ;
+    sh:in (dprod:request dprod:state dprod:agent dprod:clock) ;
+    sh:message "A dprod:path sequence must start with an evaluation-context root: dprod:request, dprod:state, dprod:agent, or dprod:clock."
+  ] ;
 .
 
 
@@ -449,21 +493,40 @@ dprod-shapes:LeftOperandShape
   rdfs:isDefinedBy dprod-shapes: ;
   rdfs:label "left operand shape" ;
   sh:targetClass odrl:LeftOperand ;
+  sh:targetObjectsOf odrl:leftOperand ;
   sh:name "Left Operand Shape" ;
   sh:property [
     sh:path dprod:path ;
+    sh:minCount 1 ;
     sh:maxCount 1 ;
     sh:or (
-      [ sh:nodeKind sh:IRI ]
+      [
+        sh:nodeKind sh:IRI ;
+        sh:in (dprod:request dprod:state dprod:agent dprod:clock)
+      ]
       [ sh:node dprod-shapes:RdfListOfIris ]
     ) ;
-    sh:message "dprod:path must be a property IRI or an rdf:List of property IRIs (at most one value)."
+    sh:message "Every left operand must declare exactly one dprod:path rooted at an evaluation-context root: dprod:request, dprod:state, dprod:agent, or dprod:clock."
   ] ;
 .
 
 
 ############################# Rejection Shapes #########################
 # Reject unsupported ODRL constructs
+
+
+dprod-shapes:RejectRuntimeReferenceShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "obsolete runtime reference rejection shape" ;
+  sh:targetClass dprod:RuntimeReference ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "dprod:RuntimeReference is obsolete; declare an odrl:LeftOperand with one rooted dprod:path."
+  ] ;
+.
 
 
 dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape

@@ -130,7 +130,7 @@ odrl:permission [
     odrl:target ex:data ;
     odrl:constraint [
         a odrl:Constraint ;
-        odrl:leftOperand dprod:currentDateTime ;
+        odrl:leftOperand odrl:dateTime ;
         odrl:operator odrl:lt ;
         odrl:rightOperand "2026-12-31T23:59:59Z"^^xsd:dateTime
     ]
@@ -269,53 +269,68 @@ odrl:constraint [
 
 ## 6. Operands Quick Reference
 
-All operands are `odrl:LeftOperand` with `dprod:path` — either a single property IRI for direct properties on the request, or an `rdf:List` of property IRIs for multi-step traversal (SHACL-Core predicate + sequence path subset).
+All operands are `odrl:LeftOperand` values with exactly one `dprod:path` from an
+immutable evaluation context. A single root IRI selects the requesting agent or
+clock. An `rdf:List` begins with `dprod:request` or `dprod:state` and continues
+through request or state-of-the-world properties.
 
-### Context Operands (single-step — direct property on request)
+### Request Operands
 
 | Operand | `dprod:path` | Values / Type |
 |---------|-------------|---------------|
-| `odrl:purpose` | `odrl:purpose` | `analytics`, `research`, `compliance`, `operations` |
-| `ex:environment` | `ex:environment` | `production`, `staging`, `development`, `sandbox` |
-| `ex:processingMode` | `ex:processingMode` | `human`, `automated`, `modelTraining`, `inference` |
-| `ex:legalBasis` | `ex:legalBasis` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
-| `ex:derivationType` | `ex:derivationType` | `commingled`, `nonSubstitutive`, `newProduct` |
-| `ex:channel` | `ex:channel` | String |
-| `ex:serviceWindow` | `ex:serviceWindow` | String |
-| `ex:jurisdiction` | `ex:jurisdiction` | String (country) |
-| `ex:network` | `ex:network` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
-| `ex:consentId` | `ex:consentId` | String |
-| `ex:accessPattern` | `ex:accessPattern` | `batch`, `streaming`, `interactive`, `api` |
-| `ex:volumeLimit` | `ex:volumeLimit` | Integer |
-| `ex:rateLimit` | `ex:rateLimit` | Integer |
-| `ex:project` | `ex:project` | String |
+| `odrl:purpose` | `(dprod:request odrl:purpose)` | `analytics`, `research`, `compliance`, `operations` |
+| `ex:environment` | `(dprod:request ex:environment)` | `production`, `staging`, `development`, `sandbox` |
+| `ex:processingMode` | `(dprod:request ex:processingMode)` | `human`, `automated`, `modelTraining`, `inference` |
+| `ex:legalBasis` | `(dprod:request ex:legalBasis)` | `consent`, `contract`, `legalObligation`, `vitalInterest`, `publicTask`, `legitimateInterest` |
+| `ex:derivationType` | `(dprod:request ex:derivationType)` | `commingled`, `nonSubstitutive`, `newProduct` |
+| `ex:channel` | `(dprod:request ex:channel)` | String |
+| `ex:serviceWindow` | `(dprod:request ex:serviceWindow)` | String |
+| `ex:jurisdiction` | `(dprod:request ex:jurisdiction)` | String (country) |
+| `ex:network` | `(dprod:request ex:network)` | `internalNetwork`, `externalNetwork`, `cloudNetwork` |
+| `ex:consentId` | `(dprod:request ex:consentId)` | String |
+| `ex:accessPattern` | `(dprod:request ex:accessPattern)` | `batch`, `streaming`, `interactive`, `api` |
+| `ex:volumeLimit` | `(dprod:request ex:volumeLimit)` | Integer |
+| `ex:rateLimit` | `(dprod:request ex:rateLimit)` | Integer |
+| `ex:project` | `(dprod:request ex:project)` | String |
 
 ### Asset Operands (two-step — via `odrl:target`)
 
 | Operand | `dprod:path` | Values / Type |
 |---------|-------------|---------------|
-| `ex:classification` | `(odrl:target ex:classification)` | `public`, `internal`, `confidential`, `restricted` |
-| `ex:sensitivity` | `(odrl:target ex:sensitivity)` | `pii`, `mnpi`, `phi` |
-| `ex:assetClass` | `(odrl:target ex:assetClass)` | String (equity, fx, etc.) |
-| `ex:market` | `(odrl:target ex:market)` | String (NYSE, LSE, etc.) |
-| `ex:isBenchmark` | `(odrl:target ex:isBenchmark)` | Boolean |
-| `ex:residency` | `(odrl:target ex:residency)` | String (country) |
-| `ex:retentionPeriod` | `(odrl:target ex:retentionPeriod)` | `xsd:duration` |
-| `ex:expiry` | `(odrl:target ex:expiry)` | `xsd:dateTime` |
-| `ex:timeliness` | `(odrl:target ex:timeliness)` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
-| `ex:delayMinutes` | `(odrl:target ex:delayMinutes)` | Integer |
-| `ex:auditRequired` | `(odrl:target ex:auditRequired)` | Boolean |
-| `ex:completeness` | `(odrl:target ex:completeness)` | Decimal |
-| `ex:volumeCount` | `(odrl:target ex:volumeCount)` | Integer |
+| `ex:classification` | `(dprod:request odrl:target ex:classification)` | `public`, `internal`, `confidential`, `restricted` |
+| `ex:sensitivity` | `(dprod:request odrl:target ex:sensitivity)` | `pii`, `mnpi`, `phi` |
+| `ex:assetClass` | `(dprod:request odrl:target ex:assetClass)` | String (equity, fx, etc.) |
+| `ex:market` | `(dprod:request odrl:target ex:market)` | String (NYSE, LSE, etc.) |
+| `ex:isBenchmark` | `(dprod:request odrl:target ex:isBenchmark)` | Boolean |
+| `ex:residency` | `(dprod:request odrl:target ex:residency)` | String (country) |
+| `ex:retentionPeriod` | `(dprod:request odrl:target ex:retentionPeriod)` | `xsd:duration` |
+| `ex:expiry` | `(dprod:request odrl:target ex:expiry)` | `xsd:dateTime` |
+| `ex:timeliness` | `(dprod:request odrl:target ex:timeliness)` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
+| `ex:delayMinutes` | `(dprod:request odrl:target ex:delayMinutes)` | Integer |
+| `ex:auditRequired` | `(dprod:request odrl:target ex:auditRequired)` | Boolean |
+| `ex:completeness` | `(dprod:request odrl:target ex:completeness)` | Decimal |
+| `ex:volumeCount` | `(dprod:request odrl:target ex:volumeCount)` | Integer |
 
 ### Agent Operands (two-step — via `odrl:assignee`)
 
 | Operand | `dprod:path` | Values / Type |
 |---------|-------------|---------------|
-| `ex:role` | `(odrl:assignee ex:role)` | String |
-| `ex:organization` | `(odrl:assignee ex:organization)` | IRI |
-| `ex:costCenter` | `(odrl:assignee ex:costCenter)` | String |
-| `ex:recipientType` | `(odrl:assignee ex:recipientType)` | `internal`, etc. |
+| `ex:role` | `(dprod:request odrl:assignee ex:role)` | String |
+| `ex:organization` | `(dprod:request odrl:assignee ex:organization)` | IRI |
+| `ex:costCenter` | `(dprod:request odrl:assignee ex:costCenter)` | String |
+| `ex:recipientType` | `(dprod:request odrl:assignee ex:recipientType)` | `internal`, etc. |
+
+### State-of-the-World Operands
+
+Profiles may declare operands against the immutable world snapshot supplied by
+the evaluator. They must begin with `dprod:state`:
+
+| Operand | `dprod:path` | Values / Type |
+|---------|--------------|---------------|
+| `ex:marketOpen` | `(dprod:state ex:marketOpen)` | Boolean |
+
+Built-in scalar operands use direct roots: `dprod:currentAgent` uses
+`dprod:agent`, and standard `odrl:dateTime` uses `dprod:clock`.
 
 ---
 
@@ -528,7 +543,7 @@ odrl:obligation [
 5. Each duty has exactly one `odrl:action`
 6. Each constraint has `leftOperand`, `operator`, and `rightOperand`
 7. LogicalConstraints use exactly one of `odrl:and`, `odrl:or`, or `dprod:not`
-8. Operand `dprod:path` values are valid property paths (single IRIs or RDF lists)
+8. Every operand has exactly one valid `dprod:path`, rooted at `dprod:request`, `dprod:state`, `dprod:agent`, or `dprod:clock`
 9. Prohibitions cover the intended restrictions (prohibition overrides permission)
 10. Duties have appropriate deadlines where time-sensitive
 11. Classification and sensitivity values match the DPROD vocabulary

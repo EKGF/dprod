@@ -36,7 +36,7 @@ ex:scheme
 
 # --- Purpose operand ---
 odrl:purpose
-  dprod:path odrl:purpose ;
+  dprod:path (dprod:request odrl:purpose) ;
 .
 
 # --- Actions ---
@@ -77,7 +77,7 @@ ex:timeliness
   rdfs:isDefinedBy ex: ;
   rdfs:label "timeliness" ;
   dct:description "Required data freshness category."@en ;
-  dprod:path (odrl:target ex:timeliness) ;
+  dprod:path (dprod:request odrl:target ex:timeliness) ;
 .
 
 ex:completeness
@@ -85,7 +85,7 @@ ex:completeness
   rdfs:isDefinedBy ex: ;
   rdfs:label "completeness" ;
   dct:description "Data completeness percentage."@en ;
-  dprod:path (odrl:target ex:completeness) ;
+  dprod:path (dprod:request odrl:target ex:completeness) ;
 .
 
 ex:volumeCount
@@ -93,7 +93,7 @@ ex:volumeCount
   rdfs:isDefinedBy ex: ;
   rdfs:label "volume count" ;
   dct:description "Row or record count."@en ;
-  dprod:path (odrl:target ex:volumeCount) ;
+  dprod:path (dprod:request odrl:target ex:volumeCount) ;
 .
 
 ex:retentionPeriod
@@ -101,7 +101,7 @@ ex:retentionPeriod
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
   dct:description "Maximum time data may be retained."@en ;
-  dprod:path (odrl:target ex:retentionPeriod) ;
+  dprod:path (dprod:request odrl:target ex:retentionPeriod) ;
 .
 
 ex:channel
@@ -109,7 +109,7 @@ ex:channel
   rdfs:isDefinedBy ex: ;
   rdfs:label "channel" ;
   dct:description "Communication or delivery channel."@en ;
-  dprod:path ex:channel ;
+  dprod:path (dprod:request ex:channel) ;
 .
 
 ex:serviceWindow
@@ -117,7 +117,7 @@ ex:serviceWindow
   rdfs:isDefinedBy ex: ;
   rdfs:label "service window" ;
   dct:description "Time window during which a service is available."@en ;
-  dprod:path ex:serviceWindow ;
+  dprod:path (dprod:request ex:serviceWindow) ;
 .
 
 ex:classification
@@ -125,7 +125,7 @@ ex:classification
   rdfs:isDefinedBy ex: ;
   rdfs:label "classification" ;
   dct:description "Data classification level."@en ;
-  dprod:path (odrl:target ex:classification) ;
+  dprod:path (dprod:request odrl:target ex:classification) ;
 .
 
 ex:recipientType
@@ -133,7 +133,7 @@ ex:recipientType
   rdfs:isDefinedBy ex: ;
   rdfs:label "recipient type" ;
   dct:description "Type of data recipient."@en ;
-  dprod:path (odrl:assignee ex:recipientType) ;
+  dprod:path (dprod:request odrl:assignee ex:recipientType) ;
 .
 
 ex:processingMode
@@ -141,7 +141,7 @@ ex:processingMode
   rdfs:isDefinedBy ex: ;
   rdfs:label "processing mode" ;
   dct:description "How data is processed."@en ;
-  dprod:path ex:processingMode ;
+  dprod:path (dprod:request ex:processingMode) ;
 .
 
 ex:environment
@@ -149,7 +149,7 @@ ex:environment
   rdfs:isDefinedBy ex: ;
   rdfs:label "environment" ;
   dct:description "Execution environment."@en ;
-  dprod:path ex:environment ;
+  dprod:path (dprod:request ex:environment) ;
 .
 
 # --- Concept values ---

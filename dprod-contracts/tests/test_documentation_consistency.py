@@ -69,6 +69,7 @@ class DocumentationConsistencyTest(unittest.TestCase):
             "grantorDuties:",
             "granteeDuties:",
             "violations:",
+            "inputProvenance:",
             "explanation:",
         )
 
@@ -77,7 +78,10 @@ class DocumentationConsistencyTest(unittest.TestCase):
                 self.assertIn(field, readme)
         self.assertNotIn("assignerDuties:", readme)
         self.assertNotIn("assigneeDuties:", readme)
-        self.assertIn("Eval : Request × Set<Policy> × Σ → Result", readme)
+        self.assertIn(
+            "Eval : Request × Set<Policy> × Σ × WorldSnapshot → Success(Result) | Failure(EvaluationError)",
+            readme,
+        )
         self.assertNotIn("Decision x DutySet", readme)
 
     def test_deleted_select_extension_is_not_advertised(self) -> None:
@@ -98,7 +102,15 @@ class DocumentationConsistencyTest(unittest.TestCase):
         for stale_term in ("dprod:environment", "dprod:timeliness", "dprod:role"):
             with self.subTest(stale_term=stale_term):
                 self.assertNotIn(stale_term, path_comment)
-        for domain_term in ("ex:environment", "ex:timeliness", "ex:role"):
+        for root_term in (
+            "dprod:request",
+            "dprod:state",
+            "dprod:agent",
+            "dprod:clock",
+        ):
+            with self.subTest(root_term=root_term):
+                self.assertIn(root_term, path_comment)
+        for domain_term in ("ex:marketOpen",):
             with self.subTest(domain_term=domain_term):
                 self.assertIn(domain_term, path_comment)
 

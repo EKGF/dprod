@@ -24,12 +24,12 @@ odrl:core
 <https://www.omg.org/spec/DPROD/>
   a prof:Profile ;
   dct:title "DPROD Data Contracts — ODRL 2.2 Profile Extension"@en ;
-  dct:modified "2026-08-19"^^xsd:date ;
+  dct:modified "2026-08-20"^^xsd:date ;
   dct:description
     """Proper ODRL 2.2 profile for deterministic data governance.
     Uses ODRL terms for standard constructs; adds lifecycle state,
     deadline, recurrence, data contracts, transitive ODRL collection matching,
-    operand resolution, runtime references, and logical negation."""@en ;
+    rooted operand resolution through one immutable evaluation context, and logical negation."""@en ;
   prof:isProfileOf odrl:core ;
   prof:hasToken "dprod"^^xsd:token ;
   odrl:conflict odrl:prohibit ;
