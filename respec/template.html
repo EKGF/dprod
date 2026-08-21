@@ -791,34 +791,40 @@
   <pre id="eg12" class="example hljs json ekgfexample">
   {
     "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
-    "id": "https://y.com/products/uk-bonds",
-    "type": "DataProduct",
-    "title": "UK Bonds",
-    "description": "UK Bonds is your one-stop-shop for all your bonds!",
-    "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
-    "dataProductLifecycleStatus" : "https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume",
-    "outputPort": {
-      "type": "DataService",
-      "endpointURL": "https://y.com/uk-10-year-bonds",
-      "isAccessServiceOf": {
-        "type": "Distribution",
-        "format": "https://www.iana.org/assignments/media-types/application/json",
-        "isDistributionOf": {
-          "type": "Dataset",
-          "id": "https://y.com/products/uk-bonds/datasets/10-year",
-          "conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
+    "@id": "https://y.com/products/uk-bonds",
+    "@type": "dprod:DataProduct",
+    "dct:title": "UK Bonds",
+    "dct:description": "UK Bonds is your one-stop-shop for all your bonds!",
+    "dprod:dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
+    "dprod:dataProductLifecycleStatus": "https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume",
+    "dprod:outputPort": {
+      "@id": "https://y.com/products/uk-bonds/ports/10-year-api",
+      "@type": "dcat:DataService",
+      "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
+      "dprod:isAccessServiceOf": {
+        "@id": "https://y.com/products/uk-bonds/distributions/10-year-json",
+        "@type": "dcat:Distribution",
+        "dct:format": "https://www.iana.org/assignments/media-types/application/json",
+        "dprod:isDistributionOf": {
+          "@id": "https://y.com/products/uk-bonds/datasets/10-year",
+          "@type": "dcat:Dataset",
+          "dct:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
         }
       }
-     }
+    }
   }
   </pre>
   <p class="note">
-    The examples map the type of the above classes to <code>@type</code> in the JSON-LD serializations.
-    One can use JSON-LD to extend the familiar JSON syntax with the shared semantics defined by DCAT and DPROD.
+    DPROD instance documents use prefixed terms such as <code>dprod:outputPort</code> and
+    <code>dct:title</code>, together with the JSON-LD keywords <code>@id</code> and <code>@type</code>.
+    The published context deliberately defines no bare-term aliases and no <code>@vocab</code>, so that
+    DPROD JSON can be combined with other JSON-LD contexts without either side claiming generic names
+    such as <code>title</code> or <code>format</code>, and so that an undefined term is visibly
+    undefined rather than silently coined in the DPROD namespace.
     <br/>
     The JSON above can be pasted into <a
-    href="https://json-ld.org/playground/">https://json-ld.org/playground</a>.
-    One can see that the schema resolves.
+    href="https://json-ld.org/playground/">https://json-ld.org/playground</a>
+    to see the RDF it denotes.
   </p>
 
   <p class="note">

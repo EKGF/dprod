@@ -20,6 +20,13 @@ The relationships are also defined as Property Shaped with sh:class the target c
 
 
 ```turtle
+@prefix dc:            <http://purl.org/dc/elements/1.1/> .
+@prefix rdfs:          <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:            <http://www.w3.org/ns/shacl#> .
+@prefix xsd:           <http://www.w3.org/2001/XMLSchema#> .
+@prefix example:       <https://y.com/schema/> .
+@prefix exampleSchema: <https://y.com/schema/logical/> .
+
 # definition of the entity as a Node Shape (1)
 example:Account a sh:NodeShape ;
     # human readable name of the entity

@@ -1,4 +1,4 @@
-from rdflib import Namespace, RDF, RDFS, SH, SKOS, OWL, XSD, DCAT, DCTERMS
+from rdflib import Namespace, RDF, RDFS, SH, SKOS
 
 debug = False
 show_source = False
@@ -36,16 +36,6 @@ IGNORED_PROPERTY_SHAPE_PREDICATES = (
     SKOS.definition
 )
 
-# Define the JSON-LD context
-json_ld_context = {
-    "@vocab": str(RDF),
-    "dprod": ontology_namespace_iri,
-    "owl": str(OWL),
-    "rdfs": str(RDFS),
-    "xsd": str(XSD),
-    "dcat": str(DCAT),
-    "dct": str(DCTERMS),
-    "sh": str(SH),
-    "id": "@id",
-    "type": "@type"
-}
+# The JSON-LD context published for instance documents is built in
+# jsonld_context.py, from the ontology graph. There is deliberately no second
+# hand-maintained context definition here (issue #246).

@@ -1,31 +1,33 @@
 {
-  "@type": "Agreement",
   "@context": [
+    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
     {
-      "odrl": "http://www.w3.org/ns/odrl/2/",
       "reg": "https://www.region.taxonomy/v/1/"
     }
   ],
-  "uid": "56456df-dfg-34535345-5545",
-
-  "permission": [
+  "@id": "https://data.org/policy/56456df-dfg-34535345-5545",
+  "@type": "odrl:Agreement",
+  "odrl:permission": [
     {
-      "target": "https://data.org/data-product/equity-trade-xxx",
-      "assigner": "https://schema.org/person/AdamSmith",
-      "assignee": {
-         "@type": "PartyCollection",
-         "source":  "https://example.org/DataDepartment",
-         "refinement": [{
-             "leftOperand": "odrl:spatial",
-             "operator": "odrl:isAnyOf",
-             "rightOperand": [
-                "reg:EMEA",
-                "reg:APAC"
-             ],
-             "description": " Permission to read all the datasets of the product if user is working inside EMEA or APAC"
-         }]
+      "odrl:target": { "@id": "https://data.org/data-product/equity-trade-xxx" },
+      "odrl:assigner": { "@id": "https://schema.org/person/AdamSmith" },
+      "odrl:assignee": {
+        "@id": "https://example.org/DataDepartment/emea-and-apac-staff",
+        "@type": "odrl:PartyCollection",
+        "odrl:source": { "@id": "https://example.org/DataDepartment" },
+        "odrl:refinement": [
+          {
+            "odrl:leftOperand": { "@id": "odrl:spatial" },
+            "odrl:operator": { "@id": "odrl:isAnyOf" },
+            "odrl:rightOperand": [
+              { "@id": "reg:EMEA" },
+              { "@id": "reg:APAC" }
+            ],
+            "dct:description": "Permission to read all the datasets of the product if the user is working inside EMEA or APAC"
+          }
+        ]
       },
-      "action": "odrl:use",
+      "odrl:action": { "@id": "odrl:use" }
     }
   ]
 }

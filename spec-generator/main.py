@@ -11,6 +11,7 @@ from property_shape import PropertyShape
 from jinja import generate_spec_page
 
 from globals import ontology_namespace_iri, shapes_graph_ns_iri, contracts_shapes_ns_iri, LINKEDIN
+from jsonld_context import ApplicationContext
 
 
 def detect_branch() -> str:
@@ -144,9 +145,13 @@ def main():
             auto_compact=True
         ))
 
+    # The application-facing context is NOT the same artifact as the prefix map
+    # used to compact the ontology above: instance documents need type coercion
+    # so that IRI-valued properties expand to resources rather than literals.
+    # See jsonld_context.py and issue #246.
     with open('dist/dprod-context.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating JSON-LD context: ./{f.name}")
-        json.dump({"@context": jsonld_context_ontology}, f, indent=4)
+        json.dump(ApplicationContext(g_ontology).as_document(), f, indent=4)
         f.write('\n')
 
     with open('dist/dprod-all.jsonld', mode='x', encoding='utf-8') as f:

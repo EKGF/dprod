@@ -9,34 +9,30 @@ In this example, a Data Product Agreement is defined as a subclass of FIBO Agree
 *Definition of a simple Agreement based on FIBO:*
 
 ```json
-[
-  {
-    "@context": [
-      "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
-      {
-        "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
-        "ex": "http://example.org/dp#"
-      }
-    ],
-    "@id": "ex:isSubjectToAgreement",
-    "@type": "rdf:Property",
-    "rdfs:label": "Data Product is Subject To FIBO Agreement",
-    "rdfs:domain": {
-      "@id": "DataProduct"
+{
+  "@context": [
+    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+    {
+      "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
+      "ex": "http://example.org/dp#"
+    }
+  ],
+  "@graph": [
+    {
+      "@id": "ex:isSubjectToAgreement",
+      "@type": "rdf:Property",
+      "rdfs:label": "Data Product is Subject To FIBO Agreement",
+      "rdfs:domain": { "@id": "dprod:DataProduct" },
+      "rdfs:range": { "@id": "ex:DataProductAgreement" }
     },
-    "rdfs:range": {
-      "@id": "DataProductAgreement"
+    {
+      "@id": "ex:DataProductAgreement",
+      "@type": "rdfs:Class",
+      "rdfs:label": "DataProductAgreement",
+      "rdfs:subClassOf": { "@id": "fibo:Agreement" }
     }
-  },
-  {
-    "@id": "ex:DataProductAgreement",
-    "@type": "rdfs:class",
-    "rdfs:label": "DataProductAgreement",
-    "rdfs:subClassOf": {
-      "@id": "fibo:Agreement"
-    }
-  }
-]
+  ]
+}
 ```
 
 A full definition of agreements for data products is likely to be more complex 
@@ -56,33 +52,29 @@ Below is an example of a Data Product with an associated Data Product Agreement 
       "ex": "http://example.org/dp#"
     }
   ],
-  "dataProducts": [
+  "@graph": [
     {
-      "id": "https://y.com/data-product/company-sales",
-      "type": "DataProduct",
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-sales",
-        "type": "DataService",
-        "label": "Sales",
-        "endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/application/json",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "label": "Sales",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-sales",
-            "conformsTo": "https://y.com/schema/Sale"
+      "@id": "https://y.com/data-product/company-sales",
+      "@type": "dprod:DataProduct",
+      "dprod:outputPort": {
+        "@id": "https://y.com/data-product/company-sales/port/2025-sales",
+        "@type": "dcat:DataService",
+        "rdfs:label": "Sales",
+        "dcat:endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
+        "dprod:isAccessServiceOf": {
+          "@id": "https://y.com/data-product/company-sales/distribution/2025-sales",
+          "@type": "dcat:Distribution",
+          "dct:format": "https://www.iana.org/assignments/media-types/application/json",
+          "dprod:isDistributionOf": {
+            "@id": "https://y.com/data-product/company-sales/dataset/2025-sales",
+            "@type": "dcat:Dataset",
+            "rdfs:label": "Sales",
+            "dct:conformsTo": "https://y.com/schema/Sale"
           }
         }
       },
-      "ex:iSubjectToAgreement": {
-        "@id": "ex:VVSimpleAgreement",
-        "@type": "ex:DataProductAgreement"
-      }
-    }
-  ],
-  "agreements": [
+      "ex:isSubjectToAgreement": { "@id": "ex:VVSimpleAgreement" }
+    },
     {
       "@id": "ex:VVSimpleAgreement",
       "@type": "ex:DataProductAgreement",
