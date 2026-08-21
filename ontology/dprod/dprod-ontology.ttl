@@ -34,6 +34,12 @@ dprod:
   # purpose: deriving it from the last commit let maintenance changes — a URL
   # retirement, a typo fix — silently republish the standard (issue #253).
   # Bump it when a version is issued, in step with owl:versionIRI.
+  #
+  # Once a version is published by OMG, its OMG document number is
+  # authoritative for this date: ptc/YY-MM-NN encodes the month. DPROD 1.0
+  # beta 1 is ptc/25-02-01, hence February 2025 in the frozen archive. The
+  # value below is for the working draft, which has no OMG document number
+  # yet, so it tracks owl:versionIRI instead.
   dct:issued "2026-06-01"^^xsd:date ;
   dct:modified "2026-08-04"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
