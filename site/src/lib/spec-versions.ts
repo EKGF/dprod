@@ -134,6 +134,11 @@ type GitHubBranch = {
  *
  * Returns `null` rather than an empty set on failure, so callers can tell
  * "no branches" apart from "could not ask" — very different things.
+ *
+ * Every failure path logs the status and GitHub's own message. The bug this
+ * replaced (issue #249) was undiagnosable from outside precisely because it
+ * failed silently: a present-but-rejected token looks exactly like a missing
+ * one when nothing is logged.
  */
 async function fetchExistingBranches(): Promise<Set<string> | null> {
   const token = process.env.GITHUB_TOKEN;
@@ -141,12 +146,10 @@ async function fetchExistingBranches(): Promise<Set<string> | null> {
   if (!token) {
     // Unauthenticated GitHub allows 60 requests/hour per IP, shared across
     // every function on that egress address, so this is not a
-    // degraded-but-workable path — it fails continuously. Say so loudly
-    // rather than silently serving an unfiltered list (issue #249).
+    // degraded-but-workable path — it fails continuously.
     console.warn(
       "[spec-versions] GITHUB_TOKEN is not set; cannot determine which " +
-        "branches still exist. The version picker will show only the " +
-        "archive and develop.",
+        "branches still exist. Showing the archive and develop only.",
     );
     return null;
   }
@@ -155,6 +158,10 @@ async function fetchExistingBranches(): Promise<Set<string> | null> {
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
     Authorization: `Bearer ${token}`,
+    // GitHub rejects requests without a User-Agent with 403. Runtimes differ
+    // in whether they supply a default, so set one explicitly rather than
+    // depending on the platform.
+    "User-Agent": "ekgf-dprod-site",
   };
 
   const branches = new Set<string>();
@@ -168,14 +175,17 @@ async function fetchExistingBranches(): Promise<Set<string> | null> {
         { headers, next: { revalidate: 60 } },
       );
     } catch (error) {
-      console.warn("[spec-versions] GitHub branch lookup failed:", error);
+      console.warn("[spec-versions] GitHub branch lookup threw:", error);
       return null;
     }
     if (!res.ok) {
+      // GitHub's body distinguishes the cases that matter: "Bad credentials"
+      // (401, token expired or revoked), "API rate limit exceeded" (403),
+      // and resource-not-accessible (403, token lacks Metadata: Read-only).
+      const detail = await res.text().catch(() => "");
       console.warn(
-        `[spec-versions] GitHub branch lookup returned ${res.status} ` +
-          `${res.statusText}; the version picker will fall back to the ` +
-          "archive and develop only.",
+        `[spec-versions] GitHub branch lookup failed: ${res.status} ` +
+          `${res.statusText}. ${detail.slice(0, 300)}`,
       );
       return null;
     }
@@ -248,6 +258,19 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
 }
 
 /**
+ * What a reader is shown, plus whether the list could be filtered at all.
+ */
+export type ListedSpecVersions = {
+  versions: SpecVersion[];
+  /**
+   * False when branch existence could not be determined, so the list is the
+   * fail-closed minimum rather than the real set. Surfaced in the UI: a
+   * silently short list is as misleading as a silently long one.
+   */
+  complete: boolean;
+};
+
+/**
  * The spec versions to show a reader: the archive, develop, and branches that
  * still exist upstream.
  *
@@ -257,12 +280,18 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
  * earlier. A short list is a smaller lie than a wrong one, and
  * `getSpecVersions()` still routes any preview URL that has been handed out.
  */
-export async function getListedSpecVersions(): Promise<SpecVersion[]> {
+export async function getListedSpecVersions(): Promise<ListedSpecVersions> {
   const versions = await getSpecVersions();
-  return versions.filter(
-    (version) =>
-      version.kind === "archive" ||
-      version.isProduction ||
-      version.existsUpstream === true,
+  const complete = !versions.some(
+    (version) => version.kind === "vercel-branch" && version.existsUpstream === null,
   );
+  return {
+    complete,
+    versions: versions.filter(
+      (version) =>
+        version.kind === "archive" ||
+        version.isProduction ||
+        version.existsUpstream === true,
+    ),
+  };
 }

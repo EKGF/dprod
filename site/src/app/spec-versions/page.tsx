@@ -51,7 +51,7 @@ export default async function SpecVersionsPage() {
   // Deliberately the *listed* set, not the routable one: a branch that no
   // longer exists must not be advertised, even though its preview URL still
   // resolves. See issue #249.
-  const versions = await getListedSpecVersions();
+  const { versions, complete } = await getListedSpecVersions();
 
   return (
     <div className="flex flex-col">
@@ -77,6 +77,20 @@ export default async function SpecVersionsPage() {
       <section>
         <div className="container py-20">
           <div className="mx-auto max-w-4xl">
+            {!complete && (
+              <div className="mb-6 rounded-lg border border-[#ff6f00]/40 bg-[#ff6f00]/5 p-4 text-sm">
+                <p className="font-semibold text-foreground">
+                  Branch list unavailable
+                </p>
+                <p className="mt-1 text-muted-foreground">
+                  The GitHub lookup that checks which branches still exist did
+                  not succeed, so only the archive and the production draft are
+                  listed. In-flight preview branches are hidden rather than
+                  shown unverified. The deployment logs record the reason.
+                </p>
+              </div>
+            )}
+
             <div className="space-y-4">
               {versions.map((version) => {
                 const href =

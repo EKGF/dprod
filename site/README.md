@@ -25,11 +25,23 @@ There are two entry points, and the difference matters:
   branch existence cannot be determined, it lists only the archive and
   `develop`.
 
-`GITHUB_TOKEN` is required. Without it the branch lookup is unauthenticated,
-GitHub's 60-requests-per-hour-per-IP limit is shared across Vercel's egress
-addresses, and the lookup fails continuously. This is what caused the version
-picker to advertise 22 branches — 11 of them deleted months earlier — while
-only 6 pull requests were open (issue #249). The failure is now logged with
-`console.warn`, visible in the Vercel runtime logs.
+## `GITHUB_TOKEN`
 
-See `.env.example` for the token scopes needed.
+Required, and it must be **valid** — an expired or revoked token behaves
+exactly like a missing one. Fine-grained tokens expire, so this will recur.
+
+A fine-grained token needs only `Metadata: Read-only` on `EKGF/dprod`; no
+write scopes. See `.env.example`.
+
+When the branch lookup fails, two things happen and neither is silent:
+
+- the reason is logged with `console.warn`, including GitHub's own message —
+  `Bad credentials` for an expired or revoked token, a rate-limit message when
+  running unauthenticated, `Resource not accessible` for a missing scope;
+- the page renders a "Branch list unavailable" notice.
+
+This matters because issue #249 was caused by the *absence* of both. The
+picker advertised 22 branches, 11 of them deleted months earlier, while only 6
+pull requests were open — and nothing anywhere reported that the filter had
+stopped working. The token was configured the whole time; it simply was not
+being accepted, which the old code could not distinguish from success.
