@@ -11,7 +11,7 @@
     const respecConfig = {
       // Working Groups ids at https://respec.org/w3c/groups/
       // group: "Semantic Data Products Working Group",
-      latestVersion: "https://ekgf.github.io/dprod/",
+      latestVersion: "https://ekgf.org/dprod/spec/main/",
       specStatus: "base",
       editors: [
         {
@@ -131,7 +131,7 @@
         },
         dprod: {
           title: "Data Product Ontology",
-          href: "https://ekgf.github.io/dprod/",
+          href: "https://ekgf.org/dprod",
           authors: [
             "Tony Seale",
             "Natasa Varytimou",
@@ -439,7 +439,7 @@
 <section>
   <h2>Scope</h2>
   <p>
-    The <a href="https://ekgf.github.io/dprod/dprod.ttl">Data Product (DPROD)</a> specification is a
+    The <a href="dprod.ttl">Data Product (DPROD)</a> specification is a
     profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>,
     designed to describe Data Products.
     This document defines the schema and provides examples of its use.
@@ -452,7 +452,7 @@
     and enables federated search across multiple sites using a uniform query mechanism and structure.
   </p>
   <p>
-    The namespace for DPROD terms is <a href="https://ekgf.github.io/dprod/">https://ekgf.github.io/dprod/</a>
+    The namespace for DPROD terms is <a href="https://www.omg.org/spec/DPROD/dprod/">https://www.omg.org/spec/DPROD/dprod/</a>
   </p>
   <p>
     The suggested prefix for the DPROD namespace is <strong><code>dprod</code></strong>
@@ -466,7 +466,7 @@
     </li>
     <li>
       Harmonize Data Schemas: Using shared schemas helps unify different data formats.
-      For instance, the <a href="https://ekgf.github.io/dprod/dprod.ttl">DPROD</a> specification provides a
+      For instance, the <a href="dprod.ttl">DPROD</a> specification provides a
       <!--suppress HtmlUnknownAnchorTarget -->
       common set of rules for defining a <a href="#dataproduct">Data Product</a>.
       Users of DPROD can extend this schema as needed.
@@ -593,7 +593,7 @@
         <code>dprod</code>
       </td>
       <td>
-        <code>https://ekgf.github.io/dprod/</code>
+        <code>https://www.omg.org/spec/DPROD/dprod/</code>
       </td>
       <td>[[dprod]]</td>
     </tr>
@@ -767,13 +767,13 @@
 
   <pre id="eg12" class="example hljs json ekgfexample">
   {
-    "@context": "https://ekgf.github.io/dprod/dprod.jsonld",
+    "@context": "https://ekgf.org/dprod/spec/archive/1.0/dprod.jsonld",
     "id": "https://y.com/products/uk-bonds",
     "type": "DataProduct",
     "title": "UK Bonds",
     "description": "UK Bonds is your one-stop-shop for all your bonds!",
     "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
-    "lifecycleStatus" : "https://ekgf.github.io/dprod/data/lifecycle-status/Consume",
+    "lifecycleStatus" : "https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume",
     "outputPort": {
       "type": "DataService",
       "endpointURL": "https://y.com/uk-10-year-bonds",
