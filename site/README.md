@@ -16,6 +16,13 @@ The Next.js app served at `https://ekgf.org/dprod` (proxied verbatim from the
 Both are cached for 60 seconds via `next: { revalidate: 60 }`, so a new branch
 appears without redeploying `develop`.
 
+A branch deleted from `origin` drops off the listing, **including `ballot/*`**.
+Its Vercel deployment survives and `/spec/<slug>` still resolves, so any URL
+already published keeps working — it is simply no longer advertised. This is
+deliberate (issue #249): the listing answers "which versions exist now?", and
+a deleted branch does not. If a ballot needs to stay listed after its branch is
+gone, keep the branch on `origin` rather than special-casing it here.
+
 There are two entry points, and the difference matters:
 
 - **`getSpecVersions()`** — everything routable. Permissive on purpose: the
