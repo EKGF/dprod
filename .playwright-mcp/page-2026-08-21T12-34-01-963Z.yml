@@ -1,0 +1,2112 @@
+- generic [active] [ref=e1]:
+  - heading "Data Product Ontology (DPROD)" [level=1] [ref=e2]
+  - button "ReSpec Menu" [disabled] [ref=e4]: ReSpec
+  - group [ref=e5]:
+    - generic "Preamble" [ref=e6]
+  - generic [ref=e7]:
+    - paragraph [ref=e8]: "The concept of Data Products has emerged as organizations increasingly recognize the value of data as an asset to be managed and distributed like any other product. As more companies adopt decentralized data architectures, such as Data Mesh, the need for standardized methods to describe and manage data products consistently across platforms has become critical. This is where the [[dprod]] specification, built on W3C Linked Data standards, becomes essential. Without such a standard, organizations face significant challenges: inconsistent metadata across diverse data products, limited discoverability, and interoperability issues that hinder data integration from various sources. As data ecosystems grow, the lack of a common framework also impedes scalability, increases vendor lock-in, and makes it difficult to manage these products effectively."
+    - paragraph [ref=e9]: DPROD offers a solution by providing a clear schema for describing data products, ensuring they are discoverable, interoperable, and treated with the same level of accountability as traditional products.
+    - paragraph [ref=e10]: The W3C tech stack is perfectly suited to address these challenges because it was designed to foster interconnected, decentralized systems, providing a robust framework for creating metadata that is both machine-readable and human-understandable. DPROD enables consistent terminology across different platforms, domains, and organizations, allowing advanced users to semantically enrich their data products and connect them into distributed knowledge graphs.
+    - paragraph [ref=e11]: As more organizations strive to build and scale data products, DPROD provides the standardization needed to ensure interoperability and unlock the full potential of decentralized data ecosystems in a controlled and mature way.
+  - generic [ref=e12]:
+    - heading "Scope" [level=2] [ref=e13]
+    - paragraph [ref=e14]:
+      - text: The
+      - link "Data Product (DPROD)" [ref=e15] [cursor=pointer]:
+        - /url: https://www.omg.org/spec/DPROD/dprod.ttl
+      - text: specification is a profile of the
+      - link "Data Catalog (DCAT) Vocabulary" [ref=e16] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/
+      - text: ", designed to describe Data Products. This document defines the schema and provides examples of its use."
+    - paragraph [ref=e17]: DPROD extends DCAT to enable publishers to describe Data Products and data services in a decentralized way. By using a standard model and ontology, DPROD facilitates the consumption and aggregation of metadata from multiple Data Marketplaces. This approach increases the discoverability of products and services, supports decentralized data publishing, and enables federated search across multiple sites using a uniform query mechanism and structure.
+    - paragraph [ref=e18]:
+      - text: The namespace for DPROD terms is
+      - link "https://www.omg.org/spec/DPROD/dprod/" [ref=e19] [cursor=pointer]:
+        - /url: https://www.omg.org/spec/DPROD/dprod/
+    - paragraph [ref=e20]:
+      - text: The suggested prefix for the DPROD namespace is
+      - strong [ref=e21]:
+        - code [ref=e22]: dprod
+    - paragraph [ref=e23]:
+      - strong [ref=e24]: "DPROD follows two basic principles:"
+    - list [ref=e25]:
+      - listitem [ref=e26]: "🔵 Decentralize Data Ownership: To make data integration more efficient, tasks should be shared among multiple teams. DCAT helps by offering a standard way to publish datasets in a decentralized manner."
+      - listitem [ref=e27]:
+        - text: "🔵 Harmonize Data Schemas: Using shared schemas helps unify different data formats. For instance, the"
+        - link "DPROD" [ref=e28] [cursor=pointer]:
+          - /url: https://www.omg.org/spec/DPROD/dprod.ttl
+        - text: specification provides a common set of rules for defining a
+        - link "Data Product" [ref=e29] [cursor=pointer]:
+          - /url: "#dataproduct"
+        - text: . Users of DPROD can extend this schema as needed.
+    - text: The [[dprod]]] specification builds on DCAT [[vocab-dcat-3]] by connecting
+    - link "DCAT Data Services" [ref=e30] [cursor=pointer]:
+      - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service
+    - text: to DPROD
+    - link "Data Products" [ref=e31] [cursor=pointer]:
+      - /url: "#dataproduct"
+    - text: using
+    - link "input" [ref=e32] [cursor=pointer]:
+      - /url: "#inputport"
+    - text: and
+    - link "output" [ref=e33] [cursor=pointer]:
+      - /url: "#outputport"
+    - text: ports. These ports are used to publish and consume data from a Data Product. DPROD treats ports as
+    - link "DCAT data services" [ref=e34] [cursor=pointer]:
+      - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service
+    - text: ", so the data exchanged can be described using DCAT's highly expressive metadata around"
+    - link "distributions" [ref=e35] [cursor=pointer]:
+      - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution
+    - text: and
+    - link "datasets" [ref=e36] [cursor=pointer]:
+      - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset
+    - text: . This approach also allows publishers to create their own descriptions for the data they are sharing. They can use a special property called
+    - link "conformsTo" [ref=e37] [cursor=pointer]:
+      - /url: https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to
+    - text: from DCAT to link to their own set of rules or guidelines for their data.
+    - paragraph [ref=e38]:
+      - strong [ref=e39]: "The DPROD specification has four main aims:"
+    - list [ref=e40]:
+      - listitem [ref=e41]:
+        - text: "🔵 To provide unambiguous and sharable semantics to answer the question: 'What is a"
+        - link "data product" [ref=e42] [cursor=pointer]:
+          - /url: "#dataproduct"
+        - text: "?'"
+      - listitem [ref=e43]: 🔵 Be simple for anyone to use, but expressive enough to power large data marketplaces
+      - listitem [ref=e44]: 🔵 Allow organisations to reuse their existing data catalogues and dataset infrastructure
+      - listitem [ref=e45]: 🔵 To share common semantics across different Data Products and promote harmonization
+  - generic [ref=e46]:
+    - heading "Conformance" [level=2] [ref=e47]
+    - paragraph [ref=e48]:
+      - text: A data product is conformant with this specification if it satisfies the [[SHACL]] constraints provided in the file
+      - link "dprod-shapes.ttl" [ref=e49] [cursor=pointer]:
+        - /url: dprod-shapes.ttl
+      - text: .
+  - generic [ref=e50]:
+    - heading "Terms and Definitions" [level=2] [ref=e51]
+    - paragraph [ref=e52]: All terms introduced in this specification are given definitions in the Data Product Model defined later.
+  - generic [ref=e53]:
+    - heading "Symbols" [level=2] [ref=e54]
+    - paragraph [ref=e55]: The following acronyms are used in this specification.
+    - paragraph
+    - list [ref=e56]:
+      - listitem [ref=e57]:
+        - strong [ref=e58]: DPROD
+        - text: "- Data Product Ontology [[dprod]]"
+      - listitem [ref=e59]:
+        - strong [ref=e60]: DCAT
+        - text: "- Data Catalog Vocabulary [[vocab-dcat-3]]"
+      - listitem [ref=e61]:
+        - strong [ref=e62]: JSON-LD
+        - text: "- JavaScript Object Notation for Linked Data [[json-ld11]]"
+      - listitem [ref=e63]:
+        - strong [ref=e64]: IRI
+        - text: "- Internationalized Resource Identifier [[IRI]]"
+      - listitem [ref=e65]:
+        - strong [ref=e66]: ODRL
+        - text: "- Open Digital Rights Language [[odrl-model]]"
+      - listitem [ref=e67]:
+        - strong [ref=e68]: OWL
+        - text: "- Web Ontology Language [[owl2-quick-reference]]"
+      - listitem [ref=e69]:
+        - strong [ref=e70]: PROV
+        - text: "- Provenance Ontology [[prov-overview]]"
+      - listitem [ref=e71]:
+        - strong [ref=e72]: RDF
+        - text: "- Resource Description Format [[rdf11-concepts]]"
+      - listitem [ref=e73]:
+        - strong [ref=e74]: RDFS
+        - text: "- RDF Schema [[rdf-schema]], [[swbp-xsch-datatypes]]"
+      - listitem [ref=e75]:
+        - strong [ref=e76]: SHACL
+        - text: "- Shapes Constraint Language ([[shacl]])"
+      - listitem [ref=e77]:
+        - strong [ref=e78]: TTL
+        - text: "- Turtle (commonly used serialization for RDF) [[turtle]] [[rdf12-turtle]]"
+      - listitem [ref=e79]:
+        - strong [ref=e80]: URI
+        - text: "- Uniform Resource Identifier [[URI]]"
+      - listitem [ref=e81]:
+        - strong [ref=e82]: W3C
+        - text: "- World Wide Web Consortium"
+    - paragraph
+  - generic [ref=e83]:
+    - heading "Normative namespaces" [level=2] [ref=e84]
+    - paragraph [ref=e85]: Namespaces and prefixes used in normative parts of this Profile are shown in the following table.
+    - table [ref=e86]:
+      - rowgroup [ref=e87]:
+        - row [ref=e88]:
+          - columnheader "Prefix" [ref=e89]
+          - columnheader "Namespace IRI" [ref=e90]
+          - columnheader "Source" [ref=e91]
+      - rowgroup [ref=e92]:
+        - row [ref=e93]:
+          - cell [ref=e94]:
+            - code [ref=e95]: dprod
+          - cell [ref=e96]:
+            - code [ref=e97]: https://www.omg.org/spec/DPROD/dprod/
+          - cell "[[dprod]]" [ref=e98]
+        - row [ref=e99]:
+          - cell [ref=e100]:
+            - code [ref=e101]: dprod-shapes
+          - cell [ref=e102]:
+            - code [ref=e103]: https://www.omg.org/spec/DPROD/shapes/
+          - cell "[[dprod]]" [ref=e104]
+        - row [ref=e105]:
+          - cell [ref=e106]:
+            - code [ref=e107]: dcat
+          - cell [ref=e108]:
+            - code [ref=e109]: http://www.w3.org/ns/dcat#
+          - cell "[[vocab-dcat-3]]" [ref=e110]
+        - row [ref=e111]:
+          - cell [ref=e112]:
+            - code [ref=e113]: dct
+          - cell [ref=e114]:
+            - code [ref=e115]: http://purl.org/dc/terms/
+          - cell "[[dcterms]]" [ref=e116]
+        - row [ref=e117]:
+          - cell [ref=e118]:
+            - code [ref=e119]: odrl
+          - cell [ref=e120]:
+            - code [ref=e121]: http://www.w3.org/ns/odrl/2/
+          - cell "[[odrl-model]]" [ref=e122]
+        - row [ref=e123]:
+          - cell [ref=e124]:
+            - code [ref=e125]: owl
+          - cell [ref=e126]:
+            - code [ref=e127]: http://www.w3.org/2002/07/owl#
+          - cell "[[owl2-quick-reference]]" [ref=e128]
+        - row [ref=e129]:
+          - cell [ref=e130]:
+            - code [ref=e131]: prov
+          - cell [ref=e132]:
+            - code [ref=e133]: http://www.w3.org/ns/prov#
+          - cell "[[prov-overview]]" [ref=e134]
+        - row [ref=e135]:
+          - cell [ref=e136]:
+            - code [ref=e137]: rdf
+          - cell [ref=e138]:
+            - code [ref=e139]: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+          - cell "[[rdf11-primer]]" [ref=e140]
+        - row [ref=e141]:
+          - cell [ref=e142]:
+            - code [ref=e143]: rdfs
+          - cell [ref=e144]:
+            - code [ref=e145]: http://www.w3.org/2000/01/rdf-schema#
+          - cell "[[rdf-schema]]" [ref=e146]
+        - row [ref=e147]:
+          - cell [ref=e148]:
+            - code [ref=e149]: sh
+          - cell [ref=e150]:
+            - code [ref=e151]: http://www.w3.org/ns/shacl#
+          - cell "[[shacl]]" [ref=e152]
+        - row [ref=e153]:
+          - cell [ref=e154]:
+            - code [ref=e155]: xsd
+          - cell [ref=e156]:
+            - code [ref=e157]: http://www.w3.org/2001/XMLSchema#
+          - cell "[[xmlschema-2]]" [ref=e158]
+  - generic [ref=e159]:
+    - heading "Data Product (DPROD) Model" [level=2] [ref=e160]
+    - paragraph [ref=e161]:
+      - link "Data Mesh Architectures" [ref=e162] [cursor=pointer]:
+        - /url: https://en.wikipedia.org/wiki/Data_mesh
+      - text: "[[Data Mesh]] use input and output ports to manage how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or reporting, etc."
+    - paragraph [ref=e163]:
+      - text: In the [[[vocab-dcat-3]]] framework, a
+      - link "Data Service" [ref=e164] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:DataService
+      - text: is a way to describe services that provide access to data. Data Services give standardized, machine-readable descriptions of how to access one or more datasets or data processing functions.
+    - paragraph [ref=e165]:
+      - text: Data Services specify how to access and download the data. In DPROD, Data Services are connected to
+      - link "Distributions" [ref=e166] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution
+      - text: by a property called
+      - link "isAccessServiceOf" [ref=e167] [cursor=pointer]:
+        - /url: "#isaccessserviceof"
+      - text: ; on the Distribution one can specify formats (like CSV or JSON etc.) and provide metadata about the "physical model" of the data. Distributions link to
+      - link "Datasets" [ref=e168] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset
+      - text: and DCAT has a very rich vocabulary for describing every aspect of a dataset. Finally, Datasets use the
+      - link "conformsTo" [ref=e169] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to
+      - text: property to link to the "logical model" where one can specify one's own rich semantic metadata.
+    - paragraph [ref=e170]: By linking Data Product ports to DCAT DataServices ([[vocab-dcat-3]]), DPROD can describe Data Products in a way that machines can read across the organization. This makes it easier for data teams to build and manage their own data products independently, while still working well with the rest of the organization's data.
+    - paragraph [ref=e171]: Using standards like DCAT helps create a strong and clear way to define Data Products. It ensures that as data becomes more complex, the methods for describing, sharing, and using data stay consistent and reliable. It also allows different organizations to share data securely and in a standardized way.
+    - figure "Overview of the DPROD model and its relationship with DCAT classes" [ref=e172]:
+      - img "Information model for the Profile" [ref=e173]
+    - paragraph [ref=e175]: "The Profile consists of the following classes:"
+    - list [ref=e176]:
+      - listitem [ref=e177]:
+        - text: Data Mesh (
+        - code [ref=e178]: dcat:Catalog
+        - text: ) - The collection of Data Products
+      - listitem [ref=e179]:
+        - text: Data Product (
+        - code [ref=e180]: dprod:DataProduct
+        - text: ) - A data product may have input and output ports, code and metadata
+      - listitem [ref=e181]:
+        - text: Port (
+        - code [ref=e182]: dcat:DataService
+        - text: ) - A digital interface that provides access to a Dataset. This can be an HTTP URL, a Database or a FileShare, etc.
+      - listitem [ref=e183]:
+        - text: Distribution (
+        - code [ref=e184]: dcat:Distribution
+        - text: ) - A specific representation of a dataset (CSV, JSON, ADLS etc.) which can conform to a physical model
+      - listitem [ref=e185]:
+        - text: Dataset (
+        - code [ref=e186]: dcat:Dataset
+        - text: ) - A collection of related data that can conform to a logical model
+    - paragraph
+    - paragraph [ref=e187]:
+      - text: As
+      - link "DCAT Data Services" [ref=e188] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service
+      - text: ", the DPROD"
+      - link "input" [ref=e189] [cursor=pointer]:
+        - /url: "#inputport"
+      - text: and
+      - link "output" [ref=e190] [cursor=pointer]:
+        - /url: "#outputport"
+      - text: ports can specify connection details, they have
+      - link "distributions" [ref=e191] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution
+      - text: that define formats, and link to
+      - link "datasets" [ref=e192] [cursor=pointer]:
+        - /url: https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset
+      - text: that conform to shared schemas. In this example, the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to the shared FIBO specification for callable bonds.
+    - generic [ref=e193]: "{ \"@context\": \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", \"@id\": \"https://y.com/products/uk-bonds\", \"@type\": \"dprod:DataProduct\", \"dct:title\": \"UK Bonds\", \"dct:description\": \"UK Bonds is your one-stop-shop for all your bonds!\", \"dprod:dataProductOwner\": \"https://www.linkedin.com/in/tonyseale/\", \"dprod:dataProductLifecycleStatus\": \"https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume\", \"dprod:outputPort\": { \"@id\": \"https://y.com/products/uk-bonds/ports/10-year-api\", \"@type\": \"dcat:DataService\", \"dcat:endpointURL\": \"https://y.com/uk-10-year-bonds\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/products/uk-bonds/distributions/10-year-json\", \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/products/uk-bonds/datasets/10-year\", \"@type\": \"dcat:Dataset\", \"dct:conformsTo\": \"https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond\" } } } }"
+    - paragraph [ref=e194]:
+      - text: DPROD instance documents use prefixed terms such as
+      - code [ref=e195]: dprod:outputPort
+      - text: and
+      - code [ref=e196]: dct:title
+      - text: ", together with the JSON-LD keywords"
+      - code [ref=e197]: "@id"
+      - text: and
+      - code [ref=e198]: "@type"
+      - text: . The published context deliberately defines no bare-term aliases and no
+      - code [ref=e199]: "@vocab"
+      - text: ", so that DPROD JSON can be combined with other JSON-LD contexts without either side claiming generic names such as"
+      - code [ref=e200]: title
+      - text: or
+      - code [ref=e201]: format
+      - text: ", and so that an undefined term is visibly undefined rather than silently coined in the DPROD namespace. The JSON above can be pasted into"
+      - link "https://json-ld.org/playground" [ref=e202] [cursor=pointer]:
+        - /url: https://json-ld.org/playground/
+      - text: to see the RDF it denotes.
+    - paragraph [ref=e203]: The following sections are driven by the Shapes definitions for DPROD, which represent the properties expected to be used for instances of the above classes. As such, they include properties defined by the DCAT specification which DPROD extends. The prefix in the identifier for each entry indicates the ontology defining the property.
+    - generic [ref=e204]:
+      - heading "DataProduct" [level=3] [ref=e205]
+      - table [ref=e206]:
+        - rowgroup [ref=e207]:
+          - row [ref=e208]:
+            - rowheader "Identifier:" [ref=e209]
+            - cell [ref=e210]:
+              - link "dprod:DataProduct" [ref=e211] [cursor=pointer]:
+                - /url: "#dataproductshape"
+      - paragraph [ref=e212]: A rational, managed, and governed collection of data, with purpose, value and ownership, meeting consumer needs over a planned life-cycle.
+      - paragraph [ref=e213]: A data product may have input and output ports, code and metadata
+      - generic [ref=e214]:
+        - heading "label" [level=4] [ref=e215]
+        - paragraph [ref=e216]: The name given to the data product.
+        - table [ref=e217]:
+          - rowgroup [ref=e218]:
+            - row [ref=e219]:
+              - rowheader "Identifier:" [ref=e220]
+              - cell [ref=e221]:
+                - link "rdfs:label" [ref=e222] [cursor=pointer]:
+                  - /url: http://www.w3.org/2000/01/rdf-schema#label
+            - row [ref=e223]:
+              - rowheader "Label:" [ref=e224]
+              - cell "data product label shape" [ref=e225]
+            - row [ref=e226]:
+              - rowheader "Domain:" [ref=e227]
+              - cell [ref=e228]:
+                - link "dprod:DataProduct" [ref=e229] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e230]:
+              - rowheader "Range:" [ref=e231]
+              - cell [ref=e232]:
+                - link "xsd:string" [ref=e233] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#string
+      - generic [ref=e234]:
+        - heading "description" [level=4] [ref=e235]
+        - paragraph [ref=e236]: A free text description of the data product.
+        - table [ref=e237]:
+          - rowgroup [ref=e238]:
+            - row [ref=e239]:
+              - rowheader "Identifier:" [ref=e240]
+              - cell [ref=e241]:
+                - link "dct:description" [ref=e242] [cursor=pointer]:
+                  - /url: http://purl.org/dc/terms/description
+            - row [ref=e243]:
+              - rowheader "Label:" [ref=e244]
+              - cell "data product description shape" [ref=e245]
+            - row [ref=e246]:
+              - rowheader "Domain:" [ref=e247]
+              - cell [ref=e248]:
+                - link "dprod:DataProduct" [ref=e249] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e250]:
+              - rowheader "Range:" [ref=e251]
+              - cell [ref=e252]:
+                - link "xsd:string" [ref=e253] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#string
+      - generic [ref=e254]:
+        - heading "dataProductOwner" [level=4] [ref=e255]
+        - paragraph [ref=e256]: The agent that is accountable overall for the data product, including managing it through its lifecycle.
+        - table [ref=e257]:
+          - rowgroup [ref=e258]:
+            - row [ref=e259]:
+              - rowheader "Identifier:" [ref=e260]
+              - cell [ref=e261]:
+                - link "dprod:dataProductOwner" [ref=e262] [cursor=pointer]:
+                  - /url: "#dataproductowner"
+            - row [ref=e263]:
+              - rowheader "Label:" [ref=e264]
+              - cell "data product owner" [ref=e265]
+            - row [ref=e266]:
+              - rowheader "Domain:" [ref=e267]
+              - cell [ref=e268]:
+                - link "dprod:DataProduct" [ref=e269] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e270]:
+              - rowheader "Range:" [ref=e271]
+              - cell [ref=e272]:
+                - link "prov:Agent" [ref=e273] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/prov#Agent
+      - generic [ref=e274]:
+        - heading "domain" [level=4] [ref=e275]
+        - paragraph [ref=e276]: The business or information area supported by the data product.
+        - table [ref=e277]:
+          - rowgroup [ref=e278]:
+            - row [ref=e279]:
+              - rowheader "Identifier:" [ref=e280]
+              - cell [ref=e281]:
+                - link "dprod:domain" [ref=e282] [cursor=pointer]:
+                  - /url: "#domain"
+            - row [ref=e283]:
+              - rowheader "Label:" [ref=e284]
+              - cell "domain" [ref=e285]
+            - row [ref=e286]:
+              - rowheader "Comment:" [ref=e287]
+              - cell "The domain is intended to be a resource in its own right. This specification does not constrain the class to be used." [ref=e288]
+            - row [ref=e289]:
+              - rowheader "Domain:" [ref=e290]
+              - cell [ref=e291]:
+                - link "dprod:DataProduct" [ref=e292] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e293]:
+              - columnheader "Range:" [ref=e294]
+              - cell [ref=e295]
+      - generic [ref=e296]:
+        - heading "inputPort" [level=4] [ref=e297]
+        - paragraph [ref=e298]: A set of services exposed by a data product to collect its source data and makes it available for further internal transformation. An input port can receive data from one or more upstream sources in a push (i.e. asynchronous subscription) or pop mode (i.e. synchronous query). Each data product may have one or more input ports.
+        - table [ref=e299]:
+          - rowgroup [ref=e300]:
+            - row [ref=e301]:
+              - rowheader "Identifier:" [ref=e302]
+              - cell [ref=e303]:
+                - link "dprod:inputPort" [ref=e304] [cursor=pointer]:
+                  - /url: "#inputport"
+            - row [ref=e305]:
+              - rowheader "Label:" [ref=e306]
+              - cell "input port" [ref=e307]
+            - row [ref=e308]:
+              - rowheader "Domain:" [ref=e309]
+              - cell [ref=e310]:
+                - link "dprod:DataProduct" [ref=e311] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e312]:
+              - rowheader "Range:" [ref=e313]
+              - cell [ref=e314]:
+                - link "dcat:DataService" [ref=e315] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+      - generic [ref=e316]:
+        - heading "outputPort" [level=4] [ref=e317]
+        - paragraph [ref=e318]: A set of services exposed by a data product to share the generated data in a way that can be understood and trusted.
+        - table [ref=e319]:
+          - rowgroup [ref=e320]:
+            - row [ref=e321]:
+              - rowheader "Identifier:" [ref=e322]
+              - cell [ref=e323]:
+                - link "dprod:outputPort" [ref=e324] [cursor=pointer]:
+                  - /url: "#outputport"
+            - row [ref=e325]:
+              - rowheader "Label:" [ref=e326]
+              - cell "output port" [ref=e327]
+            - row [ref=e328]:
+              - rowheader "Domain:" [ref=e329]
+              - cell [ref=e330]:
+                - link "dprod:DataProduct" [ref=e331] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e332]:
+              - rowheader "Range:" [ref=e333]
+              - cell [ref=e334]:
+                - link "dcat:DataService" [ref=e335] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+      - generic [ref=e336]:
+        - heading "inputDataset" [level=4] [ref=e337]
+        - paragraph [ref=e338]: The source data made available to the data product through input data services. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the input ports.
+        - table [ref=e339]:
+          - rowgroup [ref=e340]:
+            - row [ref=e341]:
+              - rowheader "Identifier:" [ref=e342]
+              - cell [ref=e343]:
+                - link "dprod:inputDataset" [ref=e344] [cursor=pointer]:
+                  - /url: "#inputdataset"
+            - row [ref=e345]:
+              - rowheader "Label:" [ref=e346]
+              - cell "input dataset" [ref=e347]
+            - row [ref=e348]:
+              - rowheader "Domain:" [ref=e349]
+              - cell [ref=e350]:
+                - link "dprod:DataProduct" [ref=e351] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e352]:
+              - rowheader "Range:" [ref=e353]
+              - cell [ref=e354]:
+                - link "dcat:Dataset" [ref=e355] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+      - generic [ref=e356]:
+        - heading "outputDataset" [level=4] [ref=e357]
+        - paragraph [ref=e358]: The data that is exposed by the data product through output data services in a way that can be understood and trusted. Depending on the lifecycle of the data product, this may be a stated or inferred relationship aligned with the output ports.
+        - table [ref=e359]:
+          - rowgroup [ref=e360]:
+            - row [ref=e361]:
+              - rowheader "Identifier:" [ref=e362]
+              - cell [ref=e363]:
+                - link "dprod:outputDataset" [ref=e364] [cursor=pointer]:
+                  - /url: "#outputdataset"
+            - row [ref=e365]:
+              - rowheader "Label:" [ref=e366]
+              - cell "output dataset" [ref=e367]
+            - row [ref=e368]:
+              - rowheader "Domain:" [ref=e369]
+              - cell [ref=e370]:
+                - link "dprod:DataProduct" [ref=e371] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e372]:
+              - rowheader "Range:" [ref=e373]
+              - cell [ref=e374]:
+                - link "dcat:Dataset" [ref=e375] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+      - generic [ref=e376]:
+        - heading "purpose" [level=4] [ref=e377]
+        - paragraph [ref=e378]: A description of the objectives and intended usage of the data product.
+        - table [ref=e379]:
+          - rowgroup [ref=e380]:
+            - row [ref=e381]:
+              - rowheader "Identifier:" [ref=e382]
+              - cell [ref=e383]:
+                - link "dprod:purpose" [ref=e384] [cursor=pointer]:
+                  - /url: "#purpose"
+            - row [ref=e385]:
+              - rowheader "Label:" [ref=e386]
+              - cell "purpose" [ref=e387]
+            - row [ref=e388]:
+              - rowheader "Domain:" [ref=e389]
+              - cell [ref=e390]:
+                - link "dprod:DataProduct" [ref=e391] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e392]:
+              - rowheader "Range:" [ref=e393]
+              - cell [ref=e394]:
+                - link "xsd:string" [ref=e395] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#string
+      - generic [ref=e396]:
+        - heading "hasPolicy" [level=4] [ref=e397]
+        - paragraph [ref=e398]: An ODRL conformant policy expressing the rights associated with the data product. This is an inferred relationship based on the rights expressed on the individual datasets of the data product.
+        - table [ref=e399]:
+          - rowgroup [ref=e400]:
+            - row [ref=e401]:
+              - rowheader "Identifier:" [ref=e402]
+              - cell [ref=e403]:
+                - link "odrl:hasPolicy" [ref=e404] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/hasPolicy
+            - row [ref=e405]:
+              - rowheader "Label:" [ref=e406]
+              - cell "data product has policy shape" [ref=e407]
+            - row [ref=e408]:
+              - rowheader "Domain:" [ref=e409]
+              - cell [ref=e410]:
+                - link "dprod:DataProduct" [ref=e411] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e412]:
+              - rowheader "Range:" [ref=e413]
+              - cell [ref=e414]:
+                - link "odrl:Policy" [ref=e415] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Policy
+      - generic [ref=e416]:
+        - heading "dataProductLifecycleStatus" [level=4] [ref=e417]
+        - paragraph [ref=e418]: The authored development lifecycle status of the data product.
+        - table [ref=e419]:
+          - rowgroup [ref=e420]:
+            - row [ref=e421]:
+              - rowheader "Identifier:" [ref=e422]
+              - cell [ref=e423]:
+                - link "dprod:dataProductLifecycleStatus" [ref=e424] [cursor=pointer]:
+                  - /url: "#dataproductlifecyclestatus"
+            - row [ref=e425]:
+              - rowheader "Label:" [ref=e426]
+              - cell "data product lifecycle status" [ref=e427]
+            - row [ref=e428]:
+              - rowheader "Comment:" [ref=e429]
+              - cell "Values are SKOS concepts. DPROD supplies dprod:DataProductLifecycleStatus as an optional reference concept scheme; enterprises may use another scheme." [ref=e430]
+            - row [ref=e431]:
+              - rowheader "Domain:" [ref=e432]
+              - cell [ref=e433]:
+                - link "dprod:DataProduct" [ref=e434] [cursor=pointer]:
+                  - /url: "#dataproduct"
+            - row [ref=e435]:
+              - rowheader "Range:" [ref=e436]
+              - cell [ref=e437]:
+                - link "skos:Concept" [ref=e438] [cursor=pointer]:
+                  - /url: http://www.w3.org/2004/02/skos/core#Concept
+    - generic [ref=e439]:
+      - heading "DataService" [level=3] [ref=e440]
+      - table [ref=e441]:
+        - rowgroup [ref=e442]:
+          - row [ref=e443]:
+            - rowheader "Identifier:" [ref=e444]
+            - cell [ref=e445]:
+              - link "dcat:DataService" [ref=e446] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/dcat#DataService
+      - paragraph [ref=e447]: A collection of operations that provides access to one or more datasets or data processing functions.
+      - paragraph [ref=e448]: A site or end-point providing operations related to the discovery of, access to, or processing functions on, data or related resources.
+      - generic [ref=e449]:
+        - heading "isAccessServiceOf" [level=4] [ref=e450]
+        - paragraph [ref=e451]: The dataset distribution that is being offered through this data service.
+        - table [ref=e452]:
+          - rowgroup [ref=e453]:
+            - row [ref=e454]:
+              - rowheader "Identifier:" [ref=e455]
+              - cell [ref=e456]:
+                - link "dprod:isAccessServiceOf" [ref=e457] [cursor=pointer]:
+                  - /url: "#isaccessserviceof"
+            - row [ref=e458]:
+              - rowheader "Label:" [ref=e459]
+              - cell "is access service of" [ref=e460]
+            - row [ref=e461]:
+              - rowheader "Domain:" [ref=e462]
+              - cell [ref=e463]:
+                - link "dcat:DataService" [ref=e464] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+            - row [ref=e465]:
+              - rowheader "Range:" [ref=e466]
+              - cell [ref=e467]:
+                - link "dcat:Distribution" [ref=e468] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Distribution
+      - generic [ref=e469]:
+        - heading "protocol" [level=4] [ref=e470]
+        - paragraph [ref=e471]: A protocol (possibly one of many options) used to communicate with this data service.
+        - table [ref=e472]:
+          - rowgroup [ref=e473]:
+            - row [ref=e474]:
+              - rowheader "Identifier:" [ref=e475]
+              - cell [ref=e476]:
+                - link "dprod:protocol" [ref=e477] [cursor=pointer]:
+                  - /url: "#protocol"
+            - row [ref=e478]:
+              - rowheader "Label:" [ref=e479]
+              - cell "protocol" [ref=e480]
+            - row [ref=e481]:
+              - rowheader "Domain:" [ref=e482]
+              - cell [ref=e483]:
+                - link "dcat:DataService" [ref=e484] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+            - row [ref=e485]:
+              - columnheader "Range:" [ref=e486]
+              - cell [ref=e487]
+      - generic [ref=e488]:
+        - heading "securitySchemaType" [level=4] [ref=e489]
+        - paragraph [ref=e490]: The security schema type used for authentication and communication with this Data Service.
+        - table [ref=e491]:
+          - rowgroup [ref=e492]:
+            - row [ref=e493]:
+              - rowheader "Identifier:" [ref=e494]
+              - cell [ref=e495]:
+                - link "dprod:securitySchemaType" [ref=e496] [cursor=pointer]:
+                  - /url: "#securityschematype"
+            - row [ref=e497]:
+              - rowheader "Label:" [ref=e498]
+              - cell "security schema type" [ref=e499]
+            - row [ref=e500]:
+              - rowheader "Domain:" [ref=e501]
+              - cell [ref=e502]:
+                - link "dcat:DataService" [ref=e503] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+            - row [ref=e504]:
+              - rowheader "Range:" [ref=e505]
+              - cell [ref=e506]:
+                - link "dprod:SecuritySchemaType" [ref=e507] [cursor=pointer]:
+                  - /url: "#securityschematype"
+      - generic [ref=e508]:
+        - heading "endpointURL" [level=4] [ref=e509]
+        - paragraph [ref=e510]: The root location or primary endpoint of the service.
+        - table [ref=e511]:
+          - rowgroup [ref=e512]:
+            - row [ref=e513]:
+              - rowheader "Identifier:" [ref=e514]
+              - cell [ref=e515]:
+                - link "dcat:endpointURL" [ref=e516] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#endpointURL
+            - row [ref=e517]:
+              - rowheader "Label:" [ref=e518]
+              - cell "end-point del servicio" [ref=e519]
+            - row [ref=e520]:
+              - rowheader "Comment:" [ref=e521]
+              - cell "Kořenové umístění nebo hlavní přístupový bod služby (IRI přístupné přes Web)." [ref=e522]
+            - row [ref=e523]:
+              - rowheader "Domain:" [ref=e524]
+              - cell [ref=e525]:
+                - link "dcat:DataService" [ref=e526] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+            - row [ref=e527]:
+              - rowheader "Range:" [ref=e528]
+              - cell [ref=e529]:
+                - link "rdfs:Resource" [ref=e530] [cursor=pointer]:
+                  - /url: http://www.w3.org/2000/01/rdf-schema#Resource
+      - generic [ref=e531]:
+        - heading "endpointDescription" [level=4] [ref=e532]
+        - paragraph [ref=e533]: A description of the services available via the end-points, including their operations, parameters etc.
+        - table [ref=e534]:
+          - rowgroup [ref=e535]:
+            - row [ref=e536]:
+              - rowheader "Identifier:" [ref=e537]
+              - cell [ref=e538]:
+                - link "dcat:endpointDescription" [ref=e539] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#endpointDescription
+            - row [ref=e540]:
+              - rowheader "Label:" [ref=e541]
+              - cell "descripción del end-point del servicio" [ref=e542]
+            - row [ref=e543]:
+              - rowheader "Comment:" [ref=e544]
+              - cell "A description of the service end-point, including its operations, parameters etc." [ref=e545]
+            - row [ref=e546]:
+              - rowheader "Domain:" [ref=e547]
+              - cell [ref=e548]:
+                - link "dcat:DataService" [ref=e549] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+            - row [ref=e550]:
+              - columnheader "Range:" [ref=e551]
+              - cell [ref=e552]
+    - generic [ref=e553]:
+      - heading "Distribution" [level=3] [ref=e554]
+      - table [ref=e555]:
+        - rowgroup [ref=e556]:
+          - row [ref=e557]:
+            - rowheader "Identifier:" [ref=e558]
+            - cell [ref=e559]:
+              - link "dcat:Distribution" [ref=e560] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/dcat#Distribution
+      - paragraph [ref=e561]: A specific representation of a dataset. A dataset might be available in multiple serializations that may differ in various ways, including natural language, media-type or format, schematic organization, temporal and spatial resolution, level of detail or profiles (which might specify any or all of the above).
+      - generic [ref=e562]:
+        - heading "accessService" [level=4] [ref=e563]
+        - paragraph [ref=e564]: A data service that gives access to the distribution of the dataset.
+        - table [ref=e565]:
+          - rowgroup [ref=e566]:
+            - row [ref=e567]:
+              - rowheader "Identifier:" [ref=e568]
+              - cell [ref=e569]:
+                - link "dcat:accessService" [ref=e570] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#accessService
+            - row [ref=e571]:
+              - rowheader "Label:" [ref=e572]
+              - cell "data access service" [ref=e573]
+            - row [ref=e574]:
+              - rowheader "Comment:" [ref=e575]
+              - cell "A site or end-point that gives access to the distribution of the dataset." [ref=e576]
+            - row [ref=e577]:
+              - rowheader "Domain:" [ref=e578]
+              - cell [ref=e579]:
+                - link "dcat:Distribution" [ref=e580] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Distribution
+            - row [ref=e581]:
+              - rowheader "Range:" [ref=e582]
+              - cell [ref=e583]:
+                - link "dcat:DataService" [ref=e584] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#DataService
+      - generic [ref=e585]:
+        - heading "conformsTo" [level=4] [ref=e586]
+        - paragraph [ref=e587]: The schema that the distribution conforms to that is format and technology dependent.
+        - table [ref=e588]:
+          - rowgroup [ref=e589]:
+            - row [ref=e590]:
+              - rowheader "Identifier:" [ref=e591]
+              - cell [ref=e592]:
+                - link "dct:conformsTo" [ref=e593] [cursor=pointer]:
+                  - /url: http://purl.org/dc/terms/conformsTo
+            - row [ref=e594]:
+              - rowheader "Label:" [ref=e595]
+              - cell "distribution conforms to shape" [ref=e596]
+            - row [ref=e597]:
+              - rowheader "Domain:" [ref=e598]
+              - cell [ref=e599]:
+                - link "dcat:Distribution" [ref=e600] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Distribution
+            - row [ref=e601]:
+              - columnheader "Range:" [ref=e602]
+              - cell [ref=e603]
+      - generic [ref=e604]:
+        - heading "isDistributionOf" [level=4] [ref=e605]
+        - paragraph [ref=e606]: The dataset that this distribution makes available.
+        - table [ref=e607]:
+          - rowgroup [ref=e608]:
+            - row [ref=e609]:
+              - rowheader "Identifier:" [ref=e610]
+              - cell [ref=e611]:
+                - link "dprod:isDistributionOf" [ref=e612] [cursor=pointer]:
+                  - /url: "#isdistributionof"
+            - row [ref=e613]:
+              - rowheader "Label:" [ref=e614]
+              - cell "is distribution of" [ref=e615]
+            - row [ref=e616]:
+              - rowheader "Domain:" [ref=e617]
+              - cell [ref=e618]:
+                - link "dcat:Distribution" [ref=e619] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Distribution
+            - row [ref=e620]:
+              - rowheader "Range:" [ref=e621]
+              - cell [ref=e622]:
+                - link "dcat:Dataset" [ref=e623] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+      - generic [ref=e624]:
+        - heading "format" [level=4] [ref=e625]
+        - paragraph [ref=e626]: The file format of the distribution.
+        - table [ref=e627]:
+          - rowgroup [ref=e628]:
+            - row [ref=e629]:
+              - rowheader "Identifier:" [ref=e630]
+              - cell [ref=e631]:
+                - link "dct:format" [ref=e632] [cursor=pointer]:
+                  - /url: http://purl.org/dc/terms/format
+            - row [ref=e633]:
+              - rowheader "Label:" [ref=e634]
+              - cell "distribution format shape" [ref=e635]
+            - row [ref=e636]:
+              - rowheader "Domain:" [ref=e637]
+              - cell [ref=e638]:
+                - link "dcat:Distribution" [ref=e639] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Distribution
+            - row [ref=e640]:
+              - columnheader "Range:" [ref=e641]
+              - cell [ref=e642]
+    - generic [ref=e643]:
+      - heading "Dataset" [level=3] [ref=e644]
+      - table [ref=e645]:
+        - rowgroup [ref=e646]:
+          - row [ref=e647]:
+            - rowheader "Identifier:" [ref=e648]
+            - cell [ref=e649]:
+              - link "dcat:Dataset" [ref=e650] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/dcat#Dataset
+      - paragraph [ref=e651]: A collection of data, published or curated by a single source, and available for access or download in one or more representations.
+      - generic [ref=e652]:
+        - heading "label" [level=4] [ref=e653]
+        - paragraph [ref=e654]: The name given to the dataset
+        - table [ref=e655]:
+          - rowgroup [ref=e656]:
+            - row [ref=e657]:
+              - rowheader "Identifier:" [ref=e658]
+              - cell [ref=e659]:
+                - link "rdfs:label" [ref=e660] [cursor=pointer]:
+                  - /url: http://www.w3.org/2000/01/rdf-schema#label
+            - row [ref=e661]:
+              - rowheader "Label:" [ref=e662]
+              - cell "dataset label shape" [ref=e663]
+            - row [ref=e664]:
+              - rowheader "Domain:" [ref=e665]
+              - cell [ref=e666]:
+                - link "dcat:Dataset" [ref=e667] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+            - row [ref=e668]:
+              - rowheader "Range:" [ref=e669]
+              - cell [ref=e670]:
+                - link "xsd:string" [ref=e671] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#string
+      - generic [ref=e672]:
+        - heading "description" [level=4] [ref=e673]
+        - paragraph [ref=e674]: Free text description of the dataset.
+        - table [ref=e675]:
+          - rowgroup [ref=e676]:
+            - row [ref=e677]:
+              - rowheader "Identifier:" [ref=e678]
+              - cell [ref=e679]:
+                - link "dct:description" [ref=e680] [cursor=pointer]:
+                  - /url: http://purl.org/dc/terms/description
+            - row [ref=e681]:
+              - rowheader "Label:" [ref=e682]
+              - cell "dataset distribution shape" [ref=e683]
+            - row [ref=e684]:
+              - rowheader "Domain:" [ref=e685]
+              - cell [ref=e686]:
+                - link "dcat:Dataset" [ref=e687] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+            - row [ref=e688]:
+              - rowheader "Range:" [ref=e689]
+              - cell [ref=e690]:
+                - link "xsd:string" [ref=e691] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#string
+      - generic [ref=e692]:
+        - heading "type" [level=4] [ref=e693]
+        - paragraph [ref=e694]: The type or genre of the dataset.
+        - table [ref=e695]:
+          - rowgroup [ref=e696]:
+            - row [ref=e697]:
+              - rowheader "Identifier:" [ref=e698]
+              - cell [ref=e699]:
+                - link "dct:type" [ref=e700] [cursor=pointer]:
+                  - /url: http://purl.org/dc/terms/type
+            - row [ref=e701]:
+              - rowheader "Label:" [ref=e702]
+              - cell "dataset type shape" [ref=e703]
+            - row [ref=e704]:
+              - rowheader "Domain:" [ref=e705]
+              - cell [ref=e706]:
+                - link "dcat:Dataset" [ref=e707] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+            - row [ref=e708]:
+              - columnheader "Range:" [ref=e709]
+              - cell [ref=e710]
+      - generic [ref=e711]:
+        - heading "distribution" [level=4] [ref=e712]
+        - paragraph [ref=e713]: An available distribution of the dataset.
+        - table [ref=e714]:
+          - rowgroup [ref=e715]:
+            - row [ref=e716]:
+              - rowheader "Identifier:" [ref=e717]
+              - cell [ref=e718]:
+                - link "dcat:distribution" [ref=e719] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#distribution
+            - row [ref=e720]:
+              - rowheader "Label:" [ref=e721]
+              - cell "distribuce" [ref=e722]
+            - row [ref=e723]:
+              - rowheader "Comment:" [ref=e724]
+              - cell "An available distribution of the dataset." [ref=e725]
+            - row [ref=e726]:
+              - rowheader "Domain:" [ref=e727]
+              - cell [ref=e728]:
+                - link "dcat:Dataset" [ref=e729] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+            - row [ref=e730]:
+              - rowheader "Range:" [ref=e731]
+              - cell [ref=e732]:
+                - link "dcat:Distribution" [ref=e733] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Distribution
+      - generic [ref=e734]:
+        - heading "conformsTo" [level=4] [ref=e735]
+        - paragraph [ref=e736]: A model, schema, ontology, view or profile that the dataset conforms to.
+        - table [ref=e737]:
+          - rowgroup [ref=e738]:
+            - row [ref=e739]:
+              - rowheader "Identifier:" [ref=e740]
+              - cell [ref=e741]:
+                - link "dct:conformsTo" [ref=e742] [cursor=pointer]:
+                  - /url: http://purl.org/dc/terms/conformsTo
+            - row [ref=e743]:
+              - rowheader "Label:" [ref=e744]
+              - cell "dataset conforms to shape" [ref=e745]
+            - row [ref=e746]:
+              - rowheader "Domain:" [ref=e747]
+              - cell [ref=e748]:
+                - link "dcat:Dataset" [ref=e749] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+            - row [ref=e750]:
+              - columnheader "Range:" [ref=e751]
+              - cell [ref=e752]
+      - generic [ref=e753]:
+        - heading "hasPolicy" [level=4] [ref=e754]
+        - paragraph [ref=e755]: An ODRL conformant policy expressing the rights associated with the resource.
+        - table [ref=e756]:
+          - rowgroup [ref=e757]:
+            - row [ref=e758]:
+              - rowheader "Identifier:" [ref=e759]
+              - cell [ref=e760]:
+                - link "odrl:hasPolicy" [ref=e761] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/hasPolicy
+            - row [ref=e762]:
+              - rowheader "Label:" [ref=e763]
+              - cell "dataset has policy shape" [ref=e764]
+            - row [ref=e765]:
+              - rowheader "Domain:" [ref=e766]
+              - cell [ref=e767]:
+                - link "dcat:Dataset" [ref=e768] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+            - row [ref=e769]:
+              - columnheader "Range:" [ref=e770]
+              - cell [ref=e771]
+      - generic [ref=e772]:
+        - heading "informationSensitivityClassification" [level=4] [ref=e773]
+        - paragraph [ref=e774]: More granular classification that indicates the level of control and protection that must be applied to the asset due to the nature of the data and its sensitivity or importance to the organization.
+        - table [ref=e775]:
+          - rowgroup [ref=e776]:
+            - row [ref=e777]:
+              - rowheader "Identifier:" [ref=e778]
+              - cell [ref=e779]:
+                - link "dprod:informationSensitivityClassification" [ref=e780] [cursor=pointer]:
+                  - /url: "#informationsensitivityclassification"
+            - row [ref=e781]:
+              - rowheader "Label:" [ref=e782]
+              - cell "information sensitivity classification" [ref=e783]
+            - row [ref=e784]:
+              - rowheader "Domain:" [ref=e785]
+              - cell [ref=e786]:
+                - link "dcat:Dataset" [ref=e787] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/dcat#Dataset
+            - row [ref=e788]:
+              - rowheader "Range:" [ref=e789]
+              - cell [ref=e790]:
+                - link "dprod:InformationSensitivityClassification" [ref=e791] [cursor=pointer]:
+                  - /url: "#informationsensitivityclassification"
+    - generic [ref=e792]:
+      - heading "InformationSensitivityClassification" [level=3] [ref=e793]
+      - table [ref=e794]:
+        - rowgroup [ref=e795]:
+          - row [ref=e796]:
+            - rowheader "Identifier:" [ref=e797]
+            - cell [ref=e798]:
+              - link "dprod:InformationSensitivityClassification" [ref=e799] [cursor=pointer]:
+                - /url: "#informationsensitivityclassificationshape"
+      - paragraph [ref=e800]: A classification of the information within a dataset to indicate the level of control and protection that must be applied.
+    - generic [ref=e801]:
+      - heading "SecuritySchemaType" [level=3] [ref=e802]
+      - table [ref=e803]:
+        - rowgroup [ref=e804]:
+          - row [ref=e805]:
+            - rowheader "Identifier:" [ref=e806]
+            - cell [ref=e807]:
+              - link "dprod:SecuritySchemaType" [ref=e808] [cursor=pointer]:
+                - /url: "#securityschematypeshape"
+      - paragraph [ref=e809]: A classification encompassing a set of rules used for authentication and communication.
+    - generic [ref=e810]:
+      - heading "DataOffer" [level=3] [ref=e811]
+      - table [ref=e812]:
+        - rowgroup [ref=e813]:
+          - row [ref=e814]:
+            - rowheader "Identifier:" [ref=e815]
+            - cell [ref=e816]:
+              - link "dprod:DataOffer" [ref=e817] [cursor=pointer]:
+                - /url: "#dataoffer"
+      - paragraph [ref=e818]: A DataOffer is an Offer from a data provider. It defines permissions, duties, and prohibitions for data access. When accepted by a consumer, becomes a DataContract (Agreement).
+      - generic [ref=e819]:
+        - heading "profile" [level=4] [ref=e820]
+        - paragraph [ref=e821]: The ODRL profile token a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes.
+        - table [ref=e822]:
+          - rowgroup [ref=e823]:
+            - row [ref=e824]:
+              - rowheader "Identifier:" [ref=e825]
+              - cell [ref=e826]:
+                - link "odrl:profile" [ref=e827] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/profile
+            - row [ref=e828]:
+              - rowheader "Domain:" [ref=e829]
+              - cell [ref=e830]:
+                - link "dprod:DataOffer" [ref=e831] [cursor=pointer]:
+                  - /url: "#dataoffer"
+            - row [ref=e832]:
+              - columnheader "Range:" [ref=e833]
+              - cell [ref=e834]
+      - generic [ref=e835]:
+        - heading "assigner" [level=4] [ref=e836]
+        - paragraph [ref=e837]: None
+        - table [ref=e838]:
+          - rowgroup [ref=e839]:
+            - row [ref=e840]:
+              - rowheader "Identifier:" [ref=e841]
+              - cell [ref=e842]:
+                - link "odrl:assigner" [ref=e843] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/assigner
+            - row [ref=e844]:
+              - rowheader "Domain:" [ref=e845]
+              - cell [ref=e846]:
+                - link "dprod:DataOffer" [ref=e847] [cursor=pointer]:
+                  - /url: "#dataoffer"
+            - row [ref=e848]:
+              - columnheader "Range:" [ref=e849]
+              - cell [ref=e850]
+      - generic [ref=e851]:
+        - heading "offerLifecycleStatus" [level=4] [ref=e852]
+        - paragraph [ref=e853]: Optional authored lifecycle status for a DataOffer. The value must be a skos:Concept; DPROD's scheme is optional and profiles may use an enterprise taxonomy.
+        - table [ref=e854]:
+          - rowgroup [ref=e855]:
+            - row [ref=e856]:
+              - rowheader "Identifier:" [ref=e857]
+              - cell [ref=e858]:
+                - link "dprod:offerLifecycleStatus" [ref=e859] [cursor=pointer]:
+                  - /url: "#offerlifecyclestatus"
+            - row [ref=e860]:
+              - rowheader "Label:" [ref=e861]
+              - cell "offer lifecycle status" [ref=e862]
+            - row [ref=e863]:
+              - rowheader "Comment:" [ref=e864]
+              - cell "Value is any skos:Concept; dprod:DataContractLifecycleStatus is one example concept scheme shipped with DPROD." [ref=e865]
+            - row [ref=e866]:
+              - rowheader "Domain:" [ref=e867]
+              - cell [ref=e868]:
+                - link "dprod:DataOffer" [ref=e869] [cursor=pointer]:
+                  - /url: "#dataoffer"
+            - row [ref=e870]:
+              - rowheader "Range:" [ref=e871]
+              - cell [ref=e872]:
+                - link "skos:Concept" [ref=e873] [cursor=pointer]:
+                  - /url: http://www.w3.org/2004/02/skos/core#Concept
+      - generic [ref=e874]:
+        - heading "effectiveDate" [level=4] [ref=e875]
+        - paragraph [ref=e876]: When the offer or contract becomes effective.
+        - table [ref=e877]:
+          - rowgroup [ref=e878]:
+            - row [ref=e879]:
+              - rowheader "Identifier:" [ref=e880]
+              - cell [ref=e881]:
+                - link "dprod:effectiveDate" [ref=e882] [cursor=pointer]:
+                  - /url: "#effectivedate"
+            - row [ref=e883]:
+              - rowheader "Label:" [ref=e884]
+              - cell "effective date" [ref=e885]
+            - row [ref=e886]:
+              - rowheader "Domain:" [ref=e887]
+              - cell [ref=e888]:
+                - link "dprod:DataOffer" [ref=e889] [cursor=pointer]:
+                  - /url: "#dataoffer"
+            - row [ref=e890]:
+              - rowheader "Range:" [ref=e891]
+              - cell [ref=e892]:
+                - link "xsd:dateTime" [ref=e893] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#dateTime
+      - generic [ref=e894]:
+        - heading "expirationDate" [level=4] [ref=e895]
+        - paragraph [ref=e896]: When the offer or contract expires.
+        - table [ref=e897]:
+          - rowgroup [ref=e898]:
+            - row [ref=e899]:
+              - rowheader "Identifier:" [ref=e900]
+              - cell [ref=e901]:
+                - link "dprod:expirationDate" [ref=e902] [cursor=pointer]:
+                  - /url: "#expirationdate"
+            - row [ref=e903]:
+              - rowheader "Label:" [ref=e904]
+              - cell "expiration date" [ref=e905]
+            - row [ref=e906]:
+              - rowheader "Domain:" [ref=e907]
+              - cell [ref=e908]:
+                - link "dprod:DataOffer" [ref=e909] [cursor=pointer]:
+                  - /url: "#dataoffer"
+            - row [ref=e910]:
+              - rowheader "Range:" [ref=e911]
+              - cell [ref=e912]:
+                - link "xsd:dateTime" [ref=e913] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#dateTime
+    - generic [ref=e914]:
+      - heading "DataContract" [level=3] [ref=e915]
+      - table [ref=e916]:
+        - rowgroup [ref=e917]:
+          - row [ref=e918]:
+            - rowheader "Identifier:" [ref=e919]
+            - cell [ref=e920]:
+              - link "dprod:DataContract" [ref=e921] [cursor=pointer]:
+                - /url: "#datacontract"
+      - paragraph [ref=e922]: "A DataContract is an activated DataOffer. - assigner: data provider (from offer) - assignee: data consumer Bilateral: both parties may have active duties."
+      - generic [ref=e923]:
+        - heading "profile" [level=4] [ref=e924]
+        - paragraph [ref=e925]: The ODRL profile token a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes.
+        - table [ref=e926]:
+          - rowgroup [ref=e927]:
+            - row [ref=e928]:
+              - rowheader "Identifier:" [ref=e929]
+              - cell [ref=e930]:
+                - link "odrl:profile" [ref=e931] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/profile
+            - row [ref=e932]:
+              - rowheader "Domain:" [ref=e933]
+              - cell [ref=e934]:
+                - link "dprod:DataContract" [ref=e935] [cursor=pointer]:
+                  - /url: "#datacontract"
+            - row [ref=e936]:
+              - columnheader "Range:" [ref=e937]
+              - cell [ref=e938]
+      - generic [ref=e939]:
+        - heading "assigner" [level=4] [ref=e940]
+        - paragraph [ref=e941]: None
+        - table [ref=e942]:
+          - rowgroup [ref=e943]:
+            - row [ref=e944]:
+              - rowheader "Identifier:" [ref=e945]
+              - cell [ref=e946]:
+                - link "odrl:assigner" [ref=e947] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/assigner
+            - row [ref=e948]:
+              - rowheader "Domain:" [ref=e949]
+              - cell [ref=e950]:
+                - link "dprod:DataContract" [ref=e951] [cursor=pointer]:
+                  - /url: "#datacontract"
+            - row [ref=e952]:
+              - columnheader "Range:" [ref=e953]
+              - cell [ref=e954]
+      - generic [ref=e955]:
+        - heading "assignee" [level=4] [ref=e956]
+        - paragraph [ref=e957]: None
+        - table [ref=e958]:
+          - rowgroup [ref=e959]:
+            - row [ref=e960]:
+              - rowheader "Identifier:" [ref=e961]
+              - cell [ref=e962]:
+                - link "odrl:assignee" [ref=e963] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/assignee
+            - row [ref=e964]:
+              - rowheader "Domain:" [ref=e965]
+              - cell [ref=e966]:
+                - link "dprod:DataContract" [ref=e967] [cursor=pointer]:
+                  - /url: "#datacontract"
+            - row [ref=e968]:
+              - columnheader "Range:" [ref=e969]
+              - cell [ref=e970]
+      - generic [ref=e971]:
+        - heading "acceptsOffer" [level=4] [ref=e972]
+        - paragraph [ref=e973]: The offer this contract activates.
+        - table [ref=e974]:
+          - rowgroup [ref=e975]:
+            - row [ref=e976]:
+              - rowheader "Identifier:" [ref=e977]
+              - cell [ref=e978]:
+                - link "dprod:acceptsOffer" [ref=e979] [cursor=pointer]:
+                  - /url: "#acceptsoffer"
+            - row [ref=e980]:
+              - rowheader "Label:" [ref=e981]
+              - cell "accepts offer" [ref=e982]
+            - row [ref=e983]:
+              - rowheader "Domain:" [ref=e984]
+              - cell [ref=e985]:
+                - link "dprod:DataContract" [ref=e986] [cursor=pointer]:
+                  - /url: "#datacontract"
+            - row [ref=e987]:
+              - rowheader "Range:" [ref=e988]
+              - cell [ref=e989]:
+                - link "dprod:DataOffer" [ref=e990] [cursor=pointer]:
+                  - /url: "#dataoffer"
+      - generic [ref=e991]:
+        - heading "contractLifecycleStatus" [level=4] [ref=e992]
+        - paragraph [ref=e993]: Optional authored lifecycle status for a DataContract. The value must be a skos:Concept; DPROD's scheme is optional and profiles may use an enterprise taxonomy.
+        - table [ref=e994]:
+          - rowgroup [ref=e995]:
+            - row [ref=e996]:
+              - rowheader "Identifier:" [ref=e997]
+              - cell [ref=e998]:
+                - link "dprod:contractLifecycleStatus" [ref=e999] [cursor=pointer]:
+                  - /url: "#contractlifecyclestatus"
+            - row [ref=e1000]:
+              - rowheader "Label:" [ref=e1001]
+              - cell "contract lifecycle status" [ref=e1002]
+            - row [ref=e1003]:
+              - rowheader "Comment:" [ref=e1004]
+              - cell "Value is any skos:Concept; dprod:DataContractLifecycleStatus is one example concept scheme shipped with DPROD." [ref=e1005]
+            - row [ref=e1006]:
+              - rowheader "Domain:" [ref=e1007]
+              - cell [ref=e1008]:
+                - link "dprod:DataContract" [ref=e1009] [cursor=pointer]:
+                  - /url: "#datacontract"
+            - row [ref=e1010]:
+              - rowheader "Range:" [ref=e1011]
+              - cell [ref=e1012]:
+                - link "skos:Concept" [ref=e1013] [cursor=pointer]:
+                  - /url: http://www.w3.org/2004/02/skos/core#Concept
+      - generic [ref=e1014]:
+        - heading "effectiveDate" [level=4] [ref=e1015]
+        - paragraph [ref=e1016]: When the offer or contract becomes effective.
+        - table [ref=e1017]:
+          - rowgroup [ref=e1018]:
+            - row [ref=e1019]:
+              - rowheader "Identifier:" [ref=e1020]
+              - cell [ref=e1021]:
+                - link "dprod:effectiveDate" [ref=e1022] [cursor=pointer]:
+                  - /url: "#effectivedate"
+            - row [ref=e1023]:
+              - rowheader "Label:" [ref=e1024]
+              - cell "effective date" [ref=e1025]
+            - row [ref=e1026]:
+              - rowheader "Domain:" [ref=e1027]
+              - cell [ref=e1028]:
+                - link "dprod:DataContract" [ref=e1029] [cursor=pointer]:
+                  - /url: "#datacontract"
+            - row [ref=e1030]:
+              - rowheader "Range:" [ref=e1031]
+              - cell [ref=e1032]:
+                - link "xsd:dateTime" [ref=e1033] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#dateTime
+      - generic [ref=e1034]:
+        - heading "expirationDate" [level=4] [ref=e1035]
+        - paragraph [ref=e1036]: When the offer or contract expires.
+        - table [ref=e1037]:
+          - rowgroup [ref=e1038]:
+            - row [ref=e1039]:
+              - rowheader "Identifier:" [ref=e1040]
+              - cell [ref=e1041]:
+                - link "dprod:expirationDate" [ref=e1042] [cursor=pointer]:
+                  - /url: "#expirationdate"
+            - row [ref=e1043]:
+              - rowheader "Label:" [ref=e1044]
+              - cell "expiration date" [ref=e1045]
+            - row [ref=e1046]:
+              - rowheader "Domain:" [ref=e1047]
+              - cell [ref=e1048]:
+                - link "dprod:DataContract" [ref=e1049] [cursor=pointer]:
+                  - /url: "#datacontract"
+            - row [ref=e1050]:
+              - rowheader "Range:" [ref=e1051]
+              - cell [ref=e1052]:
+                - link "xsd:dateTime" [ref=e1053] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#dateTime
+    - generic [ref=e1054]:
+      - heading "Policy" [level=3] [ref=e1055]
+      - table [ref=e1056]:
+        - rowgroup [ref=e1057]:
+          - row [ref=e1058]:
+            - rowheader "Identifier:" [ref=e1059]
+            - cell [ref=e1060]:
+              - link "odrl:Policy" [ref=e1061] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Policy
+      - generic [ref=e1062]:
+        - heading "profile" [level=4] [ref=e1063]
+        - paragraph [ref=e1064]: None
+        - table [ref=e1065]:
+          - rowgroup [ref=e1066]:
+            - row [ref=e1067]:
+              - rowheader "Identifier:" [ref=e1068]
+              - cell [ref=e1069]:
+                - link "odrl:profile" [ref=e1070] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/profile
+            - row [ref=e1071]:
+              - rowheader "Domain:" [ref=e1072]
+              - cell [ref=e1073]:
+                - link "odrl:Policy" [ref=e1074] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Policy
+            - row [ref=e1075]:
+              - columnheader "Range:" [ref=e1076]
+              - cell [ref=e1077]
+    - generic [ref=e1078]:
+      - heading "Set" [level=3] [ref=e1079]
+      - table [ref=e1080]:
+        - rowgroup [ref=e1081]:
+          - row [ref=e1082]:
+            - rowheader "Identifier:" [ref=e1083]
+            - cell [ref=e1084]:
+              - link "odrl:Set" [ref=e1085] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Set
+      - generic [ref=e1086]:
+        - heading "profile" [level=4] [ref=e1087]
+        - paragraph [ref=e1088]: The ODRL profile token a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes.
+        - table [ref=e1089]:
+          - rowgroup [ref=e1090]:
+            - row [ref=e1091]:
+              - rowheader "Identifier:" [ref=e1092]
+              - cell [ref=e1093]:
+                - link "odrl:profile" [ref=e1094] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/profile
+            - row [ref=e1095]:
+              - rowheader "Domain:" [ref=e1096]
+              - cell [ref=e1097]:
+                - link "odrl:Set" [ref=e1098] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Set
+            - row [ref=e1099]:
+              - columnheader "Range:" [ref=e1100]
+              - cell [ref=e1101]
+      - generic [ref=e1102]:
+        - heading "target" [level=4] [ref=e1103]
+        - paragraph [ref=e1104]: None
+        - table [ref=e1105]:
+          - rowgroup [ref=e1106]:
+            - row [ref=e1107]:
+              - rowheader "Identifier:" [ref=e1108]
+              - cell [ref=e1109]:
+                - link "odrl:target" [ref=e1110] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/target
+            - row [ref=e1111]:
+              - rowheader "Domain:" [ref=e1112]
+              - cell [ref=e1113]:
+                - link "odrl:Set" [ref=e1114] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Set
+            - row [ref=e1115]:
+              - columnheader "Range:" [ref=e1116]
+              - cell [ref=e1117]
+    - generic [ref=e1118]:
+      - heading "Offer" [level=3] [ref=e1119]
+      - table [ref=e1120]:
+        - rowgroup [ref=e1121]:
+          - row [ref=e1122]:
+            - rowheader "Identifier:" [ref=e1123]
+            - cell [ref=e1124]:
+              - link "odrl:Offer" [ref=e1125] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Offer
+      - generic [ref=e1126]:
+        - heading "profile" [level=4] [ref=e1127]
+        - paragraph [ref=e1128]: The ODRL profile token a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes.
+        - table [ref=e1129]:
+          - rowgroup [ref=e1130]:
+            - row [ref=e1131]:
+              - rowheader "Identifier:" [ref=e1132]
+              - cell [ref=e1133]:
+                - link "odrl:profile" [ref=e1134] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/profile
+            - row [ref=e1135]:
+              - rowheader "Domain:" [ref=e1136]
+              - cell [ref=e1137]:
+                - link "odrl:Offer" [ref=e1138] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Offer
+            - row [ref=e1139]:
+              - columnheader "Range:" [ref=e1140]
+              - cell [ref=e1141]
+      - generic [ref=e1142]:
+        - heading "assigner" [level=4] [ref=e1143]
+        - paragraph [ref=e1144]: None
+        - table [ref=e1145]:
+          - rowgroup [ref=e1146]:
+            - row [ref=e1147]:
+              - rowheader "Identifier:" [ref=e1148]
+              - cell [ref=e1149]:
+                - link "odrl:assigner" [ref=e1150] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/assigner
+            - row [ref=e1151]:
+              - rowheader "Domain:" [ref=e1152]
+              - cell [ref=e1153]:
+                - link "odrl:Offer" [ref=e1154] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Offer
+            - row [ref=e1155]:
+              - columnheader "Range:" [ref=e1156]
+              - cell [ref=e1157]
+    - generic [ref=e1158]:
+      - heading "Agreement" [level=3] [ref=e1159]
+      - table [ref=e1160]:
+        - rowgroup [ref=e1161]:
+          - row [ref=e1162]:
+            - rowheader "Identifier:" [ref=e1163]
+            - cell [ref=e1164]:
+              - link "odrl:Agreement" [ref=e1165] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Agreement
+      - generic [ref=e1166]:
+        - heading "profile" [level=4] [ref=e1167]
+        - paragraph [ref=e1168]: The ODRL profile token a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes.
+        - table [ref=e1169]:
+          - rowgroup [ref=e1170]:
+            - row [ref=e1171]:
+              - rowheader "Identifier:" [ref=e1172]
+              - cell [ref=e1173]:
+                - link "odrl:profile" [ref=e1174] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/profile
+            - row [ref=e1175]:
+              - rowheader "Domain:" [ref=e1176]
+              - cell [ref=e1177]:
+                - link "odrl:Agreement" [ref=e1178] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Agreement
+            - row [ref=e1179]:
+              - columnheader "Range:" [ref=e1180]
+              - cell [ref=e1181]
+      - generic [ref=e1182]:
+        - heading "assigner" [level=4] [ref=e1183]
+        - paragraph [ref=e1184]: None
+        - table [ref=e1185]:
+          - rowgroup [ref=e1186]:
+            - row [ref=e1187]:
+              - rowheader "Identifier:" [ref=e1188]
+              - cell [ref=e1189]:
+                - link "odrl:assigner" [ref=e1190] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/assigner
+            - row [ref=e1191]:
+              - rowheader "Domain:" [ref=e1192]
+              - cell [ref=e1193]:
+                - link "odrl:Agreement" [ref=e1194] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Agreement
+            - row [ref=e1195]:
+              - columnheader "Range:" [ref=e1196]
+              - cell [ref=e1197]
+      - generic [ref=e1198]:
+        - heading "assignee" [level=4] [ref=e1199]
+        - paragraph [ref=e1200]: None
+        - table [ref=e1201]:
+          - rowgroup [ref=e1202]:
+            - row [ref=e1203]:
+              - rowheader "Identifier:" [ref=e1204]
+              - cell [ref=e1205]:
+                - link "odrl:assignee" [ref=e1206] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/assignee
+            - row [ref=e1207]:
+              - rowheader "Domain:" [ref=e1208]
+              - cell [ref=e1209]:
+                - link "odrl:Agreement" [ref=e1210] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Agreement
+            - row [ref=e1211]:
+              - columnheader "Range:" [ref=e1212]
+              - cell [ref=e1213]
+    - generic [ref=e1214]:
+      - heading "Permission" [level=3] [ref=e1215]
+      - table [ref=e1216]:
+        - rowgroup [ref=e1217]:
+          - row [ref=e1218]:
+            - rowheader "Identifier:" [ref=e1219]
+            - cell [ref=e1220]:
+              - link "odrl:Permission" [ref=e1221] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Permission
+      - generic [ref=e1222]:
+        - heading "action" [level=4] [ref=e1223]
+        - paragraph [ref=e1224]: None
+        - table [ref=e1225]:
+          - rowgroup [ref=e1226]:
+            - row [ref=e1227]:
+              - rowheader "Identifier:" [ref=e1228]
+              - cell [ref=e1229]:
+                - link "odrl:action" [ref=e1230] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/action
+            - row [ref=e1231]:
+              - rowheader "Domain:" [ref=e1232]
+              - cell [ref=e1233]:
+                - link "odrl:Permission" [ref=e1234] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Permission
+            - row [ref=e1235]:
+              - columnheader "Range:" [ref=e1236]
+              - cell [ref=e1237]
+      - generic [ref=e1238]:
+        - heading "target" [level=4] [ref=e1239]
+        - paragraph [ref=e1240]: None
+        - table [ref=e1241]:
+          - rowgroup [ref=e1242]:
+            - row [ref=e1243]:
+              - rowheader "Identifier:" [ref=e1244]
+              - cell [ref=e1245]:
+                - link "odrl:target" [ref=e1246] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/target
+            - row [ref=e1247]:
+              - rowheader "Domain:" [ref=e1248]
+              - cell [ref=e1249]:
+                - link "odrl:Permission" [ref=e1250] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Permission
+            - row [ref=e1251]:
+              - columnheader "Range:" [ref=e1252]
+              - cell [ref=e1253]
+    - generic [ref=e1254]:
+      - heading "Prohibition" [level=3] [ref=e1255]
+      - table [ref=e1256]:
+        - rowgroup [ref=e1257]:
+          - row [ref=e1258]:
+            - rowheader "Identifier:" [ref=e1259]
+            - cell [ref=e1260]:
+              - link "odrl:Prohibition" [ref=e1261] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Prohibition
+      - generic [ref=e1262]:
+        - heading "action" [level=4] [ref=e1263]
+        - paragraph [ref=e1264]: None
+        - table [ref=e1265]:
+          - rowgroup [ref=e1266]:
+            - row [ref=e1267]:
+              - rowheader "Identifier:" [ref=e1268]
+              - cell [ref=e1269]:
+                - link "odrl:action" [ref=e1270] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/action
+            - row [ref=e1271]:
+              - rowheader "Domain:" [ref=e1272]
+              - cell [ref=e1273]:
+                - link "odrl:Prohibition" [ref=e1274] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Prohibition
+            - row [ref=e1275]:
+              - columnheader "Range:" [ref=e1276]
+              - cell [ref=e1277]
+      - generic [ref=e1278]:
+        - heading "target" [level=4] [ref=e1279]
+        - paragraph [ref=e1280]: None
+        - table [ref=e1281]:
+          - rowgroup [ref=e1282]:
+            - row [ref=e1283]:
+              - rowheader "Identifier:" [ref=e1284]
+              - cell [ref=e1285]:
+                - link "odrl:target" [ref=e1286] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/target
+            - row [ref=e1287]:
+              - rowheader "Domain:" [ref=e1288]
+              - cell [ref=e1289]:
+                - link "odrl:Prohibition" [ref=e1290] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Prohibition
+            - row [ref=e1291]:
+              - columnheader "Range:" [ref=e1292]
+              - cell [ref=e1293]
+    - generic [ref=e1294]:
+      - heading "Duty" [level=3] [ref=e1295]
+      - table [ref=e1296]:
+        - rowgroup [ref=e1297]:
+          - row [ref=e1298]:
+            - rowheader "Identifier:" [ref=e1299]
+            - cell [ref=e1300]:
+              - link "odrl:Duty" [ref=e1301] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Duty
+      - generic [ref=e1302]:
+        - heading "action" [level=4] [ref=e1303]
+        - paragraph [ref=e1304]: None
+        - table [ref=e1305]:
+          - rowgroup [ref=e1306]:
+            - row [ref=e1307]:
+              - rowheader "Identifier:" [ref=e1308]
+              - cell [ref=e1309]:
+                - link "odrl:action" [ref=e1310] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/action
+            - row [ref=e1311]:
+              - rowheader "Domain:" [ref=e1312]
+              - cell [ref=e1313]:
+                - link "odrl:Duty" [ref=e1314] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Duty
+            - row [ref=e1315]:
+              - columnheader "Range:" [ref=e1316]
+              - cell [ref=e1317]
+      - generic [ref=e1318]:
+        - heading "deadline" [level=4] [ref=e1319]
+        - paragraph [ref=e1320]: Time constraint for duty fulfillment.
+        - table [ref=e1321]:
+          - rowgroup [ref=e1322]:
+            - row [ref=e1323]:
+              - rowheader "Identifier:" [ref=e1324]
+              - cell [ref=e1325]:
+                - link "dprod:deadline" [ref=e1326] [cursor=pointer]:
+                  - /url: "#deadline"
+            - row [ref=e1327]:
+              - rowheader "Label:" [ref=e1328]
+              - cell "deadline" [ref=e1329]
+            - row [ref=e1330]:
+              - rowheader "Comment:" [ref=e1331]
+              - 'cell "Supports multiple forms: - xsd:dateTime: absolute deadline (e.g., 2026-12-31T23:59:59Z) - xsd:duration: relative to activation (e.g., P30D, PT24H) For duration: deadline = activationTime + duration. No rdfs:range declared because the range is a union of datatypes; SHACL enforces the allowed types." [ref=e1332]'
+            - row [ref=e1333]:
+              - rowheader "Domain:" [ref=e1334]
+              - cell [ref=e1335]:
+                - link "odrl:Duty" [ref=e1336] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Duty
+            - row [ref=e1337]:
+              - columnheader "Range:" [ref=e1338]
+              - cell [ref=e1339]
+      - generic [ref=e1340]:
+        - heading "recurrence" [level=4] [ref=e1341]
+        - paragraph [ref=e1342]: RFC 5545 RRULE defining when duty instances are generated.
+        - table [ref=e1343]:
+          - rowgroup [ref=e1344]:
+            - row [ref=e1345]:
+              - rowheader "Identifier:" [ref=e1346]
+              - cell [ref=e1347]:
+                - link "dprod:recurrence" [ref=e1348] [cursor=pointer]:
+                  - /url: "#recurrence"
+            - row [ref=e1349]:
+              - rowheader "Label:" [ref=e1350]
+              - cell "recurrence" [ref=e1351]
+            - row [ref=e1352]:
+              - rowheader "Comment:" [ref=e1353]
+              - cell "An RFC 5545 RRULE string (e.g., FREQ=DAILY;BYHOUR=6;BYMINUTE=0). Defines the schedule on which duty instances are created. Each instance follows the standard duty lifecycle independently. The deadline property defines the per-instance fulfillment window. Any iCal-compliant library can parse the value." [ref=e1354]
+            - row [ref=e1355]:
+              - rowheader "Domain:" [ref=e1356]
+              - cell [ref=e1357]:
+                - link "odrl:Duty" [ref=e1358] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Duty
+            - row [ref=e1359]:
+              - rowheader "Range:" [ref=e1360]
+              - cell [ref=e1361]:
+                - link "xsd:string" [ref=e1362] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#string
+      - generic [ref=e1363]:
+        - heading "subjectOfDuty" [level=4] [ref=e1364]
+        - paragraph [ref=e1365]: Party bearing the duty (must perform the action).
+        - table [ref=e1366]:
+          - rowgroup [ref=e1367]:
+            - row [ref=e1368]:
+              - rowheader "Identifier:" [ref=e1369]
+              - cell [ref=e1370]:
+                - link "dprod:subjectOfDuty" [ref=e1371] [cursor=pointer]:
+                  - /url: "#subjectofduty"
+            - row [ref=e1372]:
+              - rowheader "Label:" [ref=e1373]
+              - cell "subject" [ref=e1374]
+            - row [ref=e1375]:
+              - rowheader "Comment:" [ref=e1376]
+              - cell "The duty bearer. Sub-property of odrl:function for ODRL processor compatibility." [ref=e1377]
+            - row [ref=e1378]:
+              - rowheader "Domain:" [ref=e1379]
+              - cell [ref=e1380]:
+                - link "odrl:Duty" [ref=e1381] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Duty
+            - row [ref=e1382]:
+              - rowheader "Range:" [ref=e1383]
+              - cell [ref=e1384]:
+                - link "odrl:Party" [ref=e1385] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Party
+      - generic [ref=e1386]:
+        - heading "objectOfDuty" [level=4] [ref=e1387]
+        - paragraph [ref=e1388]: Party affected by the duty action.
+        - table [ref=e1389]:
+          - rowgroup [ref=e1390]:
+            - row [ref=e1391]:
+              - rowheader "Identifier:" [ref=e1392]
+              - cell [ref=e1393]:
+                - link "dprod:objectOfDuty" [ref=e1394] [cursor=pointer]:
+                  - /url: "#objectofduty"
+            - row [ref=e1395]:
+              - rowheader "Label:" [ref=e1396]
+              - cell "object" [ref=e1397]
+            - row [ref=e1398]:
+              - rowheader "Comment:" [ref=e1399]
+              - cell "The party affected by or receiving the result of the duty action. Sub-property of odrl:function for ODRL processor compatibility." [ref=e1400]
+            - row [ref=e1401]:
+              - rowheader "Domain:" [ref=e1402]
+              - cell [ref=e1403]:
+                - link "odrl:Duty" [ref=e1404] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Duty
+            - row [ref=e1405]:
+              - rowheader "Range:" [ref=e1406]
+              - cell [ref=e1407]:
+                - link "odrl:Party" [ref=e1408] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Party
+      - generic [ref=e1409]:
+        - heading "dutyState" [level=4] [ref=e1410]
+        - paragraph [ref=e1411]: Optional evaluated state for a Duty. Value must be a skos:Concept; the four DPROD-defined concepts (Pending, Active, Fulfilled, Violated) are the canonical vocabulary that the standard evaluation algorithm transitions between.
+        - table [ref=e1412]:
+          - rowgroup [ref=e1413]:
+            - row [ref=e1414]:
+              - rowheader "Identifier:" [ref=e1415]
+              - cell [ref=e1416]:
+                - link "dprod:dutyState" [ref=e1417] [cursor=pointer]:
+                  - /url: "#dutystate"
+            - row [ref=e1418]:
+              - rowheader "Label:" [ref=e1419]
+              - cell "duty state" [ref=e1420]
+            - row [ref=e1421]:
+              - rowheader "Comment:" [ref=e1422]
+              - cell "Value is any skos:Concept. The state machine in formal-semantics §5 is one possible interpretation. Implementations are free to use a different state vocabulary and/or state machine. This evaluator-computed property is deliberately separate from the authored dprod:lifecycleStatus hierarchy." [ref=e1423]
+            - row [ref=e1424]:
+              - rowheader "Domain:" [ref=e1425]
+              - cell [ref=e1426]:
+                - link "odrl:Duty" [ref=e1427] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Duty
+            - row [ref=e1428]:
+              - rowheader "Range:" [ref=e1429]
+              - cell [ref=e1430]:
+                - link "skos:Concept" [ref=e1431] [cursor=pointer]:
+                  - /url: http://www.w3.org/2004/02/skos/core#Concept
+    - generic [ref=e1432]:
+      - heading "Constraint" [level=3] [ref=e1433]
+      - table [ref=e1434]:
+        - rowgroup [ref=e1435]:
+          - row [ref=e1436]:
+            - rowheader "Identifier:" [ref=e1437]
+            - cell [ref=e1438]:
+              - link "odrl:Constraint" [ref=e1439] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/Constraint
+      - generic [ref=e1440]:
+        - heading "leftOperand" [level=4] [ref=e1441]
+        - paragraph [ref=e1442]: None
+        - table [ref=e1443]:
+          - rowgroup [ref=e1444]:
+            - row [ref=e1445]:
+              - rowheader "Identifier:" [ref=e1446]
+              - cell [ref=e1447]:
+                - link "odrl:leftOperand" [ref=e1448] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/leftOperand
+            - row [ref=e1449]:
+              - rowheader "Domain:" [ref=e1450]
+              - cell [ref=e1451]:
+                - link "odrl:Constraint" [ref=e1452] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Constraint
+            - row [ref=e1453]:
+              - columnheader "Range:" [ref=e1454]
+              - cell [ref=e1455]
+      - generic [ref=e1456]:
+        - heading "operator" [level=4] [ref=e1457]
+        - paragraph [ref=e1458]: None
+        - table [ref=e1459]:
+          - rowgroup [ref=e1460]:
+            - row [ref=e1461]:
+              - rowheader "Identifier:" [ref=e1462]
+              - cell [ref=e1463]:
+                - link "odrl:operator" [ref=e1464] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/operator
+            - row [ref=e1465]:
+              - rowheader "Domain:" [ref=e1466]
+              - cell [ref=e1467]:
+                - link "odrl:Constraint" [ref=e1468] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Constraint
+            - row [ref=e1469]:
+              - columnheader "Range:" [ref=e1470]
+              - cell [ref=e1471]
+      - generic [ref=e1472]:
+        - heading "rightOperand" [level=4] [ref=e1473]
+        - paragraph [ref=e1474]: None
+        - table [ref=e1475]:
+          - rowgroup [ref=e1476]:
+            - row [ref=e1477]:
+              - rowheader "Identifier:" [ref=e1478]
+              - cell [ref=e1479]:
+                - link "odrl:rightOperand" [ref=e1480] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/rightOperand
+            - row [ref=e1481]:
+              - rowheader "Domain:" [ref=e1482]
+              - cell [ref=e1483]:
+                - link "odrl:Constraint" [ref=e1484] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Constraint
+            - row [ref=e1485]:
+              - columnheader "Range:" [ref=e1486]
+              - cell [ref=e1487]
+    - generic [ref=e1488]:
+      - heading "LogicalConstraint" [level=3] [ref=e1489]
+      - table [ref=e1490]:
+        - rowgroup [ref=e1491]:
+          - row [ref=e1492]:
+            - rowheader "Identifier:" [ref=e1493]
+            - cell [ref=e1494]:
+              - link "odrl:LogicalConstraint" [ref=e1495] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/LogicalConstraint
+    - generic [ref=e1496]:
+      - heading "LeftOperand" [level=3] [ref=e1497]
+      - table [ref=e1498]:
+        - rowgroup [ref=e1499]:
+          - row [ref=e1500]:
+            - rowheader "Identifier:" [ref=e1501]
+            - cell [ref=e1502]:
+              - link "odrl:LeftOperand" [ref=e1503] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/LeftOperand
+    - generic [ref=e1504]:
+      - heading "EvaluationContext" [level=3] [ref=e1505]
+      - table [ref=e1506]:
+        - rowgroup [ref=e1507]:
+          - row [ref=e1508]:
+            - rowheader "Identifier:" [ref=e1509]
+            - cell [ref=e1510]:
+              - link "dprod:EvaluationContext" [ref=e1511] [cursor=pointer]:
+                - /url: "#evaluationcontext"
+      - paragraph [ref=e1512]: The immutable container for runtime operand resolution. An evaluator constructs one EvaluationContext for each evaluation and supplies the authorization request, an immutable state-of-the-world snapshot, the requesting agent, and the evaluation clock through the four normative properties. The context is a prov:Entity so implementations can retain the exact input provenance needed to reproduce and audit a decision. Evaluation never reads a live global graph or dereferences an undeclared source while resolving an operand binding.
+      - generic [ref=e1513]:
+        - heading "request" [level=4] [ref=e1514]
+        - paragraph [ref=e1515]: Authorization request supplied for one policy evaluation.
+        - table [ref=e1516]:
+          - rowgroup [ref=e1517]:
+            - row [ref=e1518]:
+              - rowheader "Identifier:" [ref=e1519]
+              - cell [ref=e1520]:
+                - link "dprod:request" [ref=e1521] [cursor=pointer]:
+                  - /url: "#request"
+            - row [ref=e1522]:
+              - rowheader "Label:" [ref=e1523]
+              - cell "request" [ref=e1524]
+            - row [ref=e1525]:
+              - rowheader "Comment:" [ref=e1526]
+              - cell "Selects the normalized request node used by dprod:requestSource operand bindings." [ref=e1527]
+            - row [ref=e1528]:
+              - rowheader "Domain:" [ref=e1529]
+              - cell [ref=e1530]:
+                - link "dprod:EvaluationContext" [ref=e1531] [cursor=pointer]:
+                  - /url: "#evaluationcontext"
+            - row [ref=e1532]:
+              - rowheader "Range:" [ref=e1533]
+              - cell [ref=e1534]:
+                - link "rdfs:Resource" [ref=e1535] [cursor=pointer]:
+                  - /url: http://www.w3.org/2000/01/rdf-schema#Resource
+      - generic [ref=e1536]:
+        - heading "state" [level=4] [ref=e1537]
+        - paragraph [ref=e1538]: Immutable state-of-the-world snapshot supplied for one policy evaluation.
+        - table [ref=e1539]:
+          - rowgroup [ref=e1540]:
+            - row [ref=e1541]:
+              - rowheader "Identifier:" [ref=e1542]
+              - cell [ref=e1543]:
+                - link "dprod:state" [ref=e1544] [cursor=pointer]:
+                  - /url: "#state"
+            - row [ref=e1545]:
+              - rowheader "Label:" [ref=e1546]
+              - cell "state" [ref=e1547]
+            - row [ref=e1548]:
+              - rowheader "Comment:" [ref=e1549]
+              - cell "Selects the normalized snapshot node used by dprod:stateSource operand bindings. The object is supplied by the evaluator, never an instruction to query live external state." [ref=e1550]
+            - row [ref=e1551]:
+              - rowheader "Domain:" [ref=e1552]
+              - cell [ref=e1553]:
+                - link "dprod:EvaluationContext" [ref=e1554] [cursor=pointer]:
+                  - /url: "#evaluationcontext"
+            - row [ref=e1555]:
+              - rowheader "Range:" [ref=e1556]
+              - cell [ref=e1557]:
+                - link "prov:Entity" [ref=e1558] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/prov#Entity
+      - generic [ref=e1559]:
+        - heading "agent" [level=4] [ref=e1560]
+        - paragraph [ref=e1561]: Requesting agent supplied for one policy evaluation.
+        - table [ref=e1562]:
+          - rowgroup [ref=e1563]:
+            - row [ref=e1564]:
+              - rowheader "Identifier:" [ref=e1565]
+              - cell [ref=e1566]:
+                - link "dprod:agent" [ref=e1567] [cursor=pointer]:
+                  - /url: "#agent"
+            - row [ref=e1568]:
+              - rowheader "Label:" [ref=e1569]
+              - cell "agent" [ref=e1570]
+            - row [ref=e1571]:
+              - rowheader "Domain:" [ref=e1572]
+              - cell [ref=e1573]:
+                - link "dprod:EvaluationContext" [ref=e1574] [cursor=pointer]:
+                  - /url: "#evaluationcontext"
+            - row [ref=e1575]:
+              - rowheader "Range:" [ref=e1576]
+              - cell [ref=e1577]:
+                - link "odrl:Party" [ref=e1578] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/Party
+      - generic [ref=e1579]:
+        - heading "clock" [level=4] [ref=e1580]
+        - paragraph [ref=e1581]: Immutable timestamp at which policy evaluation occurs.
+        - table [ref=e1582]:
+          - rowgroup [ref=e1583]:
+            - row [ref=e1584]:
+              - rowheader "Identifier:" [ref=e1585]
+              - cell [ref=e1586]:
+                - link "dprod:clock" [ref=e1587] [cursor=pointer]:
+                  - /url: "#clock"
+            - row [ref=e1588]:
+              - rowheader "Label:" [ref=e1589]
+              - cell "clock" [ref=e1590]
+            - row [ref=e1591]:
+              - rowheader "Domain:" [ref=e1592]
+              - cell [ref=e1593]:
+                - link "dprod:EvaluationContext" [ref=e1594] [cursor=pointer]:
+                  - /url: "#evaluationcontext"
+            - row [ref=e1595]:
+              - rowheader "Range:" [ref=e1596]
+              - cell [ref=e1597]:
+                - link "xsd:dateTime" [ref=e1598] [cursor=pointer]:
+                  - /url: http://www.w3.org/2001/XMLSchema#dateTime
+    - generic [ref=e1599]:
+      - heading "AssetCollection" [level=3] [ref=e1600]
+      - table [ref=e1601]:
+        - rowgroup [ref=e1602]:
+          - row [ref=e1603]:
+            - rowheader "Identifier:" [ref=e1604]
+            - cell [ref=e1605]:
+              - link "odrl:AssetCollection" [ref=e1606] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/AssetCollection
+      - generic [ref=e1607]:
+        - heading "source" [level=4] [ref=e1608]
+        - paragraph [ref=e1609]: None
+        - table [ref=e1610]:
+          - rowgroup [ref=e1611]:
+            - row [ref=e1612]:
+              - rowheader "Identifier:" [ref=e1613]
+              - cell [ref=e1614]:
+                - link "odrl:source" [ref=e1615] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/source
+            - row [ref=e1616]:
+              - rowheader "Domain:" [ref=e1617]
+              - cell [ref=e1618]:
+                - link "odrl:AssetCollection" [ref=e1619] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/AssetCollection
+            - row [ref=e1620]:
+              - columnheader "Range:" [ref=e1621]
+              - cell [ref=e1622]
+      - generic [ref=e1623]:
+        - heading "refinement" [level=4] [ref=e1624]
+        - paragraph [ref=e1625]: None
+        - table [ref=e1626]:
+          - rowgroup [ref=e1627]:
+            - row [ref=e1628]:
+              - rowheader "Identifier:" [ref=e1629]
+              - cell [ref=e1630]:
+                - link "odrl:refinement" [ref=e1631] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/refinement
+            - row [ref=e1632]:
+              - rowheader "Domain:" [ref=e1633]
+              - cell [ref=e1634]:
+                - link "odrl:AssetCollection" [ref=e1635] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/AssetCollection
+            - row [ref=e1636]:
+              - columnheader "Range:" [ref=e1637]
+              - cell [ref=e1638]
+    - generic [ref=e1639]:
+      - heading "PartyCollection" [level=3] [ref=e1640]
+      - table [ref=e1641]:
+        - rowgroup [ref=e1642]:
+          - row [ref=e1643]:
+            - rowheader "Identifier:" [ref=e1644]
+            - cell [ref=e1645]:
+              - link "odrl:PartyCollection" [ref=e1646] [cursor=pointer]:
+                - /url: http://www.w3.org/ns/odrl/2/PartyCollection
+      - generic [ref=e1647]:
+        - heading "source" [level=4] [ref=e1648]
+        - paragraph [ref=e1649]: None
+        - table [ref=e1650]:
+          - rowgroup [ref=e1651]:
+            - row [ref=e1652]:
+              - rowheader "Identifier:" [ref=e1653]
+              - cell [ref=e1654]:
+                - link "odrl:source" [ref=e1655] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/source
+            - row [ref=e1656]:
+              - rowheader "Domain:" [ref=e1657]
+              - cell [ref=e1658]:
+                - link "odrl:PartyCollection" [ref=e1659] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/PartyCollection
+            - row [ref=e1660]:
+              - columnheader "Range:" [ref=e1661]
+              - cell [ref=e1662]
+      - generic [ref=e1663]:
+        - heading "refinement" [level=4] [ref=e1664]
+        - paragraph [ref=e1665]: None
+        - table [ref=e1666]:
+          - rowgroup [ref=e1667]:
+            - row [ref=e1668]:
+              - rowheader "Identifier:" [ref=e1669]
+              - cell [ref=e1670]:
+                - link "odrl:refinement" [ref=e1671] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/refinement
+            - row [ref=e1672]:
+              - rowheader "Domain:" [ref=e1673]
+              - cell [ref=e1674]:
+                - link "odrl:PartyCollection" [ref=e1675] [cursor=pointer]:
+                  - /url: http://www.w3.org/ns/odrl/2/PartyCollection
+            - row [ref=e1676]:
+              - columnheader "Range:" [ref=e1677]
+              - cell [ref=e1678]
+  - generic [ref=e1679]:
+    - heading "Worked Examples" [level=2] [ref=e1680]
+    - paragraph [ref=e1681]: This section contains some worked examples illustrating how to use [[dprod]] for some common use cases. All these examples are provided as accompanying machine-readable files, from which this part of the specification is automatically generated (hence soem formatting variations).
+    - generic [ref=e1682]:
+      - heading "Sba Pool Rates" [level=3] [ref=e1683]
+      - paragraph
+      - paragraph [ref=e1684]: Rates for SBA Pool that are Mortgage Backed Securities.
+      - paragraph [ref=e1685]: "The data product is provided through 3 ports:"
+      - list [ref=e1686]:
+        - listitem [ref=e1687]: "1st port: providing all sba pool rates through a query to a database"
+        - listitem [ref=e1688]: "2nd port: providing only EMEA rates through an api"
+        - listitem [ref=e1689]: "3rd port: providing only US rates through a Kafka topic"
+      - paragraph
+      - code [ref=e1691]: "{ \"@context\": [ \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", { \"ex\": \"https://y.com/vocabulary/\" } ], \"@id\": \"https://y.com/products/sba-pool-rates\", \"@type\": \"dprod:DataProduct\", \"dct:identifier\": \"sba-pool-rates\", \"dct:title\": \"SBA Pool Rates\", \"dct:description\": \"Rates for SBA Pool that are Mortgage Backed Securities. The data product is provided through 3 ports, one of them proving all SBA pool rates through a query to a database, another port providing EMEA only rates through an api and another one providing US only rates through a Kafka topic\", \"dprod:dataProductOwner\": \"https://www.schema.xxx/person/johnSmith\", \"dprod:dataProductLifecycleStatus\": \"https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume\", \"dprod:outputPort\": [ { \"@id\": \"https://y.com/service/sba-pool-rate-tabular-prod1\", \"@type\": \"dcat:DataService\", \"dct:identifier\": \"sba-pool-rate-tabular-prod1\", \"ex:environment\": \"PROD\", \"dcat:endpointURL\": \"jdbc:oracle:thin@sd656-5656-6745.ldn.organiation.com:43534/PGPERG.WORLD\", \"ex:sql\": \"select * from ...\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/distribution/sba-pool-rate-tabular\", \"@type\": \"dcat:Distribution\", \"dct:identifier\": \"sba-pool-rate-tabular\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/sql\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/dataset/sba-pool-rate\", \"@type\": \"dcat:Dataset\", \"dct:identifier\": \"sba-pool-rate\", \"dct:conformsTo\": \"https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool\" } } }, { \"@id\": \"https://y.com/service/sba-pool-rate-emea-api-prod1\", \"@type\": \"dcat:DataService\", \"dct:identifier\": \"sba-pool-rate-emea-api-prod1\", \"ex:environment\": \"PROD\", \"dcat:endpointURL\": \"https://example.org/mbs/SBA-Pool-location-emea\", \"dct:conformsTo\": \"https://y.com/resources/users.yaml\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/distribution/sba-pool-rate-emea-json1\", \"@type\": \"dcat:Distribution\", \"dct:identifier\": \"sba-pool-rate-emea-json1\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/dataset/sba-pool-rate-emea\", \"@type\": \"dcat:Dataset\", \"dct:identifier\": \"sba-pool-rate-emea\", \"dct:description\": \"SBA pool data that cover EMEA accessed through an api\", \"dct:spatial\": \"https://y.com/country/EMEA\", \"dct:conformsTo\": \"https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool\" } } }, { \"@id\": \"https://y.com/service/sba-pool-rate-json-prod1\", \"@type\": \"dcat:DataService\", \"dct:identifier\": \"sba-pool-rate-json-prod1\", \"dcat:endpointURL\": \"kafka://q1.debt.mbs.dataset.us\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/distribution/sba-pool-rate-json\", \"@type\": \"dcat:Distribution\", \"dct:identifier\": \"sba-pool-rate-json\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dct:conformsTo\": \"http://confluent-registry-y/rates-json-schema.json\", \"ex:schemaCompatibility\": \"backwards compatible\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/dataset/sba-pool-rate-us\", \"@type\": \"dcat:Dataset\", \"dct:identifier\": \"sba-pool-rate-us\", \"dct:spatial\": \"https://y.com/country/US\", \"dct:conformsTo\": \"https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/MortgageBackedSecurities/SBA-Pool\" } } } ] }"
+    - generic [ref=e1692]:
+      - heading "Core Data Product Extensions" [level=3] [ref=e1693]
+      - paragraph
+      - paragraph [ref=e1694]: For real world data products, the core data product details will be part of a wider set of metadata that allows the data and data product to be used effectively.
+      - paragraph [ref=e1695]: Below is an example of extending the DPROD data product, specifically by adding an agreement to a data product.
+      - paragraph [ref=e1696]: In this example, a Data Product Agreement is defined as a subclass of FIBO Agreement.
+      - paragraph [ref=e1697]:
+        - emphasis [ref=e1698]: "Definition of a simple Agreement based on FIBO:"
+      - code [ref=e1700]: "{ \"@context\": [ \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", { \"fibo\": \"http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#\", \"ex\": \"http://example.org/dp#\" } ], \"@graph\": [ { \"@id\": \"ex:isSubjectToAgreement\", \"@type\": \"rdf:Property\", \"rdfs:label\": \"Data Product is Subject To FIBO Agreement\", \"rdfs:domain\": { \"@id\": \"dprod:DataProduct\" }, \"rdfs:range\": { \"@id\": \"ex:DataProductAgreement\" } }, { \"@id\": \"ex:DataProductAgreement\", \"@type\": \"rdfs:Class\", \"rdfs:label\": \"DataProductAgreement\", \"rdfs:subClassOf\": { \"@id\": \"fibo:Agreement\" } } ] }"
+      - paragraph [ref=e1701]: A full definition of agreements for data products is likely to be more complex than a single class and may use other information models or their profiles (such as ODRL Policy) or create dedicated definitions.
+      - paragraph [ref=e1702]: Below is an example of a Data Product with an associated Data Product Agreement with an effective date.
+      - paragraph [ref=e1703]:
+        - emphasis [ref=e1704]: "Using the agreement:"
+      - code [ref=e1706]: "{ \"@context\": [ \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", { \"fibo\": \"http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#\", \"ex\": \"http://example.org/dp#\" } ], \"@graph\": [ { \"@id\": \"https://y.com/data-product/company-sales\", \"@type\": \"dprod:DataProduct\", \"dprod:outputPort\": { \"@id\": \"https://y.com/data-product/company-sales/port/2025-sales\", \"@type\": \"dcat:DataService\", \"rdfs:label\": \"Sales\", \"dcat:endpointURL\": \"https://y.com/data-product/company-sales/port/2025-sales\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/data-product/company-sales/distribution/2025-sales\", \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/data-product/company-sales/dataset/2025-sales\", \"@type\": \"dcat:Dataset\", \"rdfs:label\": \"Sales\", \"dct:conformsTo\": \"https://y.com/schema/Sale\" } } }, \"ex:isSubjectToAgreement\": { \"@id\": \"ex:VVSimpleAgreement\" } }, { \"@id\": \"ex:VVSimpleAgreement\", \"@type\": \"ex:DataProductAgreement\", \"rdfs:label\": \"Very Simple Data Product Agreement\", \"fibo:hasEffectiveDate\": { \"@type\": \"xsd:date\", \"@value\": \"2024-08-31\" } } ] }"
+      - paragraph
+    - generic [ref=e1707]:
+      - heading "Data Schema" [level=3] [ref=e1708]
+      - paragraph
+      - paragraph [ref=e1709]:
+        - text: The Data Product provides to the consumers (dprod:outputDataset) datasets defined based on
+        - link "DCAT" [ref=e1710] [cursor=pointer]:
+          - /url: https://www.w3.org/TR/vocab-dcat-3/
+        - text: . Datasets should be described (
+        - link "dcat:conforms" [ref=e1711] [cursor=pointer]:
+          - /url: https://www.w3.org/TR/vocab-dcat-2/#Property:resource_conforms_to
+        - text: ) with logical models. Logical models describe business entities and their properties (attributes and relationships) with consistent business terms and they are technology independent. Ideally, logical models are based on existing standards eg,
+        - link "FIBO" [ref=e1712] [cursor=pointer]:
+          - /url: https://spec.edmcouncil.org/fibo/ontology
+        - text: ","
+        - link "CDM" [ref=e1713] [cursor=pointer]:
+          - /url: https://www.finos.org/common-domain-model
+        - text: "etc. If a logical model does not exist to describe the dataset, then the dataset publisher can create one, preferably by using SHACL modelling language:"
+      - paragraph [ref=e1714]: "Example of a Dataset conforming to a SHACL Schema:"
+      - code [ref=e1716]: exampleDataset dcat:conforms exampleSchema:DatasetLogicalSchema. exampleSchema:DatasetLogicalSchema a owl:Ontology, dct:Standard.
+      - paragraph [ref=e1717]:
+        - text: Based on
+        - link "SHACL" [ref=e1718] [cursor=pointer]:
+          - /url: https://www.w3.org/TR/shacl/
+        - text: all entities that exist in the dataset are Node Shapes (1). The attributes of the entities are described as Property Shapes with sh:datatype (2) The relationships are also defined as Property Shaped with sh:class the target class of the relationship (3)
+      - code [ref=e1720]: "@prefix dc: <http://purl.org/dc/elements/1.1/> . @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . @prefix sh: <http://www.w3.org/ns/shacl#> . @prefix xsd: <http://www.w3.org/2001/XMLSchema#> . @prefix example: <https://y.com/schema/> . @prefix exampleSchema: <https://y.com/schema/logical/> . # definition of the entity as a Node Shape (1) example:Account a sh:NodeShape ; # human readable name of the entity rdfs:label \"Account\"@en ; # description of the entity dc:description \"An Account is...\" ; # an account has a property shape Account Age. # Definition of the property shape follows (2) sh:property example:Account-AccountAge ; # an account has a property shape Account Branch. # Definition of the property shape follows (3) sh:property example:Account-AccountBranch ; rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema; . # (2) Definition of the Account-AccountAge property shape # describing that an account MUST have exactly one # AccountAge attribute and its datatype is integer example:Account-AccountAge a sh:PropertyShape ; sh:path example:AccountAge ; sh:datatype xsd:integer ; sh:minCount 1 ; sh:maxCount 1 ; rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema ; . # (3) Definition of the Account-AccountBranch property shape # describing than an account must have at least one # Account Branch which is another entity example:Account-AccountBranch a sh:PropertyShape ; sh:path example:AccountBranch ; sh:class example:Branch ; sh:minCount 1 ; rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema ; . # definition of the entity Branch as a Node Shape (1) example:Branch a sh:NodeShape ; rdfs:label \"Branch\"@en ; dc:description \"A Branch is..\" ; rdfs:isDefinedBy exampleSchema:DatasetLogicalSchema ; ."
+      - paragraph
+      - code [ref=e1722]: "{ \"@context\": \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", \"@id\": \"https://y.com/products/equity-trade-xxx\", \"@type\": \"dprod:DataProduct\", \"dct:title\": \"Equity Trade XXX\", \"dct:description\": \"Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade\", \"dprod:outputPort\": { \"@id\": \"https://y.com/service/equity-trade-euronext-paris\", \"@type\": \"dcat:DataService\", \"dcat:endpointURL\": \"abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/distribution/equity-trade-euronext-paris-parquet\", \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/vnd.apache.parquet\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/dataset/equity-trade-euronext-paris\", \"@type\": \"dcat:Dataset\", \"dct:title\": \"Equity Trade Euronext Paris XXX\", \"dct:conformsTo\": \"https://spec.edmcouncil.org/fibo/ontology/BP/Process/FinancialContextAndProcess/SecuritiesTrade\" } } } }"
+    - generic [ref=e1723]:
+      - heading "Data Quality" [level=3] [ref=e1724]
+      - paragraph
+      - list [ref=e1725]:
+        - listitem [ref=e1726]:
+          - link "DQV" [ref=e1727] [cursor=pointer]:
+            - /url: https://www.w3.org/TR/vocab-dqv/
+          - text: is a standard vocabulary to describe data quality and is proposed along with the DCAT vocabulary to measure the quality of datasets.
+        - listitem [ref=e1728]: "It is based on 3 basic entities: Dimensions, the Metrics that belong to its dimension, and the Measurement for each metric."
+        - listitem [ref=e1729]: Data Quality can be computed at different levels, eg. data product, dataset, table, column level etc.
+        - listitem [ref=e1730]: Usually, data quality metrics are measured at a dataset level and can inform more higher-level quality metrics at a data product level.
+      - paragraph
+      - code [ref=e1732]: "{ \"@context\": \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", \"@graph\": [ { \"@id\": \"https://y.com/derived-quality-measurementA\", \"@type\": \"dqv:QualityMeasurement\", \"dqv:value\": 1, \"dqv:computedOn\": { \"@id\": \"https://y.com/products/uk-bonds\", \"@type\": \"dprod:DataProduct\" }, \"dqv:isMeasurementOf\": { \"@id\": \"https://y.com/metric/stale-dataset-count\", \"@type\": \"dqv:Metric\", \"rdfs:label\": \"Number of stale datasets\" } }, { \"@id\": \"https://y.com/quality-measurement-B\", \"@type\": \"dqv:QualityMeasurement\", \"dqv:value\": false, \"dqv:computedOn\": { \"@id\": \"https://y.com/products/uk-bonds/yearlyPrices\", \"@type\": \"dcat:Dataset\" }, \"dqv:isMeasurementOf\": { \"@id\": \"https://y.com/metric/expected-distribution-frequency-achieved\", \"@type\": \"dqv:Metric\", \"rdfs:label\": \"Expected distribution frequency achieved\" } }, { \"@id\": \"https://y.com/products/uk-bonds\", \"@type\": \"dprod:DataProduct\", \"dprod:outputPort\": { \"@id\": \"https://y.com/service/uk-bonds-quality-report\", \"@type\": \"dcat:DataService\", \"dcat:endpointURL\": \"https://y.com/uk-bonds/quality-report\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/distribution/uk-bonds-quality-report\", \"@type\": \"dcat:Distribution\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/dataset/uk-bonds-quality-measurements\", \"@type\": \"dcat:Dataset\", \"dct:conformsTo\": \"http://www.w3.org/ns/dqv#QualityMeasurement\" } } } } ] }"
+    - generic [ref=e1733]:
+      - heading "Equity Trade" [level=3] [ref=e1734]
+      - paragraph
+      - paragraph [ref=e1735]: Example of a data product for Equity Trades.
+      - paragraph [ref=e1736]: "The Equity Trades Data Product provides two datasets to the consumers: one for trades in London Stock Exchange (LSEG) and one in Euronext."
+      - paragraph
+      - code [ref=e1738]: "{ \"@context\": [ \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", { \"ex\": \"https://y.com/vocabulary/\" } ], \"@id\": \"https://y.com/products/equity-trade-xxx\", \"@type\": \"dprod:DataProduct\", \"dct:identifier\": \"equity-trade-xxx\", \"dct:title\": \"Equity Trade XXX\", \"dct:description\": \"Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade\", \"dprod:dataProductOwner\": \"https://www.schema.xxx/person/AnnTaylor\", \"dprod:dataProductLifecycleStatus\": \"https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume\", \"dprod:outputPort\": [ { \"@id\": \"https://y.com/service/equity-trade-euronext-xxx-adls-prod-1\", \"@type\": \"dcat:DataService\", \"dct:identifier\": \"equity-trade-euronext-xxx-tabular-adls-prod\", \"dcat:endpointURL\": \"abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext\", \"dct:description\": \"Details for accessing storage account\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/distribution/equity-trade-euronext-xxx-tabular\", \"@type\": \"dcat:Distribution\", \"dct:identifier\": \"equity-trade-euronext-xxx-tabular\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/vnd.apache.parquet\", \"dct:conformsTo\": \"https://cdm.finos.org/docs/event-model\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/dataset/equity-trade-euronext-paris\", \"@type\": \"dcat:Dataset\", \"dct:identifier\": \"equity-trade-euronext-paris-xxx\", \"dct:title\": \"Equity Trade Euronext Paris XXX\", \"ex:datasetOwner\": { \"@id\": \"https://www.schema.xxx/person/JohnBarks\" }, \"dct:conformsTo\": \"https://cdm.finos.org/docs/event-model\" } } }, { \"@id\": \"https://y.com/service/equity-trade-lseg-xxx-adls-prod-1\", \"@type\": \"dcat:DataService\", \"dct:identifier\": \"equity-trade-lseg-xxx-tabular-adls-prod\", \"dcat:endpointURL\": \"abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-lseg\", \"dct:description\": \"Details for accessing storage account\", \"dprod:isAccessServiceOf\": { \"@id\": \"https://y.com/distribution/equity-trade-lseg-xxx-tabular\", \"@type\": \"dcat:Distribution\", \"dct:identifier\": \"equity-trade-lseg-xxx-tabular\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/vnd.apache.parquet\", \"dct:conformsTo\": \"https://cdm.finos.org/docs/event-model\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/dataset/equity-trade-lseg-xxx\", \"@type\": \"dcat:Dataset\", \"dct:identifier\": \"equity-trade-lseg-xxx\", \"dct:title\": \"Equity Trade LSEG XXX\", \"dct:conformsTo\": \"https://cdm.finos.org/docs/event-model\" } } } ] }"
+    - generic [ref=e1739]:
+      - heading "Data Rights" [level=3] [ref=e1740]
+      - paragraph
+      - paragraph [ref=e1741]:
+        - link "ODRL" [ref=e1742] [cursor=pointer]:
+          - /url: https://www.w3.org/TR/odrl-model/
+        - text: is a W3C standard to describe rights and entitlements. Based on ODRL, data product and dataset publishers can describe policies in a consistent, standard and machine-readable manner. Policies contain permissions and prohibitions on specific actions that are required to be met by stakeholders.
+      - paragraph [ref=e1743]: In addition, policies may be limited by constraints (eg. temporal or geographical constraints) and duties (eg. payments) that may be imposed on the permissions.
+      - paragraph [ref=e1744]: Policies and their permitted or prohibited actions can be described at different levels, eg. a policy can target a data product, a dataset, a data service or even a column.
+      - paragraph [ref=e1745]: "Sophisticated engines should interpret and enforce the ODRL policies at the appropriate level eg.:"
+      - code [ref=e1747]: "@prefix odrl: <http://www.w3.org/ns/odrl/2/> . @prefix examplePolicy: <https://data.org/policy/> . @prefix exampleProduct: <https://data.org/data-product/> . @prefix exampleDataset: <https://data.org/dataset/> . examplePolicy:A odrl:target exampleProduct:ProductA . examplePolicy:B odrl:target exampleDataset:DatasetA1 ."
+      - paragraph [ref=e1748]: "An example of an agreement follows, that describes permission to use all the datasets of the product if the user is working inside EMEA or APAC:"
+      - code [ref=e1750]: "{ \"@context\": [ \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", { \"reg\": \"https://www.region.taxonomy/v/1/\" } ], \"@id\": \"https://data.org/policy/examplePolicyA\", \"@type\": \"odrl:Agreement\", \"odrl:permission\": [ { \"odrl:target\": { \"@id\": \"https://data.org/data-product/equity-trade-xxx\" }, \"odrl:action\": { \"@id\": \"odrl:use\" }, \"odrl:assignee\": { \"@id\": \"https://example.org/DataDepartment/emea-and-apac-staff\", \"@type\": \"odrl:PartyCollection\", \"odrl:refinement\": [ { \"odrl:leftOperand\": { \"@id\": \"odrl:spatial\" }, \"odrl:operator\": { \"@id\": \"odrl:isAnyOf\" }, \"odrl:rightOperand\": [ { \"@id\": \"reg:EMEA\" }, { \"@id\": \"reg:APAC\" } ] } ] } } ] }"
+      - paragraph
+      - code [ref=e1752]: "{ \"@context\": [ \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", { \"reg\": \"https://www.region.taxonomy/v/1/\" } ], \"@id\": \"https://data.org/policy/56456df-dfg-34535345-5545\", \"@type\": \"odrl:Agreement\", \"odrl:permission\": [ { \"odrl:target\": { \"@id\": \"https://data.org/data-product/equity-trade-xxx\" }, \"odrl:assigner\": { \"@id\": \"https://schema.org/person/AdamSmith\" }, \"odrl:assignee\": { \"@id\": \"https://example.org/DataDepartment/emea-and-apac-staff\", \"@type\": \"odrl:PartyCollection\", \"odrl:source\": { \"@id\": \"https://example.org/DataDepartment\" }, \"odrl:refinement\": [ { \"odrl:leftOperand\": { \"@id\": \"odrl:spatial\" }, \"odrl:operator\": { \"@id\": \"odrl:isAnyOf\" }, \"odrl:rightOperand\": [ { \"@id\": \"reg:EMEA\" }, { \"@id\": \"reg:APAC\" } ], \"dct:description\": \"Permission to read all the datasets of the product if the user is working inside EMEA or APAC\" } ] }, \"odrl:action\": { \"@id\": \"odrl:use\" } } ] }"
+    - generic [ref=e1753]:
+      - heading "Observability Ports" [level=3] [ref=e1754]
+      - paragraph
+      - paragraph [ref=e1755]: An Observability Port is a designated interface or endpoint in a system or application specifically used for monitoring and diagnostic purposes. It allows external tools or services to collect and analyze data related to the system's performance, health, and behaviour. By exposing metrics, logs, and traces through this port, administrators and developers can gain insights into the system's state, troubleshoot issues, and ensure it operates efficiently and reliably.
+      - heading "Defining Observability Ports in DPROD" [level=2] [ref=e1756]
+      - paragraph [ref=e1757]: DPROD has a schema-first design. The first thing to do is define a schema for the logging information. It could be a schema based on OpenTelemetry, but this uses RLOG (which is a semantic ontology for logging).
+      - paragraph [ref=e1758]:
+        - text: To find the Observability Port, query the ports to identify the ones that return an
+        - code [ref=e1759]: RLOG:Entry
+        - text: ":"
+      - code [ref=e1761]: outputPort >> isAccessServiceOf >> isDistributionOf >> conformsTo >> rlog:Entry
+      - heading "Example Data Product with Observability Port" [level=2] [ref=e1762]
+      - paragraph [ref=e1763]:
+        - text: "One can see that the example data product has two ports, one with the data and one with the logging. This query will return the URI of the port that returns logging data:"
+        - code [ref=e1764]: https://y.com/uk-bonds/observability-port
+        - text: .
+      - paragraph [ref=e1765]: "Here is an example of a data product with an observability port:"
+      - code [ref=e1767]: "{ \"@context\": \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", \"@graph\": [ { \"@id\": \"https://y.com/data-product/uk-bonds\", \"@type\": \"dprod:DataProduct\", \"dprod:inputPort\": [ { \"@id\": \"https://y.com/data-product/uk-bonds/port/2024-data\", \"@type\": \"dcat:DataService\" } ], \"dprod:outputPort\": [ { \"@id\": \"https://y.com/data-product/uk-bonds/port/2024-observability\", \"@type\": \"dcat:DataService\", \"rdfs:label\": \"Observability Port\", \"dcat:endpointURL\": \"https://y.com/data-product/uk-bonds/port/2024-observability\", \"dprod:isAccessServiceOf\": { \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/data-product/uk-bonds/dataset/2024-observability\", \"@type\": \"dcat:Dataset\", \"dct:conformsTo\": \"https://y.com/schema/ObservabilityLog\" } } }, { \"@id\": \"https://y.com/data-product/uk-bonds/port/2024-data\", \"@type\": \"dcat:DataService\", \"rdfs:label\": \"Data Port\", \"dcat:endpointURL\": \"https://y.com/data-product/uk-bonds/port/2024-data\", \"dprod:isAccessServiceOf\": { \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/data-product/uk-bonds/dataset/2024-data\", \"@type\": \"dcat:Dataset\", \"dct:conformsTo\": \"https://y.com/schema/Data\" } } } ] } ] }"
+      - paragraph [ref=e1768]: "Given that the schema defines the class for an observation, it can be used to find all observability ports on data product like this:"
+      - code [ref=e1770]: "[https://y.com/data-product/uk-bonds/port/2024-observability] >> isAccessServiceOf >> isDistributionOf >> conformsTo >> https://y.com/schema/ObservabilityLog"
+      - paragraph [ref=e1771]: "In Linked Data a SPARQL query would do that:"
+      - code [ref=e1773]: "SELECT ?port WHERE { ?port a dcat:DataService . ?port (dprod:isAccessServiceOf/dprod:isDistributionOf)/dcat:conformsTo rlog:Entry }"
+      - paragraph [ref=e1774]:
+        - text: "This query will return the URI of the port that provides logging data:"
+        - code [ref=e1775]: https://y.com/data-product/uk-bonds/port/2024-observability
+        - text: .
+      - paragraph
+    - generic [ref=e1776]:
+      - heading "Data Lineage" [level=3] [ref=e1777]
+      - paragraph
+      - paragraph [ref=e1778]: "It is important to be able to trace the lineage of data. Within DPROD, this can be done in two ways: at a high level from one data product to another and, if desired, at the more detailed level of the underlying datasets."
+      - 'heading "High Level Lineage: Between Data Products" [level=2] [ref=e1779]'
+      - paragraph [ref=e1780]: Data products have input and output ports, and one data product’s input port will point to another data product’s output port.
+      - paragraph [ref=e1781]: This allows a user to query the lineage. The data products all have URLs as identifiers, and properties all connect to each other, so a query can walk from one data product to the downstream data products that feed it.
+      - paragraph [ref=e1782]: "One can follow the path that leads from one data product to another like this:"
+      - code [ref=e1784]: Data Product >> inputPort >> isAccessServiceOf >> isDistributionOf >> Input Data Product
+      - paragraph [ref=e1785]: "The following example data has three data products that connect to each other through their input and output ports:"
+      - code [ref=e1787]: "{ \"@context\": \"https://www.omg.org/spec/DPROD/dprod-context.jsonld\", \"@graph\": [ { \"@id\": \"https://y.com/data-product/company-finance\", \"@type\": \"dprod:DataProduct\", \"dprod:inputPort\": [ { \"@id\": \"https://y.com/data-product/company-sales/port/2025-sales\", \"@type\": \"dcat:DataService\" }, { \"@id\": \"https://y.com/data-product/company-hr/port/2025-payroll\", \"@type\": \"dcat:DataService\" } ], \"dprod:outputPort\": { \"@id\": \"https://y.com/data-product/company-sales/port/2025-balance-sheet\", \"@type\": \"dcat:DataService\", \"rdfs:label\": \"Balance Sheet\", \"dcat:endpointURL\": \"https://y.com/data-product/company-sales/port/2025-c\", \"dprod:isAccessServiceOf\": { \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/data-product/company-sales/dataset/2025-balance-sheet\", \"@type\": \"dcat:Dataset\", \"dct:conformsTo\": \"https://y.com/schema/BalanceSheet\" } } } }, { \"@id\": \"https://y.com/data-product/company-sales\", \"@type\": \"dprod:DataProduct\", \"dprod:outputPort\": { \"@id\": \"https://y.com/data-product/company-sales/port/2025-sales\", \"@type\": \"dcat:DataService\", \"rdfs:label\": \"Sales\", \"dcat:endpointURL\": \"https://y.com/data-product/company-sales/port/2025-sales\", \"dprod:isAccessServiceOf\": { \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/application/json\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/data-product/company-sales/dataset/2025-sales\", \"@type\": \"dcat:Dataset\", \"rdfs:label\": \"Sales\", \"dct:conformsTo\": \"https://y.com/schema/Sale\" } } } }, { \"@id\": \"https://y.com/data-product/company-hr\", \"@type\": \"dprod:DataProduct\", \"dprod:outputPort\": { \"@id\": \"https://y.com/data-product/company-sales/port/2025-payroll\", \"@type\": \"dcat:DataService\", \"rdfs:label\": \"Payroll\", \"dcat:endpointURL\": \"https://y.com/data-product/company-hr/port/2025-payroll\", \"dprod:isAccessServiceOf\": { \"@type\": \"dcat:Distribution\", \"dct:format\": \"https://www.iana.org/assignments/media-types/text/csv\", \"dprod:isDistributionOf\": { \"@id\": \"https://y.com/data-product/company-sales/dataset/2025-payroll\", \"@type\": \"dcat:Dataset\", \"rdfs:label\": \"Payroll\", \"dct:conformsTo\": \"https://y.com/schema/Payroll\" } } } } ] }"
+      - paragraph [ref=e1788]:
+        - text: Given this example data, starting at the data product
+        - code [ref=e1789]: https://y.com/data-product/company-finance
+        - text: ", one could walk the relationships to find the input data products that feed it:"
+      - code [ref=e1791]: https://y.com/data-product/company-finance >> :inputPort >> :isAccessServiceOf >> :isDistributionOf >> [ https://y.com/data-product/company-sales, https://y.com/data-product/company-hr ]
+      - paragraph [ref=e1792]: "In Linked Data, this would use a query such as:"
+      - code [ref=e1794]: "PREFIX : <https://y.com/data-product/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX dprod: <https://www.omg.org/spec/DPROD/dprod/> SELECT DISTINCT ?input WHERE { :company-finance dprod:inputPort ?inputPort . ?inputPort dprod:isAccessServiceOf/dprod:isDistributionOf/rdfs:label ?input . }"
+      - 'heading "Detailed Level: Between Datasets" [level=3] [ref=e1795]'
+      - paragraph [ref=e1796]: To track lineage at a more granular level, one can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.
+      - code [ref=e1798]: "@prefix dap: <https://data.csiro.au/dap/> . @prefix dcat: <http://www.w3.org/ns/dcat#> . @prefix dcterms: <http://purl.org/dc/terms/> . @prefix prov: <http://www.w3.org/ns/prov#> . @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . @prefix xsd: <http://www.w3.org/2001/XMLSchema#> . dap:atnf-P366-2003SEPT rdf:type dcat:Dataset ; dcterms:bibliographicCitation \"Burgay, M; McLaughlin, M; Kramer, M; Lyne, A; Joshi, B; Pearce, G; D'Amico, N; Possenti, A; Manchester, R; Camilo, F (2017): Parkes observations for project P366 semester 2003SEPT. v1. CSIRO. Data Collection. https://doi.org/10.4225/08/598dc08d07bb7\" ; dcterms:title \"Parkes observations for project P366 semester 2003SEPT\"@en ; dcat:landingPage <https://data.csiro.au/dap/landingpage?pid=csiro:P366-2003SEPT> ; prov:wasGeneratedBy dap:P366 ; . dap:P366 rdf:type prov:Activity ; dcterms:type <http://dbpedia.org/resource/Observation> ; prov:startedAtTime \"2000-11-01\"^^xsd:date ; prov:used dap:Parkes-radio-telescope ; prov:wasInformedBy dap:ATNF ; rdfs:label \"P366 - Parkes multibeam high-latitude pulsar survey\"@en ; rdfs:seeAlso <https://doi.org/10.1111/j.1365-2966.2006.10100.x> ; ."
+      - paragraph [ref=e1799]: "See: https://www.w3.org/TR/vocab-dcat-3/#examples-dataset-provenance."
+      - paragraph
+  - generic [ref=e1800]:
+    - heading "Acknowledgements" [level=2] [ref=e1801]
+    - paragraph [ref=e1802]:
+      - text: The editors gratefully acknowledge the feedback and contributions made by individuals who have participated in
+      - link "EDM Council's CDMC team" [ref=e1803] [cursor=pointer]:
+        - /url: https://edmcouncil.org/frameworks/cdmc/
+      - text: .

@@ -18,6 +18,7 @@ dct:description a owl:AnnotationProperty .
 dct:contributor a owl:AnnotationProperty .
 dct:license a owl:AnnotationProperty .
 dct:modified a owl:AnnotationProperty .
+dct:issued a owl:AnnotationProperty .
 
 dprod:
   a owl:Ontology ;
@@ -28,6 +29,12 @@ dprod:
     "The ontology utilizes the notion of Datasets as defined from DCAT vocabulary."@en ;
   rdfs:comment "DPROD is an OWL ontology designed to facilitate interoperability between data product descriptors."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+  # The publication date of this version of the specification, and the single
+  # source of truth for the date in the generated spec's header. Authored on
+  # purpose: deriving it from the last commit let maintenance changes — a URL
+  # retirement, a typo fix — silently republish the standard (issue #253).
+  # Bump it when a version is issued, in step with owl:versionIRI.
+  dct:issued "2026-06-01"^^xsd:date ;
   dct:modified "2026-08-04"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;

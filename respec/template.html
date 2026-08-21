@@ -14,6 +14,10 @@
       latestVersion: "https://www.omg.org/spec/DPROD/dprod/",
       edDraftURI: "https://ekgf.org/spec/{{ branch }}/",
       specStatus: "base",
+      // Pinned to the branch's last commit by the spec generator. Without it
+      // ReSpec uses the date the page is viewed, since it runs in the reader's
+      // browser (issue #253).
+      publishDate: "{{ publish_date }}",
       editors: [
         {
           name: "Tony Seale, Chair",
