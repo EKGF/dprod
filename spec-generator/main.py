@@ -30,6 +30,29 @@ def detect_branch() -> str:
         return "main"
 
 
+def detect_publish_date(g) -> str:
+    """The publication date of this version, from `dct:issued` on the ontology.
+
+    ReSpec runs in the reader's browser, and with no `publishDate` it defaults
+    to the day the page is *viewed*. Every build therefore claimed to have been
+    published today — including the frozen 1.0 archive, whose header changed
+    date every morning (issue #253).
+
+    The date is read from a triple rather than derived from git history. A
+    commit date would mean any maintenance change — retiring a URL, fixing a
+    typo — silently republished the standard. Issuing a version is a decision,
+    so it is recorded as one.
+    """
+    issued = g.value(URIRef(ontology_namespace_iri), DCTERMS.issued)
+    if issued is None:
+        raise RuntimeError(
+            f"<{ontology_namespace_iri}> has no dct:issued. The spec's "
+            "publication date is authored in dprod-ontology.ttl; add the "
+            "triple rather than letting ReSpec fall back to today's date."
+        )
+    return str(issued)
+
+
 # Define a function to add classes and properties to the context
 def add_to_context(g, node_shape_iri, node_shapes: dict):
     if not is_node_shape(g, node_shape_iri):  # we're at this point only interested in the NodeShapes
@@ -100,7 +123,12 @@ def main():
 
     # generate_class_and_property_pages(classes)
 
-    generate_spec_page({'classes': classes, 'examples': examples, 'branch': detect_branch()})
+    generate_spec_page({
+        'classes': classes,
+        'examples': examples,
+        'branch': detect_branch(),
+        'publish_date': detect_publish_date(g),
+    })
 
     g_ontology = load_dprod_ontology()
     g_shapes = load_dprod_shapes()

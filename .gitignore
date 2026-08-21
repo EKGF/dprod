@@ -71,3 +71,6 @@ code/include
 */__pycache__
 .vercel
 __pycache__/
+
+# Playwright MCP scratch output
+.playwright-mcp/
