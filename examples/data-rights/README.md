@@ -8,25 +8,47 @@ Policies and their permitted or prohibited actions can be described at different
 Sophisticated engines should interpret and enforce the ODRL policies at the appropriate level eg.:
 
 ```turtle
-examplePolicyA odrl:target exampleProduct:ProductA .
-examplePolicyB odrl:target exampleDataset:DatasetA1 .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix examplePolicy: <https://data.org/policy/> .
+@prefix exampleProduct: <https://data.org/data-product/> .
+@prefix exampleDataset: <https://data.org/dataset/> .
+
+examplePolicy:A odrl:target exampleProduct:ProductA .
+examplePolicy:B odrl:target exampleDataset:DatasetA1 .
 ```
 
 An example of an agreement follows, that describes permission to use all the datasets of the product if the user is working inside EMEA or APAC:
 
 ```json
-examplePolicyA odrl:permission
-   {
-    "action": "odrl:use",
-    "assignee": {
-      "@type": "odrl:PartyCollection",
-      "refinement": [
-        {"leftOperand": "odrl:spatial",
-         "operator": "odrl:isAnyOf",
-         "rightOperand": ["reg:EMEA", "reg:APAC"]
-        }
-      ]
+{
+  "@context": [
+    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+    {
+      "reg": "https://www.region.taxonomy/v/1/"
     }
-   }
- ```
+  ],
+  "@id": "https://data.org/policy/examplePolicyA",
+  "@type": "odrl:Agreement",
+  "odrl:permission": [
+    {
+      "odrl:target": { "@id": "https://data.org/data-product/equity-trade-xxx" },
+      "odrl:action": { "@id": "odrl:use" },
+      "odrl:assignee": {
+        "@id": "https://example.org/DataDepartment/emea-and-apac-staff",
+        "@type": "odrl:PartyCollection",
+        "odrl:refinement": [
+          {
+            "odrl:leftOperand": { "@id": "odrl:spatial" },
+            "odrl:operator": { "@id": "odrl:isAnyOf" },
+            "odrl:rightOperand": [
+              { "@id": "reg:EMEA" },
+              { "@id": "reg:APAC" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+```
 

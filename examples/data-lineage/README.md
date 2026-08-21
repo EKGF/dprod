@@ -26,72 +26,72 @@ connect to each other through their input and output ports:
 ```json
 {
   "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
-  "dataProducts": [
+  "@graph": [
     {
-      "id": "https://y.com/data-product/company-finance",
-      "type": "DataProduct",
-      "inputPort": [
+      "@id": "https://y.com/data-product/company-finance",
+      "@type": "dprod:DataProduct",
+      "dprod:inputPort": [
         {
-          "id": "https://y.com/data-product/company-sales/port/2025-sales",
-          "type": "DataService"
+          "@id": "https://y.com/data-product/company-sales/port/2025-sales",
+          "@type": "dcat:DataService"
         },
         {
-          "id": "https://y.com/data-product/company-hr/port/2025-payroll",
-          "type": "DataService"
+          "@id": "https://y.com/data-product/company-hr/port/2025-payroll",
+          "@type": "dcat:DataService"
         }
       ],
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-balance-sheet",
-        "type": "DataService",
-        "label": "Balance Sheet",
-        "endpointURL": "https://y.com/data-product/company-sales/port/2025-c",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/application/json",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-balance-sheet",
-            "conformsTo": "https://y.com/schema/BalanceSheet"
+      "dprod:outputPort": {
+        "@id": "https://y.com/data-product/company-sales/port/2025-balance-sheet",
+        "@type": "dcat:DataService",
+        "rdfs:label": "Balance Sheet",
+        "dcat:endpointURL": "https://y.com/data-product/company-sales/port/2025-c",
+        "dprod:isAccessServiceOf": {
+          "@type": "dcat:Distribution",
+          "dct:format": "https://www.iana.org/assignments/media-types/application/json",
+          "dprod:isDistributionOf": {
+            "@id": "https://y.com/data-product/company-sales/dataset/2025-balance-sheet",
+            "@type": "dcat:Dataset",
+            "dct:conformsTo": "https://y.com/schema/BalanceSheet"
           }
         }
       }
     },
     {
-      "id": "https://y.com/data-product/company-sales",
-      "type": "DataProduct",
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-sales",
-        "type": "DataService",
-        "label": "Sales",
-        "endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/application/json",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "label": "Sales",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-sales",
-            "conformsTo": "https://y.com/schema/Sale"
+      "@id": "https://y.com/data-product/company-sales",
+      "@type": "dprod:DataProduct",
+      "dprod:outputPort": {
+        "@id": "https://y.com/data-product/company-sales/port/2025-sales",
+        "@type": "dcat:DataService",
+        "rdfs:label": "Sales",
+        "dcat:endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
+        "dprod:isAccessServiceOf": {
+          "@type": "dcat:Distribution",
+          "dct:format": "https://www.iana.org/assignments/media-types/application/json",
+          "dprod:isDistributionOf": {
+            "@id": "https://y.com/data-product/company-sales/dataset/2025-sales",
+            "@type": "dcat:Dataset",
+            "rdfs:label": "Sales",
+            "dct:conformsTo": "https://y.com/schema/Sale"
           }
         }
       }
     },
     {
-      "id": "https://y.com/data-product/company-hr",
-      "type": "DataProduct",
-      "outputPort": {
-        "id": "https://y.com/data-product/company-sales/port/2025-payroll",
-        "type": "DataService",
-        "label": "Payroll",
-        "endpointURL": "https://y.com/data-product/company-hr/port/2025-payroll",
-        "isAccessServiceOf": {
-          "type": "Distribution",
-          "format": "https://www.iana.org/assignments/media-types/text/csv",
-          "isDistributionOf": {
-            "type": "Dataset",
-            "label": "Payroll",
-            "id": "https://y.com/data-product/company-sales/dataset/2025-payroll",
-            "conformsTo": "https://y.com/schema/Payroll"
+      "@id": "https://y.com/data-product/company-hr",
+      "@type": "dprod:DataProduct",
+      "dprod:outputPort": {
+        "@id": "https://y.com/data-product/company-sales/port/2025-payroll",
+        "@type": "dcat:DataService",
+        "rdfs:label": "Payroll",
+        "dcat:endpointURL": "https://y.com/data-product/company-hr/port/2025-payroll",
+        "dprod:isAccessServiceOf": {
+          "@type": "dcat:Distribution",
+          "dct:format": "https://www.iana.org/assignments/media-types/text/csv",
+          "dprod:isDistributionOf": {
+            "@id": "https://y.com/data-product/company-sales/dataset/2025-payroll",
+            "@type": "dcat:Dataset",
+            "rdfs:label": "Payroll",
+            "dct:conformsTo": "https://y.com/schema/Payroll"
           }
         }
       }
@@ -135,6 +135,14 @@ To track lineage at a more granular level,
 one can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.
 
 ```turtle
+@prefix dap:     <https://data.csiro.au/dap/> .
+@prefix dcat:    <http://www.w3.org/ns/dcat#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
 dap:atnf-P366-2003SEPT
   rdf:type dcat:Dataset ;
   dcterms:bibliographicCitation "Burgay, M; McLaughlin, M; Kramer, M; Lyne, A; Joshi, B; Pearce, G; D'Amico, N; Possenti, A; Manchester, R; Camilo, F (2017): Parkes observations for project P366 semester 2003SEPT. v1. CSIRO. Data Collection. https://doi.org/10.4225/08/598dc08d07bb7" ;

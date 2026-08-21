@@ -35,13 +35,15 @@ jobs:
         with:
           python-version: '3.13'
           cache: 'pip' # caching pip dependencies
-      - name: Enforce repository policy
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      # Runs after the install because the example validation needs rdflib and
+      # pyld. Before issue #246 this step ran first and could only cover tests
+      # with no third-party imports, which is part of why nothing ever parsed
+      # the JSON-LD examples.
+      - name: Enforce repository policy and validate examples
         run: python -m unittest discover -s tests
-      - name: Install dependencies and run generator
-        run: |
-          echo "Installing dependencies..."
-          pip install -r requirements.txt
-          echo "Running contracts tests..."
-          python -m unittest discover -s dprod-contracts/tests
-          echo "Running spec generator..."
-          python spec-generator/main.py
+      - name: Run contracts tests
+        run: python -m unittest discover -s dprod-contracts/tests
+      - name: Run spec generator
+        run: python spec-generator/main.py

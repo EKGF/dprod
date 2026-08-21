@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import inspect
+import json
 import os
 import re
 
@@ -228,11 +229,23 @@ def load_examples(parent_folder, white_list=None, black_list=None):
                     readme_content = readme_file.read()
                     xmpl.text = convert_markdown_to_html(replace_backticks(readme_content))
 
-            # Read the contents of example.json
-            example_json_path = os.path.join(child_folder_path, 'example.json')
-            if os.path.isfile(example_json_path):
+            # Read the example payload. The files were renamed to .jsonld in
+            # PR #108 (issue #89) but this lookup was not, so from then until
+            # issue #246 no example payload reached the spec at all. Parse it
+            # rather than slurping it: a malformed example must fail the build.
+            for example_file_name in ('example.jsonld', 'example.json'):
+                example_json_path = os.path.join(child_folder_path, example_file_name)
+                if not os.path.isfile(example_json_path):
+                    continue
                 with open(example_json_path, 'r', encoding='utf-8') as json_file:
                     print(f"Processing {example_json_path}")
                     example_json_content = json_file.read()
-                    xmpl.json = example_json_content
+                try:
+                    json.loads(example_json_content)
+                except json.JSONDecodeError as error:
+                    raise ValueError(
+                        f"{example_json_path} is not valid JSON: {error}"
+                    ) from error
+                xmpl.json = example_json_content
+                break
     return examples
