@@ -38,7 +38,8 @@ ex:scheme
 
 # --- Purpose operand ---
 odrl:purpose
-  dprod:path odrl:purpose ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty odrl:purpose ;
 .
 
 # --- Actions ---
@@ -103,7 +104,8 @@ ex:derivationType
   rdfs:isDefinedBy ex: ;
   rdfs:label "derivation type" ;
   dct:description "Type of derivation being performed."@en ;
-  dprod:path ex:derivationType ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:derivationType ;
 .
 
 ex:recipientType
@@ -111,7 +113,8 @@ ex:recipientType
   rdfs:isDefinedBy ex: ;
   rdfs:label "recipient type" ;
   dct:description "Type of data recipient."@en ;
-  dprod:path (odrl:assignee ex:recipientType) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:recipientType ;
 .
 
 ex:processingMode
@@ -119,7 +122,8 @@ ex:processingMode
   rdfs:isDefinedBy ex: ;
   rdfs:label "processing mode" ;
   dct:description "How data is processed."@en ;
-  dprod:path ex:processingMode ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:processingMode ;
 .
 
 ex:timeliness
@@ -127,7 +131,8 @@ ex:timeliness
   rdfs:isDefinedBy ex: ;
   rdfs:label "timeliness" ;
   dct:description "Required data freshness category."@en ;
-  dprod:path (odrl:target ex:timeliness) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:timeliness ;
 .
 
 ex:retentionPeriod
@@ -135,7 +140,8 @@ ex:retentionPeriod
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
   dct:description "Maximum time data may be retained."@en ;
-  dprod:path (odrl:target ex:retentionPeriod) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:retentionPeriod ;
 .
 
 ex:environment
@@ -143,7 +149,8 @@ ex:environment
   rdfs:isDefinedBy ex: ;
   rdfs:label "environment" ;
   dct:description "Execution environment."@en ;
-  dprod:path ex:environment ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:environment ;
 .
 
 # --- Concept values ---

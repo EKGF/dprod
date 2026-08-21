@@ -170,7 +170,7 @@ ODRL 2.2 Core (W3C Standard)
          v
 DPROD Core (dprod:)
   State, deadline, recurrence, DataOffer, DataContract,
-  path, RuntimeReference, not
+  EvaluationContext, OperandSource, operandSource, operandProperty, not
          |
          | domain profiles define (ex:)
          v
@@ -199,7 +199,7 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 | Agreement evaluation | Assignee duties only | Both assigner and assignee duties (bilateral) |
 | Conflict resolution | Configurable | Fixed: Prohibition > Permission |
 | Evaluation order | Undefined | Deterministic left-to-right |
-| Operand resolution | Implicit | Explicit `dprod:path` property paths (SHACL-Core predicate + sequence subset) |
+| Operand resolution | Implicit | One-hop source + property bindings over normalized inputs |
 | Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |
 | Contract types | Generic Offer/Agreement | `DataOffer` (Offer) / `DataContract` (Agreement) |
 | Logical negation | Not supported | `dprod:not` on LogicalConstraint |

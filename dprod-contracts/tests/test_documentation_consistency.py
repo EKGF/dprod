@@ -9,6 +9,7 @@ CONTRACTS_DIR = Path(__file__).resolve().parents[1]
 DOCS_DIR = CONTRACTS_DIR / "docs"
 
 DCT = Namespace("http://purl.org/dc/terms/")
+DPROD = Namespace("https://www.omg.org/spec/DPROD/dprod/")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 SH = Namespace("http://www.w3.org/ns/shacl#")
 
@@ -69,6 +70,7 @@ class DocumentationConsistencyTest(unittest.TestCase):
             "grantorDuties:",
             "granteeDuties:",
             "violations:",
+            "inputProvenance:",
             "explanation:",
         )
 
@@ -77,7 +79,10 @@ class DocumentationConsistencyTest(unittest.TestCase):
                 self.assertIn(field, readme)
         self.assertNotIn("assignerDuties:", readme)
         self.assertNotIn("assigneeDuties:", readme)
-        self.assertIn("Eval : Request × Set<Policy> × Σ → Result", readme)
+        self.assertIn(
+            "Eval : Request × Set<Policy> × Σ × WorldSnapshot → Success(Result) | Failure(EvaluationError)",
+            readme,
+        )
         self.assertNotIn("Decision x DutySet", readme)
 
     def test_deleted_select_extension_is_not_advertised(self) -> None:
@@ -87,20 +92,27 @@ class DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("DataContract, path, select", readme)
         self.assertNotIn("path, select, RuntimeReference", overview)
 
-    def test_path_examples_use_domain_namespace_terms(self) -> None:
-        path_comment = str(
+    def test_operand_binding_documentation_rejects_traversal(self) -> None:
+        self.assertFalse(any(self.ontology.triples((DPROD.path, None, None))))
+
+        source_comment = str(
             self.ontology.value(
-                URIRef("https://www.omg.org/spec/DPROD/dprod/path"),
+                DPROD.operandSource,
+                URIRef("http://www.w3.org/2000/01/rdf-schema#comment"),
+            )
+        )
+        property_comment = str(
+            self.ontology.value(
+                DPROD.operandProperty,
                 URIRef("http://www.w3.org/2000/01/rdf-schema#comment"),
             )
         )
 
-        for stale_term in ("dprod:environment", "dprod:timeliness", "dprod:role"):
-            with self.subTest(stale_term=stale_term):
-                self.assertNotIn(stale_term, path_comment)
-        for domain_term in ("ex:environment", "ex:timeliness", "ex:role"):
-            with self.subTest(domain_term=domain_term):
-                self.assertIn(domain_term, path_comment)
+        for source in ("requestSource", "stateSource", "contextSource"):
+            with self.subTest(source=source):
+                self.assertIn(source, source_comment)
+        self.assertIn("RDF lists", property_comment)
+        self.assertIn("multi-step traversal", property_comment)
 
     def test_profile_title_and_modified_date_match_the_contracts_ontology(self) -> None:
         self.assertEqual(

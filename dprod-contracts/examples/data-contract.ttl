@@ -63,7 +63,8 @@ ex:recipientType
   rdfs:isDefinedBy ex: ;
   rdfs:label "recipient type" ;
   dct:description "Type of data recipient."@en ;
-  dprod:path (odrl:assignee ex:recipientType) ;
+  dprod:operandSource dprod:requestSource ;
+  dprod:operandProperty ex:recipientType ;
 .
 
 # --- Concept values ---

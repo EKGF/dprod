@@ -3,7 +3,7 @@ title: "DPROD Contracts Formal Semantics"
 subtitle: "Deterministic Policy Evaluation for Data Governance"
 version: "0.7"
 status: "Draft"
-date: 2026-02-03
+date: 2026-08-20
 abstract: |
   DPROD Contracts is a proper ODRL 2.2 profile with deterministic, total evaluation
   semantics and bilateral agreement support. This document specifies the formal
@@ -25,16 +25,17 @@ DPROD Contracts provides:
 - Bilateral agreement evaluation (grantor and grantee duties)
 - Total evaluation functions (always terminate with defined result)
 - Clear separation of Condition (pre-requisite) from Duty (obligation)
-- Property-path-based operand resolution with SPARQL-style traversal semantics
+- One-hop operand resolution over normalized request, state, and context graphs
 
 ### 1.1 Scope and Runtime Boundary
 
 This specification defines **evaluation semantics** — the contract a conformant engine
-must satisfy. The `State` parameter in `Eval` is an opaque input provided by the
-runtime environment. DPROD Contracts specifies what decision and state transitions *should*
-result from evaluation, but does not define:
+must satisfy. The duty `State` and immutable `WorldSnapshot` parameters in `Eval`
+are opaque inputs provided by the runtime environment. DPROD Contracts specifies
+what outcome and state transitions *should* result from evaluation, but does not define:
 
 - How `State` is persisted or managed between evaluations
+- How the runtime obtains facts before freezing them into `WorldSnapshot`
 - Event-driven triggers for duty activation or deadline enforcement
 - Protocols for requirement fulfillment claims or re-evaluation
 
@@ -186,15 +187,15 @@ Condition ::= AtomicConstraint(leftOperand: LeftOperand,
             | Not(operand: Condition)
 
 ComparisonOperator ::= eq | neq | lt | lte | gt | gte | isAnyOf | isNoneOf
-
-RuntimeRef ::= currentAgent | currentDateTime
 ```
 
 **Notes**:
 
-- `leftOperand` is drawn from profile-defined operands with `dprod:path`, or dual-typed `RuntimeReference` operands (e.g., `currentDateTime`)
-- Dynamic value resolution on the left side uses `LeftOperand` with `dprod:path`, or dual-typed `RuntimeReference` operands resolved via `resolveRuntime`
-- Right operands are literal values. Identity binding via runtime references in right-operand position is deferred to RL2 (`rl2:rightOperandRef`)
+- Every `leftOperand` declares exactly one `dprod:operandSource` and one IRI-valued `dprod:operandProperty`.
+- The source is one of `dprod:requestSource`, `dprod:stateSource`, or `dprod:contextSource`; extension sources are not permitted.
+- The evaluator performs exactly one property lookup on the selected normalized source node. RDF-list paths and multi-step traversal are not part of the grammar.
+- `dprod:currentAgent` binds `contextSource` to `dprod:agent`. Standard ODRL `odrl:dateTime` binds `contextSource` to `dprod:clock`; DPROD does not define a duplicate clock operand.
+- Right operands are literal values. ODRL `odrl:rightOperandReference` identifies an externally dereferenced right operand; DPROD source/property bindings are left-operand metadata and are not permitted in right-operand position.
 
 ### 3.4 Policies
 
@@ -215,14 +216,24 @@ Policy ::= Set(target: Asset?, clauses: Norm+, condition: Condition?)
 ### 3.5 Requests
 
 ```
-Request ::= Request(agent: Agent, action: Action, asset: Asset, context: Context)
+Request = {
+    node    : Node,
+    graph   : FiniteGraph,
+    agent   : Agent,
+    action  : Action,
+    asset   : Asset,
+    context : Context
+}
 
 Context ::= Map<String, Value>
 ```
 
 The formal `Request` evaluation input is not an RDF `odrl:Request` policy. It is an abstract runtime authorization query evaluated against supported policy types. Until DPROD defines a transition model connecting `odrl:Offer`, `odrl:Request`, and `odrl:Agreement`, an RDF `odrl:Request` is outside the supported policy grammar and MUST be rejected by SHACL validation.
 
-**Note**: Context properties correspond to the leaf of `dprod:path` declarations (e.g., `dprod:path odrl:purpose` resolves `?request odrl:purpose ?value`).
+**Normalization requirement**: `Request.graph` MUST materialize every
+policy-relevant request fact directly on `Request.node`. For example, the
+requested asset's timeliness is copied to `(Request.node, ex:timeliness, value)`
+before evaluation. Policies do not traverse through `odrl:target` or party nodes.
 
 ---
 
@@ -267,31 +278,67 @@ State ::= Pending | Active | Fulfilled | Violated
     (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt[d ↦ t], Σ.performed)
 ```
 
-### 4.2 Environment
+### 4.2 Evaluation Environment
 
 ```
+WorldSnapshot = {
+    node       : Node,
+    graph      : FiniteGraph,
+    provenance : Provenance
+}
+
 Env = {
-    agent   : Agent,          // Canonical root: agent
-    action  : Action,
-    asset   : Asset,          // Canonical root: asset
-    context : Context,        // Canonical root: context
-    Σ       : Σ
+    node     : EvaluationContext,
+    graph    : FiniteGraph,
+    request  : Request,
+    world    : WorldSnapshot,
+    Σ        : Σ
 }
 ```
 
-The evaluation context is the entry point for `dprod:path` property path traversal (see §6.3).
-
-**Environment Construction**: Given a Request `R = (a, x, s, ctx)` and state Σ:
+`Env.node`, `Env.request.node`, and `Env.world.node` are the three closed operand
+sources. `Env.graph` is the union of their finite graphs and these context bindings:
+`Env.request.graph`, and `Env.world.graph`:
 
 ```
-buildEnv(R, Σ) = {
-    agent   = R.agent,
-    action  = R.action,
-    asset   = R.asset,
-    context = R.context,
+(Env.node, dprod:request, Env.request.node)
+(Env.node, dprod:state,   Env.world.node)
+(Env.node, dprod:agent,   Env.request.agent)
+(Env.node, dprod:clock,   Env.Σ.clock)
+```
+
+`WorldSnapshot` is immutable for the duration of evaluation. Its provenance and
+the provenance of `Env.node` MUST be retained with the result so the input can be
+reconstructed for audit. Operand resolution MUST NOT read a live global graph,
+perform a network request, or switch snapshots during evaluation.
+
+Like the request, the world snapshot is normalized: every state fact exposed by
+a supported operand is a direct `(WorldSnapshot.node, property, value)` triple.
+Normalization is part of environment construction and fails before policy
+evaluation if a required source fact cannot be produced unambiguously.
+
+**Environment Construction**: Given a Request `R = (a, x, s, ctx)`, duty state Σ,
+and world snapshot W:
+
+```
+buildEnv(R, Σ, W) = {
+    let E = freshNode()
+    node    = E,
+    graph   = R.graph ∪ W.graph ∪ {
+                  (E, dprod:request, R.node),
+                  (E, dprod:state, W.node),
+                  (E, dprod:agent, R.agent),
+                  (E, dprod:clock, Σ.clock)
+              },
+    request = R,
+    world   = W,
     Σ       = Σ
 }
 ```
+
+For policy matching notation below, `Env.agent`, `Env.action`, and `Env.asset`
+are projections of `Env.request`; they are not additional operand-resolution
+roots.
 
 ### 4.3 Decision
 
@@ -307,6 +354,7 @@ Result = {
     grantorDuties : Set<Duty>,    // Duties on the grantor (data provider)
     granteeDuties : Set<Duty>,    // Duties on the grantee (data consumer)
     violations    : Set<Duty>,
+    inputProvenance : Provenance, // EvaluationContext and WorldSnapshot provenance
     explanation   : Explanation
 }
 ```
@@ -480,7 +528,7 @@ Each instance follows the standard lifecycle (§5.1–§5.2) independently:
 ### 6.1 Denotational Semantics
 
 ```
-⟦_⟧ : Condition × Env → Boolean
+⟦_⟧ : Condition × Env → Boolean ∪ {ResolutionError}
 ```
 
 **Atomic constraints**:
@@ -488,9 +536,15 @@ Each instance follows the standard lifecycle (§5.1–§5.2) independently:
 ```
 ⟦AtomicConstraint(left, op, right)⟧(Env) =
     let leftVal = resolve(left, Env)
-    in if leftVal = ⊥ then false
-       else apply(op, leftVal, right)
+    in case leftVal of
+         ResolutionError(e) → ResolutionError(e)
+         Value(v)           → apply(op, v, right)
 ```
+
+A resolution error aborts policy evaluation and produces no authorization
+decision. Missing or invalid runtime data must not be converted to `false`,
+because that would confuse an evaluator-capability failure with an unsatisfied
+business condition.
 
 **Logical connectives** (short-circuit evaluation, left-to-right):
 
@@ -506,114 +560,82 @@ Each instance follows the standard lifecycle (§5.1–§5.2) independently:
 
 The condition semantics rely on several helper functions. For a verified kernel, these must be precisely specified.
 
-#### resolve : LeftOperand × Env → Value
+#### resolve : LeftOperand × Env → Value ∪ {ResolutionError}
 
-The function `resolve(leftOperand, Env)` maps a left operand to a value.
-
-**Resolution Precedence**: Operands are resolved in the following order:
-
-1. **Property-path-based resolution** — if `op.path` is defined, use `traverse()`
-2. **Runtime reference** — if `op ∈ RuntimeRef`, use `resolveRuntime()`
-3. **Fallback** — return `⊥`
+The function `resolve(leftOperand, Env)` selects one normalized source node and
+reads one property from it. There is no traversal language, second resolver, or
+fallback branch.
 
 ```
-resolve : LeftOperand × Env → Value ∪ {⊥}
+resolve : LeftOperand × Env → Value ∪ {ResolutionError}
 
 resolve(op, Env) =
-    case op of
-        -- Profile-declared operands with dprod:path
-        _ | op.path ≠ ⊥ →
-            traverse(op.path, Env.request)
-
-        -- Dual-typed operands (LeftOperand ∩ RuntimeReference)
-        _ | op ∈ RuntimeRef →
-            resolveRuntime(op, Env)
-
-        -- No path and not a runtime reference
-        _ → ⊥
+    if op.operandSource = ⊥ then
+        ResolutionError(MissingSource, op)
+    else if op.operandProperty = ⊥ then
+        ResolutionError(MissingProperty, op)
+    else
+        let node = sourceNode(op.operandSource, Env)
+        in case node of
+             ResolutionError(e) → ResolutionError(e, op)
+             Node(n)            → lookupOne(op.operandProperty, n, Env.graph, op.range)
 ```
 
-Where:
-* `op.path` — property path declared on the operand via `dprod:path`
-* `op ∈ RuntimeRef` — the operand is also typed as `dprod:RuntimeReference` (e.g., `currentDateTime`); resolution delegates to `resolveRuntime` (§6.2)
-* `⊥` indicates undefined (condition evaluates to `false` when encountered — see §6.1)
-
-**Architectural Principle**: All contextual data access MUST go through declared `odrl:LeftOperand` instances with explicit `dprod:path`, or through dual-typed `RuntimeReference` operands resolved via `resolveRuntime`. This ensures:
+**Architectural Principle**: All contextual data access MUST go through declared
+`odrl:LeftOperand` instances with exactly one source/property binding. This ensures:
 - Type safety (operands can declare expected ranges via `rdfs:range`)
 - Validation (SHACL can verify operand usage at authoring time)
 - Mechanization (clear mapping to formal verification targets)
-- Auditability (all data access points are declared in the profile)
+- Auditability (all data access points and snapshots are declared and retained)
+- Bounded evaluation (one indexed graph lookup per operand)
 
-Profiles define domain-specific left operands with property paths:
-* `purpose` → `dprod:path odrl:purpose`
-* `classification` → `dprod:path (odrl:target ex:classification)`
-* `recipientType` → `dprod:path (odrl:assignee ex:recipientType)`
-* `environment` → `dprod:path ex:environment`
-* `timeliness` → `dprod:path (odrl:target ex:timeliness)`
+Profiles define domain-specific bindings:
+* `purpose` → `(requestSource, odrl:purpose)`
+* `classification` → `(requestSource, ex:classification)`
+* `recipientType` → `(requestSource, ex:recipientType)`
+* `marketOpen` → `(stateSource, ex:marketOpen)`
+* `currentAgent` → `(contextSource, dprod:agent)`
+* `odrl:dateTime` → `(contextSource, dprod:clock)`
 
-#### traverse : PropertyPath × Node → Value
-
-The function `traverse(path, node)` follows a SPARQL-style property path to retrieve a value. This is the **primary mechanism for resolving profile-declared operands** via `dprod:path`.
-
-**Property Path Types** (normative):
-
-| Type | Syntax | Meaning |
-|------|--------|---------|
-| Simple path | Single IRI | One-step: `?request <IRI> ?value` |
-| Sequence path | RDF list of IRIs | Multi-step: `?request <IRI₁> ?mid . ?mid <IRI₂> ?value` |
-
-**Examples**:
-
-| Operand | `dprod:path` | Traversal |
-|---------|-------------|-----------|
-| `ex:environment` | `ex:environment` | `?request ex:environment ?value` |
-| `odrl:purpose` | `odrl:purpose` | `?request odrl:purpose ?value` |
-| `ex:timeliness` | `(odrl:target ex:timeliness)` | `?request odrl:target ?asset . ?asset ex:timeliness ?value` |
-| `ex:recipientType` | `(odrl:assignee ex:recipientType)` | `?request odrl:assignee ?agent . ?agent ex:recipientType ?value` |
+#### sourceNode : OperandSource × Env → Node ∪ {ResolutionError}
 
 ```
-traverse : PropertyPath × Node → Value ∪ {⊥}
+sourceNode(source, Env) =
+    case source of
+        requestSource → Env.request.node
+        stateSource   → Env.world.node
+        contextSource → Env.node
+        _             → ResolutionError(UnknownSource, source)
+```
 
-traverse(path, node) =
-    case path of
-        IRI →
-            -- Simple path: single property lookup
-            if ∃v. (node, IRI, v) ∈ Graph then v else ⊥
+The source enumeration is closed. Merely typing another resource as
+`dprod:OperandSource` does not make it valid.
 
-        (IRI₁ IRI₂ ... IRIₙ) →
-            -- Sequence path: fold through properties
-            foldl(step, node, [IRI₁, IRI₂, ..., IRIₙ])
+#### lookupOne : IRI × Node × FiniteGraph × Type? → Value ∪ {ResolutionError}
 
-step(node, prop) =
-    case node of
-        ⊥ → ⊥
-        _ → if ∃v. (node, prop, v) ∈ Graph then v else ⊥
+```
+lookupOne(property, node, graph, expectedType) =
+    if property is not an IRI then
+        ResolutionError(InvalidProperty, property)
+    else
+        let values = { v | (node, property, v) ∈ graph }
+        in case values of
+             ∅   → ResolutionError(MissingValue, node, property)
+             {v} → if expectedType ≠ ⊥ ∧ ¬conforms(v, expectedType)
+                   then ResolutionError(TypeMismatch, property, v)
+                   else v
+             _   → ResolutionError(MultipleValues, node, property)
 ```
 
 **Safety Properties** (normative):
 
-1. **IRI-only**: Path elements MUST be IRIs (not strings, not blank nodes)
-2. **Bounded depth**: Sequence paths have bounded length (recommended ≤ 5 steps)
-3. **No cycles**: Path traversal is acyclic (each step navigates to a new node)
-4. **Fail-closed**: Return `⊥` for any unresolvable path to prevent information leakage
-5. **Deterministic**: Each step resolves to exactly one value or `⊥`
-
-#### resolveRuntime : RuntimeRef × Env → Value
-
-Runtime references resolve to values at evaluation time. These are used by `resolve()` for dual-typed left operands (§6.2) — operands typed as both `odrl:LeftOperand` and `dprod:RuntimeReference` (e.g., `currentDateTime`).
-
-**Normalisation.** `odrl:dateTime` is the upstream ODRL operand for the evaluation timestamp. DPROD treats it as an alias of `currentDateTime`: before invoking `resolveRuntime`, evaluators MUST rewrite `odrl:dateTime` to `currentDateTime` so the case-match captures both names. The alias is asserted via `rdfs:seeAlso` in the ontology, not `owl:sameAs`, so this canonicalisation is an evaluator rule rather than an OWL entailment.
-
-```
-resolveRuntime : RuntimeRef × Env → Value ∪ {⊥}
-
-resolveRuntime(ref, Env) =
-    let ref' = if ref = odrl:dateTime then currentDateTime else ref
-    in case ref' of
-        currentAgent    → Env.agent
-        currentDateTime → Env.Σ.clock
-        _               → ⊥  -- Unknown runtime reference
-```
+1. **Closed sources**: Only request, state, and context sources are valid.
+2. **IRI-only property**: `operandProperty` MUST be one IRI, never an RDF list.
+3. **One hop**: Resolution performs one direct triple lookup and no traversal.
+4. **Normalized inputs**: Nested request or state structure is flattened before evaluation.
+5. **No external reads**: Lookup is confined to the immutable evaluation graph.
+6. **Fail fast**: Missing, multiple, ill-typed, or otherwise unresolvable values are `ResolutionError` values; they never become `false`.
+7. **Deterministic**: The same normalized graph and binding produce the same value or the same error.
 
 #### apply : ComparisonOperator × Value × Value → Boolean
 
@@ -643,14 +665,18 @@ apply(op, left, right) =
 ### 7.1 Evaluation Function Signature
 
 ```
-Eval : Request × Set<Policy> × Σ → Result
+EvaluationOutcome ::= Success(Result) | Failure(EvaluationError)
+
+Eval : Request × Set<Policy> × Σ × WorldSnapshot → EvaluationOutcome
 ```
 
 ### 7.2 Evaluation Algorithm
 
 ```
-Eval(request, policies, Σ) =
-    let Env = buildEnv(request, Σ)
+Eval(request, policies, Σ, world) =
+    let Env = buildEnv(request, Σ, world)
+
+    // Any ResolutionError below immediately returns Failure(error).
 
     // Step 0: Find applicable policies
     let applicable = { p ∈ policies | PolicyApplicable(p, Env) }
@@ -765,9 +791,9 @@ No specificity ordering within norm types. All matching norms contribute.
 **Theorem**: For all well-formed inputs, `Eval` terminates with a defined result.
 
 ```
-∀ request, policies, Σ.
-    WellFormed(request) ∧ WellFormed(policies) ∧ WellFormed(Σ)
-    ⟹ ∃ result. Eval(request, policies, Σ) = result ∧ result ≠ ⊥
+∀ request, policies, Σ, world.
+    WellFormed(request) ∧ WellFormed(policies) ∧ WellFormed(Σ) ∧ WellFormed(world)
+    ⟹ ∃ outcome. Eval(request, policies, Σ, world) = outcome ∧ outcome ≠ ⊥
 ```
 
 ### 9.2 Determinism
@@ -775,9 +801,10 @@ No specificity ordering within norm types. All matching norms contribute.
 **Theorem**: Evaluation is deterministic.
 
 ```
-∀ request, policies, Σ.
-    Eval(request, policies, Σ) = r₁ ∧ Eval(request, policies, Σ) = r₂
-    ⟹ r₁ = r₂
+∀ request, policies, Σ, world.
+    Eval(request, policies, Σ, world) = o₁ ∧
+    Eval(request, policies, Σ, world) = o₂
+    ⟹ o₁ = o₂
 ```
 
 ### 9.3 Prohibition Monotonicity
@@ -785,9 +812,11 @@ No specificity ordering within norm types. All matching norms contribute.
 **Theorem**: Adding policies cannot remove prohibitions.
 
 ```
-∀ request, P, P', Σ.
-    P ⊆ P' ∧ Eval(request, P, Σ).decision = Deny
-    ⟹ Eval(request, P', Σ).decision = Deny
+∀ request, P, P', Σ, world, r, r'.
+    P ⊆ P' ∧
+    Eval(request, P, Σ, world) = Success(r) ∧ r.decision = Deny ∧
+    Eval(request, P', Σ, world) = Success(r')
+    ⟹ r'.decision = Deny
 ```
 
 ### 9.4 Duty Lifecycle Invariants
@@ -807,27 +836,27 @@ No specificity ordering within norm types. All matching norms contribute.
     WellFormed(Σ) ⟹ |{ s | Σ.state(d) = s }| = 1
 ```
 
-### 9.5 Property Path Traversal Safety
+### 9.5 Operand Lookup Safety
 
-**Theorem**: Traversal is bounded by path length.
-
-```
-∀ path, node.
-    traverse(path, node) terminates in O(|path|) steps
-```
-
-**Theorem**: Traversal uses only declared IRIs.
+**Theorem**: Operand resolution performs exactly one graph lookup.
 
 ```
-∀ path, node.
-    traverse(path, node) ≠ ⊥ ⟹ all elements of path are IRIs
+∀ op, Env.
+    WellFormed(op) ⟹ graphLookupCount(resolve(op, Env)) = 1
 ```
 
-**Theorem**: Traversal is total and fail-closed.
+**Theorem**: Operand properties are IRIs.
 
 ```
-∀ path, node.
-    traverse(path, node) ∈ Value ∪ {⊥}
+∀ op.
+    WellFormed(op) ⟹ op.operandProperty ∈ IRI
+```
+
+**Theorem**: Lookup is total and fail-fast.
+
+```
+∀ op, Env.
+    resolve(op, Env) ∈ Value ∪ {ResolutionError}
 ```
 
 ---
@@ -846,11 +875,11 @@ DPROD Contracts evaluation is designed to be **polynomial-time** and **total** u
 4. **Finite Σ**: State contains finite sets (performed actions, duty states)
 5. **No recursive policy references**: Policies cannot invoke evaluation of other policies
 
-### 10.2 Path Resolution Constraints
+### 10.2 Operand Resolution Constraints
 
-6. **Bounded path depth**: Maximum 10 segments (enforced by grammar)
-7. **No joins**: Path resolution is single-threaded navigation, not graph pattern matching
-8. **Deterministic navigation**: Each segment resolves to exactly one value or `⊥`
+6. **Closed source set**: Request, state, or context only
+7. **One property IRI**: RDF lists and traversal expressions are rejected
+8. **One lookup**: Resolution returns exactly one value or an explicit `ResolutionError`
 
 ### 10.3 Complexity Analysis
 
@@ -858,19 +887,19 @@ Given these constraints:
 
 | Operation | Complexity |
 |-----------|------------|
-| Path resolution (`deref`) | O(d) where d = path depth |
-| Condition evaluation | O(n × d) where n = condition tree size |
+| Operand lookup | O(1) with a predicate index |
+| Condition evaluation | O(n) where n = condition tree size |
 | Norm matching | O(\|P\| × m) where m = max clauses per policy |
 | Hierarchy traversal (`matches`) | O(h) where h = hierarchy depth |
 | Conflict resolution | O(k) where k = matched norms |
-| **Total `Eval`** | **O(\|P\| × m × n × d × h)** — polynomial |
+| **Total `Eval`** | **O(\|P\| × m × n × h)** — polynomial |
 
 ### 10.4 Totality Guarantees
 
 Under these constraints, `Eval` is **total**: it terminates for all well-formed inputs. The function never:
 
 - Loops infinitely (no recursive evaluation)
-- Blocks on external resources (resolution is synchronous or fails to `⊥`)
+- Blocks on external resources (resolution is confined to the supplied finite graph)
 - Diverges due to condition structure (bounded, acyclic)
 
 ---
@@ -879,35 +908,48 @@ Under these constraints, `Eval` is **total**: it terminates for all well-formed 
 
 ### 11.1 Left Operands
 
-Profiles attach DPROD Contracts property paths to operands. Standard ODRL operands (like `odrl:purpose`) are extended in-place; domain-specific operands are declared as new `odrl:LeftOperand` instances:
+Profiles bind operands to one direct property on one normalized source. Standard
+ODRL operands can be extended in place; domain-specific operands are declared as
+new `odrl:LeftOperand` instances:
 
 ```turtle
-# Context-rooted: direct property on request
-odrl:purpose dprod:path odrl:purpose .
-ex:environment dprod:path ex:environment .
+# Built-in context values
+dprod:currentAgent
+    dprod:operandSource dprod:contextSource ;
+    dprod:operandProperty dprod:agent .
 
-# Asset-rooted: via odrl:target (two-step sequence path)
+odrl:dateTime
+    dprod:operandSource dprod:contextSource ;
+    dprod:operandProperty dprod:clock .
+
+# Direct property on the normalized request
 ex:timeliness a odrl:LeftOperand ;
-    dprod:path (odrl:target ex:timeliness) .
+    dprod:operandSource dprod:requestSource ;
+    dprod:operandProperty ex:timeliness .
 
-# Agent-rooted: via odrl:assignee (two-step sequence path)
-ex:recipientType a odrl:LeftOperand ;
-    dprod:path (odrl:assignee ex:recipientType) .
+# Direct property on the normalized world snapshot
+ex:marketOpen a odrl:LeftOperand ;
+    dprod:operandSource dprod:stateSource ;
+    dprod:operandProperty ex:marketOpen .
 ```
 
-SHACL validation enforces value form and cardinality on `dprod:path`:
+SHACL validation enforces the closed source set and single-property cardinality:
 
 ```turtle
 dprod-shapes:LeftOperandShape a sh:NodeShape ;
     sh:targetClass odrl:LeftOperand ;
+    sh:targetObjectsOf odrl:leftOperand ;
     sh:property [
-        sh:path dprod:path ;
+        sh:path dprod:operandSource ;
+        sh:minCount 1 ;
         sh:maxCount 1 ;
-        sh:or (
-            [ sh:nodeKind sh:IRI ]
-            [ sh:node dprod-shapes:RdfListOfIris ]
-        ) ;
-        sh:message "dprod:path must be a property IRI or an rdf:List of property IRIs (at most one value)."
+        sh:in (dprod:requestSource dprod:stateSource dprod:contextSource)
+    ] ;
+    sh:property [
+        sh:path dprod:operandProperty ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI
     ] .
 ```
 
@@ -1060,33 +1102,65 @@ datatype Condition =
   | Or(left: Condition, right: Condition)
   | Not(inner: Condition)
 
-function Traverse(path: PropertyPath, node: Node): Option<Value>
-  ensures Traverse(path, node).None? ==> !PathResolvable(path, node)
+datatype ResolutionResult = Resolved(value: Value) | ResolutionFailure(error: ResolutionError)
+
+function SourceNode(source: OperandSource, env: Env): ResolutionResult<Node>
 {
-  match path
-    case SimplePath(iri) => Lookup(node, iri)
-    case SequencePath(iris) => FoldStep(Some(node), iris)
+  match source
+    case RequestSource => Resolved(env.request.node)
+    case StateSource => Resolved(env.world.node)
+    case ContextSource => Resolved(env.node)
+    case _ => ResolutionFailure(UnknownSource(source))
 }
 
-function Resolve(op: LeftOperand, env: Env): Option<Value>
-  requires ValidEnv(env)
+function LookupOne(property: IRI, node: Node, graph: FiniteGraph): ResolutionResult
 {
-  if op.path.Some? then Traverse(op.path.value, env.request)
-  else None
+  var values := LookupAll(graph, node, property);
+  if |values| == 0 then ResolutionFailure(MissingValue(node, property))
+  else if |values| > 1 then ResolutionFailure(MultipleValues(node, property))
+  else Resolved(Choose(values))
 }
 
-function EvalCondition(c: Condition, env: Env): bool
+function Resolve(op: LeftOperand, env: Env): ResolutionResult
   requires ValidEnv(env)
-  ensures EvalCondition(c, env) ==> ConditionSatisfied(c, env)
+{
+  if !op.operandSource.Some? then ResolutionFailure(MissingSource(op))
+  else if !op.operandProperty.Some? then ResolutionFailure(MissingProperty(op))
+  else
+    match SourceNode(op.operandSource.value, env)
+      case ResolutionFailure(error) => ResolutionFailure(error)
+      case Resolved(node) =>
+        match LookupOne(op.operandProperty.value, node, env.graph)
+          case ResolutionFailure(error) => ResolutionFailure(error)
+          case Resolved(value) =>
+            if op.range.Some? && !Conforms(value, op.range.value)
+              then ResolutionFailure(TypeMismatch(op))
+            else Resolved(value)
+}
+
+function EvalCondition(c: Condition, env: Env): EvaluationResult<bool>
+  requires ValidEnv(env)
 {
   match c
     case AtomicConstraint(op, cmp, val) =>
       var leftVal := Resolve(op, env);
-      if leftVal.None? then false
-      else Apply(cmp, leftVal.value, val)
-    case And(l, r) => EvalCondition(l, env) && EvalCondition(r, env)
-    case Or(l, r) => EvalCondition(l, env) || EvalCondition(r, env)
-    case Not(inner) => !EvalCondition(inner, env)
+      match leftVal
+        case ResolutionFailure(error) => Failure(error)
+        case Resolved(value) => Success(Apply(cmp, value, val))
+    case And(l, r) =>
+      match EvalCondition(l, env)
+        case Failure(error) => Failure(error)
+        case Success(false) => Success(false)
+        case Success(true) => EvalCondition(r, env)
+    case Or(l, r) =>
+      match EvalCondition(l, env)
+        case Failure(error) => Failure(error)
+        case Success(true) => Success(true)
+        case Success(false) => EvalCondition(r, env)
+    case Not(inner) =>
+      match EvalCondition(inner, env)
+        case Failure(error) => Failure(error)
+        case Success(value) => Success(!value)
 }
 ```
 
@@ -1100,7 +1174,7 @@ The following properties should be proved for a verified implementation:
 2. **(S2) Totality**: `Eval` terminates for all well-formed inputs
 3. **(S3) Duty-state consistency**: No duty can be simultaneously in two states
 4. **(S4) Terminal permanence**: Fulfilled/Violated states never revert
-5. **(S5) Path safety**: `traverse` returns `⊥` for any unresolvable property path
+5. **(S5) Lookup safety**: an unresolvable operand produces an explicit `ResolutionError`, never a Boolean result
 6. **(S6) Prohibition monotonicity**: Adding policies cannot remove prohibitions
 
 ---

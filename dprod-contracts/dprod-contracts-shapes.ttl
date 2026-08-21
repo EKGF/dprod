@@ -9,6 +9,7 @@
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
@@ -23,7 +24,7 @@ dprod-shapes:
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-19"^^xsd:date ;
+  dct:modified "2026-08-20"^^xsd:date ;
   owl:imports <https://www.omg.org/spec/DPROD/contracts/> ;
   owl:imports sh: ;
   owl:versionInfo "0.7" ;
@@ -426,20 +427,40 @@ dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape
 ############################# Operand Shapes #########################
 
 
-# Helper shape: validates a non-empty rdf:List whose members are all IRIs.
-# Used by LeftOperandShape to constrain dprod:path sequence values
-# (the SHACL-Core property-path subset DPROD uses; see dprod:path in dprod-contracts.ttl).
-# Implemented with the SHACL property path (rdf:rest)*/rdf:first so the full list is
-# walked in one shape evaluation without shape recursion.
-dprod-shapes:RdfListOfIris
+dprod-shapes:EvaluationContextShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
-  rdfs:label "rdf:List of IRIs shape" ;
+  rdfs:label "evaluation context shape" ;
+  sh:targetClass dprod:EvaluationContext ;
   sh:property [
-    sh:path ( [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:path dprod:request ;
     sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
+    sh:message "An evaluation context must have exactly one dprod:request graph root."
+  ] ;
+  sh:property [
+    sh:path dprod:state ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
+    sh:class prov:Entity ;
+    sh:message "An evaluation context must have exactly one immutable dprod:state snapshot, typed as prov:Entity."
+  ] ;
+  sh:property [
+    sh:path dprod:agent ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
     sh:nodeKind sh:IRI ;
-    sh:message "Members of a dprod:path sequence must be IRIs and the sequence must be non-empty."
+    sh:class odrl:Party ;
+    sh:message "An evaluation context must have exactly one dprod:agent typed as odrl:Party."
+  ] ;
+  sh:property [
+    sh:path dprod:clock ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:dateTime ;
+    sh:message "An evaluation context must have exactly one dprod:clock xsd:dateTime."
   ] ;
 .
 
@@ -449,21 +470,65 @@ dprod-shapes:LeftOperandShape
   rdfs:isDefinedBy dprod-shapes: ;
   rdfs:label "left operand shape" ;
   sh:targetClass odrl:LeftOperand ;
+  sh:targetObjectsOf odrl:leftOperand ;
   sh:name "Left Operand Shape" ;
-  sh:property [
-    sh:path dprod:path ;
-    sh:maxCount 1 ;
-    sh:or (
-      [ sh:nodeKind sh:IRI ]
-      [ sh:node dprod-shapes:RdfListOfIris ]
-    ) ;
-    sh:message "dprod:path must be a property IRI or an rdf:List of property IRIs (at most one value)."
-  ] ;
+  sh:or (
+    [ sh:in (dprod:currentAgent odrl:dateTime) ]
+    [
+      sh:property [
+        sh:path dprod:operandSource ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:in (dprod:requestSource dprod:stateSource dprod:contextSource)
+      ]
+    ]
+  ) ;
+  sh:message "Every left operand must declare exactly one dprod:operandSource: requestSource, stateSource, or contextSource." ;
+  sh:or (
+    [ sh:in (dprod:currentAgent odrl:dateTime) ]
+    [
+      sh:property [
+        sh:path dprod:operandProperty ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI
+      ]
+    ]
+  ) ;
+  sh:message "Every left operand must declare exactly one dprod:operandProperty, which must be IRI-valued." ;
 .
 
 
 ############################# Rejection Shapes #########################
 # Reject unsupported ODRL constructs
+
+
+dprod-shapes:RejectRuntimeReferenceShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "obsolete runtime reference rejection shape" ;
+  sh:targetClass dprod:RuntimeReference ;
+  sh:property [
+    sh:path rdf:type ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "dprod:RuntimeReference is obsolete; declare an odrl:LeftOperand with one source/property binding."
+  ] ;
+.
+
+dprod-shapes:RejectOperandPathShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "obsolete operand path rejection shape" ;
+  sh:targetSubjectsOf dprod:path ;
+  sh:property [
+    sh:path dprod:path ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message "dprod:path is obsolete; normalize the source graph and use dprod:operandSource plus dprod:operandProperty."
+  ] ;
+.
 
 
 dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape
