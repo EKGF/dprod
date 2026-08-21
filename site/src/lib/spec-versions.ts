@@ -32,6 +32,11 @@ export type SpecVersion = {
   isCurrent: boolean;
   /** True if this version is the production branch (develop) */
   isProduction: boolean;
+  /**
+   * Whether the branch still exists upstream. `null` means the lookup was
+   * unavailable, so existence is unknown — never treat that as "yes".
+   */
+  existsUpstream: boolean | null;
   kind: SpecVersionKind;
 };
 
@@ -43,11 +48,24 @@ const ARCHIVE_1_0: SpecVersion = {
   origin: "",
   isCurrent: false,
   isProduction: false,
+  existsUpstream: true,
   kind: "archive",
 };
 
 /** Branches that we never want to advertise as spec versions. */
 const EXCLUDED_BRANCHES = new Set<string>(["main"]);
+
+/**
+ * Branch prefixes that are never spec versions. A dependency bump produces a
+ * perfectly valid preview deployment, but it is not a version of the
+ * specification and only adds noise to the picker.
+ */
+const EXCLUDED_BRANCH_PREFIXES = ["dependabot/"];
+
+function isAdvertisableBranch(branch: string): boolean {
+  if (EXCLUDED_BRANCHES.has(branch)) return false;
+  return !EXCLUDED_BRANCH_PREFIXES.some((prefix) => branch.startsWith(prefix));
+}
 
 function branchToSlug(branch: string): string {
   return branch.replace(/\//g, "-");
@@ -100,83 +118,111 @@ async function fetchDeployments(): Promise<VercelDeployment[]> {
   }
 }
 
-type GitHubPullRequest = {
-  head?: { ref?: string };
-  state?: string;
+type GitHubBranch = {
+  name?: string;
 };
 
 /**
- * Returns the set of branches that have at least one open Pull Request on
- * GitHub, plus the production branch "develop". Used to filter out Vercel
- * deployments whose branch has already been merged: once a PR closes, its
- * branch typically gets auto-deleted (or at least becomes irrelevant), and
- * its Vercel preview deployment — while still reachable by URL — should no
- * longer appear in the user-facing version picker.
+ * Every branch that currently exists in the repository, or `null` when the
+ * lookup was unavailable.
  *
- * On failure (network error, missing token, rate limit, non-2xx response)
- * the function returns `null` so callers can fail *open* — i.e. show every
- * branch Vercel knows about rather than silently hide valid ones.
+ * Existence — not open-PR status — is the right question. A branch whose PR
+ * has merged is normally deleted, and its Vercel preview, while still
+ * reachable by URL, is no longer a version of anything. Conversely a branch
+ * can legitimately exist with no open PR (merged but kept, or pushed before
+ * the PR is raised), and an open-PR filter hid those too.
+ *
+ * Returns `null` rather than an empty set on failure, so callers can tell
+ * "no branches" apart from "could not ask" — very different things.
+ *
+ * Every failure path logs the status and GitHub's own message. The bug this
+ * replaced (issue #249) was undiagnosable from outside precisely because it
+ * failed silently: a present-but-rejected token looks exactly like a missing
+ * one when nothing is logged.
  */
-async function fetchActiveBranches(): Promise<Set<string> | null> {
+async function fetchExistingBranches(): Promise<Set<string> | null> {
   const token = process.env.GITHUB_TOKEN;
+
+  if (!token) {
+    // Unauthenticated GitHub allows 60 requests/hour per IP, shared across
+    // every function on that egress address, so this is not a
+    // degraded-but-workable path — it fails continuously.
+    console.warn(
+      "[spec-versions] GITHUB_TOKEN is not set; cannot determine which " +
+        "branches still exist. Showing the archive and develop only.",
+    );
+    return null;
+  }
 
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
+    Authorization: `Bearer ${token}`,
+    // GitHub rejects requests without a User-Agent with 403. Runtimes differ
+    // in whether they supply a default, so set one explicitly rather than
+    // depending on the platform.
+    "User-Agent": "ekgf-dprod-site",
   };
-  if (token) headers.Authorization = `Bearer ${token}`;
 
-  try {
-    const res = await fetch(
-      "https://api.github.com/repos/EKGF/dprod/pulls?state=open&per_page=100",
-      {
-        headers,
-        next: { revalidate: 60 },
-      },
-    );
-    if (!res.ok) return null;
-    const prs = (await res.json()) as GitHubPullRequest[];
-    const branches = new Set<string>();
-    for (const pr of prs) {
-      const ref = pr.head?.ref;
-      if (ref) branches.add(ref);
+  const branches = new Set<string>();
+  // The repository has far fewer than 100 branches today, but paginate
+  // anyway: silently truncating would hide live branches.
+  for (let page = 1; page <= 10; page++) {
+    let res: Response;
+    try {
+      res = await fetch(
+        `https://api.github.com/repos/EKGF/dprod/branches?per_page=100&page=${page}`,
+        { headers, next: { revalidate: 60 } },
+      );
+    } catch (error) {
+      console.warn("[spec-versions] GitHub branch lookup threw:", error);
+      return null;
     }
-    // Always treat the production branch as active.
-    branches.add("develop");
-    return branches;
-  } catch {
-    return null;
+    if (!res.ok) {
+      // GitHub's body distinguishes the cases that matter: "Bad credentials"
+      // (401, token expired or revoked), "API rate limit exceeded" (403),
+      // and resource-not-accessible (403, token lacks Metadata: Read-only).
+      const detail = await res.text().catch(() => "");
+      console.warn(
+        `[spec-versions] GitHub branch lookup failed: ${res.status} ` +
+          `${res.statusText}. ${detail.slice(0, 300)}`,
+      );
+      return null;
+    }
+    const pageBranches = (await res.json()) as GitHubBranch[];
+    for (const branch of pageBranches) {
+      if (branch.name) branches.add(branch.name);
+    }
+    if (pageBranches.length < 100) break;
   }
+  return branches;
 }
 
 /**
- * Returns the list of spec versions, in display order:
- *   1. The frozen 1.0 archive (always first, always present).
- *   2. develop (if deployed).
- *   3. Every other branch with a READY deployment, latest first.
+ * Every spec version this deployment can *route* to: the frozen archive plus
+ * each branch with a READY Vercel deployment.
  *
- * Never throws — on any failure, returns at least the archive entry so
+ * Intentionally permissive. The middleware uses this to resolve an explicit
+ * /spec/<slug> URL, and a URL someone already holds should keep working even
+ * while the GitHub lookup is unavailable. Use `getListedSpecVersions()` for
+ * anything user-facing.
+ *
+ * Never throws — on any failure it still returns the archive entry, so
  * /spec/main keeps working.
  */
 export async function getSpecVersions(): Promise<SpecVersion[]> {
   const currentBranch = process.env.VERCEL_GIT_COMMIT_REF;
   const versions: SpecVersion[] = [ARCHIVE_1_0];
 
-  const [deployments, activeBranches] = await Promise.all([
+  const [deployments, existingBranches] = await Promise.all([
     fetchDeployments(),
-    fetchActiveBranches(),
+    fetchExistingBranches(),
   ]);
 
   const seen = new Set<string>();
   for (const dep of deployments) {
     const branch = dep.meta?.githubCommitRef;
-    if (!branch || EXCLUDED_BRANCHES.has(branch) || seen.has(branch)) continue;
-
-    // Fail open: when the GitHub lookup failed, keep every branch. When it
-    // succeeded, only keep branches with an open PR (or the production
-    // branch, which fetchActiveBranches() adds unconditionally).
-    if (activeBranches && !activeBranches.has(branch)) continue;
-
+    if (!branch || !isAdvertisableBranch(branch) || seen.has(branch)) continue;
     seen.add(branch);
 
     const slug = branchToSlug(branch);
@@ -194,6 +240,7 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
       origin: `https://${slug}.dprod-preview.ekgf.org/dprod`,
       isCurrent: branch === currentBranch,
       isProduction: branch === "develop",
+      existsUpstream: existingBranches ? existingBranches.has(branch) : null,
       kind: "vercel-branch",
     });
   }
@@ -208,4 +255,43 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
   });
 
   return versions;
+}
+
+/**
+ * What a reader is shown, plus whether the list could be filtered at all.
+ */
+export type ListedSpecVersions = {
+  versions: SpecVersion[];
+  /**
+   * False when branch existence could not be determined, so the list is the
+   * fail-closed minimum rather than the real set. Surfaced in the UI: a
+   * silently short list is as misleading as a silently long one.
+   */
+  complete: boolean;
+};
+
+/**
+ * The spec versions to show a reader: the archive, develop, and branches that
+ * still exist upstream.
+ *
+ * Fails *closed*. When branch existence is unknown the picker shows only the
+ * archive and develop, because the alternative — what shipped before issue
+ * #249 — was every branch ever deployed, including many deleted months
+ * earlier. A short list is a smaller lie than a wrong one, and
+ * `getSpecVersions()` still routes any preview URL that has been handed out.
+ */
+export async function getListedSpecVersions(): Promise<ListedSpecVersions> {
+  const versions = await getSpecVersions();
+  const complete = !versions.some(
+    (version) => version.kind === "vercel-branch" && version.existsUpstream === null,
+  );
+  return {
+    complete,
+    versions: versions.filter(
+      (version) =>
+        version.kind === "archive" ||
+        version.isProduction ||
+        version.existsUpstream === true,
+    ),
+  };
 }

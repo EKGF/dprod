@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Clock, Archive } from "lucide-react";
-import { getSpecVersions, type SpecVersion } from "@/lib/spec-versions";
+import { getListedSpecVersions, type SpecVersion } from "@/lib/spec-versions";
 
 export const metadata: Metadata = {
   title: "Spec Versions — DPROD",
@@ -48,7 +48,10 @@ function BadgeFor({ version }: { version: SpecVersion }) {
 }
 
 export default async function SpecVersionsPage() {
-  const versions = await getSpecVersions();
+  // Deliberately the *listed* set, not the routable one: a branch that no
+  // longer exists must not be advertised, even though its preview URL still
+  // resolves. See issue #249.
+  const { versions, complete } = await getListedSpecVersions();
 
   return (
     <div className="flex flex-col">
@@ -74,6 +77,20 @@ export default async function SpecVersionsPage() {
       <section>
         <div className="container py-20">
           <div className="mx-auto max-w-4xl">
+            {!complete && (
+              <div className="mb-6 rounded-lg border border-[#ff6f00]/40 bg-[#ff6f00]/5 p-4 text-sm">
+                <p className="font-semibold text-foreground">
+                  Branch list unavailable
+                </p>
+                <p className="mt-1 text-muted-foreground">
+                  The GitHub lookup that checks which branches still exist did
+                  not succeed, so only the archive and the production draft are
+                  listed. In-flight preview branches are hidden rather than
+                  shown unverified. The deployment logs record the reason.
+                </p>
+              </div>
+            )}
+
             <div className="space-y-4">
               {versions.map((version) => {
                 const href =
@@ -119,9 +136,11 @@ export default async function SpecVersionsPage() {
                 Every branch in the repository automatically gets its own
                 Vercel preview deployment. This page queries the Vercel API at
                 request time (cached for 60&nbsp;seconds) so new branches show
-                up without needing to redeploy <code>develop</code>. Each
-                version link routes through Next.js middleware to the correct
-                deployment&apos;s own <code>/spec/</code> page.
+                up without needing to redeploy <code>develop</code>, and
+                cross-checks GitHub so that branches which have since been
+                deleted drop off the list. Each version link routes through
+                Next.js middleware to the correct deployment&apos;s own{" "}
+                <code>/spec/</code> page.
               </p>
             </div>
           </div>
