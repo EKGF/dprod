@@ -30,8 +30,19 @@ There are two entry points, and the difference matters:
 Required, and it must be **valid** — an expired or revoked token behaves
 exactly like a missing one. Fine-grained tokens expire, so this will recur.
 
-A fine-grained token needs only `Metadata: Read-only` on `EKGF/dprod`; no
-write scopes. See `.env.example`.
+A fine-grained token needs **`Contents: Read-only`** on `EKGF/dprod` — that is
+the permission `GET /repos/{owner}/{repo}/branches`
+[requires](https://docs.github.com/en/rest/branches/branches). GitHub adds the
+mandatory `Metadata: Read-only` automatically. No write permissions, and no
+Pull requests permission: the lookup does not use that endpoint.
+
+The repository is public, so the endpoint would also answer an unauthenticated
+request — but that path carries GitHub's 60-requests-per-hour-per-IP limit,
+shared across Vercel's egress, which is exactly the failure mode being avoided.
+Granting `Contents: Read-only` is what makes the request authenticated, at
+5,000 requests per hour.
+
+See `.env.example`.
 
 When the branch lookup fails, two things happen and neither is silent:
 
