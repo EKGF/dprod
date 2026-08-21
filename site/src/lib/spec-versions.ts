@@ -33,10 +33,10 @@ export type SpecVersion = {
   /** True if this version is the production branch (develop) */
   isProduction: boolean;
   /**
-   * Whether the branch still exists upstream. `null` means the lookup was
-   * unavailable, so existence is unknown — never treat that as "yes".
+   * Whether the branch has an open pull request. `null` means the lookup was
+   * unavailable, so it is unknown — never treat that as "yes".
    */
-  existsUpstream: boolean | null;
+  hasOpenPullRequest: boolean | null;
   kind: SpecVersionKind;
 };
 
@@ -48,7 +48,7 @@ const ARCHIVE_1_0: SpecVersion = {
   origin: "",
   isCurrent: false,
   isProduction: false,
-  existsUpstream: true,
+  hasOpenPullRequest: false,
   kind: "archive",
 };
 
@@ -56,15 +56,23 @@ const ARCHIVE_1_0: SpecVersion = {
 const EXCLUDED_BRANCHES = new Set<string>(["main"]);
 
 /**
- * Branch prefixes that are never spec versions. A dependency bump produces a
- * perfectly valid preview deployment, but it is not a version of the
- * specification and only adds noise to the picker.
+ * Branch prefixes that are not *advertised* as spec versions.
+ *
+ * These branches still deploy, and `/spec/<slug>` still routes to them — a
+ * preview link shared on a pull request has to keep working. They are simply
+ * not listed, because the picker answers "which versions of the specification
+ * are there?", and a dependency bump is not one even while its pull request
+ * is open.
+ *
+ * Applied in `getListedSpecVersions()` only, never in `getSpecVersions()`.
+ * Filtering during discovery would unroute the deployments as well as hide
+ * them.
  */
-const EXCLUDED_BRANCH_PREFIXES = ["dependabot/"];
+const UNADVERTISED_BRANCH_PREFIXES = ["dependabot/"];
 
 function isAdvertisableBranch(branch: string): boolean {
   if (EXCLUDED_BRANCHES.has(branch)) return false;
-  return !EXCLUDED_BRANCH_PREFIXES.some((prefix) => branch.startsWith(prefix));
+  return !UNADVERTISED_BRANCH_PREFIXES.some((prefix) => branch.startsWith(prefix));
 }
 
 function branchToSlug(branch: string): string {
@@ -118,29 +126,29 @@ async function fetchDeployments(): Promise<VercelDeployment[]> {
   }
 }
 
-type GitHubBranch = {
-  name?: string;
+type GitHubPullRequest = {
+  head?: { ref?: string };
 };
 
 /**
- * Every branch that currently exists in the repository, or `null` when the
- * lookup was unavailable.
+ * The branches with an open pull request, or `null` when the lookup was
+ * unavailable.
  *
- * Existence — not open-PR status — is the right question. A branch whose PR
- * has merged is normally deleted, and its Vercel preview, while still
- * reachable by URL, is no longer a version of anything. Conversely a branch
- * can legitimately exist with no open PR (merged but kept, or pushed before
- * the PR is raised), and an open-PR filter hid those too.
+ * This is what "a version worth listing" means here: `main` and `develop` are
+ * shown unconditionally, and every other branch earns its place by having a
+ * pull request in flight. A branch whose PR has merged stops being listed even
+ * if nobody deleted it, which is the case that made the picker unusable — it
+ * was showing seven merged branches alongside one live one.
  *
- * Returns `null` rather than an empty set on failure, so callers can tell
- * "no branches" apart from "could not ask" — very different things.
+ * Returns `null` rather than an empty set on failure, so callers can tell "no
+ * open pull requests" apart from "could not ask" — very different things.
  *
- * Every failure path logs the status and GitHub's own message. The bug this
- * replaced (issue #249) was undiagnosable from outside precisely because it
- * failed silently: a present-but-rejected token looks exactly like a missing
- * one when nothing is logged.
+ * Every failure path logs the status and GitHub's own message. The original
+ * bug (issue #249) was undiagnosable from outside precisely because it failed
+ * silently: a present-but-rejected token looks exactly like a missing one when
+ * nothing is logged.
  */
-async function fetchExistingBranches(): Promise<Set<string> | null> {
+async function fetchOpenPullRequestBranches(): Promise<Set<string> | null> {
   const token = process.env.GITHUB_TOKEN;
 
   if (!token) {
@@ -149,7 +157,8 @@ async function fetchExistingBranches(): Promise<Set<string> | null> {
     // degraded-but-workable path — it fails continuously.
     console.warn(
       "[spec-versions] GITHUB_TOKEN is not set; cannot determine which " +
-        "branches still exist. Showing the archive and develop only.",
+        "branches have open pull requests. Showing the archive and develop " +
+        "only.",
     );
     return null;
   }
@@ -165,35 +174,35 @@ async function fetchExistingBranches(): Promise<Set<string> | null> {
   };
 
   const branches = new Set<string>();
-  // The repository has far fewer than 100 branches today, but paginate
-  // anyway: silently truncating would hide live branches.
+  // Paginate: silently truncating at 100 would hide live pull requests.
   for (let page = 1; page <= 10; page++) {
     let res: Response;
     try {
       res = await fetch(
-        `https://api.github.com/repos/EKGF/dprod/branches?per_page=100&page=${page}`,
+        "https://api.github.com/repos/EKGF/dprod/pulls" +
+          `?state=open&per_page=100&page=${page}`,
         { headers, next: { revalidate: 60 } },
       );
     } catch (error) {
-      console.warn("[spec-versions] GitHub branch lookup threw:", error);
+      console.warn("[spec-versions] GitHub pull request lookup threw:", error);
       return null;
     }
     if (!res.ok) {
       // GitHub's body distinguishes the cases that matter: "Bad credentials"
-      // (401, token expired or revoked), "API rate limit exceeded" (403),
-      // and resource-not-accessible (403, token lacks Metadata: Read-only).
+      // (401, token expired or revoked), "API rate limit exceeded" (403), and
+      // "Resource not accessible" (403, token lacks Pull requests: Read-only).
       const detail = await res.text().catch(() => "");
       console.warn(
-        `[spec-versions] GitHub branch lookup failed: ${res.status} ` +
+        `[spec-versions] GitHub pull request lookup failed: ${res.status} ` +
           `${res.statusText}. ${detail.slice(0, 300)}`,
       );
       return null;
     }
-    const pageBranches = (await res.json()) as GitHubBranch[];
-    for (const branch of pageBranches) {
-      if (branch.name) branches.add(branch.name);
+    const pulls = (await res.json()) as GitHubPullRequest[];
+    for (const pull of pulls) {
+      if (pull.head?.ref) branches.add(pull.head.ref);
     }
-    if (pageBranches.length < 100) break;
+    if (pulls.length < 100) break;
   }
   return branches;
 }
@@ -214,15 +223,18 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
   const currentBranch = process.env.VERCEL_GIT_COMMIT_REF;
   const versions: SpecVersion[] = [ARCHIVE_1_0];
 
-  const [deployments, existingBranches] = await Promise.all([
+  const [deployments, openPullRequestBranches] = await Promise.all([
     fetchDeployments(),
-    fetchExistingBranches(),
+    fetchOpenPullRequestBranches(),
   ]);
 
   const seen = new Set<string>();
   for (const dep of deployments) {
     const branch = dep.meta?.githubCommitRef;
-    if (!branch || !isAdvertisableBranch(branch) || seen.has(branch)) continue;
+    // Deliberately not filtered by isAdvertisableBranch(): this list is what
+    // the middleware routes with, and a preview URL already shared must keep
+    // resolving even when the branch is not advertised.
+    if (!branch || EXCLUDED_BRANCHES.has(branch) || seen.has(branch)) continue;
     seen.add(branch);
 
     const slug = branchToSlug(branch);
@@ -240,7 +252,9 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
       origin: `https://${slug}.dprod-preview.ekgf.org/dprod`,
       isCurrent: branch === currentBranch,
       isProduction: branch === "develop",
-      existsUpstream: existingBranches ? existingBranches.has(branch) : null,
+      hasOpenPullRequest: openPullRequestBranches
+        ? openPullRequestBranches.has(branch)
+        : null,
       kind: "vercel-branch",
     });
   }
@@ -263,7 +277,7 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
 export type ListedSpecVersions = {
   versions: SpecVersion[];
   /**
-   * False when branch existence could not be determined, so the list is the
+   * False when the pull request lookup failed, so the list is the
    * fail-closed minimum rather than the real set. Surfaced in the UI: a
    * silently short list is as misleading as a silently long one.
    */
@@ -271,19 +285,28 @@ export type ListedSpecVersions = {
 };
 
 /**
- * The spec versions to show a reader: the archive, develop, and branches that
- * still exist upstream.
+ * The spec versions to show a reader:
  *
- * Fails *closed*. When branch existence is unknown the picker shows only the
- * archive and develop, because the alternative — what shipped before issue
- * #249 — was every branch ever deployed, including many deleted months
- * earlier. A short list is a smaller lie than a wrong one, and
- * `getSpecVersions()` still routes any preview URL that has been handed out.
+ *   - `main`, the frozen OMG standard, as the archive entry;
+ *   - `develop`, the current working draft;
+ *   - every branch with an open pull request, i.e. work actually in flight.
+ *
+ * Anything else — a merged branch nobody deleted, an abandoned experiment, a
+ * dependency bump — is not a version of the specification and is left out.
+ * Those previews stay routable through `getSpecVersions()`, so a link shared
+ * on a pull request keeps working after it merges; it is only the listing that
+ * is opinionated.
+ *
+ * Fails *closed*. When the lookup fails the picker shows only the archive and
+ * develop, because the alternative — what shipped before issue #249 — was
+ * every branch ever deployed, including many deleted months earlier. A short
+ * list is a smaller lie than a wrong one.
  */
 export async function getListedSpecVersions(): Promise<ListedSpecVersions> {
   const versions = await getSpecVersions();
   const complete = !versions.some(
-    (version) => version.kind === "vercel-branch" && version.existsUpstream === null,
+    (version) =>
+      version.kind === "vercel-branch" && version.hasOpenPullRequest === null,
   );
   return {
     complete,
@@ -291,7 +314,8 @@ export async function getListedSpecVersions(): Promise<ListedSpecVersions> {
       (version) =>
         version.kind === "archive" ||
         version.isProduction ||
-        version.existsUpstream === true,
+        (version.hasOpenPullRequest === true &&
+          isAdvertisableBranch(version.branch)),
     ),
   };
 }

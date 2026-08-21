@@ -11,17 +11,20 @@ The Next.js app served at `https://ekgf.org/dprod` (proxied verbatim from the
 | Source | Question it answers | Env vars |
 |---|---|---|
 | Vercel deployments API | Which branches have a READY deployment? | `VERCEL_TOKEN`, `VERCEL_PROJECT_ID`, `VERCEL_ORG_ID` |
-| GitHub branches API | Which of those branches still exist? | `GITHUB_TOKEN` |
+| GitHub pulls API | Which of those branches have an open pull request? | `GITHUB_TOKEN` |
 
 Both are cached for 60 seconds via `next: { revalidate: 60 }`, so a new branch
 appears without redeploying `develop`.
 
-A branch deleted from `origin` drops off the listing, **including `ballot/*`**.
-Its Vercel deployment survives and `/spec/<slug>` still resolves, so any URL
-already published keeps working — it is simply no longer advertised. This is
-deliberate (issue #249): the listing answers "which versions exist now?", and
-a deleted branch does not. If a ballot needs to stay listed after its branch is
-gone, keep the branch on `origin` rather than special-casing it here.
+The listing is `main` + `develop` + every branch with an **open pull request**.
+Everything else is left out: a merged branch nobody deleted, an abandoned
+experiment, a `dependabot/*` bump. Those previews stay routable — a link shared
+on a pull request keeps working after it merges — but they are not advertised
+as versions of the specification.
+
+`ballot/*` is not special-cased. A ballot branch is listed while its pull
+request is open; afterwards it lives on as the frozen archive entry (`main`)
+if it was adopted, or as an unlisted but still-resolvable preview URL.
 
 There are two entry points, and the difference matters:
 
@@ -37,11 +40,11 @@ There are two entry points, and the difference matters:
 Required, and it must be **valid** — an expired or revoked token behaves
 exactly like a missing one. Fine-grained tokens expire, so this will recur.
 
-A fine-grained token needs **`Contents: Read-only`** on `EKGF/dprod` — that is
-the permission `GET /repos/{owner}/{repo}/branches`
-[requires](https://docs.github.com/en/rest/branches/branches). GitHub adds the
+A fine-grained token needs **`Pull requests: Read-only`** on `EKGF/dprod` —
+that is the permission `GET /repos/{owner}/{repo}/pulls`
+[requires](https://docs.github.com/en/rest/pulls/pulls). GitHub adds the
 mandatory `Metadata: Read-only` automatically. No write permissions, and no
-Pull requests permission: the lookup does not use that endpoint.
+`Contents` permission.
 
 The repository is public, so the endpoint would also answer an unauthenticated
 request — but that path carries GitHub's 60-requests-per-hour-per-IP limit,
