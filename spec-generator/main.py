@@ -30,6 +30,16 @@ def detect_branch() -> str:
         return "main"
 
 
+def branch_slug(branch: str) -> str:
+    """The branch name as it appears in a /spec/<slug>/ URL.
+
+    Slashes become dashes, matching site/src/lib/spec-versions.ts. The raw
+    branch name is still what ReSpec's `github` config needs for its commit
+    history link, so both are passed to the template.
+    """
+    return branch.replace("/", "-")
+
+
 def detect_publish_date(g) -> str:
     """The publication date of this version, from `dct:issued` on the ontology.
 
@@ -127,6 +137,7 @@ def main():
         'classes': classes,
         'examples': examples,
         'branch': detect_branch(),
+        'branch_slug': branch_slug(detect_branch()),
         'publish_date': detect_publish_date(g),
     })
 

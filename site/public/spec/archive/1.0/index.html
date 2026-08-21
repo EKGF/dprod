@@ -11,7 +11,15 @@
     const respecConfig = {
       // Working Groups ids at https://respec.org/w3c/groups/
       // group: "Semantic Data Products Working Group",
-      latestVersion: "https://ekgf.org/dprod/spec/main/",
+      // The OMG catalog entry, so a reader of this frozen 1.0 can reach the
+      // newest published version. It previously pointed at this document
+      // itself, which is what "this version" means, not "latest".
+      latestVersion: "https://www.omg.org/spec/DPROD/",
+      // Set explicitly. When edDraftURI is absent ReSpec infers it from the
+      // github config as https://ekgf.github.io/dprod/ — GitHub Pages, retired
+      // by #235, so every reader of the frozen standard met a 404 (issue #255).
+      edDraftURI: "https://ekgf.org/dprod/spec/develop/",
+      thisVersion: "https://ekgf.org/dprod/spec/main/",
       specStatus: "base",
       // Frozen: DPROD 1.0 beta 1. Hard-coded rather than derived, because this
       // document is immutable and its date must not move when a maintenance
@@ -389,7 +397,7 @@
     </p>
     <p>
       For a complete list of trademarks, 
-      see: <a href="https://www.omg.org/legal/tm_list.htm.">https://www.omg.org/legal/tm_list.htm</a>.
+      see: <a href="https://www.omg.org/legal/tm_list.htm">https://www.omg.org/legal/tm_list.htm</a>.
       All other products or company names mentioned are used for identification purposes only and may be
       trademarks of their respective owners.
     </p>

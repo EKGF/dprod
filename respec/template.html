@@ -11,8 +11,17 @@
     const respecConfig = {
       // Working Groups ids at https://respec.org/w3c/groups/
       // group: "Semantic Data Products Working Group",
-      latestVersion: "https://www.omg.org/spec/DPROD/dprod/",
-      edDraftURI: "https://ekgf.org/spec/{{ branch }}/",
+      // The OMG catalog entry, which always resolves to the newest published
+      // version. Not the ontology namespace IRI (.../DPROD/dprod/): that
+      // identifies the vocabulary, not a document, and 404s (issue #255).
+      latestVersion: "https://www.omg.org/spec/DPROD/",
+      // The one canonical continuously-updated draft, whichever branch this
+      // build came from. A branch preview points readers at mainline; its own
+      // URL is thisVersion below.
+      edDraftURI: "https://ekgf.org/dprod/spec/develop/",
+      // This build. The slug is the branch with slashes replaced by dashes,
+      // and the /dprod basePath is required — without it the URL 404s.
+      thisVersion: "https://ekgf.org/dprod/spec/{{ branch_slug }}/",
       specStatus: "base",
       // Pinned to the branch's last commit by the spec generator. Without it
       // ReSpec uses the date the page is viewed, since it runs in the reader's
@@ -148,7 +157,10 @@
         },
         dprod: {
           title: "Data Product Ontology",
-          href: "https://www.omg.org/spec/DPROD/dprod/",
+          // The OMG catalog entry, which resolves. The vocabulary namespace
+          // IRI (.../DPROD/dprod/) identifies the terms rather than a
+          // document, and does not currently dereference (issue #255).
+          href: "https://www.omg.org/spec/DPROD/",
           authors: [
             "Tony Seale",
             "Natasa Varytimou",
@@ -393,7 +405,7 @@
     </p>
     <p>
       For a complete list of trademarks, 
-      see: <a href="https://www.omg.org/legal/tm_list.htm.">https://www.omg.org/legal/tm_list.htm</a>.
+      see: <a href="https://www.omg.org/legal/tm_list.htm">https://www.omg.org/legal/tm_list.htm</a>.
       All other products or company names mentioned are used for identification purposes only and may be
       trademarks of their respective owners.
     </p>
@@ -457,7 +469,7 @@
 <section>
   <h2>Scope</h2>
   <p>
-    The <a href="https://www.omg.org/spec/DPROD/dprod.ttl">Data Product (DPROD)</a> specification is a
+    The <a href="dprod.ttl">Data Product (DPROD)</a> specification is a
     profile of the <a href="https://www.w3.org/TR/vocab-dcat-3/">Data Catalog (DCAT) Vocabulary</a>,
     designed to describe Data Products.
     This document defines the schema and provides examples of its use.
@@ -470,7 +482,7 @@
     and enables federated search across multiple sites using a uniform query mechanism and structure.
   </p>
   <p>
-    The namespace for DPROD terms is <a href="https://www.omg.org/spec/DPROD/dprod/">https://www.omg.org/spec/DPROD/dprod/</a>
+    The namespace for DPROD terms is <code>https://www.omg.org/spec/DPROD/dprod/</code>
   </p>
   <p>
     The suggested prefix for the DPROD namespace is <strong><code>dprod</code></strong>
@@ -484,7 +496,7 @@
     </li>
     <li>
       Harmonize Data Schemas: Using shared schemas helps unify different data formats.
-      For instance, the <a href="https://www.omg.org/spec/DPROD/dprod.ttl">DPROD</a> specification provides a
+      For instance, the <a href="dprod.ttl">DPROD</a> specification provides a
       <!--suppress HtmlUnknownAnchorTarget -->
       common set of rules for defining a <a href="#dataproduct">Data Product</a>.
       Users of DPROD can extend this schema as needed.
