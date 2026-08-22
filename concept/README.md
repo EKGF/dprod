@@ -45,7 +45,7 @@ DPDS is available [here](https://dpds.opendatamesh.org/specifications/dpds/1.0.0
 
 ### DPDS General Info
 
-General info can be used to provide a high level descriptiono of the data product. Common properties of this configuration block are:
+General info can be used to provide a high level description of the data product. Common properties of this configuration block are:
 
 - `fullyQualifiedName` (**string:fqn**): This is the unique universal identifier of the data product.  It MUST be a URN of the form `urn:dpds:{mesh-namespace}:dataproducts:{product-name}:{product-major-version}`. It's RECOMMENDED to use as `mesh-namespace` your company's domain name in reverse dot notation (ex. `com.company-xyz`) in order to ensure that the `fullyQualifiedName` is a unique universal idetifier as REQUIRED.
 - `version` (**string:version**): this is the <a href="https://semver.org/spec/v2.0.0.html" target="_blank">semantic version number</a> of the data product (not to be confused with the `dataProductDescriptor` version above).
