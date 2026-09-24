@@ -32,7 +32,7 @@ Here is an example of a data product with an observability port:
 
 ```json
 {
-  "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+  "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
   "@graph": [
     {
       "@id": "https://y.com/data-product/uk-bonds",

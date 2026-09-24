@@ -11,7 +11,7 @@ In this example, a Data Product Agreement is defined as a subclass of FIBO Agree
 ```json
 {
   "@context": [
-    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
     {
       "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
       "ex": "http://example.org/dp#"
@@ -46,7 +46,7 @@ Below is an example of a Data Product with an associated Data Product Agreement 
 ```json
 {
   "@context": [
-    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
     {
       "fibo": "http://spec.edmcouncil.org/fibo/ontology/FND/Agreements/MetadataFNDAgreements/#",
       "ex": "http://example.org/dp#"

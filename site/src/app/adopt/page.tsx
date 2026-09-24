@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 const JSONLD_SNIPPET = `{
-  "@context": "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+  "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
   "@type": "DataProduct",
   "id": "https://example.com/data-products/customer-360",
   "label": "Customer 360",

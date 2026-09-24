@@ -35,7 +35,7 @@ from rdflib import Graph, Literal, OWL, RDF  # noqa: E402
 
 from jsonld_context import ApplicationContext  # noqa: E402
 
-CONTEXT_IRI = "https://www.omg.org/spec/DPROD/dprod-context.jsonld"
+CONTEXT_IRI = "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld"
 EXAMPLES_DIR = REPOSITORY_ROOT / "examples"
 SPEC_TEMPLATE = REPOSITORY_ROOT / "respec" / "template.html"
 JSON_BLOCK = re.compile(r"```(?:json|jsonld|json-ld)\n(.*?)```", re.DOTALL)
