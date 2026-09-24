@@ -302,7 +302,7 @@ dprod:subjectOfDuty
   a owl:ObjectProperty ;
   dct:description "Party bearing the duty (must perform the action)."@en ;
   rdfs:comment
-    "The duty bearer. Sub-property of odrl:function for ODRL processor compatibility."@en ;
+    "The duty bearer. When omitted, the bearer defaults to the data product owner (dprod:dataProductOwner) of the data product the policy applies to. Sub-property of odrl:function for ODRL processor compatibility."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:subPropertyOf odrl:function ;
   rdfs:domain odrl:Duty ;
