@@ -145,6 +145,18 @@
               value: "DPROD Shapes --- RDF/XML",
               href: "dprod-shapes.rdf",
             },
+            {
+              value: "DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)",
+              href: "dprod-contracts.ttl",
+            },
+            {
+              value: "DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)",
+              href: "dprod-contracts-shapes.ttl",
+            },
+            {
+              value: "DPROD Data Contracts Profile --- RDF Turtle",
+              href: "dprod-contracts-prof.ttl",
+            },
           ],
         },
       ],
@@ -480,6 +492,11 @@
     and enables federated search across multiple sites using a uniform query mechanism and structure.
   </p>
   <p>
+    DPROD also defines an optional <a href="#data-contracts">Data Contracts</a> profile of the W3C Open
+    Digital Rights Language [[odrl-model]], with which the provider of a data product can publish the terms
+    on which it is offered, and a consumer can record the contract under which it is used.
+  </p>
+  <p>
     The namespace for DPROD terms is <code>https://ekgf.org/dprod/spec/develop/</code>
   </p>
   <p>
@@ -545,6 +562,14 @@
     A data product is conformant with this specification if it satisfies the [[SHACL]] constraints provided in the file
     <!--suppress HtmlUnknownTarget -->
     <a href="dprod-shapes.ttl">dprod-shapes.ttl</a>.
+  </p>
+  <p>
+    Support for the <a href="#data-contracts">Data Contracts</a> profile is optional. A data offer, data
+    contract or data use policy is conformant with this specification if it satisfies the [[SHACL]]
+    constraints provided in the file
+    <!--suppress HtmlUnknownTarget -->
+    <a href="dprod-contracts-shapes.ttl">dprod-contracts-shapes.ttl</a>, and an evaluator of such policies
+    is conformant if it produces the results defined by the profile's formal semantics.
   </p>
 </section>
 
@@ -636,6 +661,15 @@
     </tr>
     <tr>
       <td>
+        <code>dprod-contracts-shapes</code>
+      </td>
+      <td>
+        <code>https://ekgf.org/dprod/spec/develop/contracts/shapes/</code>
+      </td>
+      <td>[[dprod]]</td>
+    </tr>
+    <tr>
+      <td>
         <code>dcat</code>
       </td>
       <td>
@@ -706,6 +740,15 @@
         <code>http://www.w3.org/ns/shacl#</code>
       </td>
       <td>[[shacl]]</td>
+    </tr>
+    <tr>
+      <td>
+        <code>skos</code>
+      </td>
+      <td>
+        <code>http://www.w3.org/2004/02/skos/core#</code>
+      </td>
+      <td>[[skos-reference]]</td>
     </tr>
     <tr>
       <td>
@@ -899,6 +942,279 @@
 </section>
 
 
+<section id="data-contracts">
+  <h2>Data Contracts</h2>
+  <p>
+    A data product is only useful once someone can rely on it. The provider of a product commits to
+    deliver data on a schedule, to keep it conformant to a schema, and to give notice before it changes;
+    the consumer, in turn, agrees to use the data only in permitted ways and to meet obligations of its
+    own, such as reporting usage. In a Data Mesh these commitments are made between many autonomous teams,
+    so they need to be recorded in a form that machines can validate and evaluate, not just in prose.
+  </p>
+  <p>
+    DPROD Data Contracts is a profile of the W3C
+    <a href="https://www.w3.org/TR/odrl-model/">Open Digital Rights Language (ODRL) 2.2</a> [[odrl-model]]
+    for exactly this purpose. It uses ODRL's own terms for everything ODRL already defines: a policy, its
+    permissions, prohibitions and duties, the constraints on them, and the parties and assets they refer to.
+    DPROD adds vocabulary only where ODRL leaves behaviour undefined:
+  </p>
+  <ul class="blue-balls">
+    <li>
+      <strong>Two policy types.</strong> A <a href="#dataoffer"><code>dprod:DataOffer</code></a> is an
+      <code>odrl:Offer</code> published by a data provider. A
+      <a href="#datacontract"><code>dprod:DataContract</code></a> is an <code>odrl:Agreement</code> that
+      records a consumer's acceptance of exactly one offer, through
+      <a href="#acceptsoffer"><code>dprod:acceptsOffer</code></a>, and binds both parties.
+    </li>
+    <li>
+      <strong>Bilateral duties.</strong> ODRL duties fall on the assignee. In a data contract the provider
+      has duties too, so DPROD names the party that bears each duty
+      (<a href="#subjectofduty"><code>dprod:subjectOfDuty</code></a>) and the party it is owed to
+      (<a href="#objectofduty"><code>dprod:objectOfDuty</code></a>).
+    </li>
+    <li>
+      <strong>Schedules and deadlines.</strong> A duty may recur
+      (<a href="#recurrence"><code>dprod:recurrence</code></a>, an [[RFC5545]] recurrence rule) and each
+      instance has a fulfilment window (<a href="#deadline"><code>dprod:deadline</code></a>).
+    </li>
+    <li>
+      <strong>Authored status and computed state.</strong> A publisher records where an offer or contract is
+      in its lifecycle. An evaluator computes, from observable facts, whether each duty is pending, active,
+      fulfilled or violated (<a href="#dutystate"><code>dprod:dutyState</code></a>). The two are kept apart
+      on purpose.
+    </li>
+    <li>
+      <strong>Deterministic evaluation.</strong> Every operand a constraint refers to is bound to one
+      property on one normalised input (the authorisation request, a state-of-the-world snapshot, or the
+      evaluation context itself), prohibitions always win over permissions, and the same inputs always
+      produce the same decision.
+    </li>
+  </ul>
+  <p>
+    Because it is a proper ODRL profile, every DPROD data contract is a valid ODRL 2.2 policy. An ODRL
+    processor that knows nothing of DPROD can still read the permissions and prohibitions; a DPROD-aware
+    processor additionally enforces duty state, bilateral duties and the evaluation rules.
+  </p>
+  <p>
+    The profile is defined by three files, published alongside this document:
+    <a href="dprod-contracts.ttl">dprod-contracts.ttl</a> (the vocabulary),
+    <a href="dprod-contracts-shapes.ttl">dprod-contracts-shapes.ttl</a> (the [[SHACL]] constraints an
+    instance document must satisfy) and
+    <a href="dprod-contracts-prof.ttl">dprod-contracts-prof.ttl</a> (the profile declaration).
+    The normative evaluation semantics, which define what a conforming evaluator must compute, are
+    maintained in the
+    <a href="https://github.com/EKGF/dprod/blob/develop/dprod-contracts/docs/formal-semantics.md">formal
+    semantics</a> document; authoring guidance for contract writers and policy writers is in the
+    <a href="https://github.com/EKGF/dprod/tree/develop/dprod-contracts/docs">contracts documentation</a>.
+  </p>
+  <p class="note">
+    The Data Contracts profile is optional. A data product description conforms to DPROD whether or not it
+    carries any policy; an implementation that does process contracts must satisfy the contracts shapes as
+    stated in the <a href="#conformance">Conformance</a> section.
+  </p>
+</section>
+
+<section id="data-contract-model">
+  <h2>Data Contract Model</h2>
+  <p>
+    The figure below shows how the DPROD contract classes sit on top of ODRL. The upper part is ODRL 2.2 as
+    published by the W3C; DPROD's additions to those classes are shown in blue. The lower part is the DPROD
+    vocabulary itself.
+  </p>
+  <figure id="ContractModel">
+    <!--suppress HtmlUnknownTarget -->
+    <img alt="Information model for DPROD Data Contracts" src="./assets/dprod-contracts-model.svg">
+    <figcaption>
+      Overview of the DPROD Data Contracts model and its relationship with ODRL classes
+    </figcaption>
+  </figure>
+  <p>
+    A data product, or any of its datasets, distributions and data services, is an <code>odrl:Asset</code>
+    when it appears as the <code>odrl:target</code> of a policy. Teams and organisations are
+    <code>odrl:Party</code> instances. Both may be grouped into ODRL collections using
+    <code>odrl:partOf</code>; DPROD evaluates membership over the transitive closure of that property, so a
+    rule on a collection applies to everything in it.
+  </p>
+  <p>
+    The lifecycle of an offer or a contract is recorded with
+    <a href="#offerlifecyclestatus"><code>dprod:offerLifecycleStatus</code></a> and
+    <a href="#contractlifecyclestatus"><code>dprod:contractLifecycleStatus</code></a>. Both are
+    sub-properties of the core <code>dprod:lifecycleStatus</code> and take any <code>skos:Concept</code>;
+    DPROD ships <code>dprod:DataContractLifecycleStatus</code>, an optional concept scheme with the values
+    <code>dprod:Pending</code>, <code>dprod:Active</code>, <code>dprod:Fulfilled</code> and
+    <code>dprod:Violated</code>, which an enterprise may use, extend or replace.
+  </p>
+  <p>
+    A DPROD-aware evaluator answers the question "may this agent perform this action on this asset now?"
+    It never reads a live graph while doing so. Instead the caller assembles one immutable
+    <a href="#evaluationcontext"><code>dprod:EvaluationContext</code></a> holding the authorisation request,
+    a snapshot of the state of the world, the requesting agent and the clock. Each
+    <code>odrl:LeftOperand</code> used in a constraint declares which of those inputs it reads
+    (<code>dprod:operandSource</code>) and which single property it reads from it
+    (<code>dprod:operandProperty</code>). A value that is missing, ambiguous or of the wrong type is an
+    evaluation error rather than a silently false constraint. ODRL's own <code>odrl:dateTime</code> operand
+    is bound to the context clock, and <code>dprod:currentAgent</code> to the requesting agent.
+  </p>
+
+  <p>
+    In this example the Trading Data Team offers its Market Price Data product with a single provider duty
+    (deliver every 15 minutes, within 5 minutes of the scheduled time), one consumer permission and one
+    prohibition. The Analytics Team has accepted the offer for 2026; the contract names both parties and
+    links to the offer it accepts.
+  </p>
+
+  <pre id="eg-contract" class="example hljs json ekgfexample">
+  {
+    "@context": [
+      "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+      { "ex": "https://example.org/" }
+    ],
+    "@id": "ex:tradingMarketData2026",
+    "@type": "dprod:DataContract",
+    "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+    "odrl:assigner": "ex:tradingDataTeam",
+    "odrl:assignee": "ex:analyticsTeam",
+    "odrl:target": "ex:marketPrices",
+    "dprod:contractLifecycleStatus": "dprod:Active",
+    "dprod:effectiveDate": "2026-01-15T00:00:00Z",
+    "dprod:expirationDate": "2026-12-31T23:59:59Z",
+    "odrl:permission": {
+      "@type": "odrl:Permission",
+      "odrl:assignee": "ex:analyticsTeam",
+      "odrl:action": "odrl:display"
+    },
+    "dprod:acceptsOffer": {
+      "@id": "ex:marketDataFeed",
+      "@type": "dprod:DataOffer",
+      "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+      "odrl:assigner": "ex:tradingDataTeam",
+      "odrl:target": "ex:marketPrices",
+      "dprod:offerLifecycleStatus": "dprod:Active",
+      "odrl:obligation": {
+        "@type": "odrl:Duty",
+        "dprod:subjectOfDuty": "ex:tradingDataTeam",
+        "odrl:action": "ex:deliver",
+        "dprod:recurrence": "FREQ=MINUTELY;INTERVAL=15",
+        "dprod:deadline": { "@value": "PT5M", "@type": "xsd:duration" }
+      },
+      "odrl:permission": {
+        "@type": "odrl:Permission",
+        "odrl:action": "odrl:display"
+      },
+      "odrl:prohibition": {
+        "@type": "odrl:Prohibition",
+        "odrl:action": "odrl:distribute"
+      }
+    }
+  }
+  </pre>
+  <p class="note">
+    ODRL terms are used directly, with the <code>odrl:</code> prefix, in the same way DCAT terms are used
+    in a data product description; the published context declares which of them take resources, so a
+    value such as <code>"odrl:action": "odrl:display"</code> denotes an IRI. The offer is shown nested
+    inside the contract for readability. In practice a provider publishes the offer once, as its own
+    resource, and each contract that accepts it refers to it by identifier.
+    The full version of this example, with the domain vocabulary, the parties and the evaluated duty
+    instances, is in the <a href="#data-offer-and-contract">Data Offer and Contract</a> worked example.
+  </p>
+
+  <p class="note">
+    The following class definitions are driven by the contracts Shapes, in the same way as the core model
+    above. Only classes DPROD defines are listed here; the ODRL classes the profile reuses are defined by
+    [[odrl-model]], and the DPROD properties that extend them follow in the next section.
+  </p>
+
+  {% for cls in contract_classes %}
+  <section>
+    <h3 id="{{cls.html_id()}}">{{cls.name}}</h3>
+    <table class="def classdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="{{cls.href()}}">{{cls.axiom_iri_normalized}}</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    {% if cls.description is not none %}
+    <p>{{cls.description}}</p>
+    {% endif %}
+    {% if cls.comment is not none %}
+    <p>{{cls.comment}}</p>
+    {% endif %}
+    {% for prop in cls.properties.values() %}
+    <section>
+      <h4 id="{{cls.html_id()}}-{{prop.html_id()}}">{{prop.name}}</h4>
+      {% if prop.description is not none and prop.description != '' %}
+      <p>{{prop.description}}</p>
+      {% endif %}
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td>
+            <!--suppress HtmlUnknownTarget -->
+            <a href="{{prop.href()}}">{{prop.axiom_iri_normalized}}</a>
+          </td>
+        </tr>
+        {% if prop.label is not none and prop.label  != '' %}
+        <tr><th>Label:</th><td>{{prop.label}}</td></tr>
+        {% endif %}
+        {% if prop.comment is not none and prop.comment  != '' %}
+        <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
+        {% endif %}
+        {% if prop.message is not none and prop.message  != '' %}
+        <tr><th>Constraint:</th><td>{{prop.message}}</td></tr>
+        {% endif %}
+        <tr><th>Domain:</th><td>{{prop.html_domain()}}</td></tr>
+        <tr><th>Range:</th><td>{{prop.html_range()}}</td></tr>
+      </tbody>
+      </table>
+    </section>
+    {% endfor %}
+  </section>
+  {% endfor %}
+
+  <section id="odrl-extensions">
+    <h3>Properties extending ODRL classes</h3>
+    <p>
+      The properties below are defined by DPROD but apply to ODRL classes. They are what turns a generic
+      ODRL duty into a data-contract obligation, and a generic left operand into one an evaluator can
+      resolve deterministically. The <i>Domain</i> column names the ODRL class each property is used on.
+    </p>
+    {% for prop in contract_extension_properties %}
+    <section>
+      <h4 id="{{prop.html_id()}}">{{prop.name}}</h4>
+      {% if prop.description is not none %}
+      <p>{{prop.description}}</p>
+      {% endif %}
+      <table class="def propdef">
+      <tbody>
+        <tr>
+          <th>Identifier:</th>
+          <td><a href="{{prop.iri}}">{{prop.name}}</a></td>
+        </tr>
+        {% if prop.label is not none %}
+        <tr><th>Label:</th><td>{{prop.label}}</td></tr>
+        {% endif %}
+        {% if prop.comment is not none %}
+        <tr><th>Comment:</th><td>{{prop.comment}}</td></tr>
+        {% endif %}
+        <tr><th>Domain:</th><td><a href="{{prop.domain_iri}}">{{prop.domain}}</a></td></tr>
+        {% if prop.range is not none %}
+        <tr><th>Range:</th><td><a href="{{prop.range_iri}}">{{prop.range}}</a></td></tr>
+        {% endif %}
+      </tbody>
+      </table>
+    </section>
+    {% endfor %}
+  </section>
+
+</section>
+
+
 <section class="Examples">
   <h2>Worked Examples</h2>
   <p>This section contains some worked examples illustrating how to use [[dprod]] for some common use cases.
@@ -907,6 +1223,29 @@
   </p>
 
   {% for example in examples %}
+  <section>
+    <h3>{{example.name}}</h3>
+    <p>{{example.text}}</p>
+    {% if example.json is not none and example.json != '' %}
+    <pre class="hljs json ekgfexample"><code class="ekgfexample">{{example.json}}</code></pre>
+    {% endif %}
+  </section>
+  {% endfor %}
+</section>
+
+<section class="Examples" id="data-contract-examples">
+  <h2>Data Contract Worked Examples</h2>
+  <p>
+    This section illustrates the <a href="#data-contracts">Data Contracts</a> profile. The examples build on
+    one another: the first shows an offer and the contract that accepts it, and the later ones each pick
+    out one thing a contract or policy can express. All use the same fictional organisation, and each
+    document is self-contained, so the domain vocabulary it needs (actions, operands and concept values)
+    is declared inline under the <code>ex:</code> prefix. Every example validates against
+    <a href="dprod-contracts-shapes.ttl">dprod-contracts-shapes.ttl</a>. Like the examples above, this
+    part of the specification is generated from the accompanying machine-readable files.
+  </p>
+
+  {% for example in contract_examples %}
   <section>
     <h3>{{example.name}}</h3>
     <p>{{example.text}}</p>

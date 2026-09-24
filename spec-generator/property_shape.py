@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from rdflib import URIRef, Graph, Literal, RDFS, DCTERMS, SH
+from rdflib import URIRef, BNode, Graph, Literal, RDFS, DCTERMS, SH
 
 import node_shape
 from globals import debug, IGNORED_PROPERTY_SHAPE_PREDICATES, ontology_namespace_iri
@@ -117,6 +117,11 @@ class PropertyShape:
         """Return the id to be used in the generated HTML for this property"""
         if self.axiom_iri.__contains__(ontology_namespace_iri):
             return self.axiom_iri.replace(ontology_namespace_iri, '').lower()
+        if isinstance(self.shape_iri, BNode):
+            # An anonymous property shape has no stable name of its own; the
+            # contracts shapes use them throughout. Use the property's local
+            # name, which the template scopes with the class id.
+            return short_name(self.axiom_iri).lower()
         return self.shape_name.lower()
 
     def href(self):

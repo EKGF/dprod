@@ -1,0 +1,69 @@
+{
+  "@context": [
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    { "ex": "https://example.org/" }
+  ],
+  "@id": "ex:analyticsCustomerData2026",
+  "@type": "dprod:DataContract",
+  "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+  "odrl:assigner": "ex:dataPlatformTeam",
+  "odrl:assignee": "ex:analyticsTeam",
+  "dprod:contractLifecycleStatus": "dprod:Active",
+  "dprod:effectiveDate": "2026-02-01T00:00:00Z",
+  "dprod:expirationDate": "2026-12-31T23:59:59Z",
+  "dprod:acceptsOffer": {
+    "@id": "ex:customerApiV2",
+    "@type": "dprod:DataOffer",
+    "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+    "odrl:assigner": "ex:dataPlatformTeam",
+    "odrl:target": "ex:customerData",
+    "dprod:offerLifecycleStatus": "dprod:Active",
+    "dprod:effectiveDate": "2026-01-01T00:00:00Z",
+    "odrl:obligation": {
+      "@type": "odrl:Duty",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "odrl:action": "ex:deliver",
+      "dprod:recurrence": "FREQ=DAILY;BYHOUR=7;BYMINUTE=0",
+      "dprod:deadline": { "@value": "PT30M", "@type": "xsd:duration" }
+    },
+    "prov:wasRevisionOf": {
+      "@id": "ex:customerApiV1",
+      "@type": "dprod:DataOffer",
+      "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+      "odrl:assigner": "ex:dataPlatformTeam",
+      "odrl:target": "ex:customerData",
+      "dprod:offerLifecycleStatus": "dprod:Fulfilled",
+      "dprod:expirationDate": "2025-12-31T23:59:59Z",
+      "odrl:permission": { "@type": "odrl:Permission", "odrl:action": "odrl:use" }
+    }
+  },
+  "odrl:obligation": [
+    {
+      "@id": "ex:delivery-2026-02-04",
+      "@type": "odrl:Duty",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "dprod:objectOfDuty": "ex:analyticsTeam",
+      "odrl:action": "ex:deliver",
+      "dprod:deadline": { "@value": "2026-02-04T07:30:00Z", "@type": "xsd:dateTime" },
+      "dprod:dutyState": "dprod:Fulfilled"
+    },
+    {
+      "@id": "ex:delivery-2026-02-05",
+      "@type": "odrl:Duty",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "dprod:objectOfDuty": "ex:analyticsTeam",
+      "odrl:action": "ex:deliver",
+      "dprod:deadline": { "@value": "2026-02-05T07:30:00Z", "@type": "xsd:dateTime" },
+      "dprod:dutyState": "dprod:Violated"
+    },
+    {
+      "@id": "ex:delivery-2026-02-06",
+      "@type": "odrl:Duty",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "dprod:objectOfDuty": "ex:analyticsTeam",
+      "odrl:action": "ex:deliver",
+      "dprod:deadline": { "@value": "2026-02-06T07:30:00Z", "@type": "xsd:dateTime" },
+      "dprod:dutyState": "dprod:Pending"
+    }
+  ]
+}

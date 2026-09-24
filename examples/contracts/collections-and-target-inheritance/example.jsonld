@@ -1,0 +1,51 @@
+{
+  "@context": [
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    { "ex": "https://example.org/" }
+  ],
+  "@graph": [
+    {
+      "@id": "ex:tradingDivisionBundle2026",
+      "@type": "dprod:DataContract",
+      "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+      "odrl:assigner": "ex:dataPlatformTeam",
+      "odrl:assignee": "ex:tradingDivision",
+      "odrl:permission": {
+        "@type": "odrl:Permission",
+        "rdfs:label": "Every team in the Trading Division may read",
+        "odrl:assignee": "ex:tradingDivision",
+        "odrl:action": "odrl:read"
+      },
+      "dprod:acceptsOffer": {
+        "@id": "ex:marketDataBundle",
+        "@type": "dprod:DataOffer",
+        "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+        "odrl:assigner": "ex:dataPlatformTeam",
+        "odrl:target": [ "ex:marketPrices", "ex:referenceData", "ex:riskMetrics" ],
+        "odrl:permission": [
+          {
+            "@type": "odrl:Permission",
+            "rdfs:label": "Read: applies to all three targets",
+            "odrl:action": "odrl:read"
+          },
+          {
+            "@type": "odrl:Permission",
+            "rdfs:label": "Aggregate: applies to the bundle as a whole",
+            "odrl:action": "odrl:aggregate",
+            "odrl:target": "ex:marketDataBundleAsset"
+          }
+        ],
+        "odrl:prohibition": {
+          "@type": "odrl:Prohibition",
+          "rdfs:label": "No redistribution: applies to all three targets",
+          "odrl:action": "odrl:distribute"
+        }
+      }
+    },
+    { "@id": "ex:tradingDivision", "@type": "odrl:PartyCollection" },
+    { "@id": "ex:tradingDataTeam", "@type": "odrl:Party", "odrl:partOf": "ex:tradingDivision" },
+    { "@id": "ex:analyticsTeam", "@type": "odrl:Party", "odrl:partOf": "ex:tradingDivision" },
+    { "@id": "ex:referenceData", "@type": "odrl:AssetCollection" },
+    { "@id": "ex:countryCodes", "@type": "odrl:Asset", "odrl:partOf": "ex:referenceData" }
+  ]
+}

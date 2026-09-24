@@ -1,0 +1,52 @@
+{
+  "@context": [
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    { "ex": "https://example.org/" }
+  ],
+  "@id": "ex:riskMetricsOffer",
+  "@type": "dprod:DataOffer",
+  "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+  "odrl:assigner": "ex:dataPlatformTeam",
+  "odrl:target": "ex:riskMetrics",
+  "odrl:obligation": [
+    {
+      "@type": "odrl:Duty",
+      "rdfs:label": "Delivery: every day at 07:00, within 30 minutes",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "odrl:action": "ex:deliver",
+      "dprod:recurrence": "FREQ=DAILY;BYHOUR=7;BYMINUTE=0",
+      "dprod:deadline": { "@value": "PT30M", "@type": "xsd:duration" }
+    },
+    {
+      "@type": "odrl:Duty",
+      "rdfs:label": "Schema conformance",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "odrl:action": "ex:conformTo",
+      "odrl:target": "ex:riskMetricsSchema"
+    },
+    {
+      "@type": "odrl:Duty",
+      "rdfs:label": "Change notification: 14 days notice",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "odrl:action": "ex:notify",
+      "odrl:target": "ex:schemaChanges",
+      "dprod:deadline": { "@value": "P14D", "@type": "xsd:duration" }
+    },
+    {
+      "@type": "odrl:Duty",
+      "rdfs:label": "Quality: data must be real-time",
+      "dprod:subjectOfDuty": "ex:dataPlatformTeam",
+      "odrl:action": "ex:conformTo",
+      "odrl:constraint": {
+        "@type": "odrl:Constraint",
+        "odrl:leftOperand": {
+          "@id": "ex:timeliness",
+          "dprod:operandSource": "dprod:requestSource",
+          "dprod:operandProperty": "ex:timeliness"
+        },
+        "odrl:operator": "odrl:eq",
+        "odrl:rightOperand": { "@id": "ex:realtime" }
+      }
+    }
+  ]
+}

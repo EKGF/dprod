@@ -72,6 +72,34 @@ EXTERNAL_IRI_VALUED_TERMS: tuple[str, ...] = (
     "dct:license",
     "dct:publisher",
     "dct:spatial",
+    # ODRL 2.2 terms the Data Contracts profile reuses (issue #258). With
+    # these coerced, a policy reads `"odrl:action": "odrl:display"` in the
+    # same way a data product reads `"dcat:endpointURL": "https://..."`.
+    # `odrl:rightOperand` is deliberately absent: it may be a literal.
+    "odrl:action",
+    "odrl:and",
+    "odrl:assignee",
+    "odrl:assigner",
+    "odrl:constraint",
+    "odrl:hasPolicy",
+    "odrl:includedIn",
+    "odrl:leftOperand",
+    "odrl:obligation",
+    "odrl:operator",
+    "odrl:or",
+    "odrl:partOf",
+    "odrl:permission",
+    "odrl:profile",
+    "odrl:prohibition",
+    "odrl:target",
+    "prov:wasRevisionOf",
+    "skos:inScheme",
+)
+
+#: DPROD properties that are IRI-valued but not declared ``owl:ObjectProperty``
+#: (``dprod:operandProperty`` names a property and is typed ``rdf:Property``).
+DPROD_IRI_VALUED_RDF_PROPERTIES: tuple[str, ...] = (
+    "dprod:operandProperty",
 )
 
 
@@ -101,7 +129,31 @@ class ApplicationContext:
 
     def coerced_terms(self) -> list[str]:
         """Every term that must carry ``"@type": "@id"``, in a stable order."""
-        return self.dprod_object_properties() + list(EXTERNAL_IRI_VALUED_TERMS)
+        return (
+            self.dprod_object_properties()
+            + list(DPROD_IRI_VALUED_RDF_PROPERTIES)
+            + list(EXTERNAL_IRI_VALUED_TERMS)
+        )
+
+    def dprod_typed_literal_properties(self) -> dict[str, str]:
+        """DPROD datatype properties with an XSD range, mapped to that range.
+
+        Lets an instance document write ``"dprod:effectiveDate": "2026-01-15T00:00:00Z"``
+        and still denote an ``xsd:dateTime``. ``xsd:string`` is the default
+        for a plain JSON string, so it is not listed. A property with no
+        declared range (``dprod:deadline`` accepts a dateTime or a duration)
+        is left alone and its values carry an explicit ``@type``.
+        """
+        namespace = globals.ontology_namespace_iri
+        typed: dict[str, str] = {}
+        for subject in self._graph.subjects(RDF.type, OWL.DatatypeProperty):
+            if not str(subject).startswith(namespace):
+                continue
+            rng = self._graph.value(subject, RDFS.range)
+            if rng is None or not str(rng).startswith(str(XSD)) or rng == XSD.string:
+                continue
+            typed[f"dprod:{str(subject)[len(namespace):]}"] = f"xsd:{str(rng)[len(str(XSD)):]}"
+        return dict(sorted(typed.items()))
 
     def as_dict(self) -> dict:
         """The context object, ready to be serialised."""
@@ -109,6 +161,8 @@ class ApplicationContext:
         context.update(PREFIXES)
         for term in self.coerced_terms():
             context[term] = {"@id": term, "@type": "@id"}
+        for term, datatype in self.dprod_typed_literal_properties().items():
+            context[term] = {"@id": term, "@type": datatype}
         return context
 
     def as_document(self) -> dict:

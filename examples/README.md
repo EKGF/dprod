@@ -24,6 +24,19 @@ which IRI-valued properties are resources rather than literals.
 - [Observability Ports](observability-ports/README.md) - Exposing monitoring and diagnostic data through a dedicated observability port.
 - [Core Data Product Extensions](core-data-product-extensions/README.md) - Extending a data product with additional metadata such as FIBO-based agreements.
 
+## Data Contracts
+
+Examples of the DPROD Data Contracts profile (ODRL 2.2). They render as their own
+section of the specification and validate against `dprod-contracts/dprod-contracts-shapes.ttl`.
+
+- [Data Offer and Contract](contracts/data-offer-and-contract/README.md) - A provider's offer, the consumer's contract that accepts it, and the evaluated duties.
+- [Provider Duties](contracts/provider-duties/README.md) - The four service-level duty patterns: delivery, schema conformance, change notification and quality.
+- [Lifecycle and Versioning](contracts/lifecycle-and-versioning/README.md) - Authored offer and contract status, evaluator-computed duty state, and offer version chains.
+- [Data Use Policy](contracts/data-use-policy/README.md) - An organisational policy with no named parties: purpose, classification and environment constraints, prohibitions, and logical combination.
+- [Collections and Target Inheritance](contracts/collections-and-target-inheritance/README.md) - Asset and party collections with `odrl:partOf`, multi-target offers, and rule-level target override.
+- [Evaluation Context](contracts/evaluation-context/README.md) - How operands bind to the request, the world snapshot and the built-in agent and clock, and what an evaluator is given.
+- [ODCS Mapping](contracts/odcs-mapping/README.md) - An Open Data Contract Standard document expressed as a DPROD data offer.
+
 ## Planned
 
 - Apply DCAT

@@ -21,7 +21,7 @@ source .venv/bin/activate
 python spec-generator/main.py
 ```
 
-There are no tests or linters configured.
+Tests run with `python -m unittest discover -s tests` (repository policy, example validation, spec metadata) and `python -m unittest discover -s dprod-contracts/tests` (contracts profile). The contracts tests need `pyshacl`, which is in `requirements.txt`. There are no linters configured.
 
 ## Architecture
 
