@@ -1036,7 +1036,7 @@ Both sets are included in the evaluation result, with independent lifecycle trac
 ```turtle
 @prefix ex:   <http://example.org/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
+@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
 ex:agreement a odrl:Agreement ;

@@ -3,7 +3,7 @@ from rdflib import Namespace, RDF, RDFS, SH, SKOS
 debug = False
 show_source = False
 
-ontology_namespace_iri = "https://www.omg.org/spec/DPROD/dprod/"
+ontology_namespace_iri = "https://www.omg.org/spec/DPROD/"
 DPROD = Namespace(ontology_namespace_iri)
 shapes_graph_ns_iri = "https://www.omg.org/spec/DPROD/shapes/"
 DPROD_SHAPES = Namespace(shapes_graph_ns_iri)

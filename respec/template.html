@@ -12,8 +12,7 @@
       // Working Groups ids at https://respec.org/w3c/groups/
       // group: "Semantic Data Products Working Group",
       // The OMG catalog entry, which always resolves to the newest published
-      // version. Not the ontology namespace IRI (.../DPROD/dprod/): that
-      // identifies the vocabulary, not a document, and 404s (issue #255).
+      // version. It is also the ontology namespace IRI.
       latestVersion: "https://www.omg.org/spec/DPROD/",
       // The one canonical continuously-updated draft, whichever branch this
       // build came from. A branch preview points readers at mainline; its own
@@ -157,9 +156,8 @@
         },
         dprod: {
           title: "Data Product Ontology",
-          // The OMG catalog entry, which resolves. The vocabulary namespace
-          // IRI (.../DPROD/dprod/) identifies the terms rather than a
-          // document, and does not currently dereference (issue #255).
+          // The OMG catalog entry, which resolves. It is also the vocabulary
+          // namespace IRI.
           href: "https://www.omg.org/spec/DPROD/",
           authors: [
             "Tony Seale",
@@ -482,7 +480,7 @@
     and enables federated search across multiple sites using a uniform query mechanism and structure.
   </p>
   <p>
-    The namespace for DPROD terms is <code>https://www.omg.org/spec/DPROD/dprod/</code>
+    The namespace for DPROD terms is <code>https://www.omg.org/spec/DPROD/</code>
   </p>
   <p>
     The suggested prefix for the DPROD namespace is <strong><code>dprod</code></strong>
@@ -623,7 +621,7 @@
         <code>dprod</code>
       </td>
       <td>
-        <code>https://www.omg.org/spec/DPROD/dprod/</code>
+        <code>https://www.omg.org/spec/DPROD/</code>
       </td>
       <td>[[dprod]]</td>
     </tr>

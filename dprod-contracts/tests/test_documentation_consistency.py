@@ -9,7 +9,7 @@ CONTRACTS_DIR = Path(__file__).resolve().parents[1]
 DOCS_DIR = CONTRACTS_DIR / "docs"
 
 DCT = Namespace("http://purl.org/dc/terms/")
-DPROD = Namespace("https://www.omg.org/spec/DPROD/dprod/")
+DPROD = Namespace("https://www.omg.org/spec/DPROD/")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 SH = Namespace("http://www.w3.org/ns/shacl#")
 
@@ -41,7 +41,7 @@ class DocumentationConsistencyTest(unittest.TestCase):
         specification = self.read("docs/specification.md")
         definition = str(
             self.ontology.value(
-                URIRef("https://www.omg.org/spec/DPROD/dprod/acceptsOffer"),
+                URIRef("https://www.omg.org/spec/DPROD/acceptsOffer"),
                 DCT.description,
             )
         )
