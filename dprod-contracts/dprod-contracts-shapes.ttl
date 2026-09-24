@@ -254,6 +254,22 @@ dprod-shapes:DutyShape
   sh:property dprod-shapes:DutyStatePropertyGroup ;
 .
 
+# Duty-only properties (#239). Their OWL domains infer odrl:Duty rather than
+# validate it, so a Permission or Prohibition carrying one would silently gain
+# a second, ODRL-disjoint rule type. Reject that explicitly: the subject must be
+# a Duty and must not be a Permission or Prohibition, whatever inference says.
+dprod-shapes:DutyOnlyPropertiesShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "duty-only properties shape" ;
+  sh:name "Duty-Only Properties Shape" ;
+  sh:targetSubjectsOf dprod:deadline, dprod:recurrence, dprod:subjectOfDuty, dprod:objectOfDuty ;
+  sh:class odrl:Duty ;
+  sh:not [ sh:class odrl:Permission ] ;
+  sh:not [ sh:class odrl:Prohibition ] ;
+  sh:message "dprod:deadline, dprod:recurrence, dprod:subjectOfDuty and dprod:objectOfDuty are duty-only: the subject must be an odrl:Duty and not an odrl:Permission or odrl:Prohibition." ;
+.
+
 
 ############################# Constraint Shapes #########################
 
