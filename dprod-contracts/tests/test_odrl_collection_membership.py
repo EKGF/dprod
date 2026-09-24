@@ -11,7 +11,7 @@ ONTOLOGY_FILE = CONTRACTS_DIR / "dprod-contracts.ttl"
 SHAPES_FILE = CONTRACTS_DIR / "dprod-contracts-shapes.ttl"
 FORMAL_SEMANTICS_FILE = CONTRACTS_DIR / "docs" / "formal-semantics.md"
 
-DPROD = Namespace("https://www.omg.org/spec/DPROD/")
+DPROD = Namespace("https://ekgf.org/dprod/spec/develop/")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 
 MEMBERSHIP_MESSAGE = (
@@ -29,7 +29,7 @@ class OdrlCollectionMembershipTest(unittest.TestCase):
     def validate(self, statements: str):
         data = Graph().parse(
             data=f"""
-                @prefix dprod: <https://www.omg.org/spec/DPROD/> .
+                @prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
                 @prefix ex: <https://example.org/> .
                 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
 

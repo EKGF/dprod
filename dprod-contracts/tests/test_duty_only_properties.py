@@ -20,7 +20,7 @@ ONTOLOGY_FILE = CONTRACTS_DIR / "dprod-contracts.ttl"
 
 PREFIXES = """
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod: <https://www.omg.org/spec/DPROD/> .
+@prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <urn:dprod:test:party> a odrl:Party .
@@ -53,7 +53,7 @@ VALID_DUTIES = PREFIXES + """
     dprod:objectOfDuty <urn:dprod:test:party> .
 
 <urn:dprod:test:offer> a odrl:Offer ;
-    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
     odrl:assigner <urn:dprod:test:party> ;
     odrl:obligation <urn:dprod:test:namedDuty> ;
     odrl:obligation [

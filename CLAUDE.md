@@ -46,7 +46,7 @@ The spec generator (`spec-generator/main.py`) produces the specification HTML an
 
 ### Namespace
 
-The canonical namespace is `https://www.omg.org/spec/DPROD/`. The shapes namespace is `https://www.omg.org/spec/DPROD/shapes/`. These are defined in `globals.py`.
+The canonical namespace is `https://ekgf.org/dprod/spec/develop/`. The shapes namespace is `https://ekgf.org/dprod/spec/develop/shapes/`. These are defined in `globals.py`.
 
 ## Branch Model and Git Workflow
 

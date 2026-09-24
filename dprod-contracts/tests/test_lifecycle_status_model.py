@@ -14,10 +14,10 @@ CONTRACTS_ONTOLOGY_FILE = CONTRACTS_DIR / "dprod-contracts.ttl"
 CONTRACTS_SHAPES_FILE = CONTRACTS_DIR / "dprod-contracts-shapes.ttl"
 FORMAL_SEMANTICS_FILE = CONTRACTS_DIR / "docs" / "formal-semantics.md"
 
-DPROD = Namespace("https://www.omg.org/spec/DPROD/")
-DPROD_SHAPES = Namespace("https://www.omg.org/spec/DPROD/shapes/")
+DPROD = Namespace("https://ekgf.org/dprod/spec/develop/")
+DPROD_SHAPES = Namespace("https://ekgf.org/dprod/spec/develop/shapes/")
 DPROD_CONTRACTS_SHAPES = Namespace(
-    "https://www.omg.org/spec/DPROD/contracts/shapes/"
+    "https://ekgf.org/dprod/spec/develop/contracts/shapes/"
 )
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 EX = Namespace("https://example.org/")
@@ -210,7 +210,7 @@ class LifecycleStatusValidationTest(unittest.TestCase):
     def validate(self, lifecycle_statement: str):
         data = Graph().parse(
             data=f"""
-                @prefix dprod: <https://www.omg.org/spec/DPROD/> .
+                @prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
                 @prefix ex: <https://example.org/> .
                 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
                 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
@@ -218,7 +218,7 @@ class LifecycleStatusValidationTest(unittest.TestCase):
                 ex:status a skos:Concept .
                 ex:offer
                     a dprod:DataOffer ;
-                    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+                    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
                     odrl:assigner ex:provider ;
                     odrl:permission [
                         a odrl:Permission ;

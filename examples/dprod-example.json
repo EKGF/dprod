@@ -7,7 +7,7 @@
       "dct:title": "PermId Data Product",
       "dct:description": "LSEG is making available its Permanent Identifiers, or PermIDs, and the associated entity masters and metadata to the market. PermIDs are open, permanent and universal identifiers where underlying attributes capture the context of the identity they each represent.",
       "dprod:dataProductOwner": "https://www.linkedin.com/in/olibage/",
-      "dprod:dataProductLifecycleStatus": "https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume",
+      "dprod:dataProductLifecycleStatus": "https://ekgf.org/dprod/spec/develop/data/lifecycle-status/Consume",
       "dprod:outputPort": {
         "@id": "https://www.ekgf.org/data/dataservice/permid-organization",
         "@type": "dcat:DataService",
@@ -35,7 +35,7 @@
       "dct:title": "GLEIF Data Product",
       "dct:description": "GLEIF makes available the Global LEI Index. This is the only global online source that provides open, standardized and high quality legal entity reference data. By doing so, GLEIF enables people and businesses to make smarter, less costly and more reliable decisions about who to do business with.",
       "dprod:dataProductOwner": "https://www.linkedin.com/in/peterivett/",
-      "dprod:dataProductLifecycleStatus": "https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume",
+      "dprod:dataProductLifecycleStatus": "https://ekgf.org/dprod/spec/develop/data/lifecycle-status/Consume",
       "dprod:outputPort": [
         {
           "@id": "https://www.ekgf.org/data/dataservice/gleif-l1",
@@ -81,7 +81,7 @@
       "dct:title": "Legal Entity Data Product",
       "dct:description": "A consolidated view of legal entities, built by combining the GLEIF Level 1 reference data with LSEG PermID organization data. It illustrates a data product whose input ports are the output ports of two upstream data products.",
       "dprod:dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
-      "dprod:dataProductLifecycleStatus": "https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume",
+      "dprod:dataProductLifecycleStatus": "https://ekgf.org/dprod/spec/develop/data/lifecycle-status/Consume",
       "dprod:inputPort": [
         "https://www.ekgf.org/data/dataservice/gleif-l1",
         "https://www.ekgf.org/data/dataservice/permid-organization"

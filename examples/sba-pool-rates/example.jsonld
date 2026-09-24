@@ -11,7 +11,7 @@
   "dct:title": "SBA Pool Rates",
   "dct:description": "Rates for SBA Pool that are Mortgage Backed Securities. The data product is provided through 3 ports, one of them proving all SBA pool rates through a query to a database, another port providing EMEA only rates through an api and another one providing US only rates through a Kafka topic",
   "dprod:dataProductOwner": "https://www.schema.xxx/person/johnSmith",
-  "dprod:dataProductLifecycleStatus": "https://www.omg.org/spec/DPROD/data/lifecycle-status/Consume",
+  "dprod:dataProductLifecycleStatus": "https://ekgf.org/dprod/spec/develop/data/lifecycle-status/Consume",
   "dprod:outputPort": [
     {
       "@id": "https://y.com/service/sba-pool-rate-tabular-prod1",

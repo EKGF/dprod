@@ -1,7 +1,7 @@
 # Contributing
 
 This document provides guidelines for contributing to the
-[Data Product (DPROD)](https://www.omg.org/spec/DPROD/) specification
+[Data Product (DPROD)](https://ekgf.org/dprod/spec/develop/) specification
 using a Git workflow designed for issue-based development and a formal
 OMG balloting process.
 

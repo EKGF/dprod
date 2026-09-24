@@ -23,8 +23,8 @@ This document is a vocabulary reference for implementers. It defines every class
 
 ```turtle
 @prefix odrl:        <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/> .
-@prefix dprod-shapes: <https://www.omg.org/spec/DPROD/contracts/shapes/> .
+@prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix dprod-shapes: <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
 @prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:         <http://www.w3.org/2002/07/owl#> .
@@ -97,7 +97,7 @@ The formal evaluator may also use these concept IRIs as `dprod:dutyState` values
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -134,7 +134,7 @@ ex:contract a dprod:DataOffer ;
 
 ```turtle
 ex:subscription a dprod:DataContract ;
-    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;

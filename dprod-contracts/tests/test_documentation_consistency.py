@@ -9,13 +9,13 @@ CONTRACTS_DIR = Path(__file__).resolve().parents[1]
 DOCS_DIR = CONTRACTS_DIR / "docs"
 
 DCT = Namespace("http://purl.org/dc/terms/")
-DPROD = Namespace("https://www.omg.org/spec/DPROD/")
+DPROD = Namespace("https://ekgf.org/dprod/spec/develop/")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 SH = Namespace("http://www.w3.org/ns/shacl#")
 
-CONTRACTS_ONTOLOGY = URIRef("https://www.omg.org/spec/DPROD/contracts/")
-DPROD_PROFILE = URIRef("https://www.omg.org/spec/DPROD/")
-SET_SHAPE = URIRef("https://www.omg.org/spec/DPROD/contracts/shapes/SetShape")
+CONTRACTS_ONTOLOGY = URIRef("https://ekgf.org/dprod/spec/develop/contracts/")
+DPROD_PROFILE = URIRef("https://ekgf.org/dprod/spec/develop/")
+SET_SHAPE = URIRef("https://ekgf.org/dprod/spec/develop/contracts/shapes/SetShape")
 
 
 class DocumentationConsistencyTest(unittest.TestCase):
@@ -41,7 +41,7 @@ class DocumentationConsistencyTest(unittest.TestCase):
         specification = self.read("docs/specification.md")
         definition = str(
             self.ontology.value(
-                URIRef("https://www.omg.org/spec/DPROD/acceptsOffer"),
+                URIRef("https://ekgf.org/dprod/spec/develop/acceptsOffer"),
                 DCT.description,
             )
         )

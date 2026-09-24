@@ -11,7 +11,7 @@ ONTOLOGY_PATH = CONTRACTS / "dprod-contracts.ttl"
 SHAPES_PATH = CONTRACTS / "dprod-contracts-shapes.ttl"
 FORMAL_SEMANTICS_PATH = CONTRACTS / "docs" / "formal-semantics.md"
 
-DPROD = Namespace("https://www.omg.org/spec/DPROD/")
+DPROD = Namespace("https://ekgf.org/dprod/spec/develop/")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 PROV = Namespace("http://www.w3.org/ns/prov#")
 
@@ -106,7 +106,7 @@ class EvaluationContextValidationTest(unittest.TestCase):
     def validate_operand(self, operand_definition: str):
         data = Graph().parse(
             data=f"""
-                @prefix dprod: <https://www.omg.org/spec/DPROD/> .
+                @prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
                 @prefix ex: <https://example.com/> .
                 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
                 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -133,7 +133,7 @@ class EvaluationContextValidationTest(unittest.TestCase):
     def validate_context(self, context_definition: str):
         data = Graph().parse(
             data=f"""
-                @prefix dprod: <https://www.omg.org/spec/DPROD/> .
+                @prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
                 @prefix ex: <https://example.com/> .
                 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
                 @prefix prov: <http://www.w3.org/ns/prov#> .
@@ -216,7 +216,7 @@ class EvaluationContextValidationTest(unittest.TestCase):
     def test_obsolete_runtime_reference_type_is_rejected(self) -> None:
         data = Graph().parse(
             data="""
-                @prefix dprod: <https://www.omg.org/spec/DPROD/> .
+                @prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
                 @prefix ex: <https://example.com/> .
 
                 ex:unknown a dprod:RuntimeReference .

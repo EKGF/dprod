@@ -38,7 +38,7 @@ const JSONLD_SNIPPET = `{
 
 const CITATION = `Object Management Group (OMG). Data Product Ontology (DPROD), Version 1.0.
 OMG Document Number: dtc/2024-09-01.
-https://www.omg.org/spec/DPROD/`;
+https://ekgf.org/dprod/spec/develop/`;
 
 export default function AdoptPage() {
   return (
