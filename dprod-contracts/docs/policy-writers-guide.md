@@ -537,7 +537,7 @@ odrl:obligation [
 ## 10. Policy Review Checklist
 
 1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/>`
-2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
+2. Conflict strategy defaults to `odrl:conflict odrl:prohibit`, inherited from the profile; declare `odrl:conflict` on a policy only to override that default
 3. A policy-level `odrl:target` is optional; when present it supplies the inherited target for rules that omit one
 4. Each permission and prohibition has exactly one `odrl:action` and at most one rule-level `odrl:target`; a rule with neither its own nor an inherited target applies to any asset
 5. Each duty has exactly one `odrl:action`

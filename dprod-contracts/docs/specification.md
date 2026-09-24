@@ -442,7 +442,7 @@ DPROD Contracts restricts certain ODRL features:
 
 | Feature | Status | Reason |
 |---------|--------|--------|
-| `odrl:conflict` | Fixed to `odrl:prohibit` at profile level | Deterministic conflict resolution; declared once in `dprod-contracts-prof.ttl` |
+| `odrl:conflict` | Defaults to `odrl:prohibit` at profile level; a policy may override | Prohibition wins unless a policy declares its own `odrl:conflict`; the default is declared once in `dprod-contracts-prof.ttl` |
 | `odrl:xone` | Rejected | Noted as future extension |
 | `odrl:remedy` | Rejected | Noted as future extension |
 | `odrl:consequence` | Rejected | Noted as future extension |

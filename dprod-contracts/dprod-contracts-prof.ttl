@@ -32,6 +32,9 @@ odrl:core
     one-hop operand bindings over normalized immutable input nodes, and logical negation."""@en ;
   prof:isProfileOf odrl:core ;
   prof:hasToken "dprod"^^xsd:token ;
+  # Default conflict strategy: if a permission and a prohibition both match,
+  # the prohibition wins. A policy may declare its own odrl:conflict to
+  # override this default for that policy.
   odrl:conflict odrl:prohibit ;
   prof:hasResource [
     a prof:ResourceDescriptor ;

@@ -34,7 +34,7 @@ See [examples/](examples/) for complete working policies:
 |-----------|----------|-----------------|
 | Duty state | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
-| Conflict resolution | Configurable | Fixed: Prohibition > Permission |
+| Conflict resolution | Configurable | Default: Prohibition > Permission; per-policy override allowed |
 | Evaluation order | Undefined | Deterministic left-to-right |
 | Operand resolution | Implicit | Explicit source + property bindings over normalized inputs |
 | Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |

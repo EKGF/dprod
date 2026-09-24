@@ -550,7 +550,7 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 ## Validation Checklist
 
 1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/>`
-2. Conflict strategy (`odrl:conflict odrl:prohibit`) is inherited from the profile -- do not repeat per-policy
+2. Conflict strategy defaults to `odrl:conflict odrl:prohibit`, inherited from the profile; declare `odrl:conflict` on a policy only to override that default
 3. DataOffer has `odrl:assigner` (provider)
 4. DataContract has both `odrl:assigner` and `odrl:assignee`
 5. DataContract has `dprod:acceptsOffer` referencing a DataOffer

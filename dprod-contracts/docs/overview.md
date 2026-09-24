@@ -117,7 +117,7 @@ DPROD Contracts uses ODRL's three rule types directly:
 | `odrl:Duty` | Requires an action | "Provider must deliver data daily by 06:30" |
 | `odrl:Prohibition` | Denies access | "No external distribution" |
 
-Prohibitions always override permissions (fixed conflict resolution: `odrl:prohibit`).
+Prohibitions override permissions by default (profile-level `odrl:conflict odrl:prohibit`); a policy may declare its own `odrl:conflict` to override.
 
 ### Constraint
 
@@ -197,7 +197,7 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 |--------|----------|-----------------|
 | Duty lifecycle | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Agreement evaluation | Assignee duties only | Both assigner and assignee duties (bilateral) |
-| Conflict resolution | Configurable | Fixed: Prohibition > Permission |
+| Conflict resolution | Configurable | Default: Prohibition > Permission; per-policy override allowed |
 | Evaluation order | Undefined | Deterministic left-to-right |
 | Operand resolution | Implicit | One-hop source + property bindings over normalized inputs |
 | Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |
