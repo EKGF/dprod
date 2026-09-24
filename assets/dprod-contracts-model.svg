@@ -1,0 +1,132 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="1480" height="900" viewBox="0 0 1480 900">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10" fill="none" stroke="#0055FF" stroke-width="1.5"/></marker></defs>
+<rect x="0" y="0" width="1480" height="900" fill="#ffffff"/>
+<rect x="10" y="10" width="1460" height="560" fill="#ffffff" stroke="#000000"/>
+<rect x="10" y="10" width="1460" height="40" fill="#ffffff" stroke="#000000"/>
+<text x="740.0" y="30" font-family="Arial" font-size="26px" font-weight="bold" text-anchor="middle" dominant-baseline="central">ODRL 2.2</text>
+<rect x="10" y="620" width="1460" height="270" fill="#ffffff" stroke="#0044CC"/>
+<rect x="10" y="620" width="1460" height="40" fill="#ffffff" stroke="#0044CC"/>
+<text x="740.0" y="640" font-family="Arial" font-size="26px" font-weight="bold" text-anchor="middle" dominant-baseline="central">DPROD</text>
+<rect x="60" y="80" width="250" height="192" fill="#ffffff" stroke="#000000"/>
+<line x1="60" y1="110" x2="310" y2="110" stroke="#000000"/>
+<text x="185.0" y="95.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Policy</text>
+<text x="68" y="125.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: profile</text>
+<text x="68" y="147.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: assigner</text>
+<text x="68" y="169.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: assignee</text>
+<text x="68" y="191.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: target</text>
+<text x="68" y="213.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: permission</text>
+<text x="68" y="235.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: prohibition</text>
+<text x="68" y="257.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: obligation</text>
+<rect x="60" y="360" width="110" height="38" fill="#ffffff" stroke="#000000"/>
+<line x1="60" y1="390" x2="170" y2="390" stroke="#000000"/>
+<text x="115.0" y="375.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Offer</text>
+<rect x="200" y="360" width="130" height="38" fill="#ffffff" stroke="#000000"/>
+<line x1="200" y1="390" x2="330" y2="390" stroke="#000000"/>
+<text x="265.0" y="375.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Agreement</text>
+<rect x="440" y="80" width="230" height="126" fill="#ffffff" stroke="#000000"/>
+<line x1="440" y1="110" x2="670" y2="110" stroke="#000000"/>
+<text x="555.0" y="95.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Rule</text>
+<text x="448" y="125.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: action</text>
+<text x="448" y="147.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: target</text>
+<text x="448" y="169.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: assignee</text>
+<text x="448" y="191.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: constraint</text>
+<rect x="380" y="360" width="130" height="38" fill="#ffffff" stroke="#000000"/>
+<line x1="380" y1="390" x2="510" y2="390" stroke="#000000"/>
+<text x="445.0" y="375.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Permission</text>
+<rect x="530" y="360" width="130" height="38" fill="#ffffff" stroke="#000000"/>
+<line x1="530" y1="390" x2="660" y2="390" stroke="#000000"/>
+<text x="595.0" y="375.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Prohibition</text>
+<rect x="690" y="300" width="230" height="148" fill="#ffffff" stroke="#000000"/>
+<line x1="690" y1="330" x2="920" y2="330" stroke="#000000"/>
+<text x="805.0" y="315.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Duty</text>
+<text x="698" y="345.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: subjectOfDuty</text>
+<text x="698" y="367.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: objectOfDuty</text>
+<text x="698" y="389.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: deadline</text>
+<text x="698" y="411.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: recurrence</text>
+<text x="698" y="433.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: dutyState</text>
+<rect x="980" y="80" width="220" height="104" fill="#ffffff" stroke="#000000"/>
+<line x1="980" y1="110" x2="1200" y2="110" stroke="#000000"/>
+<text x="1090.0" y="95.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Constraint</text>
+<text x="988" y="125.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: leftOperand</text>
+<text x="988" y="147.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: operator</text>
+<text x="988" y="169.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: rightOperand</text>
+<rect x="1240" y="80" width="210" height="104" fill="#ffffff" stroke="#000000"/>
+<line x1="1240" y1="110" x2="1450" y2="110" stroke="#000000"/>
+<text x="1345.0" y="95.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">LogicalConstraint</text>
+<text x="1248" y="125.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: and</text>
+<text x="1248" y="147.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: or</text>
+<text x="1248" y="169.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: not</text>
+<rect x="980" y="300" width="240" height="82" fill="#ffffff" stroke="#000000"/>
+<line x1="980" y1="330" x2="1220" y2="330" stroke="#000000"/>
+<text x="1100.0" y="315.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">LeftOperand</text>
+<text x="988" y="345.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: operandSource</text>
+<text x="988" y="367.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: operandProperty</text>
+<rect x="1260" y="300" width="190" height="60" fill="#ffffff" stroke="#000000"/>
+<line x1="1260" y1="330" x2="1450" y2="330" stroke="#000000"/>
+<text x="1355.0" y="315.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Asset</text>
+<text x="1268" y="345.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: partOf</text>
+<rect x="1000" y="450" width="190" height="60" fill="#ffffff" stroke="#000000"/>
+<line x1="1000" y1="480" x2="1190" y2="480" stroke="#000000"/>
+<text x="1095.0" y="465.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">Party</text>
+<text x="1008" y="495.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">+odrl: partOf</text>
+<rect x="60" y="700" width="250" height="104" fill="#ffffff" stroke="#000000"/>
+<line x1="60" y1="730" x2="310" y2="730" stroke="#000000"/>
+<text x="185.0" y="715.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">DataOffer</text>
+<text x="68" y="745.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: offerLifecycleStatus</text>
+<text x="68" y="767.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: effectiveDate</text>
+<text x="68" y="789.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: expirationDate</text>
+<rect x="380" y="700" width="270" height="126" fill="#ffffff" stroke="#000000"/>
+<line x1="380" y1="730" x2="650" y2="730" stroke="#000000"/>
+<text x="515.0" y="715.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">DataContract</text>
+<text x="388" y="745.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: acceptsOffer</text>
+<text x="388" y="767.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: contractLifecycleStatus</text>
+<text x="388" y="789.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: effectiveDate</text>
+<text x="388" y="811.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: expirationDate</text>
+<rect x="980" y="700" width="240" height="126" fill="#ffffff" stroke="#000000"/>
+<line x1="980" y1="730" x2="1220" y2="730" stroke="#000000"/>
+<text x="1100.0" y="715.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">EvaluationContext</text>
+<text x="988" y="745.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: request</text>
+<text x="988" y="767.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: state</text>
+<text x="988" y="789.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: agent</text>
+<text x="988" y="811.0" font-family="Arial" font-size="15px" fill="#0044CC" dominant-baseline="central">+dprod: clock</text>
+<rect x="1260" y="700" width="190" height="104" fill="#ffffff" stroke="#000000"/>
+<line x1="1260" y1="730" x2="1450" y2="730" stroke="#000000"/>
+<text x="1355.0" y="715.0" font-family="Arial" font-size="17px" font-weight="bold" fill="#000000" text-anchor="middle" dominant-baseline="central">DataProduct</text>
+<text x="1268" y="745.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central">(also Dataset,</text>
+<text x="1268" y="767.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central"> Distribution,</text>
+<text x="1268" y="789.0" font-family="Arial" font-size="15px" fill="#000000" dominant-baseline="central"> DataService)</text>
+<path d="M 115.0 360 L 115.0 340 L 185.0 340 L 185.0 284" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 177.0 284 L 193.0 284 L 185.0 272 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 265.0 360 L 265.0 340 L 185.0 340 L 185.0 284" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 177.0 284 L 193.0 284 L 185.0 272 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 445.0 360 L 445.0 340 L 555.0 340 L 555.0 218" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 547.0 218 L 563.0 218 L 555.0 206 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 595.0 360 L 595.0 340 L 555.0 340 L 555.0 218" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 547.0 218 L 563.0 218 L 555.0 206 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 805.0 300 L 805.0 270 L 555.0 270 L 555.0 218" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 547.0 218 L 563.0 218 L 555.0 206 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 185.0 700 L 185.0 640 L 115.0 640 L 115.0 410" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 107.0 410 L 123.0 410 L 115.0 398 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 515.0 700 L 515.0 660 L 265.0 660 L 265.0 410" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 257.0 410 L 273.0 410 L 265.0 398 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 1355.0 700 L 1355.0 660 L 1355.0 660 L 1355.0 372" fill="none" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 1347.0 372 L 1363.0 372 L 1355.0 360 Z" fill="#ffffff" stroke="#00D369" stroke-width="1.5"/>
+<path d="M 185.0 80 L 185.0 62 L 555.0 62 L 555.0 80" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="370.0" y="72" font-family="Arial" font-size="14px" fill="#000000" text-anchor="middle" dominant-baseline="central">+permission / prohibition / obligation</text>
+<path d="M 670 143.0 L 980 143.0" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="825.0" y="131.0" font-family="Arial" font-size="14px" fill="#000000" text-anchor="middle" dominant-baseline="central">+constraint</text>
+<path d="M 1090.0 184 L 1090.0 300" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="1098.0" y="242.0" font-family="Arial" font-size="14px" fill="#000000" text-anchor="start" dominant-baseline="central">+leftOperand</text>
+<path d="M 1345.0 184 L 1345.0 235 L 1150 235 L 1150 184" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="1247.5" y="250" font-family="Arial" font-size="14px" fill="#000000" text-anchor="middle" dominant-baseline="central">+and / or / not</text>
+<path d="M 670 183.0 L 1395.0 183.0 L 1395.0 300" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="1403.0" y="262" font-family="Arial" font-size="14px" fill="#000000" text-anchor="start" dominant-baseline="central">+target</text>
+<path d="M 125.0 272 L 125.0 555 L 985 555 L 985 480.0 L 1000 480.0" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="560" y="543" font-family="Arial" font-size="14px" fill="#000000" text-anchor="middle" dominant-baseline="central">+assigner / assignee</text>
+<path d="M 380 763.0 L 310 763.0" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="345.0" y="751.0" font-family="Arial" font-size="14px" fill="#000000" text-anchor="middle" dominant-baseline="central">+acceptsOffer</text>
+<path d="M 1100.0 700 L 1100.0 510" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="1108.0" y="620" font-family="Arial" font-size="14px" fill="#000000" text-anchor="start" dominant-baseline="central">+agent</text>
+<path d="M 920 404.0 L 1095.0 404.0 L 1095.0 450" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="1007.5" y="418.0" font-family="Arial" font-size="14px" fill="#000000" text-anchor="middle" dominant-baseline="central">+subjectOfDuty / objectOfDuty</text>
+</svg>

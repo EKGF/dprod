@@ -12,6 +12,9 @@ from jinja import generate_spec_page
 
 from globals import ontology_namespace_iri, shapes_graph_ns_iri, contracts_shapes_ns_iri, LINKEDIN
 from jsonld_context import ApplicationContext
+from contract_sections import (
+    split_node_shapes, contract_extension_properties,
+)
 
 
 def detect_branch() -> str:
@@ -96,13 +99,37 @@ def main():
     for class_uri in g.subjects():
         add_to_context(g, class_uri, node_shapes)
 
-    examples = load_examples("./examples/")
+    # Core DPROD examples and Data Contracts examples render as separate
+    # sections; the contracts ones live one level down (issue #258).
+    examples = load_examples("./examples/", black_list=["contracts"])
+    contract_examples = load_examples("./examples/contracts/")
+    # The contract examples build on one another, so they are ordered
+    # explicitly rather than by directory listing.
+    contract_example_order = [
+        'Data Offer And Contract',
+        'Provider Duties',
+        'Lifecycle And Versioning',
+        'Data Use Policy',
+        'Collections And Target Inheritance',
+        'Evaluation Context',
+        'Odcs Mapping',
+    ]
+    contract_examples.sort(key=lambda e: (
+        contract_example_order.index(e.name) if e.name in contract_example_order else len(contract_example_order),
+        e.name,
+    ))
+
+    # The contracts shapes file targets ODRL classes as well as DPROD ones.
+    # Only DPROD-defined classes are rendered as class definitions; ODRL
+    # classes are documented by ODRL itself and the profile's constraints on
+    # them are described in prose (issue #258).
+    core_node_shapes, contract_node_shapes = split_node_shapes(node_shapes)
 
     # TODO: Create a special annotation predicate called something like `preferredSortOrder` that has a value 
     # of type xsd:string and has values like '00001', '00002', etc. to allow for deviating from the default
     # alphabetical order of classes and properties based on the value of `rdfs:label`.
     # This would allow us to remove this DPROD specific list from the code.
-    classes = reorder_list(node_shapes.values(), [
+    classes = reorder_list(core_node_shapes, [
         'DataProduct',
         'Port',
         'DataService',
@@ -111,19 +138,12 @@ def main():
         'InformationSensitivityClassification',
         'SecuritySchemaType',
         'Enumeration',
-        # DPROD Contracts (ODRL 2.2 profile)
+    ])
+
+    contract_classes = reorder_list(contract_node_shapes, [
         'DataOffer',
         'DataContract',
-        'Policy',
-        'Set',
-        'Offer',
-        'Agreement',
-        'Permission',
-        'Prohibition',
-        'Duty',
-        'Constraint',
-        'LogicalConstraint',
-        'LeftOperand',
+        'EvaluationContext',
     ])
 
     if os.path.exists('dist'):
@@ -135,7 +155,10 @@ def main():
 
     generate_spec_page({
         'classes': classes,
+        'contract_classes': contract_classes,
+        'contract_extension_properties': contract_extension_properties(g),
         'examples': examples,
+        'contract_examples': contract_examples,
         'branch': detect_branch(),
         'branch_slug': branch_slug(detect_branch()),
         'publish_date': detect_publish_date(g),

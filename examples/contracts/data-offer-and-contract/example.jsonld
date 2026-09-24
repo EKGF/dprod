@@ -1,0 +1,61 @@
+{
+  "@context": [
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    { "ex": "https://example.org/" }
+  ],
+  "@id": "ex:tradingMarketData2026",
+  "@type": "dprod:DataContract",
+  "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+  "odrl:assigner": "ex:tradingDataTeam",
+  "odrl:assignee": "ex:analyticsTeam",
+  "odrl:target": "ex:marketPrices",
+  "dprod:contractLifecycleStatus": "dprod:Active",
+  "dprod:effectiveDate": "2026-01-15T00:00:00Z",
+  "dprod:expirationDate": "2026-12-31T23:59:59Z",
+  "odrl:permission": {
+    "@type": "odrl:Permission",
+    "odrl:assignee": "ex:analyticsTeam",
+    "odrl:action": "odrl:display"
+  },
+  "odrl:prohibition": {
+    "@type": "odrl:Prohibition",
+    "odrl:assignee": "ex:analyticsTeam",
+    "odrl:action": "odrl:distribute"
+  },
+  "dprod:acceptsOffer": {
+    "@id": "ex:marketDataFeed",
+    "@type": "dprod:DataOffer",
+    "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+    "odrl:assigner": "ex:tradingDataTeam",
+    "odrl:target": "ex:marketPrices",
+    "dprod:offerLifecycleStatus": "dprod:Active",
+    "odrl:obligation": [
+      {
+        "@type": "odrl:Duty",
+        "dprod:subjectOfDuty": "ex:tradingDataTeam",
+        "odrl:action": "ex:deliver",
+        "dprod:recurrence": "FREQ=MINUTELY;INTERVAL=15",
+        "dprod:deadline": { "@value": "PT5M", "@type": "xsd:duration" }
+      },
+      {
+        "@type": "odrl:Duty",
+        "dprod:subjectOfDuty": "ex:tradingDataTeam",
+        "odrl:action": "ex:conformTo",
+        "odrl:target": "ex:marketDataSchema"
+      },
+      {
+        "@type": "odrl:Duty",
+        "odrl:action": "ex:reportUsage",
+        "dprod:recurrence": "FREQ=MONTHLY;BYMONTHDAY=1",
+        "dprod:deadline": { "@value": "P5D", "@type": "xsd:duration" }
+      }
+    ],
+    "odrl:permission": [
+      { "@type": "odrl:Permission", "odrl:action": "odrl:display" },
+      { "@type": "odrl:Permission", "odrl:action": "odrl:derive" }
+    ],
+    "odrl:prohibition": [
+      { "@type": "odrl:Prohibition", "odrl:action": "odrl:distribute" }
+    ]
+  }
+}

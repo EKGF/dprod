@@ -21,7 +21,7 @@ source .venv/bin/activate
 python spec-generator/main.py
 ```
 
-There are no tests or linters configured.
+Tests run with `python -m unittest discover -s tests` (repository policy, example validation, spec metadata) and `python -m unittest discover -s dprod-contracts/tests` (contracts profile). The contracts tests need `pyshacl`, which is in `requirements.txt`. There are no linters configured.
 
 ## Architecture
 
@@ -46,7 +46,7 @@ The spec generator (`spec-generator/main.py`) produces the specification HTML an
 
 ### Namespace
 
-The canonical namespace is `https://www.omg.org/spec/DPROD/`. The shapes namespace is `https://www.omg.org/spec/DPROD/shapes/`. These are defined in `globals.py`.
+The canonical namespace is `https://ekgf.org/dprod/spec/develop/`. The shapes namespace is `https://ekgf.org/dprod/spec/develop/shapes/`. These are defined in `globals.py`.
 
 ## Branch Model and Git Workflow
 

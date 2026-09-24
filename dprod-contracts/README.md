@@ -34,7 +34,7 @@ See [examples/](examples/) for complete working policies:
 |-----------|----------|-----------------|
 | Duty state | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
-| Conflict resolution | Configurable | Fixed: Prohibition > Permission |
+| Conflict resolution | Configurable | Default: Prohibition > Permission; per-policy override allowed |
 | Evaluation order | Undefined | Deterministic left-to-right |
 | Operand resolution | Implicit | Explicit source + property bindings over normalized inputs |
 | Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
@@ -149,7 +149,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, EvaluationContext, operand bindings) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
+| `dprod:` | `https://ekgf.org/dprod/spec/develop/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, EvaluationContext, operand bindings) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
 
 ---
 

@@ -30,6 +30,7 @@ ARCHIVE_SPEC = (
 RETIRED_URLS = (
     "ekgf.github.io/dprod",
     "https://www.omg.org/spec/DPROD/dprod.ttl",
+    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
 )
 SPEC_BASE = "https://ekgf.org/dprod/spec/"
 

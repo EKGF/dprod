@@ -25,7 +25,7 @@ SPEC_TEMPLATE = REPOSITORY_ROOT / "respec" / "template.html"
 ARCHIVE_SPEC = (
     REPOSITORY_ROOT / "site" / "public" / "spec" / "archive" / "1.0" / "index.html"
 )
-ONTOLOGY_IRI = URIRef("https://www.omg.org/spec/DPROD/dprod/")
+ONTOLOGY_IRI = URIRef("https://ekgf.org/dprod/spec/develop/")
 ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 

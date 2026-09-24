@@ -1,0 +1,69 @@
+{
+  "@context": [
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    { "ex": "https://example.org/" }
+  ],
+  "@id": "ex:sellerDataContract",
+  "@type": "dprod:DataOffer",
+  "dct:description": "Views built on top of the seller tables. Predict sales over time.",
+  "dct:hasVersion": "1.1.0",
+  "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
+  "odrl:assigner": "ex:sellerDataTeam",
+  "odrl:target": "ex:sellerData",
+  "dprod:offerLifecycleStatus": "dprod:Active",
+  "dprod:effectiveDate": "2022-05-12T09:30:10-08:00",
+  "dprod:expirationDate": "2032-05-12T09:30:10-08:00",
+  "odrl:obligation": [
+    {
+      "@type": "odrl:Duty",
+      "rdfs:label": "slaProperties frequency + timeOfAvailability: daily, by 09:00",
+      "dprod:subjectOfDuty": "ex:sellerDataTeam",
+      "odrl:action": "ex:deliver",
+      "dprod:recurrence": "FREQ=DAILY;BYHOUR=9;BYMINUTE=0",
+      "dprod:deadline": { "@value": "PT1H", "@type": "xsd:duration" }
+    },
+    {
+      "@type": "odrl:Duty",
+      "rdfs:label": "quality nullValues mustBe 0, checked nightly",
+      "dprod:subjectOfDuty": "ex:sellerDataTeam",
+      "odrl:action": "ex:conformTo",
+      "dprod:recurrence": "FREQ=DAILY;BYHOUR=20;BYMINUTE=0",
+      "odrl:constraint": {
+        "@type": "odrl:Constraint",
+        "odrl:leftOperand": {
+          "@id": "ex:completeness",
+          "dprod:operandSource": "dprod:requestSource",
+          "dprod:operandProperty": "ex:completeness"
+        },
+        "odrl:operator": "odrl:eq",
+        "odrl:rightOperand": { "@value": "100", "@type": "xsd:decimal" }
+      }
+    },
+    {
+      "@type": "odrl:Duty",
+      "rdfs:label": "slaProperties retention: delete after 3 years",
+      "odrl:action": "odrl:delete",
+      "odrl:constraint": {
+        "@type": "odrl:Constraint",
+        "odrl:leftOperand": {
+          "@id": "ex:retentionPeriod",
+          "dprod:operandSource": "dprod:requestSource",
+          "dprod:operandProperty": "ex:retentionPeriod"
+        },
+        "odrl:operator": "odrl:gt",
+        "odrl:rightOperand": { "@value": "P3Y", "@type": "xsd:duration" }
+      }
+    }
+  ],
+  "odrl:permission": {
+    "@type": "odrl:Permission",
+    "rdfs:label": "roles: microstrategy_user_opr, access: read",
+    "odrl:assignee": "ex:reportingUsers",
+    "odrl:action": "odrl:read"
+  },
+  "odrl:prohibition": {
+    "@type": "odrl:Prohibition",
+    "rdfs:label": "description.limitations: no buyer information",
+    "odrl:action": "odrl:derive"
+  }
+}

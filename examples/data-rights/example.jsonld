@@ -1,6 +1,6 @@
 {
   "@context": [
-    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
     {
       "reg": "https://www.region.taxonomy/v/1/"
     }

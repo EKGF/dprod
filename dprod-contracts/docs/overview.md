@@ -19,12 +19,12 @@ DPROD Contracts is designed for organizations that need:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
+@prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     odrl:obligation [
@@ -46,12 +46,12 @@ A `dprod:DataContract` activates an offer, binding both parties:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
+@prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:agreement a dprod:DataContract ;
-    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:quantResearch ;
@@ -88,7 +88,7 @@ ex:agreement a dprod:DataContract ;
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://www.omg.org/spec/DPROD/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
     odrl:target ex:employeeData ;
     odrl:permission [
         a odrl:Permission ;
@@ -117,7 +117,7 @@ DPROD Contracts uses ODRL's three rule types directly:
 | `odrl:Duty` | Requires an action | "Provider must deliver data daily by 06:30" |
 | `odrl:Prohibition` | Denies access | "No external distribution" |
 
-Prohibitions always override permissions (fixed conflict resolution: `odrl:prohibit`).
+Prohibitions override permissions by default (profile-level `odrl:conflict odrl:prohibit`); a policy may declare its own `odrl:conflict` to override.
 
 ### Constraint
 
@@ -184,7 +184,7 @@ Domain Vocabulary
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://www.omg.org/spec/DPROD/dprod/` | Core extensions (lifecycle, operand resolution, contract types) |
+| `dprod:` | `https://ekgf.org/dprod/spec/develop/` | Core extensions (lifecycle, operand resolution, contract types) |
 | `ex:` | (domain-specific) | Domain actions, operands, and concept values |
 
 ---
@@ -197,7 +197,7 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 |--------|----------|-----------------|
 | Duty lifecycle | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Agreement evaluation | Assignee duties only | Both assigner and assignee duties (bilateral) |
-| Conflict resolution | Configurable | Fixed: Prohibition > Permission |
+| Conflict resolution | Configurable | Default: Prohibition > Permission; per-policy override allowed |
 | Evaluation order | Undefined | Deterministic left-to-right |
 | Operand resolution | Implicit | One-hop source + property bindings over normalized inputs |
 | Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |

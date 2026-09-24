@@ -22,7 +22,7 @@ An example of an agreement follows, that describes permission to use all the dat
 ```json
 {
   "@context": [
-    "https://www.omg.org/spec/DPROD/dprod-context.jsonld",
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
     {
       "reg": "https://www.region.taxonomy/v/1/"
     }

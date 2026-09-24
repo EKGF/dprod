@@ -1,0 +1,20 @@
+{
+  "@context": [
+    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    { "ex": "https://example.org/" }
+  ],
+  "@id": "ex:evaluation-2026-03-02-0915",
+  "@type": "dprod:EvaluationContext",
+  "dprod:agent": { "@id": "ex:alice", "@type": "odrl:Party" },
+  "dprod:clock": "2026-03-02T09:15:00Z",
+  "dprod:request": {
+    "odrl:assignee": "ex:alice",
+    "odrl:action": "odrl:use",
+    "odrl:target": "ex:marketPrices",
+    "ex:recipientType": { "@id": "ex:internal" }
+  },
+  "dprod:state": {
+    "@type": "prov:Entity",
+    "ex:marketOpen": true
+  }
+}

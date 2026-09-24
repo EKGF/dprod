@@ -754,15 +754,15 @@ Where `⊥` indicates no assignee specified (rule applies to any requesting agen
 
 ## 8. Conflict Resolution
 
-### 8.1 Strategy: Prohibition Overrides
+### 8.1 Strategy: Prohibition Overrides by Default
 
-DPROD Contracts uses a fixed conflict resolution strategy:
+DPROD Contracts uses the following conflict resolution strategy by default:
 
 ```
 Prohibition > Permission
 ```
 
-If both a prohibition and permission match, the prohibition wins. This strategy is not configurable in DPROD Contracts (RL2 offers configurable strategies).
+If both a prohibition and permission match, the prohibition wins. This default is declared once on the DPROD profile as `odrl:conflict odrl:prohibit`. A policy may override it by declaring its own `odrl:conflict` (for example `odrl:perm`), in which case that policy's strategy applies to its rules instead.
 
 ### 8.2 Algorithm
 
@@ -1036,7 +1036,7 @@ Both sets are included in the evaluation result, with independent lifecycle trac
 ```turtle
 @prefix ex:   <http://example.org/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
-@prefix dprod:    <https://www.omg.org/spec/DPROD/dprod/> .
+@prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 
 ex:agreement a odrl:Agreement ;

@@ -3,12 +3,12 @@ from rdflib import Namespace, RDF, RDFS, SH, SKOS
 debug = False
 show_source = False
 
-ontology_namespace_iri = "https://www.omg.org/spec/DPROD/dprod/"
+ontology_namespace_iri = "https://ekgf.org/dprod/spec/develop/"
 DPROD = Namespace(ontology_namespace_iri)
-shapes_graph_ns_iri = "https://www.omg.org/spec/DPROD/shapes/"
+shapes_graph_ns_iri = "https://ekgf.org/dprod/spec/develop/shapes/"
 DPROD_SHAPES = Namespace(shapes_graph_ns_iri)
 
-contracts_shapes_ns_iri = "https://www.omg.org/spec/DPROD/contracts/shapes/"
+contracts_shapes_ns_iri = "https://ekgf.org/dprod/spec/develop/contracts/shapes/"
 DPROD_CONTRACTS_SHAPES = Namespace(contracts_shapes_ns_iri)
 
 linkedin_ns_iri = "https://www.linkedin.com/in/"
