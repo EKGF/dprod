@@ -1,11 +1,14 @@
 # Examples
 
-All examples reference the published DPROD JSON-LD context and use **prefixed
-terms** (`dprod:outputPort`, `dct:title`) together with the JSON-LD keywords
-`@id` and `@type`. The context defines no bare-term aliases and no `@vocab`, so
-DPROD JSON can be combined with other JSON-LD contexts and an undefined term
-stays visibly undefined instead of being silently coined in the DPROD
-namespace. See issues #93 and #246.
+All examples reference `dprod-simple.jsonld`, the simple DPROD JSON-LD context,
+and are written in plain terms: `outputPort`, `title`, `id`, `type`. Each plain
+term maps to the same IRI and value coercion as its prefixed form in
+`dprod-context.jsonld`, so a document denotes the same graph whichever context it
+uses. Use the prefixed context (`dprod:outputPort`, `dct:title`, `@id`,
+`@type`) when combining DPROD with other JSON-LD contexts, where generic names
+such as `title` or `target` would collide. Neither context has an `@vocab`, so a
+misspelt term stays visibly undefined instead of being silently coined in the
+DPROD namespace. See issues #93 and #246.
 
 Every example here — the standalone files, the JSON-LD and Turtle snippets in
 each `README.md`, and the worked examples in the specification itself — is

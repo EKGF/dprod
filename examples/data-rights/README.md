@@ -22,27 +22,25 @@ An example of an agreement follows, that describes permission to use all the dat
 ```json
 {
   "@context": [
-    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
-    {
-      "reg": "https://www.region.taxonomy/v/1/"
-    }
+    "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
+    { "reg": "https://www.region.taxonomy/v/1/" }
   ],
-  "@id": "https://data.org/policy/examplePolicyA",
-  "@type": "odrl:Agreement",
-  "odrl:permission": [
+  "id": "https://data.org/policy/examplePolicyA",
+  "type": "Agreement",
+  "permission": [
     {
-      "odrl:target": { "@id": "https://data.org/data-product/equity-trade-xxx" },
-      "odrl:action": { "@id": "odrl:use" },
-      "odrl:assignee": {
-        "@id": "https://example.org/DataDepartment/emea-and-apac-staff",
-        "@type": "odrl:PartyCollection",
-        "odrl:refinement": [
+      "target": { "id": "https://data.org/data-product/equity-trade-xxx" },
+      "action": "use",
+      "assignee": {
+        "id": "https://example.org/DataDepartment/emea-and-apac-staff",
+        "type": "PartyCollection",
+        "refinement": [
           {
-            "odrl:leftOperand": { "@id": "odrl:spatial" },
-            "odrl:operator": { "@id": "odrl:isAnyOf" },
-            "odrl:rightOperand": [
-              { "@id": "reg:EMEA" },
-              { "@id": "reg:APAC" }
+            "leftOperand": "odrl:spatial",
+            "operator": "isAnyOf",
+            "rightOperand": [
+              { "id": "reg:EMEA" },
+              { "id": "reg:APAC" }
             ]
           }
         ]

@@ -1,48 +1,45 @@
 {
-  "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+  "@context": "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
   "@graph": [
     {
-      "@id": "https://y.com/derived-quality-measurementA",
-      "@type": "dqv:QualityMeasurement",
-      "dqv:value": 1,
-      "dqv:computedOn": {
-        "@id": "https://y.com/products/uk-bonds",
-        "@type": "dprod:DataProduct"
-      },
-      "dqv:isMeasurementOf": {
-        "@id": "https://y.com/metric/stale-dataset-count",
-        "@type": "dqv:Metric",
-        "rdfs:label": "Number of stale datasets"
+      "id": "https://y.com/derived-quality-measurementA",
+      "type": "QualityMeasurement",
+      "value": 1,
+      "computedOn": { "id": "https://y.com/products/uk-bonds", "type": "DataProduct" },
+      "isMeasurementOf": {
+        "id": "https://y.com/metric/stale-dataset-count",
+        "type": "Metric",
+        "label": "Number of stale datasets"
       }
     },
     {
-      "@id": "https://y.com/quality-measurement-B",
-      "@type": "dqv:QualityMeasurement",
-      "dqv:value": false,
-      "dqv:computedOn": {
-        "@id": "https://y.com/products/uk-bonds/yearlyPrices",
-        "@type": "dcat:Dataset"
+      "id": "https://y.com/quality-measurement-B",
+      "type": "QualityMeasurement",
+      "value": false,
+      "computedOn": {
+        "id": "https://y.com/products/uk-bonds/yearlyPrices",
+        "type": "Dataset"
       },
-      "dqv:isMeasurementOf": {
-        "@id": "https://y.com/metric/expected-distribution-frequency-achieved",
-        "@type": "dqv:Metric",
-        "rdfs:label": "Expected distribution frequency achieved"
+      "isMeasurementOf": {
+        "id": "https://y.com/metric/expected-distribution-frequency-achieved",
+        "type": "Metric",
+        "label": "Expected distribution frequency achieved"
       }
     },
     {
-      "@id": "https://y.com/products/uk-bonds",
-      "@type": "dprod:DataProduct",
-      "dprod:outputPort": {
-        "@id": "https://y.com/service/uk-bonds-quality-report",
-        "@type": "dcat:DataService",
-        "dcat:endpointURL": "https://y.com/uk-bonds/quality-report",
-        "dprod:isAccessServiceOf": {
-          "@id": "https://y.com/distribution/uk-bonds-quality-report",
-          "@type": "dcat:Distribution",
-          "dprod:isDistributionOf": {
-            "@id": "https://y.com/dataset/uk-bonds-quality-measurements",
-            "@type": "dcat:Dataset",
-            "dct:conformsTo": "http://www.w3.org/ns/dqv#QualityMeasurement"
+      "id": "https://y.com/products/uk-bonds",
+      "type": "DataProduct",
+      "outputPort": {
+        "id": "https://y.com/service/uk-bonds-quality-report",
+        "type": "DataService",
+        "endpointURL": "https://y.com/uk-bonds/quality-report",
+        "isAccessServiceOf": {
+          "id": "https://y.com/distribution/uk-bonds-quality-report",
+          "type": "Distribution",
+          "isDistributionOf": {
+            "id": "https://y.com/dataset/uk-bonds-quality-measurements",
+            "type": "Dataset",
+            "conformsTo": "http://www.w3.org/ns/dqv#QualityMeasurement"
           }
         }
       }

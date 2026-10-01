@@ -1,22 +1,22 @@
 {
-  "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
-  "@id": "https://y.com/products/equity-trade-xxx",
-  "@type": "dprod:DataProduct",
-  "dct:title": "Equity Trade XXX",
-  "dct:description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
-  "dprod:outputPort": {
-    "@id": "https://y.com/service/equity-trade-euronext-paris",
-    "@type": "dcat:DataService",
-    "dcat:endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
-    "dprod:isAccessServiceOf": {
-      "@id": "https://y.com/distribution/equity-trade-euronext-paris-parquet",
-      "@type": "dcat:Distribution",
-      "dct:format": "https://www.iana.org/assignments/media-types/application/vnd.apache.parquet",
-      "dprod:isDistributionOf": {
-        "@id": "https://y.com/dataset/equity-trade-euronext-paris",
-        "@type": "dcat:Dataset",
-        "dct:title": "Equity Trade Euronext Paris XXX",
-        "dct:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/BP/Process/FinancialContextAndProcess/SecuritiesTrade"
+  "@context": "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
+  "id": "https://y.com/products/equity-trade-xxx",
+  "type": "DataProduct",
+  "title": "Equity Trade XXX",
+  "description": "Trade data defining the outcome of equity trades between parties in different stock markets, where the terms are primarily reflected in the tradable product. Additionally, Trade includes attributes such as the trade date, transacting parties, and settlement terms. Some attributes, such as the parties, are already defined in the Party Product and are simply referenced in Trade",
+  "outputPort": {
+    "id": "https://y.com/service/equity-trade-euronext-paris",
+    "type": "DataService",
+    "endpointURL": "abfss://datasetsv1@demo.dfs.core.windows.net/demo/full/trade-euronext",
+    "isAccessServiceOf": {
+      "id": "https://y.com/distribution/equity-trade-euronext-paris-parquet",
+      "type": "Distribution",
+      "format": "https://www.iana.org/assignments/media-types/application/vnd.apache.parquet",
+      "isDistributionOf": {
+        "id": "https://y.com/dataset/equity-trade-euronext-paris",
+        "type": "Dataset",
+        "title": "Equity Trade Euronext Paris XXX",
+        "conformsTo": "https://spec.edmcouncil.org/fibo/ontology/BP/Process/FinancialContextAndProcess/SecuritiesTrade"
       }
     }
   }

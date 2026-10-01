@@ -23,6 +23,11 @@ Two consequences of that decision are deliberate and load-bearing:
   be reported, rather than being silently coined in the DPROD namespace.
 * There are no ``id`` / ``type`` aliases. Documents use the ``@id`` and ``@type``
   keywords directly.
+
+A second, convenience context, ``dprod-simple.jsonld`` (:class:`SimpleContext`),
+layers bare terms and the ``id`` / ``type`` aliases over this one for documents
+that use DPROD on its own. The examples are written against it. It still has no
+``@vocab``.
 """
 
 from rdflib import Graph, OWL, RDF, RDFS, SH, SKOS, XSD, DCAT, DCTERMS, PROV, URIRef
@@ -167,4 +172,96 @@ class ApplicationContext:
 
     def as_document(self) -> dict:
         """The full JSON-LD document written to ``dprod-context.jsonld``."""
+        return {"@context": self.as_dict()}
+
+
+#: Bare-term vocabularies for ``dprod-simple.jsonld``, highest priority first.
+#: When two vocabularies share a local name, the earlier one owns the bare term
+#: (``purpose`` is ``dprod:purpose``, not ``odrl:purpose``) and the other stays
+#: reachable through its prefix. DPROD's own terms are derived from the ontology
+#: and always come first.
+SIMPLE_EXTERNAL_TERMS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("dcat", (
+        "DataService", "Dataset", "Distribution", "accessService", "distribution",
+        "endpointDescription", "endpointURL", "servesDataset",
+    )),
+    ("dct", (
+        "conformsTo", "creator", "description", "format", "hasVersion", "identifier",
+        "issued", "license", "modified", "publisher", "spatial", "temporal", "title",
+    )),
+    ("rdfs", ("comment", "label")),
+    ("dqv", ("Metric", "QualityMeasurement", "computedOn", "isMeasurementOf", "value")),
+    ("prov", ("Entity", "wasRevisionOf")),
+    ("skos", ("Concept", "ConceptScheme", "inScheme", "prefLabel")),
+    # rdflib cannot declare `and` and `or` as attributes, so its ODRL namespace
+    # omits them; they are ODRL 2.2 logical-constraint operands all the same.
+    ("odrl", tuple(ODRL2.__annotations__) + ("and", "or")),
+)
+
+#: Properties whose values are themselves vocabulary terms (an action, an
+#: operator, a status). In the simple context they are coerced with ``@vocab``
+#: so a document can write ``"action": "display"`` rather than
+#: ``"action": "odrl:display"``. A full IRI or a prefixed name still works.
+SIMPLE_VOCAB_VALUED_TERMS: frozenset[str] = frozenset({
+    "odrl:action", "odrl:leftOperand", "odrl:operator",
+    "dprod:contractLifecycleStatus", "dprod:offerLifecycleStatus",
+    "dprod:dutyState", "dprod:operandSource", "dprod:operandProperty",
+})
+
+
+class SimpleContext:
+    """The ``@context`` published as ``dprod-simple.jsonld``.
+
+    A convenience layer over :class:`ApplicationContext` for documents that use
+    DPROD on its own: it adds bare terms (``outputPort``, ``title``,
+    ``DataProduct``) and the ``id`` / ``type`` keyword aliases, so the examples
+    read as plain JSON. Every bare term maps to exactly the IRI and coercion of
+    its prefixed form, so a document expands to the same graph either way.
+
+    The prefixed context stays the one to use when DPROD is combined with other
+    JSON-LD contexts: bare names such as ``title``, ``format`` and ``target``
+    are generic and would collide (issue #93). There is still no ``@vocab``, so
+    a misspelt term is dropped visibly rather than coined in the DPROD namespace.
+    """
+
+    def __init__(self, ontology_graph: Graph) -> None:
+        self._graph = ontology_graph
+        self._prefixed = ApplicationContext(ontology_graph).as_dict()
+
+    def dprod_terms(self) -> list[str]:
+        """Every class, property and individual in the DPROD namespace."""
+        namespace = globals.ontology_namespace_iri
+        locals_ = {
+            str(subject)[len(namespace):]
+            for subject in self._graph.subjects()
+            if isinstance(subject, URIRef) and str(subject).startswith(namespace)
+        }
+        return sorted(name for name in locals_ if name and "/" not in name and "#" not in name)
+
+    def bare_terms(self) -> dict[str, str]:
+        """Bare name to prefixed name, resolved by vocabulary priority."""
+        terms: dict[str, str] = {}
+        for name in self.dprod_terms():
+            terms[name] = f"dprod:{name}"
+        for prefix, names in SIMPLE_EXTERNAL_TERMS:
+            for name in names:
+                terms.setdefault(name, f"{prefix}:{name}")
+        return dict(sorted(terms.items()))
+
+    def as_dict(self) -> dict:
+        context: dict = dict(self._prefixed)
+        context["id"] = "@id"
+        context["type"] = "@type"
+        for name, prefixed in self.bare_terms().items():
+            definition = self._prefixed.get(prefixed)
+            if prefixed in SIMPLE_VOCAB_VALUED_TERMS:
+                context[name] = {"@id": prefixed, "@type": "@vocab"}
+            elif isinstance(definition, dict):
+                context[name] = dict(definition)
+            else:
+                context[name] = prefixed
+        return context
+
+    def as_document(self) -> dict:
+        """The full JSON-LD document written to ``dprod-simple.jsonld``."""
         return {"@context": self.as_dict()}
