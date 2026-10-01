@@ -192,7 +192,24 @@
           publisher: "EKGF"
         },
       },
+      preProcess: [loadRdfHighlighting],
     };
+
+    // ReSpec's highlighter bundles no Turtle or SPARQL grammar. Register ours
+    // (assets/hljs-rdf.js) with its worker before any example is highlighted;
+    // the worker handles messages in order, so no reply needs to be awaited.
+    async function loadRdfHighlighting() {
+      const worker = await new Promise((resolve) => {
+        require(["core/worker"], ({ worker }) => resolve(worker));
+      });
+      const langURL = new URL("assets/hljs-rdf.js", document.baseURI).href;
+      for (const [lang, propName] of [
+        ["turtle", "hljsDefineTurtle"],
+        ["sparql", "hljsDefineSparql"],
+      ]) {
+        worker.postMessage({ action: "highlight-load-lang", langURL, propName, lang });
+      }
+    }
   </script>
   <style>
     .preamble-section {
