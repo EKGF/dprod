@@ -1,144 +1,121 @@
 # Regenerate with: python spec-generator/contracts_diagram.py  (run from the repository root)
-"""Generate assets/dprod-contracts-model.svg in the style of dprod-model.svg:
-UML class boxes (Arial, bold title, '+prefix: property' lines), a black-bordered
-ODRL swimlane and a blue-bordered DPROD swimlane, green generalisation arrows and
-blue association arrows. DPROD additions to ODRL classes are drawn in blue.
+"""Generate assets/dprod-contracts-overview.svg after the ASCII overview in
+dprod-contracts/docs/contracts-guide.md: a DataOffer box, an "accept" arrow and a
+DataContract box, with the computed duty-state lifecycle underneath. Drawn in the
+style of dprod-model.svg: Arial, black-bordered boxes with bold titles, a
+blue-bordered DPROD panel, blue arrows. Each row names the ODRL/DPROD property
+that carries it.
 """
 from xml.sax.saxutils import escape
 
 FONT = "Arial"
-TITLE_H = 30
-LINE_H = 22
-PAD = 8
+TITLE_H = 54
+ROW_H = 34
+PAD = 10
 BLUE = "#0044CC"
 LINK = "#0055FF"
-GREEN = "#00D369"
+GREY = "#666666"
+K = "#000000"
 
-boxes = {}
 out = []
 
-def box(name, x, y, w, lines, title_color="#000000"):
-    h = TITLE_H + LINE_H * len(lines) + PAD
-    boxes[name] = (x, y, w, h)
-    out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#ffffff" stroke="#000000"/>')
-    out.append(f'<line x1="{x}" y1="{y+TITLE_H}" x2="{x+w}" y2="{y+TITLE_H}" stroke="#000000"/>')
-    out.append(f'<text x="{x+w/2}" y="{y+TITLE_H/2}" font-family="{FONT}" font-size="17px" font-weight="bold" '
-               f'fill="{title_color}" text-anchor="middle" dominant-baseline="central">{escape(name)}</text>')
-    for i, (text, color) in enumerate(lines):
-        yy = y + TITLE_H + PAD/2 + LINE_H * i + LINE_H/2
-        out.append(f'<text x="{x+8}" y="{yy}" font-family="{FONT}" font-size="15px" fill="{color}" '
-                   f'dominant-baseline="central">{escape(text)}</text>')
 
-def lane(title, x, y, w, h, color):
-    out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#ffffff" stroke="{color}"/>')
-    out.append(f'<rect x="{x}" y="{y}" width="{w}" height="40" fill="#ffffff" stroke="{color}"/>')
-    out.append(f'<text x="{x+w/2}" y="{y+20}" font-family="{FONT}" font-size="26px" font-weight="bold" '
-               f'text-anchor="middle" dominant-baseline="central">{escape(title)}</text>')
+def text(x, y, s, size=15, color=K, weight="normal", anchor="start", style="normal"):
+    out.append(f'<text x="{x}" y="{y}" font-family="{FONT}" font-size="{size}px" font-weight="{weight}" '
+               f'font-style="{style}" fill="{color}" text-anchor="{anchor}" dominant-baseline="central">'
+               f'{escape(s)}</text>')
 
-def top(name):    x,y,w,h = boxes[name]; return (x+w/2, y)
-def bottom(name): x,y,w,h = boxes[name]; return (x+w/2, y+h)
-def left(name):   x,y,w,h = boxes[name]; return (x, y+h/2)
-def right(name):  x,y,w,h = boxes[name]; return (x+w, y+h/2)
 
-def generalise(child, parent, via_y=None):
-    """Open-triangle arrow from child (bottom box) up to parent."""
-    cx, cy = top(child); px, py = bottom(parent)
-    if via_y is None:
-        via_y = (cy + py) / 2
-    path = f"M {cx} {cy} L {cx} {via_y} L {px} {via_y} L {px} {py+12}"
-    out.append(f'<path d="{path}" fill="none" stroke="{GREEN}" stroke-width="1.5"/>')
-    out.append(f'<path d="M {px-8} {py+12} L {px+8} {py+12} L {px} {py} Z" fill="#ffffff" stroke="{GREEN}" stroke-width="1.5"/>')
+def panel(title, x, y, w, h):
+    out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#ffffff" stroke="{BLUE}"/>')
+    out.append(f'<rect x="{x}" y="{y}" width="{w}" height="40" fill="#ffffff" stroke="{BLUE}"/>')
+    text(x + w / 2, y + 20, title, size=24, weight="bold", anchor="middle")
 
-def associate(points, label, lx, ly, color=LINK, anchor="start"):
+
+def policy_box(x, y, w, name, superclass, rows):
+    """A class box whose rows read 'what it holds' on the left, 'carried by' on the right."""
+    h = TITLE_H + ROW_H * len(rows) + PAD
+    out.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="#ffffff" stroke="{K}"/>')
+    out.append(f'<line x1="{x}" y1="{y + TITLE_H}" x2="{x + w}" y2="{y + TITLE_H}" stroke="{K}"/>')
+    text(x + w / 2, y + 20, name, size=19, weight="bold", color=BLUE, anchor="middle")
+    text(x + w / 2, y + 40, f"a kind of {superclass}", size=14, color=GREY, anchor="middle", style="italic")
+    for i, (label, prop) in enumerate(rows):
+        yy = y + TITLE_H + PAD / 2 + ROW_H * i + ROW_H / 2
+        text(x + 12, yy, label, size=16)
+        text(x + w - 12, yy, prop, size=14, color=BLUE if prop.startswith("dprod:") else GREY, anchor="end")
+    return h
+
+
+def state(cx, cy, label, w=150, h=46):
+    out.append(f'<rect x="{cx - w / 2}" y="{cy - h / 2}" width="{w}" height="{h}" rx="23" ry="23" '
+               f'fill="#ffffff" stroke="{K}"/>')
+    text(cx, cy, label, size=17, weight="bold", anchor="middle")
+
+
+def arrow(points, width=1.5):
     d = "M " + " L ".join(f"{x} {y}" for x, y in points)
-    out.append(f'<path d="{d}" fill="none" stroke="{color}" stroke-width="1.5" marker-end="url(#arrow)"/>')
-    out.append(f'<text x="{lx}" y="{ly}" font-family="{FONT}" font-size="14px" fill="#000000" '
-               f'text-anchor="{anchor}" dominant-baseline="central">{escape(label)}</text>')
+    out.append(f'<path d="{d}" fill="none" stroke="{LINK}" stroke-width="{width}" marker-end="url(#arrow)"/>')
 
-W, H = 1480, 900
-# ---- lanes
-lane("ODRL 2.2", 10, 10, W-20, 560, "#000000")
-lane("DPROD", 10, 620, W-20, 270, BLUE)
 
-K = "#000000"
-# ---- ODRL lane
-box("Policy", 60, 80, 250, [
-    ("+odrl: profile", K), ("+odrl: assigner", K), ("+odrl: assignee", K), ("+odrl: target", K),
-    ("+odrl: permission", K), ("+odrl: prohibition", K), ("+odrl: obligation", K)])
-box("Offer", 60, 360, 110, [])
-box("Agreement", 200, 360, 130, [])
-box("Rule", 440, 80, 230, [
-    ("+odrl: action", K), ("+odrl: target", K), ("+odrl: assignee", K), ("+odrl: constraint", K)])
-box("Permission", 380, 360, 130, [])
-box("Prohibition", 530, 360, 130, [])
-box("Duty", 690, 300, 230, [
-    ("+dprod: subjectOfDuty", BLUE), ("+dprod: objectOfDuty", BLUE),
-    ("+dprod: deadline", BLUE), ("+dprod: recurrence", BLUE), ("+dprod: dutyState", BLUE)])
-box("Constraint", 980, 80, 220, [
-    ("+odrl: leftOperand", K), ("+odrl: operator", K), ("+odrl: rightOperand", K)])
-box("LogicalConstraint", 1240, 80, 210, [
-    ("+odrl: and", K), ("+odrl: or", K), ("+dprod: not", BLUE)])
-box("LeftOperand", 980, 300, 240, [
-    ("+dprod: operandSource", BLUE), ("+dprod: operandProperty", BLUE)])
-box("Asset", 1260, 300, 190, [("+odrl: partOf", K)])
-box("Party", 1000, 450, 190, [("+odrl: partOf", K)])
+W, H = 1180, 720
 
-# ---- DPROD lane
-box("DataOffer", 60, 700, 250, [
-    ("+dprod: offerLifecycleStatus", BLUE), ("+dprod: effectiveDate", BLUE), ("+dprod: expirationDate", BLUE)])
-box("DataContract", 380, 700, 270, [
-    ("+dprod: acceptsOffer", BLUE), ("+dprod: contractLifecycleStatus", BLUE),
-    ("+dprod: effectiveDate", BLUE), ("+dprod: expirationDate", BLUE)])
-box("EvaluationContext", 980, 700, 240, [
-    ("+dprod: request", BLUE), ("+dprod: state", BLUE), ("+dprod: agent", BLUE), ("+dprod: clock", BLUE)])
-box("DataProduct", 1260, 700, 190, [
-    ("(also Dataset,", K), (" Distribution,", K), (" DataService)", K)])
+# ---- Offer and contract
+panel("Data offer and data contract", 10, 10, W - 20, 390)
+BOX_W, BOX_Y = 430, 80
+OFFER_X, CONTRACT_X = 60, W - 60 - BOX_W
+offer_h = policy_box(OFFER_X, BOX_Y, BOX_W, "DataOffer", "odrl:Offer", [
+    ("Provider duties", "odrl:obligation"),
+    ("Consumer rights", "odrl:permission"),
+    ("Prohibitions", "odrl:prohibition"),
+    ("Recurrence rules", "dprod:recurrence"),
+    ("Offer status", "dprod:offerLifecycleStatus"),
+])
+contract_h = policy_box(CONTRACT_X, BOX_Y, BOX_W, "DataContract", "odrl:Agreement", [
+    ("Provider duties", "odrl:obligation"),
+    ("Consumer rights", "odrl:permission"),
+    ("Consumer duties", "odrl:obligation"),
+    ("Prohibitions", "odrl:prohibition"),
+    ("Contract status", "dprod:contractLifecycleStatus"),
+    ("Duty state", "dprod:dutyState"),
+])
 
-# ---- generalisations (ODRL)
-generalise("Offer", "Policy", 340)
-generalise("Agreement", "Policy", 340)
-generalise("Permission", "Rule", 340)
-generalise("Prohibition", "Rule", 340)
-generalise("Duty", "Rule", 270)
-# DPROD subclasses of ODRL
-generalise("DataOffer", "Offer", 640)
-generalise("DataContract", "Agreement", 660)
-generalise("DataProduct", "Asset", 660)
+# accept: the consumer accepts the offer, and the contract records which offer it accepted
+ay = BOX_Y + TITLE_H + 40
+arrow([(OFFER_X + BOX_W, ay), (CONTRACT_X, ay)], width=2.5)
+text((OFFER_X + BOX_W + CONTRACT_X) / 2, ay - 20, "accept", size=18, weight="bold", anchor="middle")
+by = ay + 60
+arrow([(CONTRACT_X, by), (OFFER_X + BOX_W, by)])
+text((OFFER_X + BOX_W + CONTRACT_X) / 2, by + 18, "dprod:acceptsOffer", size=14, color=BLUE, anchor="middle")
 
-# ---- associations
-# Policy -> Rule (permission/prohibition/obligation)
-px, py = top("Policy"); rx, ry = top("Rule")
-associate([(px, py), (px, 62), (rx, 62), (rx, ry)], "+permission / prohibition / obligation", (px+rx)/2, 72, anchor="middle")
-# Rule -> Constraint
-x1, y1 = right("Rule"); x2, y2 = left("Constraint")
-associate([(x1, y1), (x2, y1)], "+constraint", (x1+x2)/2, y1-12, anchor="middle")
-# Constraint -> LeftOperand
-x1, y1 = bottom("Constraint"); x2, y2 = top("LeftOperand")
-associate([(x1, y1), (x1, y2)], "+leftOperand", x1+8, (y1+y2)/2)
-# LogicalConstraint -> Constraint
-lx, ly = bottom("LogicalConstraint"); cx, cy = bottom("Constraint")
-associate([(lx, ly), (lx, 235), (1150, 235), (1150, cy)], "+and / or / not", (lx+1150)/2, 250, anchor="middle")
-# Policy/Rule -> Asset (target): route from Rule top-right across
-x1, y1 = right("Rule"); ax, ay = top("Asset")
-associate([(x1, y1+40), (ax+40, y1+40), (ax+40, ay)], "+target", ax+48, 262, anchor="start")
-# Policy -> Party (assigner/assignee): route below
-x1, y1 = bottom("Policy"); px, py = left("Party")
-associate([(x1-60, y1), (x1-60, 555), (985, 555), (985, py), (px, py)],
-          "+assigner / assignee", 560, 543, anchor="middle")
-# DataContract -> DataOffer (acceptsOffer)
-x1, y1 = left("DataContract"); x2, y2 = right("DataOffer")
-associate([(x1, y1), (x2, y1)], "+acceptsOffer", (x1+x2)/2, y1-12, anchor="middle")
-# EvaluationContext -> Party (agent)
-ex, ey = top("EvaluationContext"); px, py = bottom("Party")
-associate([(ex, ey), (ex, py)], "+agent", ex+8, 620)
-# Duty -> Party (subjectOfDuty / objectOfDuty)
-x1, y1 = right("Duty"); 
-ptx, pty = top("Party")
-associate([(x1, y1+30), (ptx, y1+30), (ptx, pty)], "+subjectOfDuty / objectOfDuty", (x1+ptx)/2, y1+44, anchor="middle")
+text(OFFER_X + BOX_W / 2, BOX_Y + offer_h + 24, "published by the provider (odrl:assigner)",
+     size=14, color=GREY, anchor="middle", style="italic")
+text(CONTRACT_X + BOX_W / 2, BOX_Y + contract_h + 24, "binds provider and consumer (odrl:assignee)",
+     size=14, color=GREY, anchor="middle", style="italic")
+
+# ---- Duty state
+SY = 420
+panel("Duty state, computed by the evaluator", 10, SY, W - 20, H - SY - 10)
+row1, row2 = SY + 100, SY + 220
+pend_x, act_x = 380, 760
+state(pend_x, row1, "Pending")
+state(act_x, row1, "Active")
+arrow([(pend_x + 75, row1), (act_x - 75, row1)], width=2)
+text((pend_x + act_x) / 2, row1 - 18, "condition true", size=15, anchor="middle")
+
+ful_x, vio_x = act_x - 130, act_x + 130
+state(ful_x, row2, "Fulfilled")
+state(vio_x, row2, "Violated")
+arrow([(act_x - 20, row1 + 23), (act_x - 20, row1 + 60), (ful_x, row1 + 60), (ful_x, row2 - 23)])
+arrow([(act_x + 20, row1 + 23), (act_x + 20, row1 + 60), (vio_x, row1 + 60), (vio_x, row2 - 23)])
+text(ful_x - 12, row1 + 60, "action done", size=15, anchor="end")
+text(vio_x + 12, row1 + 60, "deadline passed", size=15, anchor="start")
+
+text(60, row2 - 10, "Authored offer and contract status", size=14, color=GREY, style="italic")
+text(60, row2 + 10, "and computed duty state are separate.", size=14, color=GREY, style="italic")
 
 svg = [f'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
        '<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">'
        f'<path d="M 0 0 L 10 5 L 0 10" fill="none" stroke="{LINK}" stroke-width="1.5"/></marker></defs>',
        f'<rect x="0" y="0" width="{W}" height="{H}" fill="#ffffff"/>'] + out + ['</svg>']
-open('assets/dprod-contracts-model.svg', 'w').write("\n".join(svg) + "\n")
+open('assets/dprod-contracts-overview.svg', 'w').write("\n".join(svg) + "\n")
 print("svg written")

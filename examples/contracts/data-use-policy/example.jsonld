@@ -1,124 +1,131 @@
 {
   "@context": [
-    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
     { "ex": "https://example.org/" }
   ],
-  "@id": "ex:hrDataAccessPolicy",
-  "@type": "odrl:Set",
-  "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
-  "odrl:target": "ex:employeeData",
-  "odrl:permission": [
+  "id": "ex:hrDataAccessPolicy",
+  "type": "Set",
+  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "target": "ex:employeeData",
+  "permission": [
     {
-      "@type": "odrl:Permission",
-      "rdfs:label": "HR Analytics may read, for analytics",
-      "odrl:assignee": "ex:hrAnalyticsTeam",
-      "odrl:action": "odrl:read",
-      "odrl:constraint": {
-        "@type": "odrl:Constraint",
-        "odrl:leftOperand": {
-          "@id": "odrl:purpose",
-          "dprod:operandSource": "dprod:requestSource",
-          "dprod:operandProperty": "odrl:purpose"
+      "type": "Permission",
+      "label": "HR Analytics may read, for analytics",
+      "assignee": "ex:hrAnalyticsTeam",
+      "action": "read",
+      "constraint": {
+        "type": "Constraint",
+        "leftOperand": {
+          "id": "odrl:purpose",
+          "operandSource": "requestSource",
+          "operandProperty": "odrl:purpose"
         },
-        "odrl:operator": "odrl:eq",
-        "odrl:rightOperand": { "@id": "ex:analytics" }
+        "operator": "eq",
+        "rightOperand": { "id": "ex:analytics" }
       }
     },
     {
-      "@type": "odrl:Permission",
-      "rdfs:label": "Compliance may read, for compliance",
-      "odrl:assignee": "ex:complianceTeam",
-      "odrl:action": "odrl:read",
-      "odrl:constraint": {
-        "@type": "odrl:Constraint",
-        "odrl:leftOperand": "odrl:purpose",
-        "odrl:operator": "odrl:eq",
-        "odrl:rightOperand": { "@id": "ex:compliance" }
+      "type": "Permission",
+      "label": "Compliance may read, for compliance",
+      "assignee": "ex:complianceTeam",
+      "action": "read",
+      "constraint": {
+        "type": "Constraint",
+        "leftOperand": "odrl:purpose",
+        "operator": "eq",
+        "rightOperand": { "id": "ex:compliance" }
       }
     }
   ],
-  "odrl:obligation": [
+  "obligation": [
     {
-      "@type": "odrl:Duty",
-      "rdfs:label": "Access to confidential data must be logged within an hour",
-      "odrl:action": "ex:log",
-      "odrl:target": "ex:accessLog",
-      "odrl:constraint": {
-        "@type": "odrl:Constraint",
-        "odrl:leftOperand": {
-          "@id": "ex:classification",
-          "dprod:operandSource": "dprod:requestSource",
-          "dprod:operandProperty": "ex:classification"
+      "type": "Duty",
+      "label": "Access to confidential data must be logged within an hour",
+      "action": "ex:log",
+      "target": "ex:accessLog",
+      "constraint": {
+        "type": "Constraint",
+        "leftOperand": {
+          "id": "ex:classification",
+          "operandSource": "requestSource",
+          "operandProperty": "ex:classification"
         },
-        "odrl:operator": "odrl:eq",
-        "odrl:rightOperand": { "@id": "ex:confidential" }
+        "operator": "eq",
+        "rightOperand": { "id": "ex:confidential" }
       },
-      "dprod:deadline": { "@value": "PT1H", "@type": "xsd:duration" }
+      "deadline": { "@value": "PT1H", "type": "xsd:duration" }
     },
     {
-      "@type": "odrl:Duty",
-      "rdfs:label": "Delete after 7 years",
-      "odrl:action": "odrl:delete",
-      "odrl:constraint": {
-        "@type": "odrl:Constraint",
-        "odrl:leftOperand": {
-          "@id": "ex:retentionPeriod",
-          "dprod:operandSource": "dprod:requestSource",
-          "dprod:operandProperty": "ex:retentionPeriod"
+      "type": "Duty",
+      "label": "Delete after 7 years",
+      "action": "delete",
+      "constraint": {
+        "type": "Constraint",
+        "leftOperand": {
+          "id": "ex:retentionPeriod",
+          "operandSource": "requestSource",
+          "operandProperty": "ex:retentionPeriod"
         },
-        "odrl:operator": "odrl:gt",
-        "odrl:rightOperand": { "@value": "P7Y", "@type": "xsd:duration" }
+        "operator": "gt",
+        "rightOperand": { "@value": "P7Y", "type": "xsd:duration" }
       }
     }
   ],
-  "odrl:prohibition": [
+  "prohibition": [
     {
-      "@type": "odrl:Prohibition",
-      "rdfs:label": "No external sharing",
-      "odrl:action": "odrl:distribute"
+      "type": "Prohibition",
+      "label": "No external sharing",
+      "action": "distribute"
     },
     {
-      "@type": "odrl:Prohibition",
-      "rdfs:label": "No use outside production or staging",
-      "odrl:action": "odrl:use",
-      "odrl:constraint": {
-        "@type": "odrl:Constraint",
-        "odrl:leftOperand": {
-          "@id": "ex:environment",
-          "dprod:operandSource": "dprod:requestSource",
-          "dprod:operandProperty": "ex:environment"
+      "type": "Prohibition",
+      "label": "No use outside production or staging",
+      "action": "use",
+      "constraint": {
+        "type": "Constraint",
+        "leftOperand": {
+          "id": "ex:environment",
+          "operandSource": "requestSource",
+          "operandProperty": "ex:environment"
         },
-        "odrl:operator": "odrl:isNoneOf",
-        "odrl:rightOperand": { "@list": [ { "@id": "ex:production" }, { "@id": "ex:staging" } ] }
+        "operator": "isNoneOf",
+        "rightOperand": {
+          "@list": [
+            { "id": "ex:production" },
+            { "id": "ex:staging" }
+          ]
+        }
       }
     },
     {
-      "@type": "odrl:Prohibition",
-      "rdfs:label": "No model training, unless in an isolated environment",
-      "odrl:action": "odrl:use",
-      "odrl:constraint": {
-        "@type": "odrl:LogicalConstraint",
-        "odrl:and": { "@list": [
-          {
-            "@type": "odrl:Constraint",
-            "odrl:leftOperand": {
-              "@id": "ex:processingMode",
-              "dprod:operandSource": "dprod:requestSource",
-              "dprod:operandProperty": "ex:processingMode"
+      "type": "Prohibition",
+      "label": "No model training, unless in an isolated environment",
+      "action": "use",
+      "constraint": {
+        "type": "LogicalConstraint",
+        "and": {
+          "@list": [
+            {
+              "type": "Constraint",
+              "leftOperand": {
+                "id": "ex:processingMode",
+                "operandSource": "requestSource",
+                "operandProperty": "ex:processingMode"
+              },
+              "operator": "eq",
+              "rightOperand": { "id": "ex:modelTraining" }
             },
-            "odrl:operator": "odrl:eq",
-            "odrl:rightOperand": { "@id": "ex:modelTraining" }
-          },
-          {
-            "@type": "odrl:LogicalConstraint",
-            "dprod:not": {
-              "@type": "odrl:Constraint",
-              "odrl:leftOperand": "ex:environment",
-              "odrl:operator": "odrl:eq",
-              "odrl:rightOperand": { "@id": "ex:isolated" }
+            {
+              "type": "LogicalConstraint",
+              "not": {
+                "type": "Constraint",
+                "leftOperand": "ex:environment",
+                "operator": "eq",
+                "rightOperand": { "id": "ex:isolated" }
+              }
             }
-          }
-        ] }
+          ]
+        }
       }
     }
   ]

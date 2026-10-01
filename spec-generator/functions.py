@@ -89,6 +89,10 @@ def replace_backticks(markdown_text):
     def replace_code_block(match):
         code_type = match.group(1)
         code_content = html.escape(match.group(2))
+        if code_type in ('json', 'jsonld', 'json-ld'):
+            # Rendered like the spec's own examples: ReSpec boxes, numbers and
+            # highlights a <pre class="example">, but not a <pre><code> pair.
+            return f'''<pre class="example nolinks hljs json ekgfexample">{code_content}</pre>'''
         if code_type == 'text':
             return f'''<pre class="ekgfexample"><code class="ekgfexample">{code_content}\n</code></pre>'''
         else:

@@ -7,40 +7,42 @@ This policy permits internal recipients to use market prices while the market is
 ```json
 {
   "@context": [
-    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+    "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
     { "ex": "https://example.org/" }
   ],
-  "@id": "ex:marketHoursPolicy",
-  "@type": "odrl:Set",
-  "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
-  "odrl:target": "ex:marketPrices",
-  "odrl:permission": {
-    "@type": "odrl:Permission",
-    "odrl:action": "odrl:use",
-    "odrl:constraint": {
-      "@type": "odrl:LogicalConstraint",
-      "odrl:and": { "@list": [
-        {
-          "@type": "odrl:Constraint",
-          "odrl:leftOperand": {
-            "@id": "ex:recipientType",
-            "dprod:operandSource": "dprod:requestSource",
-            "dprod:operandProperty": "ex:recipientType"
+  "id": "ex:marketHoursPolicy",
+  "type": "Set",
+  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "target": "ex:marketPrices",
+  "permission": {
+    "type": "Permission",
+    "action": "use",
+    "constraint": {
+      "type": "LogicalConstraint",
+      "and": {
+        "@list": [
+          {
+            "type": "Constraint",
+            "leftOperand": {
+              "id": "ex:recipientType",
+              "operandSource": "requestSource",
+              "operandProperty": "ex:recipientType"
+            },
+            "operator": "eq",
+            "rightOperand": { "id": "ex:internal" }
           },
-          "odrl:operator": "odrl:eq",
-          "odrl:rightOperand": { "@id": "ex:internal" }
-        },
-        {
-          "@type": "odrl:Constraint",
-          "odrl:leftOperand": {
-            "@id": "ex:marketOpen",
-            "dprod:operandSource": "dprod:stateSource",
-            "dprod:operandProperty": "ex:marketOpen"
-          },
-          "odrl:operator": "odrl:eq",
-          "odrl:rightOperand": true
-        }
-      ] }
+          {
+            "type": "Constraint",
+            "leftOperand": {
+              "id": "ex:marketOpen",
+              "operandSource": "stateSource",
+              "operandProperty": "ex:marketOpen"
+            },
+            "operator": "eq",
+            "rightOperand": true
+          }
+        ]
+      }
     }
   }
 }

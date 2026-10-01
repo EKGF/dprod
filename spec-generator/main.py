@@ -11,7 +11,7 @@ from property_shape import PropertyShape
 from jinja import generate_spec_page
 
 from globals import ontology_namespace_iri, shapes_graph_ns_iri, contracts_shapes_ns_iri, LINKEDIN
-from jsonld_context import ApplicationContext
+from jsonld_context import ApplicationContext, SimpleContext
 from contract_sections import (
     split_node_shapes, contract_extension_properties,
 )
@@ -214,6 +214,13 @@ def main():
     with open('dist/dprod-context.jsonld', mode='x', encoding='utf-8') as f:
         print(f"Generating JSON-LD context: ./{f.name}")
         json.dump(ApplicationContext(g_ontology).as_document(), f, indent=4)
+        f.write('\n')
+
+    # The bare-term convenience context the examples use: the same coercions,
+    # plus `outputPort`, `title`, `id`, `type` and so on. See SimpleContext.
+    with open('dist/dprod-simple.jsonld', mode='x', encoding='utf-8') as f:
+        print(f"Generating JSON-LD context: ./{f.name}")
+        json.dump(SimpleContext(g_ontology).as_document(), f, indent=4)
         f.write('\n')
 
     with open('dist/dprod-all.jsonld', mode='x', encoding='utf-8') as f:

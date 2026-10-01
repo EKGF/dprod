@@ -1,0 +1,62 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="1180" height="720" viewBox="0 0 1180 720">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10" fill="none" stroke="#0055FF" stroke-width="1.5"/></marker></defs>
+<rect x="0" y="0" width="1180" height="720" fill="#ffffff"/>
+<rect x="10" y="10" width="1160" height="390" fill="#ffffff" stroke="#0044CC"/>
+<rect x="10" y="10" width="1160" height="40" fill="#ffffff" stroke="#0044CC"/>
+<text x="590.0" y="30" font-family="Arial" font-size="24px" font-weight="bold" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">Data offer and data contract</text>
+<rect x="60" y="80" width="430" height="234" fill="#ffffff" stroke="#000000"/>
+<line x1="60" y1="134" x2="490" y2="134" stroke="#000000"/>
+<text x="275.0" y="100" font-family="Arial" font-size="19px" font-weight="bold" font-style="normal" fill="#0044CC" text-anchor="middle" dominant-baseline="central">DataOffer</text>
+<text x="275.0" y="120" font-family="Arial" font-size="14px" font-weight="normal" font-style="italic" fill="#666666" text-anchor="middle" dominant-baseline="central">a kind of odrl:Offer</text>
+<text x="72" y="156.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Provider duties</text>
+<text x="478" y="156.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:obligation</text>
+<text x="72" y="190.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Consumer rights</text>
+<text x="478" y="190.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:permission</text>
+<text x="72" y="224.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Prohibitions</text>
+<text x="478" y="224.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:prohibition</text>
+<text x="72" y="258.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Recurrence rules</text>
+<text x="478" y="258.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="end" dominant-baseline="central">dprod:recurrence</text>
+<text x="72" y="292.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Offer status</text>
+<text x="478" y="292.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="end" dominant-baseline="central">dprod:offerLifecycleStatus</text>
+<rect x="690" y="80" width="430" height="268" fill="#ffffff" stroke="#000000"/>
+<line x1="690" y1="134" x2="1120" y2="134" stroke="#000000"/>
+<text x="905.0" y="100" font-family="Arial" font-size="19px" font-weight="bold" font-style="normal" fill="#0044CC" text-anchor="middle" dominant-baseline="central">DataContract</text>
+<text x="905.0" y="120" font-family="Arial" font-size="14px" font-weight="normal" font-style="italic" fill="#666666" text-anchor="middle" dominant-baseline="central">a kind of odrl:Agreement</text>
+<text x="702" y="156.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Provider duties</text>
+<text x="1108" y="156.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:obligation</text>
+<text x="702" y="190.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Consumer rights</text>
+<text x="1108" y="190.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:permission</text>
+<text x="702" y="224.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Consumer duties</text>
+<text x="1108" y="224.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:obligation</text>
+<text x="702" y="258.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Prohibitions</text>
+<text x="1108" y="258.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:prohibition</text>
+<text x="702" y="292.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Contract status</text>
+<text x="1108" y="292.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="end" dominant-baseline="central">dprod:contractLifecycleStatus</text>
+<text x="702" y="326.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Duty state</text>
+<text x="1108" y="326.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="end" dominant-baseline="central">dprod:dutyState</text>
+<path d="M 490 174 L 690 174" fill="none" stroke="#0055FF" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="590.0" y="154" font-family="Arial" font-size="18px" font-weight="bold" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">accept</text>
+<path d="M 690 234 L 490 234" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="590.0" y="252" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="middle" dominant-baseline="central">dprod:acceptsOffer</text>
+<text x="275.0" y="338" font-family="Arial" font-size="14px" font-weight="normal" font-style="italic" fill="#666666" text-anchor="middle" dominant-baseline="central">published by the provider (odrl:assigner)</text>
+<text x="905.0" y="372" font-family="Arial" font-size="14px" font-weight="normal" font-style="italic" fill="#666666" text-anchor="middle" dominant-baseline="central">binds provider and consumer (odrl:assignee)</text>
+<rect x="10" y="420" width="1160" height="290" fill="#ffffff" stroke="#0044CC"/>
+<rect x="10" y="420" width="1160" height="40" fill="#ffffff" stroke="#0044CC"/>
+<text x="590.0" y="440" font-family="Arial" font-size="24px" font-weight="bold" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">Duty state, computed by the evaluator</text>
+<rect x="305.0" y="497.0" width="150" height="46" rx="23" ry="23" fill="#ffffff" stroke="#000000"/>
+<text x="380" y="520" font-family="Arial" font-size="17px" font-weight="bold" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">Pending</text>
+<rect x="685.0" y="497.0" width="150" height="46" rx="23" ry="23" fill="#ffffff" stroke="#000000"/>
+<text x="760" y="520" font-family="Arial" font-size="17px" font-weight="bold" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">Active</text>
+<path d="M 455 520 L 685 520" fill="none" stroke="#0055FF" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="570.0" y="502" font-family="Arial" font-size="15px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">condition true</text>
+<rect x="555.0" y="617.0" width="150" height="46" rx="23" ry="23" fill="#ffffff" stroke="#000000"/>
+<text x="630" y="640" font-family="Arial" font-size="17px" font-weight="bold" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">Fulfilled</text>
+<rect x="815.0" y="617.0" width="150" height="46" rx="23" ry="23" fill="#ffffff" stroke="#000000"/>
+<text x="890" y="640" font-family="Arial" font-size="17px" font-weight="bold" font-style="normal" fill="#000000" text-anchor="middle" dominant-baseline="central">Violated</text>
+<path d="M 740 543 L 740 580 L 630 580 L 630 617" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M 780 543 L 780 580 L 890 580 L 890 617" fill="none" stroke="#0055FF" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="618" y="580" font-family="Arial" font-size="15px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="end" dominant-baseline="central">action done</text>
+<text x="902" y="580" font-family="Arial" font-size="15px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">deadline passed</text>
+<text x="60" y="630" font-family="Arial" font-size="14px" font-weight="normal" font-style="italic" fill="#666666" text-anchor="start" dominant-baseline="central">Authored offer and contract status</text>
+<text x="60" y="650" font-family="Arial" font-size="14px" font-weight="normal" font-style="italic" fill="#666666" text-anchor="start" dominant-baseline="central">and computed duty state are separate.</text>
+</svg>

@@ -803,7 +803,7 @@
   </p>
   <figure id="ProfileModel">
     <!--suppress HtmlUnknownTarget -->
-    <img alt="Information model for the Profile" src="./assets/dprod-model.svg">
+    <img alt="Information model for the Profile" src="./assets/DPROD.drawio.svg">
     <figcaption>
       Overview of the DPROD model and its relationship with DCAT classes
     </figcaption>
@@ -847,37 +847,39 @@
 
   <pre id="eg12" class="example hljs json ekgfexample">
   {
-    "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
-    "@id": "https://y.com/products/uk-bonds",
-    "@type": "dprod:DataProduct",
-    "dct:title": "UK Bonds",
-    "dct:description": "UK Bonds is your one-stop-shop for all your bonds!",
-    "dprod:dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
-    "dprod:dataProductLifecycleStatus": "https://ekgf.org/dprod/spec/develop/data/lifecycle-status/Consume",
-    "dprod:outputPort": {
-      "@id": "https://y.com/products/uk-bonds/ports/10-year-api",
-      "@type": "dcat:DataService",
-      "dcat:endpointURL": "https://y.com/uk-10-year-bonds",
-      "dprod:isAccessServiceOf": {
-        "@id": "https://y.com/products/uk-bonds/distributions/10-year-json",
-        "@type": "dcat:Distribution",
-        "dct:format": "https://www.iana.org/assignments/media-types/application/json",
-        "dprod:isDistributionOf": {
-          "@id": "https://y.com/products/uk-bonds/datasets/10-year",
-          "@type": "dcat:Dataset",
-          "dct:conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
+    "@context": "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
+    "id": "https://y.com/products/uk-bonds",
+    "type": "DataProduct",
+    "title": "UK Bonds",
+    "description": "UK Bonds is your one-stop-shop for all your bonds!",
+    "dataProductOwner": "https://www.linkedin.com/in/tonyseale/",
+    "dataProductLifecycleStatus": "https://ekgf.org/dprod/spec/develop/data/lifecycle-status/Consume",
+    "outputPort": {
+      "id": "https://y.com/products/uk-bonds/ports/10-year-api",
+      "type": "DataService",
+      "endpointURL": "https://y.com/uk-10-year-bonds",
+      "isAccessServiceOf": {
+        "id": "https://y.com/products/uk-bonds/distributions/10-year-json",
+        "type": "Distribution",
+        "format": "https://www.iana.org/assignments/media-types/application/json",
+        "isDistributionOf": {
+          "id": "https://y.com/products/uk-bonds/datasets/10-year",
+          "type": "Dataset",
+          "conformsTo": "https://spec.edmcouncil.org/fibo/ontology/SEC/Debt/Bonds/CallableBond"
         }
       }
     }
   }
   </pre>
   <p class="note">
-    DPROD instance documents use prefixed terms such as <code>dprod:outputPort</code> and
-    <code>dct:title</code>, together with the JSON-LD keywords <code>@id</code> and <code>@type</code>.
-    The published context deliberately defines no bare-term aliases and no <code>@vocab</code>, so that
-    DPROD JSON can be combined with other JSON-LD contexts without either side claiming generic names
-    such as <code>title</code> or <code>format</code>, and so that an undefined term is visibly
-    undefined rather than silently coined in the DPROD namespace.
+    DPROD publishes two JSON-LD contexts that denote the same graph. The examples in this specification
+    use the simple context, <code>dprod-simple.jsonld</code>, which lets a document use plain terms such
+    as <code>outputPort</code>, <code>title</code>, <code>id</code> and <code>type</code>. When DPROD
+    JSON is combined with other JSON-LD contexts, use <code>dprod-context.jsonld</code> and prefixed
+    terms such as <code>dprod:outputPort</code> and <code>dct:title</code> with the keywords
+    <code>@id</code> and <code>@type</code>, so that neither side claims generic names such as
+    <code>title</code> or <code>format</code>. Neither context has an <code>@vocab</code>, so an
+    undefined term is visibly undefined rather than silently coined in the DPROD namespace.
     <br/>
     The JSON above can be pasted into <a
     href="https://json-ld.org/playground/">https://json-ld.org/playground</a>
@@ -1017,15 +1019,18 @@
 <section id="data-contract-model">
   <h2>Data Contract Model</h2>
   <p>
-    The figure below shows how the DPROD contract classes sit on top of ODRL. The upper part is ODRL 2.2 as
-    published by the W3C; DPROD's additions to those classes are shown in blue. The lower part is the DPROD
-    vocabulary itself.
+    A provider publishes a <a href="#dataoffer"><code>dprod:DataOffer</code></a>, an <code>odrl:Offer</code>
+    setting out the provider's duties, the consumer's rights and what is prohibited. When a consumer accepts
+    it, the result is a <a href="#datacontract"><code>dprod:DataContract</code></a>, an
+    <code>odrl:Agreement</code> that binds both parties, may add duties on the consumer, and links back to
+    the offer it accepts. Each row of the figure names the property that carries it; DPROD terms are shown
+    in blue. The lower part shows the state an evaluator computes for each duty.
   </p>
   <figure id="ContractModel">
     <!--suppress HtmlUnknownTarget -->
-    <img alt="Information model for DPROD Data Contracts" src="./assets/dprod-contracts-model.svg">
+    <img alt="A DataOffer is accepted to form a DataContract; each duty moves from Pending to Active, then to Fulfilled or Violated" src="./assets/dprod-contracts-overview.svg">
     <figcaption>
-      Overview of the DPROD Data Contracts model and its relationship with ODRL classes
+      Overview of DPROD Data Contracts: offer, acceptance, contract and duty state
     </figcaption>
   </figure>
   <p>
@@ -1066,52 +1071,47 @@
   <pre id="eg-contract" class="example hljs json ekgfexample">
   {
     "@context": [
-      "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+      "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
       { "ex": "https://example.org/" }
     ],
-    "@id": "ex:tradingMarketData2026",
-    "@type": "dprod:DataContract",
-    "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
-    "odrl:assigner": "ex:tradingDataTeam",
-    "odrl:assignee": "ex:analyticsTeam",
-    "odrl:target": "ex:marketPrices",
-    "dprod:contractLifecycleStatus": "dprod:Active",
-    "dprod:effectiveDate": "2026-01-15T00:00:00Z",
-    "dprod:expirationDate": "2026-12-31T23:59:59Z",
-    "odrl:permission": {
-      "@type": "odrl:Permission",
-      "odrl:assignee": "ex:analyticsTeam",
-      "odrl:action": "odrl:display"
+    "id": "ex:tradingMarketData2026",
+    "type": "DataContract",
+    "profile": "https://ekgf.org/dprod/spec/develop/",
+    "assigner": "ex:tradingDataTeam",
+    "assignee": "ex:analyticsTeam",
+    "target": "ex:marketPrices",
+    "contractLifecycleStatus": "Active",
+    "effectiveDate": "2026-01-15T00:00:00Z",
+    "expirationDate": "2026-12-31T23:59:59Z",
+    "permission": {
+      "type": "Permission",
+      "assignee": "ex:analyticsTeam",
+      "action": "display"
     },
-    "dprod:acceptsOffer": {
-      "@id": "ex:marketDataFeed",
-      "@type": "dprod:DataOffer",
-      "odrl:profile": "https://ekgf.org/dprod/spec/develop/",
-      "odrl:assigner": "ex:tradingDataTeam",
-      "odrl:target": "ex:marketPrices",
-      "dprod:offerLifecycleStatus": "dprod:Active",
-      "odrl:obligation": {
-        "@type": "odrl:Duty",
-        "dprod:subjectOfDuty": "ex:tradingDataTeam",
-        "odrl:action": "ex:deliver",
-        "dprod:recurrence": "FREQ=MINUTELY;INTERVAL=15",
-        "dprod:deadline": { "@value": "PT5M", "@type": "xsd:duration" }
+    "acceptsOffer": {
+      "id": "ex:marketDataFeed",
+      "type": "DataOffer",
+      "profile": "https://ekgf.org/dprod/spec/develop/",
+      "assigner": "ex:tradingDataTeam",
+      "target": "ex:marketPrices",
+      "offerLifecycleStatus": "Active",
+      "obligation": {
+        "type": "Duty",
+        "subjectOfDuty": "ex:tradingDataTeam",
+        "action": "ex:deliver",
+        "recurrence": "FREQ=MINUTELY;INTERVAL=15",
+        "deadline": { "@value": "PT5M", "type": "xsd:duration" }
       },
-      "odrl:permission": {
-        "@type": "odrl:Permission",
-        "odrl:action": "odrl:display"
-      },
-      "odrl:prohibition": {
-        "@type": "odrl:Prohibition",
-        "odrl:action": "odrl:distribute"
-      }
+      "permission": { "type": "Permission", "action": "display" },
+      "prohibition": { "type": "Prohibition", "action": "distribute" }
     }
   }
   </pre>
   <p class="note">
-    ODRL terms are used directly, with the <code>odrl:</code> prefix, in the same way DCAT terms are used
-    in a data product description; the published context declares which of them take resources, so a
-    value such as <code>"odrl:action": "odrl:display"</code> denotes an IRI. The offer is shown nested
+    ODRL terms are written as plain names, in the same way DCAT terms are in a data product description.
+    The context knows that an action, an operator or a status names a vocabulary term, so
+    <code>"action": "display"</code> denotes <code>odrl:display</code> and
+    <code>"contractLifecycleStatus": "Active"</code> denotes <code>dprod:Active</code>. The offer is shown nested
     inside the contract for readability. In practice a provider publishes the offer once, as its own
     resource, and each contract that accepts it refers to it by identifier.
     The full version of this example, with the domain vocabulary, the parties and the evaluated duty
@@ -1227,7 +1227,7 @@
     <h3>{{example.name}}</h3>
     <p>{{example.text}}</p>
     {% if example.json is not none and example.json != '' %}
-    <pre class="hljs json ekgfexample"><code class="ekgfexample">{{example.json}}</code></pre>
+    <pre class="example hljs json ekgfexample" title="{{example.name|e}}">{{example.json|e}}</pre>
     {% endif %}
   </section>
   {% endfor %}
@@ -1250,7 +1250,7 @@
     <h3>{{example.name}}</h3>
     <p>{{example.text}}</p>
     {% if example.json is not none and example.json != '' %}
-    <pre class="hljs json ekgfexample"><code class="ekgfexample">{{example.json}}</code></pre>
+    <pre class="example hljs json ekgfexample" title="{{example.name|e}}">{{example.json|e}}</pre>
     {% endif %}
   </section>
   {% endfor %}

@@ -25,73 +25,73 @@ connect to each other through their input and output ports:
 
 ```json
 {
-  "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+  "@context": "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
   "@graph": [
     {
-      "@id": "https://y.com/data-product/company-finance",
-      "@type": "dprod:DataProduct",
-      "dprod:inputPort": [
+      "id": "https://y.com/data-product/company-finance",
+      "type": "DataProduct",
+      "inputPort": [
         {
-          "@id": "https://y.com/data-product/company-sales/port/2025-sales",
-          "@type": "dcat:DataService"
+          "id": "https://y.com/data-product/company-sales/port/2025-sales",
+          "type": "DataService"
         },
         {
-          "@id": "https://y.com/data-product/company-hr/port/2025-payroll",
-          "@type": "dcat:DataService"
+          "id": "https://y.com/data-product/company-hr/port/2025-payroll",
+          "type": "DataService"
         }
       ],
-      "dprod:outputPort": {
-        "@id": "https://y.com/data-product/company-sales/port/2025-balance-sheet",
-        "@type": "dcat:DataService",
-        "rdfs:label": "Balance Sheet",
-        "dcat:endpointURL": "https://y.com/data-product/company-sales/port/2025-c",
-        "dprod:isAccessServiceOf": {
-          "@type": "dcat:Distribution",
-          "dct:format": "https://www.iana.org/assignments/media-types/application/json",
-          "dprod:isDistributionOf": {
-            "@id": "https://y.com/data-product/company-sales/dataset/2025-balance-sheet",
-            "@type": "dcat:Dataset",
-            "dct:conformsTo": "https://y.com/schema/BalanceSheet"
+      "outputPort": {
+        "id": "https://y.com/data-product/company-sales/port/2025-balance-sheet",
+        "type": "DataService",
+        "label": "Balance Sheet",
+        "endpointURL": "https://y.com/data-product/company-sales/port/2025-c",
+        "isAccessServiceOf": {
+          "type": "Distribution",
+          "format": "https://www.iana.org/assignments/media-types/application/json",
+          "isDistributionOf": {
+            "id": "https://y.com/data-product/company-sales/dataset/2025-balance-sheet",
+            "type": "Dataset",
+            "conformsTo": "https://y.com/schema/BalanceSheet"
           }
         }
       }
     },
     {
-      "@id": "https://y.com/data-product/company-sales",
-      "@type": "dprod:DataProduct",
-      "dprod:outputPort": {
-        "@id": "https://y.com/data-product/company-sales/port/2025-sales",
-        "@type": "dcat:DataService",
-        "rdfs:label": "Sales",
-        "dcat:endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
-        "dprod:isAccessServiceOf": {
-          "@type": "dcat:Distribution",
-          "dct:format": "https://www.iana.org/assignments/media-types/application/json",
-          "dprod:isDistributionOf": {
-            "@id": "https://y.com/data-product/company-sales/dataset/2025-sales",
-            "@type": "dcat:Dataset",
-            "rdfs:label": "Sales",
-            "dct:conformsTo": "https://y.com/schema/Sale"
+      "id": "https://y.com/data-product/company-sales",
+      "type": "DataProduct",
+      "outputPort": {
+        "id": "https://y.com/data-product/company-sales/port/2025-sales",
+        "type": "DataService",
+        "label": "Sales",
+        "endpointURL": "https://y.com/data-product/company-sales/port/2025-sales",
+        "isAccessServiceOf": {
+          "type": "Distribution",
+          "format": "https://www.iana.org/assignments/media-types/application/json",
+          "isDistributionOf": {
+            "id": "https://y.com/data-product/company-sales/dataset/2025-sales",
+            "type": "Dataset",
+            "label": "Sales",
+            "conformsTo": "https://y.com/schema/Sale"
           }
         }
       }
     },
     {
-      "@id": "https://y.com/data-product/company-hr",
-      "@type": "dprod:DataProduct",
-      "dprod:outputPort": {
-        "@id": "https://y.com/data-product/company-sales/port/2025-payroll",
-        "@type": "dcat:DataService",
-        "rdfs:label": "Payroll",
-        "dcat:endpointURL": "https://y.com/data-product/company-hr/port/2025-payroll",
-        "dprod:isAccessServiceOf": {
-          "@type": "dcat:Distribution",
-          "dct:format": "https://www.iana.org/assignments/media-types/text/csv",
-          "dprod:isDistributionOf": {
-            "@id": "https://y.com/data-product/company-sales/dataset/2025-payroll",
-            "@type": "dcat:Dataset",
-            "rdfs:label": "Payroll",
-            "dct:conformsTo": "https://y.com/schema/Payroll"
+      "id": "https://y.com/data-product/company-hr",
+      "type": "DataProduct",
+      "outputPort": {
+        "id": "https://y.com/data-product/company-sales/port/2025-payroll",
+        "type": "DataService",
+        "label": "Payroll",
+        "endpointURL": "https://y.com/data-product/company-hr/port/2025-payroll",
+        "isAccessServiceOf": {
+          "type": "Distribution",
+          "format": "https://www.iana.org/assignments/media-types/text/csv",
+          "isDistributionOf": {
+            "id": "https://y.com/data-product/company-sales/dataset/2025-payroll",
+            "type": "Dataset",
+            "label": "Payroll",
+            "conformsTo": "https://y.com/schema/Payroll"
           }
         }
       }

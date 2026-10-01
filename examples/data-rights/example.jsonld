@@ -1,33 +1,31 @@
 {
   "@context": [
-    "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
-    {
-      "reg": "https://www.region.taxonomy/v/1/"
-    }
+    "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
+    { "reg": "https://www.region.taxonomy/v/1/" }
   ],
-  "@id": "https://data.org/policy/56456df-dfg-34535345-5545",
-  "@type": "odrl:Agreement",
-  "odrl:permission": [
+  "id": "https://data.org/policy/56456df-dfg-34535345-5545",
+  "type": "Agreement",
+  "permission": [
     {
-      "odrl:target": { "@id": "https://data.org/data-product/equity-trade-xxx" },
-      "odrl:assigner": { "@id": "https://schema.org/person/AdamSmith" },
-      "odrl:assignee": {
-        "@id": "https://example.org/DataDepartment/emea-and-apac-staff",
-        "@type": "odrl:PartyCollection",
-        "odrl:source": { "@id": "https://example.org/DataDepartment" },
-        "odrl:refinement": [
+      "target": { "id": "https://data.org/data-product/equity-trade-xxx" },
+      "assigner": { "id": "https://schema.org/person/AdamSmith" },
+      "assignee": {
+        "id": "https://example.org/DataDepartment/emea-and-apac-staff",
+        "type": "PartyCollection",
+        "source": { "id": "https://example.org/DataDepartment" },
+        "refinement": [
           {
-            "odrl:leftOperand": { "@id": "odrl:spatial" },
-            "odrl:operator": { "@id": "odrl:isAnyOf" },
-            "odrl:rightOperand": [
-              { "@id": "reg:EMEA" },
-              { "@id": "reg:APAC" }
+            "leftOperand": "odrl:spatial",
+            "operator": "isAnyOf",
+            "rightOperand": [
+              { "id": "reg:EMEA" },
+              { "id": "reg:APAC" }
             ],
-            "dct:description": "Permission to read all the datasets of the product if the user is working inside EMEA or APAC"
+            "description": "Permission to read all the datasets of the product if the user is working inside EMEA or APAC"
           }
         ]
       },
-      "odrl:action": { "@id": "odrl:use" }
+      "action": "use"
     }
   ]
 }

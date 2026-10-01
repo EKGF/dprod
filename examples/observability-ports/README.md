@@ -32,45 +32,45 @@ Here is an example of a data product with an observability port:
 
 ```json
 {
-  "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
+  "@context": "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
   "@graph": [
     {
-      "@id": "https://y.com/data-product/uk-bonds",
-      "@type": "dprod:DataProduct",
-      "dprod:inputPort": [
+      "id": "https://y.com/data-product/uk-bonds",
+      "type": "DataProduct",
+      "inputPort": [
         {
-          "@id": "https://y.com/data-product/uk-bonds/port/2024-data",
-          "@type": "dcat:DataService"
+          "id": "https://y.com/data-product/uk-bonds/port/2024-data",
+          "type": "DataService"
         }
       ],
-      "dprod:outputPort": [
+      "outputPort": [
         {
-          "@id": "https://y.com/data-product/uk-bonds/port/2024-observability",
-          "@type": "dcat:DataService",
-          "rdfs:label": "Observability Port",
-          "dcat:endpointURL": "https://y.com/data-product/uk-bonds/port/2024-observability",
-          "dprod:isAccessServiceOf": {
-            "@type": "dcat:Distribution",
-            "dct:format": "https://www.iana.org/assignments/media-types/application/json",
-            "dprod:isDistributionOf": {
-              "@id": "https://y.com/data-product/uk-bonds/dataset/2024-observability",
-              "@type": "dcat:Dataset",
-              "dct:conformsTo": "https://y.com/schema/ObservabilityLog"
+          "id": "https://y.com/data-product/uk-bonds/port/2024-observability",
+          "type": "DataService",
+          "label": "Observability Port",
+          "endpointURL": "https://y.com/data-product/uk-bonds/port/2024-observability",
+          "isAccessServiceOf": {
+            "type": "Distribution",
+            "format": "https://www.iana.org/assignments/media-types/application/json",
+            "isDistributionOf": {
+              "id": "https://y.com/data-product/uk-bonds/dataset/2024-observability",
+              "type": "Dataset",
+              "conformsTo": "https://y.com/schema/ObservabilityLog"
             }
           }
         },
         {
-          "@id": "https://y.com/data-product/uk-bonds/port/2024-data",
-          "@type": "dcat:DataService",
-          "rdfs:label": "Data Port",
-          "dcat:endpointURL": "https://y.com/data-product/uk-bonds/port/2024-data",
-          "dprod:isAccessServiceOf": {
-            "@type": "dcat:Distribution",
-            "dct:format": "https://www.iana.org/assignments/media-types/application/json",
-            "dprod:isDistributionOf": {
-              "@id": "https://y.com/data-product/uk-bonds/dataset/2024-data",
-              "@type": "dcat:Dataset",
-              "dct:conformsTo": "https://y.com/schema/Data"
+          "id": "https://y.com/data-product/uk-bonds/port/2024-data",
+          "type": "DataService",
+          "label": "Data Port",
+          "endpointURL": "https://y.com/data-product/uk-bonds/port/2024-data",
+          "isAccessServiceOf": {
+            "type": "Distribution",
+            "format": "https://www.iana.org/assignments/media-types/application/json",
+            "isDistributionOf": {
+              "id": "https://y.com/data-product/uk-bonds/dataset/2024-data",
+              "type": "Dataset",
+              "conformsTo": "https://y.com/schema/Data"
             }
           }
         }

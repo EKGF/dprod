@@ -34,7 +34,7 @@ The spec generator (`spec-generator/main.py`) produces the specification HTML an
 3. **Two-pass property loading** — For both NodeShapes and PropertyShapes, OWL properties are loaded first, then SHACL properties override them. Predicates in `IGNORED_NODE_SHAPE_PREDICATES` / `IGNORED_PROPERTY_SHAPE_PREDICATES` (in `globals.py`) are skipped during the SHACL pass to prevent shape metadata from leaking into the spec.
 4. **Examples** — Each subdirectory in `examples/` with a `README.md` is loaded; the markdown is converted to HTML.
 5. **Render** — Jinja2 renders `respec/template.html` with the discovered classes and examples, producing `dist/index.html`.
-6. **Serialize** — The ontology is serialized to Turtle, JSON-LD, and RDF/XML in multiple combinations (ontology-only, shapes-only, combined). A standalone `dprod-context.jsonld` is also generated for use as a remote `@context` in JSON-LD documents.
+6. **Serialize** — The ontology is serialized to Turtle, JSON-LD, and RDF/XML in multiple combinations (ontology-only, shapes-only, combined). Two standalone contexts are also generated for use as a remote `@context`: `dprod-context.jsonld` (prefixed terms, for combining with other vocabularies) and `dprod-simple.jsonld` (plain terms such as `outputPort`, `title`, `id`, `type`; same IRIs and coercions). Both come from `spec-generator/jsonld_context.py`.
 
 ### Key relationships
 
@@ -42,7 +42,7 @@ The spec generator (`spec-generator/main.py`) produces the specification HTML an
 - `dprod-shapes.ttl` defines SHACL shapes that constrain those classes (the "how to validate"). Each NodeShape targets an OWL class; each PropertyShape constrains an OWL property via `sh:path`.
 - `respec/template.html` is both a W3C ReSpec document and a Jinja2 template. Static sections (preamble, scope, namespaces) are plain HTML. Dynamic sections use `{% for cls in classes %}` loops to render class and property tables.
 - Class ordering in the spec is hardcoded in `main.py` (the `reorder_list` call), not derived from the ontology.
-- Examples referenced in `@context` use `dprod-context.jsonld` (standalone context), not `dprod.jsonld` (full ontology dump).
+- Examples reference `dprod-simple.jsonld` in `@context` and are written in plain terms, not `dprod.jsonld` (full ontology dump). `tests/test_examples.py` checks every example expands without dropping a term.
 
 ### Namespace
 

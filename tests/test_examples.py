@@ -10,9 +10,9 @@ embedded in the example ``README.md`` files, which are what the specification
 actually renders:
 
 1. it parses as JSON;
-2. expanding it against the generated DPROD context drops no term — an
+2. expanding it against the generated DPROD contexts drops no term — an
    undefined term must be a build failure rather than a silent omission, which
-   is the whole reason the published context carries no ``@vocab``;
+   is the whole reason neither published context carries an ``@vocab``;
 3. expansion produces triples, and IRI-valued properties produce resources
    rather than literals.
 """
@@ -33,9 +33,10 @@ sys.path.insert(0, str(REPOSITORY_ROOT / "spec-generator"))
 from pyld import jsonld  # noqa: E402
 from rdflib import Graph, Literal, OWL, RDF  # noqa: E402
 
-from jsonld_context import ApplicationContext  # noqa: E402
+from jsonld_context import ApplicationContext, SimpleContext  # noqa: E402
 
 CONTEXT_IRI = "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld"
+SIMPLE_CONTEXT_IRI = "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld"
 EXAMPLES_DIR = REPOSITORY_ROOT / "examples"
 SPEC_TEMPLATE = REPOSITORY_ROOT / "respec" / "template.html"
 JSON_BLOCK = re.compile(r"```(?:json|jsonld|json-ld)\n(.*?)```", re.DOTALL)
@@ -50,12 +51,21 @@ SPEC_JSON_BLOCK = re.compile(
 ALLOWED_DROPPED_TERMS: frozenset[str] = frozenset()
 
 
-def build_context_document() -> dict:
-    """The context as the generator would publish it, built from the ontology."""
+def ontology_graph() -> Graph:
     graph = Graph()
     graph.parse(REPOSITORY_ROOT / "ontology/dprod/dprod-ontology.ttl", format="ttl")
     graph.parse(REPOSITORY_ROOT / "dprod-contracts/dprod-contracts.ttl", format="ttl")
-    return ApplicationContext(graph).as_document()
+    return graph
+
+
+def build_context_document() -> dict:
+    """The prefixed context as the generator would publish it."""
+    return ApplicationContext(ontology_graph()).as_document()
+
+
+def build_simple_context_document() -> dict:
+    """The simple, bare-term context as the generator would publish it."""
+    return SimpleContext(ontology_graph()).as_document()
 
 
 class LocalDocumentLoader:
@@ -65,20 +75,20 @@ class LocalDocumentLoader:
     #232), and must not silently pass because a remote fetch failed.
     """
 
-    def __init__(self, context_document: dict) -> None:
-        self._context_document = context_document
+    def __init__(self, context_documents: dict[str, dict]) -> None:
+        self._context_documents = context_documents
 
     def __call__(self, url: str, options: dict | None = None) -> dict:
-        if url != CONTEXT_IRI:
+        if url not in self._context_documents:
             raise AssertionError(
                 f"Example tried to load a remote context {url!r}. Examples must "
-                f"only reference {CONTEXT_IRI} plus inline contexts."
+                f"only reference the DPROD contexts plus inline contexts."
             )
         return {
             "contentType": "application/ld+json",
             "contextUrl": None,
             "documentUrl": url,
-            "document": self._context_document,
+            "document": self._context_documents[url],
         }
 
 
@@ -104,6 +114,20 @@ def iter_example_documents() -> Iterator[tuple[str, object]]:
         if '"@context"' not in body:
             continue
         yield f"respec/template.html#{match.group('id')}", body
+
+
+def unalias(node: object, aliases: dict[str, str]) -> object:
+    """The document with keyword aliases (``id``, ``type``) spelt as keywords."""
+    if isinstance(node, dict):
+        return {
+            (key if key == "@context" else aliases.get(key, key)): (
+                value if key == "@context" else unalias(value, aliases)
+            )
+            for key, value in node.items()
+        }
+    if isinstance(node, list):
+        return [unalias(item, aliases) for item in node]
+    return node
 
 
 def collect_terms(node: object, found: set[str]) -> None:
@@ -141,15 +165,19 @@ def collect_inline_prefixes(node: object, prefixes: dict[str, str]) -> None:
             collect_inline_prefixes(item, prefixes)
 
 
-def resolve_term(term: str, prefixes: dict[str, str]) -> str | None:
-    """Expand a compact IRI, or return ``None`` when nothing can define it.
+def resolve_term(
+    term: str, prefixes: dict[str, str], bare_terms: dict[str, str] | None = None
+) -> str | None:
+    """Expand a term or compact IRI, or return ``None`` when nothing defines it.
 
-    A bare term (``outputPort``) resolves to nothing, which is the point: with
-    no ``@vocab`` in the published context it cannot expand, and the caller
-    reports it as dropped.
+    A bare term resolves only if the simple context defines it. Anything else
+    resolves to nothing, which is the point: with no ``@vocab`` it cannot
+    expand, and the caller reports it as dropped.
     """
     if term.startswith("http://") or term.startswith("https://"):
         return term
+    if bare_terms and term in bare_terms:
+        return resolve_term(bare_terms[term], prefixes)
     prefix, separator, local = term.partition(":")
     if not separator or prefix not in prefixes:
         return None
@@ -170,7 +198,28 @@ class ExampleValidationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.context_document = build_context_document()
-        cls.loader = LocalDocumentLoader(cls.context_document)
+        cls.simple_context_document = build_simple_context_document()
+        cls.loader = LocalDocumentLoader(
+            {
+                CONTEXT_IRI: cls.context_document,
+                SIMPLE_CONTEXT_IRI: cls.simple_context_document,
+            }
+        )
+        simple = cls.simple_context_document["@context"]
+        cls.aliases = {
+            name: value
+            for name, value in simple.items()
+            if isinstance(value, str) and value.startswith("@")
+        }
+        cls.bare_terms = {
+            name: (value["@id"] if isinstance(value, dict) else value)
+            for name, value in simple.items()
+            if ":" not in name
+            and not name.startswith("@")
+            and name not in cls.aliases
+            and (isinstance(value, dict) or ":" in value)
+            and not (isinstance(value, str) and value.startswith("http"))
+        }
         cls.documents = list(iter_example_documents())
         cls.prefixes = {
             name: iri
@@ -225,7 +274,8 @@ class ExampleValidationTest(unittest.TestCase):
                 document = self.parse(source)
 
                 declared: set[str] = set()
-                collect_terms(document, declared)
+                document_unaliased = unalias(document, self.aliases)
+                collect_terms(document_unaliased, declared)
 
                 prefixes = dict(self.prefixes)
                 collect_inline_prefixes(document, prefixes)
@@ -241,7 +291,8 @@ class ExampleValidationTest(unittest.TestCase):
                     for term in declared
                     if term not in ALLOWED_DROPPED_TERMS
                     and (
-                        (resolved := resolve_term(term, prefixes)) is None
+                        (resolved := resolve_term(term, prefixes, self.bare_terms))
+                        is None
                         or resolved not in surviving
                     )
                 )
@@ -314,6 +365,67 @@ class ExampleValidationTest(unittest.TestCase):
                             f"{str(obj)!r}, which is an IRI. The property needs "
                             f'\'"@type": "@id"\' in the published context.'
                         )
+
+    def test_every_example_uses_the_simple_context(self) -> None:
+        """The examples are written in plain terms, so they all reference it."""
+        for name, source in self.documents:
+            with self.subTest(example=name):
+                context = self.parse(source)["@context"]
+                entries = context if isinstance(context, list) else [context]
+                self.assertIn(SIMPLE_CONTEXT_IRI, entries)
+
+    def test_simple_context_agrees_with_prefixed_context(self) -> None:
+        """A bare term means exactly what its prefixed form means.
+
+        Same IRI, and the same value coercion, except that terms whose values
+        name vocabulary terms (``action``, ``operator``, statuses) use
+        ``@vocab`` so that ``"action": "display"`` works.
+        """
+        prefixed = self.context_document["@context"]
+        simple = self.simple_context_document["@context"]
+        self.assertNotIn("@vocab", prefixed)
+        self.assertNotIn("@vocab", simple)
+        for name, prefixed_name in self.bare_terms.items():
+            with self.subTest(term=name):
+                definition = simple[name]
+                expected = prefixed.get(prefixed_name)
+                if isinstance(definition, dict) and definition.get("@type") == "@vocab":
+                    self.assertIsInstance(expected, dict)
+                    self.assertEqual("@id", expected["@type"])
+                elif isinstance(expected, dict):
+                    self.assertEqual(expected, definition)
+                else:
+                    self.assertEqual(prefixed_name, definition)
+
+    def test_vocabulary_valued_terms_take_plain_names(self) -> None:
+        document = {
+            "@context": SIMPLE_CONTEXT_IRI,
+            "id": "https://example.org/p",
+            "type": "DataOffer",
+            "offerLifecycleStatus": "Active",
+            "permission": {"type": "Permission", "action": "display"},
+        }
+        triples = {
+            (str(p), str(o)) for _, p, o in self.graph_for(json.dumps(document))
+        }
+        odrl = "http://www.w3.org/ns/odrl/2/"
+        dprod = self.context_document["@context"]["dprod"]
+        self.assertIn((odrl + "action", odrl + "display"), triples)
+        self.assertIn((dprod + "offerLifecycleStatus", dprod + "Active"), triples)
+
+    def test_a_misspelt_plain_term_is_reported(self) -> None:
+        """Guards the dropped-term check itself against going vacuous."""
+        document = {
+            "@context": SIMPLE_CONTEXT_IRI,
+            "id": "https://example.org/p",
+            "type": "DataProduct",
+            "outputProt": "https://example.org/port",
+        }
+        expanded = jsonld.expand(document, {"documentLoader": self.loader, "base": ""})
+        surviving: set[str] = set()
+        collect_terms(expanded, surviving)
+        self.assertIsNone(resolve_term("outputProt", self.prefixes, self.bare_terms))
+        self.assertNotIn("outputProt", json.dumps(expanded))
 
 
 if __name__ == "__main__":
