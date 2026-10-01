@@ -129,7 +129,7 @@ WHERE
 }
 ```
 
-### Detailed Level: Between Datasets
+## Detailed Level: Between Datasets
 
 To track lineage at a more granular level, 
 one can also use PROV (https://www.w3.org/TR/prov-o/) at the dataset level.
