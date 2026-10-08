@@ -316,6 +316,9 @@ Like the request, the world snapshot is normalized: every state fact exposed by
 a supported operand is a direct `(WorldSnapshot.node, property, value)` triple.
 Normalization is part of environment construction and fails before policy
 evaluation if a required source fact cannot be produced unambiguously.
+Environment construction is performed by the calling system that requests a
+decision, not by the evaluator; the evaluator receives the constructed
+environment as its only input.
 
 **Environment Construction**: Given a Request `R = (a, x, s, ctx)`, duty state Σ,
 and world snapshot W:

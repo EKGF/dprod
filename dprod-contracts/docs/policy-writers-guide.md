@@ -270,9 +270,9 @@ odrl:constraint [
 ## 6. Operands Quick Reference
 
 All operands are `odrl:LeftOperand` values with exactly one
-`dprod:operandSource` and one IRI-valued `dprod:operandProperty`. Request and
-state producers normalize policy-relevant facts onto their source node before
-evaluation. Policies never traverse nested RDF.
+`dprod:operandSource` and one IRI-valued `dprod:operandProperty`. The calling
+system that asks an evaluator for a decision normalizes policy-relevant facts
+onto the request or state node before evaluation. Policies never traverse nested RDF.
 
 ### Request Operands
 
