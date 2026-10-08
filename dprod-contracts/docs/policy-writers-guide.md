@@ -204,11 +204,11 @@ odrl:prohibition [
 
 Constraints restrict when rules apply. An `odrl:Constraint` has three parts:
 
-| Part | Property | Description |
-|------|----------|-------------|
-| Left operand | `odrl:leftOperand` | What to check |
-| Operator | `odrl:operator` | How to compare (`eq`, `neq`, `lt`, `gt`, `lteq`, `gteq`, `isAnyOf`, `isNoneOf`, `isAllOf`) |
-| Right operand | `odrl:rightOperand` | Expected value(s) |
+| Part | Property | Description                                                                                   |
+|------|----------|-----------------------------------------------------------------------------------------------|
+| Left operand | `odrl:leftOperand` | What to check                                                                                 |
+| Operator | `odrl:operator` | How to compare |
+| Right operand | `odrl:rightOperand` | Expected value(s)                                                                             |
 
 ### Purpose Constraint
 
