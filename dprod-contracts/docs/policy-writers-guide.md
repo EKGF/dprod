@@ -204,11 +204,11 @@ odrl:prohibition [
 
 Constraints restrict when rules apply. An `odrl:Constraint` has three parts:
 
-| Part | Property | Description |
-|------|----------|-------------|
-| Left operand | `odrl:leftOperand` | What to check |
-| Operator | `odrl:operator` | How to compare (`eq`, `neq`, `lt`, `gt`, `lteq`, `gteq`, `isAnyOf`, `isNoneOf`, `isAllOf`) |
-| Right operand | `odrl:rightOperand` | Expected value(s) |
+| Part | Property | Description                                                                                   |
+|------|----------|-----------------------------------------------------------------------------------------------|
+| Left operand | `odrl:leftOperand` | What to check                                                                                 |
+| Operator | `odrl:operator` | How to compare |
+| Right operand | `odrl:rightOperand` | Expected value(s)                                                                             |
 
 ### Purpose Constraint
 
@@ -270,9 +270,9 @@ odrl:constraint [
 ## 6. Operands Quick Reference
 
 All operands are `odrl:LeftOperand` values with exactly one
-`dprod:operandSource` and one IRI-valued `dprod:operandProperty`. Request and
-state producers normalize policy-relevant facts onto their source node before
-evaluation. Policies never traverse nested RDF.
+`dprod:operandSource` and one IRI-valued `dprod:operandProperty`. The calling
+system that asks an evaluator for a decision normalizes policy-relevant facts
+onto the request or state node before evaluation. Policies never traverse nested RDF.
 
 ### Request Operands
 

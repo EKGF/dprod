@@ -90,8 +90,10 @@ An `odrl:Duty` progresses through evaluator-computed `dprod:dutyState` values. I
 
 ### 5. Structured Operand Resolution
 
-Every operand selects one normalized source and one direct property. Request and
-state producers flatten policy-relevant facts before evaluation:
+Every operand selects one normalized source and one direct property. DPROD does
+not evaluate policies: an external evaluator does, and the calling system that
+asks it for a decision flattens policy-relevant facts onto the request and state
+nodes before evaluation:
 
 ```turtle
 # Direct property on the normalized authorization request

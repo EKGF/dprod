@@ -150,9 +150,19 @@ ex:subscription a dprod:DataContract ;
 | **Label** | Evaluation Context |
 | **Definition** | Immutable, provenance-bearing input graph for one policy evaluation |
 
-The evaluator constructs one context per evaluation. It is a `prov:Entity` and
-retains the exact request and state snapshot provenance required to reproduce a
-decision. It has four normative roots:
+DPROD does not evaluate policies. An evaluator is an external program that
+implements this specification. It is invoked by a calling system (for example an
+application, an API gateway or a data platform) that needs an access decision.
+
+The calling system constructs one context per evaluation and passes it, with the
+policies, to the evaluator. Building the context is where facts are gathered:
+the calling system describes what is being asked for, flattens every
+policy-relevant fact onto the request or state node, and freezes the result. The
+evaluator reads only the context it is given and MUST NOT query live data while
+resolving operands (see formal-semantics.md §4.2).
+
+The context is a `prov:Entity` and retains the exact request and state snapshot
+provenance required to reproduce a decision. It has four normative roots:
 
 | Property | Range | Definition |
 |----------|-------|------------|
@@ -165,9 +175,9 @@ Operand bindings select one of three closed sources:
 
 | Source | Node selected |
 |--------|---------------|
-| `dprod:requestSource` | Normalized authorization request |
-| `dprod:stateSource` | Immutable normalized world snapshot |
-| `dprod:contextSource` | Evaluation context itself |
+| `dprod:requestSource` | The request node: what is being asked for (agent, action, asset) plus any request facts the policies need, built by the calling system. It is plain RDF, not an `odrl:Request`. |
+| `dprod:stateSource` | The state snapshot node: facts about the world at the time of the request, frozen by the calling system |
+| `dprod:contextSource` | The evaluation context itself, which carries the built-in agent and clock |
 
 `dprod:currentAgent` binds `contextSource` to property `dprod:agent`. Standard
 `odrl:dateTime` binds `contextSource` to `dprod:clock`; DPROD does not define a
@@ -282,8 +292,10 @@ The evaluator performs one lookup:
 | `ex:marketOpen` | `stateSource` | `ex:marketOpen` | `?state ex:marketOpen ?value` |
 | `odrl:dateTime` | `contextSource` | `dprod:clock` | `?context dprod:clock ?value` |
 
-Request and state producers MUST flatten policy-relevant facts onto their source
-nodes before evaluation. RDF lists, traversal through `odrl:target` or party
+The calling system MUST flatten policy-relevant facts onto the request and state
+nodes before evaluation. A fact that sits more than one hop away in the source
+data, such as the jurisdiction of the requesting agent's organisation, is
+resolved by the calling system and written onto the request as one property. RDF lists, traversal through `odrl:target` or party
 nodes, and extension sources are rejected. Missing bindings, missing or multiple
 values, and type mismatches are hard evaluation errors.
 
