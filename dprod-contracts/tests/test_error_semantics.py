@@ -92,7 +92,7 @@ class ErrorSemanticsDocumentationTest(unittest.TestCase):
         self.assertLess(update, self.evaluation.index("return {decision: Deny, ...}"))
         self.assertLess(
             self.evaluation.index("return {decision: NotApplicable, ...}"),
-            self.evaluation.index("return Failure(E₃)"),
+            self.evaluation.index("return Failure(E₃"),
         )
         self.assertNotIn("Duty states advance only when", self.evaluation)
 
