@@ -219,7 +219,7 @@ Two forms:
 | **Pattern** | `^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)` |
 | **Definition** | RFC 5545 RRULE defining when duty instances are generated |
 
-Each generated instance follows the standard duty lifecycle independently (Pending -> Active -> Fulfilled/Violated). The `deadline` property defines the per-instance fulfillment window. Any iCal-compliant library can parse the value.
+Instances occur from the duty's activation up to the evaluation time (formal semantics §5.5). Each generated instance follows the standard duty lifecycle independently (Pending -> Active -> Fulfilled/Violated). The `deadline` property defines the per-instance fulfillment window, and only an action at or after the instance's occurrence fulfills it. Any iCal-compliant library can parse the value.
 
 ### 4.4 dprod:acceptsOffer
 

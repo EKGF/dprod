@@ -262,8 +262,10 @@ dprod:recurrence
   rdfs:comment
     """An RFC 5545 RRULE string (e.g., FREQ=DAILY;BYHOUR=6;BYMINUTE=0).
     Defines the schedule on which duty instances are created.
+    Instances occur from the duty's activation up to the evaluation time.
     Each instance follows the standard duty lifecycle independently.
-    The deadline property defines the per-instance fulfillment window.
+    The deadline property defines the per-instance fulfillment window;
+    only an action at or after the instance's occurrence fulfills it.
     Any iCal-compliant library can parse the value."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain odrl:Duty ;
