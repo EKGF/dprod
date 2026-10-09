@@ -165,7 +165,7 @@ ex:subscription a dprod:DataContract ;
 **Used on:** `odrl:Duty`
 **Cardinality:** 0..1
 **Source:** DPROD (`rdfs:subPropertyOf odrl:function`)
-**Note:** In a DataOffer (Offer), provider duties have `dprod:subjectOfDuty` set to the provider. Consumer duties omit `dprod:subjectOfDuty` -- it is filled in when the DataContract is created.
+**Note:** In a DataOffer (Offer), provider duties have `dprod:subjectOfDuty` set to the provider. Consumer duties omit `dprod:subjectOfDuty` -- it is filled in when the DataContract is created. Where it is still omitted, the bearer is the policy's `odrl:assignee`, or the requesting agent in a policy without one.
 ### Party Hierarchy
 
 **Business term:** `team membership`, `department`, `division`
