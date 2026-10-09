@@ -737,18 +737,35 @@ PolicyApplicable(Agreement(grantor, grantee, ...), Env) =
 
 ### 7.4 Norm Activation
 
-A norm within a policy is active when both the policy is applicable and the norm's own conditions hold:
+A permission matches a request when it covers the whole request; a prohibition matches when it applies to any part of it. With `⊑` the reflexive subsumption of §5.4 (`x₁ ⊑ x₂ ⟺ x₁ matches x₂`):
+
+```
+covers(norm, request) =
+    (norm.subject = ⊥ ∨ norm.subject = * ∨ request.agent ⊑ norm.subject) ∧
+    request.action ⊑ norm.action ∧
+    (norm.asset = ⊥ ∨ request.asset ⊑ norm.asset)
+
+overlaps(norm, request) =
+    (norm.subject = ⊥ ∨ norm.subject = * ∨ request.agent ⊑ norm.subject) ∧
+    (request.action ⊑ norm.action ∨ norm.action ⊑ request.action) ∧
+    (norm.asset = ⊥ ∨ request.asset ⊑ norm.asset ∨ norm.asset ⊑ request.asset)
+
+matches(norm, request) =
+    covers(norm, request)     if norm : Permission
+    overlaps(norm, request)   if norm : Prohibition
+```
+
+A permission for `odrl:use` therefore matches a request to `odrl:display` (`odrl:display includedIn odrl:use`), but a permission to `odrl:display` does not match a request to `odrl:use`. A prohibition on `odrl:display` matches a request to `odrl:use`, and a prohibition on a member asset matches a request for its collection, so a broad request cannot pass a narrower prohibition. In both directions the request's agent is the narrower side: a norm for a party collection applies to its members.
+
+A norm is active when it matches the request and its own condition holds:
 
 ```
 NormActive(norm, Env) =
-    (norm.subject = ⊥ ∨ norm.subject = Env.agent ∨ norm.subject = *
-     ∨ Env.agent partOf⁺ norm.subject) ∧
-    norm.action matches Env.action ∧
-    (norm.asset = ⊥ ∨ norm.asset matches Env.asset) ∧
+    matches(norm, Env.request) ∧
     (norm.condition = ⊥ ∨ ⟦norm.condition⟧(Env))
 ```
 
-Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and `partOf⁺` is typed transitive ODRL collection membership. In standard ODRL usage, Set and Offer policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
+Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and agent subsumption is typed transitive ODRL collection membership (`partOf⁺`). In standard ODRL usage, Set and Offer policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
 
 ---
 
