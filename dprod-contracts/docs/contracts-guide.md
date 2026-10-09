@@ -387,7 +387,7 @@ ex:contract a dprod:DataOffer ;
 
 ### Multi-Dataset Contract
 
-A single contract covering multiple targets. When a policy has multiple targets, rules must specify their target explicitly -- inheritance is ambiguous.
+A single contract covering multiple targets. A rule without its own target applies to each of the policy's targets, so declare a target on each rule when rules differ by asset.
 
 ```turtle
 ex:contract a dprod:DataOffer ;
@@ -436,13 +436,13 @@ ex:contract a dprod:DataOffer ;
 
 **Rules**:
 - Single-target policy: rules inherit the target unless they specify a different one
-- Multi-target policy: rules must specify their target (inheritance is ambiguous)
+- Multi-target policy: a rule without its own target applies to each of the policy's targets, as one copy per target (ODRL compact-policy expansion)
 - No policy-level target: a rule without its own target applies to any asset
 - Named duties obtain their DPROD profile context from the containing policy that references them. They inherit that policy's target under the same rules as inline duties. A truly uncontained duty has no DPROD profile context and is not independently evaluable as a DPROD policy.
 
 ### Multi-Asset Contracts
 
-A contract can cover multiple targets. When multiple targets exist, each rule must specify its own target (inheritance is ambiguous):
+A contract can cover multiple targets. A rule without its own target applies to each of them; a rule that applies to only some declares its own target:
 
 ```turtle
 ex:contract odrl:target ex:asset1 , ex:asset2 ;
