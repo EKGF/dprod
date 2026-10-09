@@ -152,6 +152,7 @@ Recurrence ::= RRule(rule: String)
 
 - `Permission` corresponds to `odrl:Permission`; `Prohibition` to `odrl:Prohibition`; `Duty` to `odrl:Duty`.
 - The formal `subject` parameter maps to `dprod:subjectOfDuty` on duties (rdfs:subPropertyOf `odrl:function`) and to `odrl:assignee` on permissions/prohibitions.
+- **Default bearer**: A duty's `subject` is its bearer. Before evaluation, a duty without `dprod:subjectOfDuty` takes as its subject the policy's `grantee`, or, in a policy without one, the requesting agent (`Env.request.agent`). In a bilateral policy this is the party the rights are granted to; provider duties name the provider explicitly. A duty whose bearer is the requesting agent stands for one duty per agent, each tracked separately in Σ: one agent's missed duty is not held against another.
 - The formal `object` parameter (duties only) maps to `dprod:objectOfDuty` — the party affected by the duty action (e.g., who is notified). Not used in norm matching.
 - `AbsoluteDeadline`: Fixed point in time (e.g., 2026-12-31T23:59:59Z)
 - `RelativeDeadline`: Duration from activation (e.g., P30D, PT24H)
@@ -708,11 +709,15 @@ Eval(request, policies, Σ, world) =
     // Step 1: Collect matching norms within applicable policies
     let prohibitions = { n ∈ p.clauses | p ∈ applicable, n : Prohibition, matches(n, request) }
     let permissions  = { n ∈ p.clauses | p ∈ applicable, n : Permission, matches(n, request) }
-    let allDuties    = { n ∈ p.clauses | p ∈ applicable, n : Duty, matches(n, request) }
+    let granting     = { policy(n) | n ∈ permissions, NormActive(n, Env) = true }
+    let allDuties    = { d ∈ p.clauses | p ∈ granting, d : Duty }
+    // A permission in error in a policy that does not otherwise grant leaves
+    // unknown whether that policy's duties are engaged (E₄)
+    let E₄ = errors({ NormActive(n, Env) | n ∈ permissions, policy(n) ∉ granting })
 
     // Step 2: Partition duties by bearer (bilateral)
     let grantorDuties = { d ∈ allDuties | d.subject = policy(d).grantor }
-    let granteeDuties = { d ∈ allDuties | d.subject = policy(d).grantee }
+    let granteeDuties = allDuties \ grantorDuties
 
     // Step 3: Update duty states. A pending duty whose activation condition
     // is in error has an unknown state (E₃) and stays Pending in Σ'.
@@ -737,14 +742,18 @@ Eval(request, policies, Σ, world) =
             return Failure(E₂)
         return {decision: NotApplicable, ...}
 
-    // Step 6: Check for violations
-    let violated = { d ∈ allDuties | Σ'.state(d) = Violated }
-    if violated ≠ ∅ then
-        return {decision: Deny, violations: violated, ...}
+    // Step 6: Check for violations. A duty violated on the requester's side
+    // denies; a grantor's violation is reported with the result but is not
+    // held against the grantee, since Violated is terminal.
+    let violatedGrantor = { d ∈ grantorDuties | Σ'.state(d) = Violated }
+    let violatedGrantee = { d ∈ granteeDuties | Σ'.state(d) = Violated }
+    if violatedGrantee ≠ ∅ then
+        return {decision: Deny, violations: violatedGrantee ∪ violatedGrantor, ...}
 
-    // Step 7: A duty in an unknown state could be active
-    if E₃ ≠ ∅ then
-        return Failure(E₃)
+    // Step 7: A duty in an unknown state, or one of a policy that might
+    // grant, could be active or violated
+    if E₃ ∪ E₄ ≠ ∅ then
+        return Failure(E₃ ∪ E₄)
 
     // Step 8: Collect active duties for both parties
     let activeGrantor = { d ∈ grantorDuties | Σ'.state(d) = Active }
@@ -754,11 +763,13 @@ Eval(request, policies, Σ, world) =
         decision: Permit,
         grantorDuties: activeGrantor,
         granteeDuties: activeGrantee,
-        violations: ∅
+        violations: violatedGrantor
     }
 ```
 
-Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation where that holds. An error in a pending duty's activation condition leaves it Pending and gives `Failure` only on the `Permit` path (Step 7): it cannot change a `Deny` or `NotApplicable`, since a duty that becomes active is not yet violated.
+A duty is not matched against the request: its action and asset are what the bearer must do, not what is requested. A request to display `ex:marketData` engages a contract's duty to report on `ex:usageStats`. Duties are collected from every policy that grants the request, that is, has a permission in force for it. A duty borne by a third party is reported with the grantee's duties, since it conditions the grantee's permission. Because every duty of a granting policy is collected, a provider's missed delivery is a violation in every later evaluation; it is reported in `violations`, and only violations by the grantee's side deny.
+
+Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation of a request its policy grants. An error in a pending duty's activation condition (E₃), or in a permission of a policy that does not otherwise grant (E₄), gives `Failure` only on the `Permit` path (Step 7). It cannot change a `Deny` or `NotApplicable`: resolving it can only add duties, a duty that becomes active is not yet violated, and more violations still deny.
 
 ### 7.3 Policy Applicability
 
@@ -927,7 +938,8 @@ It follows from §6.1 (each connective is a function of the set of its operand v
     Eval(request, policies, Σ, world) = Success(r)
     ⟹ every completion yields Success(r') with r'.decision = r.decision,
        and if r.decision = Permit then
-       r'.grantorDuties = r.grantorDuties ∧ r'.granteeDuties = r.granteeDuties
+       r'.grantorDuties = r.grantorDuties ∧ r'.granteeDuties = r.granteeDuties ∧
+       r'.violations = r.violations
 ```
 
 In particular, a type or data error in a prohibition never yields `Permit`. For `Deny` on violations, `r.violations` lists the violations found without resolving any error; a completion may find more. The converse does not hold: `Failure` is returned whenever an error is consulted, which may include cases where every completion agrees.
@@ -1099,8 +1111,10 @@ For an Agreement (or DataContract), duties are partitioned by bearer:
 
 ```
 grantorDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantor }
-granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantee }
+granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject ≠ agreement.grantor }
 ```
+
+A duty without `dprod:subjectOfDuty` is borne by the grantee (§3.2, default bearer), so it is a grantee duty.
 
 Both sets are included in the evaluation result, with independent lifecycle tracking.
 
@@ -1274,7 +1288,7 @@ The following properties should be proved for a verified implementation:
 4. **(S4) Terminal permanence**: Fulfilled/Violated states never revert
 5. **(S5) Lookup safety**: an unresolvable operand or incomparable comparison produces an explicit `ResolutionError`, never a Boolean result
 6. **(S6) Prohibition monotonicity**: Adding policies cannot remove prohibitions
-7. **(S7) Error soundness**: A `Success` decision is the same under every completion of its errors, and so are the duties reported with a `Permit`
+7. **(S7) Error soundness**: A `Success` decision is the same under every completion of its errors, and so are the duties and grantor violations reported with a `Permit`
 
 ---
 
