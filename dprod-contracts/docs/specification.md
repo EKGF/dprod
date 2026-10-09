@@ -285,7 +285,8 @@ The evaluator performs one lookup:
 Request and state producers MUST flatten policy-relevant facts onto their source
 nodes before evaluation. RDF lists, traversal through `odrl:target` or party
 nodes, and extension sources are rejected. Missing bindings, missing or multiple
-values, and type mismatches are hard evaluation errors.
+values, and type mismatches are evaluation errors, never `false`; evaluation
+fails unless its outcome is decided without them (formal semantics §7.2).
 
 ### 4.9 dprod:not
 

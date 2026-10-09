@@ -198,7 +198,7 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 | Duty lifecycle | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Agreement evaluation | Assignee duties only | Both assigner and assignee duties (bilateral) |
 | Conflict resolution | Configurable | Default: Prohibition > Permission; per-policy override allowed |
-| Evaluation order | Undefined | Deterministic left-to-right |
+| Evaluation order | Undefined | Order-independent; errors never fail open |
 | Operand resolution | Implicit | One-hop source + property bindings over normalized inputs |
 | Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |
 | Contract types | Generic Offer/Agreement | `DataOffer` (Offer) / `DataContract` (Agreement) |
