@@ -137,10 +137,10 @@ We define DPROD Contracts's abstract syntax using a typed algebraic grammar.
 ### 3.2 Norms
 
 ```
-Norm ::= Permission(subject: Agent, action: Action, asset: Asset, condition: Condition?)
-       | Duty(subject: Agent, action: Action, asset: Asset,
+Norm ::= Permission(subject: Agent, action: Action, asset: Asset?, condition: Condition?)
+       | Duty(subject: Agent, action: Action, asset: Asset?,
               object: Agent?, condition: Condition?, deadline: Deadline?, recurrence: Recurrence?)
-       | Prohibition(subject: Agent, action: Action, asset: Asset, condition: Condition?)
+       | Prohibition(subject: Agent, action: Action, asset: Asset?, condition: Condition?)
 
 Deadline ::= AbsoluteDeadline(time: Time)
            | RelativeDeadline(duration: Duration)
@@ -175,6 +175,9 @@ Recurrence ::= RRule(rule: String)
 | `lte` | `odrl:lteq` | |
 | `gte` | `odrl:gteq` | |
 | `recurrence` | `dprod:recurrence` | RFC 5545 RRULE string |
+| `target` (Policy) | `odrl:target` | 0..*; distributed to rules without their own target (§3.4) |
+| `effectiveDate` | `dprod:effectiveDate` | DataOffer and DataContract |
+| `expirationDate` | `dprod:expirationDate` | DataOffer and DataContract |
 
 ### 3.3 Conditions
 
@@ -200,9 +203,11 @@ ComparisonOperator ::= eq | neq | lt | lte | gt | gte | isAnyOf | isNoneOf
 ### 3.4 Policies
 
 ```
-Policy ::= Set(target: Asset?, clauses: Norm+, condition: Condition?)
-         | Offer(grantor: Agent, grantee: Agent?, target: Asset?, clauses: Norm+, condition: Condition?)
-         | Agreement(grantor: Agent, grantee: Agent, target: Asset?, clauses: Norm+, condition: Condition?)
+Policy ::= Set(target: Set<Asset>, clauses: Norm+)
+         | Offer(grantor: Agent, grantee: Agent?, target: Set<Asset>, clauses: Norm+,
+                 effectiveDate: Time?, expirationDate: Time?)
+         | Agreement(grantor: Agent, grantee: Agent, target: Set<Asset>, clauses: Norm+,
+                     effectiveDate: Time?, expirationDate: Time?)
 ```
 
 **Notes**:
@@ -212,6 +217,17 @@ Policy ::= Set(target: Asset?, clauses: Norm+, condition: Condition?)
 - `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `DataContract` is a subtype of `Agreement`.
 - The formal `grantor` parameter maps to `odrl:assigner` (the party granting rights) in the RDF encoding.
 - The formal `grantee` parameter maps to `odrl:assignee` (the party receiving rights) in the RDF encoding.
+- The formal `target` parameter maps to the policy's `odrl:target` values (0..*).
+- The formal `effectiveDate` and `expirationDate` parameters map to `dprod:effectiveDate` and `dprod:expirationDate`, defined on `dprod:DataOffer` and `dprod:DataContract`. They are ⊥ for other Offers and Agreements.
+- ODRL has no policy-level constraint, so a policy has no `condition`. Conditions are on rules.
+
+**Effective target and assignee**: Policy-level `odrl:target` and `odrl:assignee` are shorthand for the rules' own, as in ODRL's compact policy (ODRL IM §2.7.1). Before evaluation, a rule without its own `odrl:target` takes the policy's targets:
+
+- one policy target: the rule's `asset` is that target;
+- several policy targets: the rule stands for one copy per target, each with that target as its `asset`. Each copy is a distinct norm, identified by the rule and its target; for a duty, Σ tracks each copy's state separately;
+- no policy target: the rule's `asset` is ⊥, and the rule applies to any asset (§7.4).
+
+Likewise, a permission or prohibition without its own `odrl:assignee` takes the policy's `grantee` as its `subject`, if the policy has one; an Offer addressed to a consumer does not grant its permissions to anyone else. A rule's own value is never combined with the policy's: a duty on `ex:usageStats` in a policy targeting `ex:marketData` applies to `ex:usageStats`. After this step every norm has at most one `asset`, and the policy's target and grantee play no further part in rule matching.
 
 ### 3.5 Requests
 
@@ -722,11 +738,14 @@ Eval(request, policies, Σ, world) =
 
 ```
 PolicyApplicable(p, Env) =
-    // Target matches (if specified)
-    (p.target = ⊥ ∨ Env.asset matches p.target) ∧
-    // Policy condition satisfied
-    (p.condition = ⊥ ∨ ⟦p.condition⟧(Env))
+    // Validity window, inclusive at both ends (Offers and Agreements)
+    (p.effectiveDate = ⊥ ∨ p.effectiveDate ≤ Env.Σ.clock) ∧
+    (p.expirationDate = ⊥ ∨ Env.Σ.clock ≤ p.expirationDate)
 ```
+
+Outside its validity window, none of a policy's rules apply, prohibitions included; a restriction meant to outlast a contract belongs in a separate policy. Dates should carry a timezone, since one without may not be ordered against the clock.
+
+The policy's target is not tested here. It has been distributed to the rules (§3.4, effective target), and `matches` (§7.4) tests each rule's `asset` against the request. Testing it here as well would make every rule whose own target differs from the policy's unreachable: a request concerning that rule's asset fails the policy test, and a request concerning the policy's asset fails the rule test.
 
 For Agreements (including DataContracts), the agent must be a party:
 
