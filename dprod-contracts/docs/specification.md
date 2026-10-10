@@ -312,6 +312,8 @@ ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `
 
 The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading -- in a bilateral agreement, the data provider is `odrl:assigner` at the policy level but would also need to be `odrl:assignee` on their own delivery duty. `dprod:subjectOfDuty` removes this confusion. Bridges to ODRL via `rdfs:subPropertyOf odrl:function` (the abstract umbrella for party-roles in a Rule), so ODRL processors retain a generic role link without inheriting the contested `odrl:assignee` semantics. Aligns with `md:subject` (W3C Market Data), which likewise scopes the property to `odrl:Duty`.
 
+When `dprod:subjectOfDuty` is omitted, the bearer is the policy's `odrl:assignee`, or the requesting agent in a policy without one (formal semantics §3.2). Provider duties therefore name the provider explicitly.
+
 ### 4.11 dprod:objectOfDuty
 
 | Property | Value |

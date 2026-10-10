@@ -152,6 +152,7 @@ Recurrence ::= RRule(rule: String)
 
 - `Permission` corresponds to `odrl:Permission`; `Prohibition` to `odrl:Prohibition`; `Duty` to `odrl:Duty`.
 - The formal `subject` parameter maps to `dprod:subjectOfDuty` on duties (rdfs:subPropertyOf `odrl:function`) and to `odrl:assignee` on permissions/prohibitions.
+- **Default bearer**: A duty's `subject` is its bearer. Before evaluation, a duty without `dprod:subjectOfDuty` takes as its subject the policy's `grantee`, or, in a policy without one, the requesting agent (`Env.request.agent`). In a bilateral policy this is the party the rights are granted to; provider duties name the provider explicitly. A duty whose bearer is the requesting agent stands for one duty per agent, each tracked separately in Σ: one agent's missed duty is not held against another.
 - The formal `object` parameter (duties only) maps to `dprod:objectOfDuty` — the party affected by the duty action (e.g., who is notified). Not used in norm matching.
 - `AbsoluteDeadline`: Fixed point in time (e.g., 2026-12-31T23:59:59Z)
 - `RelativeDeadline`: Duration from activation (e.g., P30D, PT24H)
@@ -684,11 +685,12 @@ Eval(request, policies, Σ, world) =
     // Step 1: Collect matching norms within applicable policies
     let prohibitions = { n ∈ p.clauses | p ∈ applicable, n : Prohibition, matches(n, request) }
     let permissions  = { n ∈ p.clauses | p ∈ applicable, n : Permission, matches(n, request) }
-    let allDuties    = { n ∈ p.clauses | p ∈ applicable, n : Duty, matches(n, request) }
+    let granting     = { policy(n) | n ∈ permissions, NormActive(n, Env) }
+    let allDuties    = { d ∈ p.clauses | p ∈ granting, d : Duty }
 
     // Step 2: Partition duties by bearer (bilateral)
     let grantorDuties = { d ∈ allDuties | d.subject = policy(d).grantor }
-    let granteeDuties = { d ∈ allDuties | d.subject = policy(d).grantee }
+    let granteeDuties = allDuties \ grantorDuties
 
     // Step 3: Update duty states
     let Σ' = updateDutyStates(allDuties, Env, Σ)
@@ -701,10 +703,13 @@ Eval(request, policies, Σ, world) =
     if ∄p ∈ permissions. NormActive(p, Env) then
         return {decision: NotApplicable, ...}
 
-    // Step 6: Check for violations
-    let violated = { d ∈ allDuties | Σ'.state(d) = Violated }
-    if violated ≠ ∅ then
-        return {decision: Deny, violations: violated, ...}
+    // Step 6: Check for violations. A duty violated on the requester's side
+    // denies; a grantor's violation is reported with the result but is not
+    // held against the grantee, since Violated is terminal.
+    let violatedGrantor = { d ∈ grantorDuties | Σ'.state(d) = Violated }
+    let violatedGrantee = { d ∈ granteeDuties | Σ'.state(d) = Violated }
+    if violatedGrantee ≠ ∅ then
+        return {decision: Deny, violations: violatedGrantee ∪ violatedGrantor, ...}
 
     // Step 7: Collect active duties for both parties
     let activeGrantor = { d ∈ grantorDuties | Σ'.state(d) = Active }
@@ -714,9 +719,11 @@ Eval(request, policies, Σ, world) =
         decision: Permit,
         grantorDuties: activeGrantor,
         granteeDuties: activeGrantee,
-        violations: ∅
+        violations: violatedGrantor
     }
 ```
+
+A duty is not matched against the request: its action and asset are what the bearer must do, not what is requested. A request to display `ex:marketData` engages a contract's duty to report on `ex:usageStats`. Duties are collected from every policy that grants the request, that is, has a permission in force for it. A duty borne by a third party is reported with the grantee's duties, since it conditions the grantee's permission. Because every duty of a granting policy is collected, a provider's missed delivery is a violation in every later evaluation; it is reported in `violations`, and only violations by the grantee's side deny.
 
 ### 7.3 Policy Applicability
 
@@ -1026,8 +1033,10 @@ For an Agreement (or DataContract), duties are partitioned by bearer:
 
 ```
 grantorDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantor }
-granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantee }
+granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject ≠ agreement.grantor }
 ```
+
+A duty without `dprod:subjectOfDuty` is borne by the grantee (§3.2, default bearer), so it is a grantee duty.
 
 Both sets are included in the evaluation result, with independent lifecycle tracking.
 
