@@ -218,7 +218,7 @@ odrl:obligation [
 
 ### Notification Pattern (Change Notification)
 
-Provider must notify consumers of changes. Use `dprod:objectOfDuty` to identify who is notified. A notice period, such as 14 days before the change, cannot be expressed yet: a `dprod:deadline` runs forward from when the duty becomes active, not back from the change.
+Provider must notify consumers of changes. Use `dprod:objectOfDuty` to identify who is notified. Record the agreed notice period with your own property, such as `ex:noticePeriod`.[^notice]
 
 ```turtle
 odrl:obligation [
@@ -226,7 +226,8 @@ odrl:obligation [
     dprod:subjectOfDuty ex:dataTeam ;
     dprod:objectOfDuty ex:consumer ;
     odrl:action ex:notify ;
-    odrl:target ex:schemaChanges
+    odrl:target ex:schemaChanges ;
+    ex:noticePeriod "P14D"^^xsd:duration
 ] .
 ```
 
@@ -417,7 +418,8 @@ ex:contract a dprod:DataOffer ;
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:notify ;
-        odrl:target ex:schemaChanges
+        odrl:target ex:schemaChanges ;
+        ex:noticePeriod "P14D"^^xsd:duration
     ] ;
     odrl:permission [
         a odrl:Permission ;
@@ -611,3 +613,5 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 ```bash
 shacl validate --shapes dprod-contracts-shapes.ttl --data my-contract.ttl
 ```
+
+[^notice]: DPROD does not yet evaluate a notice period. A `dprod:deadline` runs forward from when a duty becomes active, not back from a later action, so an evaluator cannot tell a timely notice from a late one. The property records what the parties agreed, and checking it is left to the change process.
