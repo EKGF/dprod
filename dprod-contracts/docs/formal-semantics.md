@@ -3,7 +3,7 @@ title: "DPROD Contracts Formal Semantics"
 subtitle: "Deterministic Policy Evaluation for Data Governance"
 version: "0.7"
 status: "Draft"
-date: 2026-08-20
+date: 2026-10-13
 abstract: |
   DPROD Contracts is a proper ODRL 2.2 profile with deterministic, total evaluation
   semantics and bilateral agreement support. This document specifies the formal
