@@ -111,7 +111,7 @@ ex:contract a dprod:DataOffer ;
 | **Type** | `owl:Class` |
 | **Superclass** | `odrl:Agreement` |
 | **Label** | Data Contract |
-| **Definition** | Activated data offer binding provider and consumer |
+| **Definition** | Agreement that accepts a data offer and binds provider and consumer to the rules it states |
 
 **Required properties**:
 

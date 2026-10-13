@@ -12,7 +12,7 @@ DPROD supports two document types for different purposes:
 |------|-----------|----------|---------|
 | **Policy** (`odrl:Set`) | Set | Organizational rules, access controls | None (applies to anyone matching constraints) |
 | **Offer / Contract** (`dprod:DataOffer`) | Offer | Bilateral agreements between teams | Provider (assigner) required |
-| **DataContract** (`dprod:DataContract`) | Agreement | Activated offer | Both parties required |
+| **DataContract** (`dprod:DataContract`) | Agreement | Accepts an offer and binds both parties | Both parties required |
 
 Use **policies** (`odrl:Set`) when:
 - Writing organizational data governance rules

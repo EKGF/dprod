@@ -78,9 +78,9 @@ dprod:DataOffer
 
 dprod:DataContract
   a owl:Class ;
-  dct:description "Activated data offer binding provider and consumer."@en ;
+  dct:description "Agreement that accepts a data offer and binds provider and consumer to the rules it states."@en ;
   rdfs:comment
-    """A DataContract is an activated DataOffer.
+    """A DataContract is an odrl:Agreement, complete in itself; dprod:acceptsOffer records the offer it accepts.
     - assigner: data provider (from offer)
     - assignee: data consumer
     Bilateral: both parties may have active duties."""@en ;
