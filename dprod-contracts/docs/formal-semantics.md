@@ -714,7 +714,12 @@ Eval(request, policies, Σ, world) =
     let grantorDuties = { d ∈ allDuties | d.subject = policy(d).grantor }
     let granteeDuties = { d ∈ allDuties | d.subject = policy(d).grantee }
 
-    // Step 3: Prohibition overrides. An active prohibition denies, even if
+    // Step 3: Update duty states. A pending duty whose activation condition
+    // is in error has an unknown state (E₃) and stays Pending in Σ'.
+    let E₃ = errors({ ⟦d.condition⟧(Env) | d ∈ allDuties, Σ.state(d) = Pending, d.condition ≠ ⊥ })
+    let Σ' = updateDutyStates(allDuties, Env, Σ)
+
+    // Step 4: Prohibition overrides. An active prohibition denies, even if
     // other rules or policies are in error. If none is active, an error in a
     // prohibition or in a policy's applicability gives Failure, since
     // resolving it could give Deny.
@@ -724,18 +729,13 @@ Eval(request, policies, Σ, world) =
     if E₁ ≠ ∅ then
         return Failure(E₁)
 
-    // Step 4: Check for granting privilege. An error in a permission
+    // Step 5: Check for granting privilege. An error in a permission
     // matters only if no permission is active.
     if ∄p ∈ permissions. NormActive(p, Env) = true then
         let E₂ = errors({ NormActive(p, Env) | p ∈ permissions })
         if E₂ ≠ ∅ then
             return Failure(E₂)
         return {decision: NotApplicable, ...}
-
-    // Step 5: Update duty states. A pending duty whose activation condition
-    // is in error has an unknown state (E₃) and stays Pending in Σ'.
-    let E₃ = errors({ ⟦d.condition⟧(Env) | d ∈ allDuties, Σ.state(d) = Pending, d.condition ≠ ⊥ })
-    let Σ' = updateDutyStates(allDuties, Env, Σ)
 
     // Step 6: Check for violations
     let violated = { d ∈ allDuties | Σ'.state(d) = Violated }
@@ -758,7 +758,7 @@ Eval(request, policies, Σ, world) =
     }
 ```
 
-Duty states advance only when evaluation reaches Step 5, that is, when some permission is active and no prohibition is.
+Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation where that holds. An error in a pending duty's activation condition leaves it Pending and gives `Failure` only on the `Permit` path (Step 7): it cannot change a `Deny` or `NotApplicable`, since a duty that becomes active is not yet violated.
 
 ### 7.3 Policy Applicability
 
