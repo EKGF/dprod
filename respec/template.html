@@ -992,9 +992,12 @@
       (<a href="#objectofduty"><code>dprod:objectOfDuty</code></a>).
     </li>
     <li>
-      <strong>Schedules and deadlines.</strong> A duty may recur
-      (<a href="#recurrence"><code>dprod:recurrence</code></a>, an [[RFC5545]] recurrence rule) and each
-      instance has a fulfilment window (<a href="#deadline"><code>dprod:deadline</code></a>).
+      <strong>Schedules and deadlines.</strong> A duty may recur on a
+      reusable, identified <a href="#schedule"><code>dprod:Schedule</code></a> (for example an [[RFC5545]]
+      recurrence rule with its start time and timezone), referenced through <code>dprod:schedule</code>.
+      Each occurrence is an instance of the duty, fulfilled only by an action between the occurrence and
+      its deadline (<a href="#deadline"><code>dprod:deadline</code></a>). A duty without a schedule may
+      have a deadline too.
     </li>
     <li>
       <strong>Authored status and computed state.</strong> A publisher records where an offer or contract is
@@ -1117,7 +1120,12 @@
         "type": "Duty",
         "subjectOfDuty": "ex:tradingDataTeam",
         "action": "ex:deliver",
-        "recurrence": "FREQ=MINUTELY;INTERVAL=15",
+        "schedule": {
+          "id": "ex:every15Minutes",
+          "type": "Schedule",
+          "conformsTo": "dprod:Rfc5545ScheduleFormat",
+          "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MINUTELY;INTERVAL=15"
+        },
         "deadline": { "@value": "PT5M", "type": "xsd:duration" }
       },
       "permission": { "type": "Permission", "action": "display" },
