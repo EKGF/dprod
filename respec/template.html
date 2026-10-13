@@ -535,7 +535,7 @@
     </li>
   </ul>
 
-  The [[dprod]]] specification builds on DCAT [[vocab-dcat-3]] by connecting
+  The [[dprod]] specification builds on DCAT [[vocab-dcat-3]] by connecting
   <a href="https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service">DCAT Data Services</a> to
   <!--suppress HtmlUnknownAnchorTarget -->
   DPROD <a href="#dataproduct">Data Products</a> using
@@ -1002,20 +1002,21 @@
     <li>
       <strong>Authored status and computed state.</strong> A publisher records where an offer or contract is
       in its lifecycle. An evaluator computes, from observable facts, whether each duty is pending, active,
-      fulfilled or violated (<a href="#dutystate"><code>dprod:dutyState</code></a>). The two are kept apart
-      on purpose.
+      fulfilled or violated (<a href="#dutystate"><code>dprod:dutyState</code></a>). The two are recorded
+      with different properties on purpose, even though DPROD's optional concept scheme uses the same four
+      values for both: re-computing a duty's state never changes an authored status.
     </li>
     <li>
-      <strong>Deterministic evaluation.</strong> Every operand a constraint refers to is bound to one
-      property on one normalised input (the authorisation request, a state-of-the-world snapshot, or the
-      evaluation context itself), prohibitions always win over permissions, and the same inputs always
-      produce the same decision.
+      <strong>Deterministic evaluation.</strong> The same inputs always produce the same decision. Every
+      operand a constraint refers to is bound to one property on one normalised input: the authorisation
+      request, a state-of-the-world snapshot, or the evaluation context itself. By default, a prohibition
+      wins over a permission that matches the same request.
     </li>
   </ul>
   <p>
     Because it is a proper ODRL profile, every DPROD data contract is a valid ODRL 2.2 policy. An ODRL
     processor that knows nothing of DPROD can still read the permissions and prohibitions; a DPROD-aware
-    processor additionally enforces duty state, bilateral duties and the evaluation rules.
+    evaluator also tracks duty state and bilateral duties, following the profile's evaluation rules.
   </p>
   <p>
     The profile is defined by three files, published alongside this document:
@@ -1043,8 +1044,8 @@
     setting out the provider's duties, the consumer's rights and what is prohibited. When a consumer accepts
     it, the result is a <a href="#datacontract"><code>dprod:DataContract</code></a>, an
     <code>odrl:Agreement</code> that binds both parties, may add duties on the consumer, and links back to
-    the offer it accepts. Each row of the figure names the property that carries it; DPROD terms are shown
-    in blue. The lower part shows the state an evaluator computes for each duty.
+    the offer it accepts. Each row of the figure pairs a part of the offer or contract with the property
+    that records it; DPROD terms are shown in blue. The lower part shows the state an evaluator computes for each duty.
   </p>
   <figure id="ContractModel">
     <!--suppress HtmlUnknownTarget -->
@@ -1139,8 +1140,9 @@
     <code>"contractLifecycleStatus": "Active"</code> denotes <code>dprod:Active</code>. The offer is shown nested
     inside the contract for readability. In practice a provider publishes the offer once, as its own
     resource, and each contract that accepts it refers to it by identifier.
-    The full version of this example, with the domain vocabulary, the parties and the evaluated duty
-    instances, is in the <a href="#data-offer-and-contract">Data Offer and Contract</a> worked example.
+    A fuller version of this example, with a schema-conformance duty for the provider and a usage-report
+    duty for the consumer, is the <a href="#data-offer-and-contract">Data Offer and Contract</a> worked
+    example.
   </p>
 
   <p class="note">
@@ -1244,7 +1246,7 @@
   <h2>Worked Examples</h2>
   <p>This section contains some worked examples illustrating how to use [[dprod]] for some common use cases.
     All these examples are provided as accompanying machine-readable files, 
-    from which this part of the specification is automatically generated (hence soem formatting variations).
+    from which this part of the specification is automatically generated (hence some formatting variations).
   </p>
 
   {% for example in examples %}
@@ -1264,8 +1266,9 @@
     This section illustrates the <a href="#data-contracts">Data Contracts</a> profile. The examples build on
     one another: the first shows an offer and the contract that accepts it, and the later ones each pick
     out one thing a contract or policy can express. All use the same fictional organisation, and each
-    document is self-contained, so the domain vocabulary it needs (actions, operands and concept values)
-    is declared inline under the <code>ex:</code> prefix. Every example validates against
+    document is self-contained. Terms from the organisation's own vocabulary (actions, operands and
+    concept values) use the <code>ex:</code> prefix, and an example that needs one of them defined, such as
+    a left operand, declares it inline. Every example validates against
     <a href="dprod-contracts-shapes.ttl">dprod-contracts-shapes.ttl</a>. Like the examples above, this
     part of the specification is generated from the accompanying machine-readable files.
   </p>
