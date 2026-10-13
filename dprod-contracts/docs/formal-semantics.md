@@ -152,6 +152,7 @@ Recurrence ::= RRule(rule: String)
 
 - `Permission` corresponds to `odrl:Permission`; `Prohibition` to `odrl:Prohibition`; `Duty` to `odrl:Duty`.
 - The formal `subject` parameter maps to `dprod:subjectOfDuty` on duties (rdfs:subPropertyOf `odrl:function`) and to `odrl:assignee` on permissions/prohibitions.
+- **Default bearer**: A duty's `subject` is its bearer. Before evaluation, a duty without `dprod:subjectOfDuty` takes as its subject the policy's `grantee`, or, in a policy without one, the requesting agent (`Env.request.agent`). In a bilateral policy this is the party the rights are granted to; provider duties name the provider explicitly. A duty whose bearer is the requesting agent stands for one duty per agent, each tracked separately in Σ: one agent's missed duty is not held against another.
 - The formal `object` parameter (duties only) maps to `dprod:objectOfDuty` — the party affected by the duty action (e.g., who is notified). Not used in norm matching.
 - `AbsoluteDeadline`: Fixed point in time (e.g., 2026-12-31T23:59:59Z)
 - `RelativeDeadline`: Duration from activation (e.g., P30D, PT24H)
@@ -425,7 +426,7 @@ updateDutyStates(duties, Env, Σ) =
 
 updateOneDuty(Env)(Σ, d) =
     case Σ.state(d) of
-        Pending → if d.condition = ⊥ ∨ ⟦d.condition⟧(Env)
+        Pending → if (d.condition = ⊥ ∨ ⟦d.condition⟧(Env)) = true
                   then Σ[state(d) ↦ Active, activatedAt(d) ↦ Σ.clock]
                   else Σ
         Active  → if performed(d.subject, d.action, d.asset, Σ)
@@ -528,7 +529,9 @@ Each instance follows the standard lifecycle (§5.1–§5.2) independently:
 ### 6.1 Denotational Semantics
 
 ```
-⟦_⟧ : Condition × Env → Boolean ∪ {ResolutionError}
+Truth ::= true | false | Err(E)        -- E : non-empty Set<ResolutionError>
+
+⟦_⟧ : Condition × Env → Truth
 ```
 
 **Atomic constraints**:
@@ -537,24 +540,38 @@ Each instance follows the standard lifecycle (§5.1–§5.2) independently:
 ⟦AtomicConstraint(left, op, right)⟧(Env) =
     let leftVal = resolve(left, Env)
     in case leftVal of
-         ResolutionError(e) → ResolutionError(e)
-         Value(v)           → apply(op, v, right)
+         ResolutionError(e) → Err({e})
+         Value(v)           → case apply(op, v, right) of
+                                 ResolutionError(e) → Err({e})
+                                 b                  → b
 ```
 
-A resolution error aborts policy evaluation and produces no authorization
-decision. Missing or invalid runtime data must not be converted to `false`,
-because that would confuse an evaluator-capability failure with an unsatisfied
-business condition.
+Missing or invalid runtime data must not be converted to `false`, because that
+would confuse an evaluator-capability failure with an unsatisfied business
+condition. An error is an unknown truth value: it propagates through the
+connectives, and `Eval` returns `Failure` unless the outcome is decided without
+it (§7.2).
 
-**Logical connectives** (short-circuit evaluation, left-to-right):
+**Logical connectives** (strong Kleene logic, order-independent):
 
 ```
-⟦And(c₁, ..., cₙ)⟧(Env) = ⟦c₁⟧(Env) ∧ ... ∧ ⟦cₙ⟧(Env)
-⟦Or(c₁, ..., cₙ)⟧(Env)  = ⟦c₁⟧(Env) ∨ ... ∨ ⟦cₙ⟧(Env)
-⟦Not(c)⟧(Env)           = ¬⟦c⟧(Env)
+⟦And(c₁, ..., cₙ)⟧(Env) =
+    false             if ∃i. ⟦cᵢ⟧(Env) = false
+    Err(⋃ errors)     else if ∃i. ⟦cᵢ⟧(Env) = Err(_)
+    true              otherwise
+
+⟦Or(c₁, ..., cₙ)⟧(Env) =
+    true              if ∃i. ⟦cᵢ⟧(Env) = true
+    Err(⋃ errors)     else if ∃i. ⟦cᵢ⟧(Env) = Err(_)
+    false             otherwise
+
+⟦Not(c)⟧(Env) =
+    case ⟦c⟧(Env) of true → false | false → true | Err(E) → Err(E)
 ```
 
-**Evaluation Order**: `And` evaluates left-to-right, short-circuiting on `false`. `Or` evaluates left-to-right, short-circuiting on `true`. This ensures deterministic evaluation and enables optimizations.
+where `⋃ errors` is the union of the error sets of the operands that evaluate to `Err`.
+
+**Evaluation Order**: The value of a connective depends only on the set of its operand values, never on their order. `And` is `false` if any operand is `false`, whatever the others are, errors included; `Or` is `true` if any operand is `true`. An implementation may evaluate operands in any order and stop early on a deciding `false` (for `And`) or `true` (for `Or`), but not on an error, since a later operand may still decide the value. Replacing an error by either Boolean never changes a `true` or `false` result.
 
 ### 6.2 Helper Function Specifications
 
@@ -637,12 +654,12 @@ lookupOne(property, node, graph, expectedType) =
 6. **Fail fast**: Missing, multiple, ill-typed, or otherwise unresolvable values are `ResolutionError` values; they never become `false`.
 7. **Deterministic**: The same normalized graph and binding produce the same value or the same error.
 
-#### apply : ComparisonOperator × Value × Value → Boolean
+#### apply : ComparisonOperator × Value × Value → Boolean ∪ {ResolutionError}
 
 The function `apply(op, left, right)` applies a comparison operator:
 
 ```
-apply : ComparisonOperator × Value × Value → Boolean
+apply : ComparisonOperator × Value × Value → Boolean ∪ {ResolutionError}
 
 apply(op, left, right) =
     case op of
@@ -656,7 +673,7 @@ apply(op, left, right) =
         isNoneOf → left ∉ right
 ```
 
-**Type requirements**: Comparison operators `lt`, `lte`, `gt`, `gte` require that both operands are of a comparable type (numbers, dates, durations). If operands are not comparable, the operator returns `false`.
+**Type requirements**: Every operator requires operands of the same type: both numbers, both date-times, both durations, both IRIs, or both literals of one datatype. For `isAnyOf` and `isNoneOf`, each member of the right operand must have the left operand's type. `lt`, `lte`, `gt`, and `gte` further require the two values to be ordered: a date-time without a timezone and one with a timezone less than 14 hours apart are not ordered (XML Schema §3.3.7.3), and neither are `P1M` and `P30D`. Otherwise `apply` returns `ResolutionError(Incomparable, op, left, right)`. Returning `false` instead would let `neq`, `isNoneOf`, or `Not` turn a type error into `true`, and would make a prohibition guarded by an ill-typed comparison fail open.
 
 ---
 
@@ -667,46 +684,78 @@ apply(op, left, right) =
 ```
 EvaluationOutcome ::= Success(Result) | Failure(EvaluationError)
 
+EvaluationError = Set<ResolutionError>      -- non-empty
+
 Eval : Request × Set<Policy> × Σ × WorldSnapshot → EvaluationOutcome
 ```
 
+`Failure(E)` reports every error in `E`, not the first one found, so the outcome does not depend on evaluation order.
+
 ### 7.2 Evaluation Algorithm
+
+In the algorithm, returning a `Result` r means `Success(r)`, and `errors(V) = ⋃ { E | Err(E) ∈ V }` collects the errors in a set of truth values. Every step quantifies over sets, and `updateDutyStates` updates each duty independently of the others, so the outcome does not depend on the order of policies, rules, or operands (§9.6). A `Success` decision does not depend on any error; `Failure` may be returned where every way of resolving the errors would give the same decision (§9.7).
 
 ```
 Eval(request, policies, Σ, world) =
     let Env = buildEnv(request, Σ, world)
 
-    // Any ResolutionError below immediately returns Failure(error).
+    // Conditions are three-valued (§6.1); ∧ and ∨ over truth values are
+    // the strong Kleene connectives.
 
-    // Step 0: Find applicable policies
-    let applicable = { p ∈ policies | PolicyApplicable(p, Env) }
+    // Step 0: Find applicable policies; E₀ holds errors in applicability
+    let applicable = { p ∈ policies | PolicyApplicable(p, Env) = true }
+    let E₀ = errors({ PolicyApplicable(p, Env) | p ∈ policies })
 
     // Step 1: Collect matching norms within applicable policies
     let prohibitions = { n ∈ p.clauses | p ∈ applicable, n : Prohibition, matches(n, request) }
     let permissions  = { n ∈ p.clauses | p ∈ applicable, n : Permission, matches(n, request) }
-    let allDuties    = { n ∈ p.clauses | p ∈ applicable, n : Duty, matches(n, request) }
+    let granting     = { policy(n) | n ∈ permissions, NormActive(n, Env) = true }
+    let allDuties    = { d ∈ p.clauses | p ∈ granting, d : Duty }
+    // A permission in error in a policy that does not otherwise grant leaves
+    // unknown whether that policy's duties are engaged (E₄)
+    let E₄ = errors({ NormActive(n, Env) | n ∈ permissions, policy(n) ∉ granting })
 
     // Step 2: Partition duties by bearer (bilateral)
     let grantorDuties = { d ∈ allDuties | d.subject = policy(d).grantor }
-    let granteeDuties = { d ∈ allDuties | d.subject = policy(d).grantee }
+    let granteeDuties = allDuties \ grantorDuties
 
-    // Step 3: Update duty states
+    // Step 3: Update duty states. A pending duty whose activation condition
+    // is in error has an unknown state (E₃) and stays Pending in Σ'.
+    let E₃ = errors({ ⟦d.condition⟧(Env) | d ∈ allDuties, Σ.state(d) = Pending, d.condition ≠ ⊥ })
     let Σ' = updateDutyStates(allDuties, Env, Σ)
 
-    // Step 4: Check for active prohibitions (prohibition overrides)
-    if ∃p ∈ prohibitions. NormActive(p, Env) then
+    // Step 4: Prohibition overrides. An active prohibition denies, even if
+    // other rules or policies are in error. If none is active, an error in a
+    // prohibition or in a policy's applicability gives Failure, since
+    // resolving it could give Deny.
+    if ∃p ∈ prohibitions. NormActive(p, Env) = true then
         return {decision: Deny, ...}
+    let E₁ = E₀ ∪ errors({ NormActive(p, Env) | p ∈ prohibitions })
+    if E₁ ≠ ∅ then
+        return Failure(E₁)
 
-    // Step 5: Check for granting privilege
-    if ∄p ∈ permissions. NormActive(p, Env) then
+    // Step 5: Check for granting privilege. An error in a permission
+    // matters only if no permission is active.
+    if ∄p ∈ permissions. NormActive(p, Env) = true then
+        let E₂ = errors({ NormActive(p, Env) | p ∈ permissions })
+        if E₂ ≠ ∅ then
+            return Failure(E₂)
         return {decision: NotApplicable, ...}
 
-    // Step 6: Check for violations
-    let violated = { d ∈ allDuties | Σ'.state(d) = Violated }
-    if violated ≠ ∅ then
-        return {decision: Deny, violations: violated, ...}
+    // Step 6: Check for violations. A duty violated on the requester's side
+    // denies; a grantor's violation is reported with the result but is not
+    // held against the grantee, since Violated is terminal.
+    let violatedGrantor = { d ∈ grantorDuties | Σ'.state(d) = Violated }
+    let violatedGrantee = { d ∈ granteeDuties | Σ'.state(d) = Violated }
+    if violatedGrantee ≠ ∅ then
+        return {decision: Deny, violations: violatedGrantee ∪ violatedGrantor, ...}
 
-    // Step 7: Collect active duties for both parties
+    // Step 7: A duty in an unknown state, or one of a policy that might
+    // grant, could be active or violated
+    if E₃ ∪ E₄ ≠ ∅ then
+        return Failure(E₃ ∪ E₄)
+
+    // Step 8: Collect active duties for both parties
     let activeGrantor = { d ∈ grantorDuties | Σ'.state(d) = Active }
     let activeGrantee = { d ∈ granteeDuties | Σ'.state(d) = Active }
 
@@ -714,9 +763,13 @@ Eval(request, policies, Σ, world) =
         decision: Permit,
         grantorDuties: activeGrantor,
         granteeDuties: activeGrantee,
-        violations: ∅
+        violations: violatedGrantor
     }
 ```
+
+A duty is not matched against the request: its action and asset are what the bearer must do, not what is requested. A request to display `ex:marketData` engages a contract's duty to report on `ex:usageStats`. Duties are collected from every policy that grants the request, that is, has a permission in force for it. A duty borne by a third party is reported with the grantee's duties, since it conditions the grantee's permission. Because every duty of a granting policy is collected, a provider's missed delivery is a violation in every later evaluation; it is reported in `violations`, and only violations by the grantee's side deny.
+
+Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation of a request its policy grants. An error in a pending duty's activation condition (E₃), or in a permission of a policy that does not otherwise grant (E₄), gives `Failure` only on the `Permit` path (Step 7). It cannot change a `Deny` or `NotApplicable`: resolving it can only add duties, a duty that becomes active is not yet violated, and more violations still deny.
 
 ### 7.3 Policy Applicability
 
@@ -768,15 +821,19 @@ If both a prohibition and permission match, the prohibition wins. This default i
 
 ```
 resolveDecision(prohibitions, permissions) =
-    if ∃p ∈ prohibitions. active(p) then
+    if ∃p ∈ prohibitions. active(p) = true then
         Deny
-    else if ∃p ∈ permissions. active(p) then
+    else if ∃p ∈ prohibitions. active(p) = Err(_) then
+        Failure
+    else if ∃p ∈ permissions. active(p) = true then
         Permit
+    else if ∃p ∈ permissions. active(p) = Err(_) then
+        Failure
     else
         NotApplicable
 ```
 
-No specificity ordering within norm types. All matching norms contribute.
+No specificity ordering within norm types. All matching norms contribute. An active prohibition decides `Deny` even if other rules are in error, and an active permission decides past a permission in error.
 
 **Note**: `NotApplicable` (no matching rule) is distinct from `Deny` (explicit prohibition). This allows policy composition where a higher-level policy can provide defaults.
 
@@ -858,6 +915,34 @@ No specificity ordering within norm types. All matching norms contribute.
 ∀ op, Env.
     resolve(op, Env) ∈ Value ∪ {ResolutionError}
 ```
+
+### 9.6 Order Independence
+
+**Theorem**: The outcome depends on policies, rules, and constraint operands as sets, not on their order.
+
+```
+∀ request, policies, Σ, world, π.
+    π a permutation of the policies, of the rules within a policy,
+      or of the operands of a logical constraint
+    ⟹ Eval(request, π(policies), Σ, world) = Eval(request, policies, Σ, world)
+```
+
+It follows from §6.1 (each connective is a function of the set of its operand values), §7.2 (each step quantifies over sets, and `updateDutyStates` changes each duty's state from that duty's own state), and `Failure` carrying the set of errors rather than the first.
+
+### 9.7 Error Soundness
+
+**Theorem**: A successful decision never depends on an error. A *completion* replaces every `Err` produced by an atomic constraint with `true` or `false`.
+
+```
+∀ request, policies, Σ, world, r.
+    Eval(request, policies, Σ, world) = Success(r)
+    ⟹ every completion yields Success(r') with r'.decision = r.decision,
+       and if r.decision = Permit then
+       r'.grantorDuties = r.grantorDuties ∧ r'.granteeDuties = r.granteeDuties ∧
+       r'.violations = r.violations
+```
+
+In particular, a type or data error in a prohibition never yields `Permit`. For `Deny` on violations, `r.violations` lists the violations found without resolving any error; a completion may find more. The converse does not hold: `Failure` is returned whenever an error is consulted, which may include cases where every completion agrees.
 
 ---
 
@@ -1026,8 +1111,10 @@ For an Agreement (or DataContract), duties are partitioned by bearer:
 
 ```
 grantorDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantor }
-granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantee }
+granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject ≠ agreement.grantor }
 ```
+
+A duty without `dprod:subjectOfDuty` is borne by the grantee (§3.2, default bearer), so it is a grantee duty.
 
 Both sets are included in the evaluation result, with independent lifecycle tracking.
 
@@ -1138,29 +1225,54 @@ function Resolve(op: LeftOperand, env: Env): ResolutionResult
             else Resolved(value)
 }
 
-function EvalCondition(c: Condition, env: Env): EvaluationResult<bool>
+datatype Truth = T | F | Err(errors: set<ResolutionError>)
+
+function KAnd(a: Truth, b: Truth): Truth
+{
+  if a == F || b == F then F
+  else if a.Err? && b.Err? then Err(a.errors + b.errors)
+  else if a.Err? then a
+  else if b.Err? then b
+  else T
+}
+
+function KNot(a: Truth): Truth
+{
+  match a
+    case T => F
+    case F => T
+    case Err(e) => Err(e)
+}
+
+function KOr(a: Truth, b: Truth): Truth
+{
+  KNot(KAnd(KNot(a), KNot(b)))
+}
+
+// Commutativity and associativity make an n-ary And (§3.3), folded from
+// binary KAnd, independent of operand order.
+lemma KAndCommutes(a: Truth, b: Truth)
+  ensures KAnd(a, b) == KAnd(b, a)
+{}
+
+lemma KAndAssociates(a: Truth, b: Truth, c: Truth)
+  ensures KAnd(KAnd(a, b), c) == KAnd(a, KAnd(b, c))
+{}
+
+function EvalCondition(c: Condition, env: Env): Truth
   requires ValidEnv(env)
 {
   match c
     case AtomicConstraint(op, cmp, val) =>
-      var leftVal := Resolve(op, env);
-      match leftVal
-        case ResolutionFailure(error) => Failure(error)
-        case Resolved(value) => Success(Apply(cmp, value, val))
-    case And(l, r) =>
-      match EvalCondition(l, env)
-        case Failure(error) => Failure(error)
-        case Success(false) => Success(false)
-        case Success(true) => EvalCondition(r, env)
-    case Or(l, r) =>
-      match EvalCondition(l, env)
-        case Failure(error) => Failure(error)
-        case Success(true) => Success(true)
-        case Success(false) => EvalCondition(r, env)
-    case Not(inner) =>
-      match EvalCondition(inner, env)
-        case Failure(error) => Failure(error)
-        case Success(value) => Success(!value)
+      match Resolve(op, env)
+        case ResolutionFailure(error) => Err({error})
+        case Resolved(value) =>
+          match Apply(cmp, value, val)   // ResolutionFailure if incomparable
+            case ResolutionFailure(error) => Err({error})
+            case Resolved(b) => if b then T else F
+    case And(l, r) => KAnd(EvalCondition(l, env), EvalCondition(r, env))
+    case Or(l, r) => KOr(EvalCondition(l, env), EvalCondition(r, env))
+    case Not(inner) => KNot(EvalCondition(inner, env))
 }
 ```
 
@@ -1170,12 +1282,13 @@ Transition rules are expressed as Dafny lemmas with pre/post-conditions verified
 
 The following properties should be proved for a verified implementation:
 
-1. **(S1) Determinism**: Given Σ, request, policies, evaluation produces a unique result
+1. **(S1) Determinism**: Given Σ, request, policies, evaluation produces a unique result, independent of the order of policies, rules, and operands
 2. **(S2) Totality**: `Eval` terminates for all well-formed inputs
 3. **(S3) Duty-state consistency**: No duty can be simultaneously in two states
 4. **(S4) Terminal permanence**: Fulfilled/Violated states never revert
-5. **(S5) Lookup safety**: an unresolvable operand produces an explicit `ResolutionError`, never a Boolean result
+5. **(S5) Lookup safety**: an unresolvable operand or incomparable comparison produces an explicit `ResolutionError`, never a Boolean result
 6. **(S6) Prohibition monotonicity**: Adding policies cannot remove prohibitions
+7. **(S7) Error soundness**: A `Success` decision is the same under every completion of its errors, and so are the duties and grantor violations reported with a `Permit`
 
 ---
 
