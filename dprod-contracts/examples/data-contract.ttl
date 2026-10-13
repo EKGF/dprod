@@ -143,15 +143,15 @@ ex:internal
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
 
-    # SLA: 14-day notice for schema changes
+    # Schema change notification. A notice period (e.g. 14 days before the
+    # change) cannot be expressed yet: a deadline runs from activation.
     # Target differs from policy — schema-changes, not market-prices
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
         odrl:action ex:notify ;
-        odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P14D"^^xsd:duration
+        odrl:target <https://example.org/assets/schema-changes>
     ] ;
 
     # ----- CONSUMER RIGHTS (Permissions — assignee omitted in Offer) -----

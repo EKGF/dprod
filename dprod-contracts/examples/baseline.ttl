@@ -8,7 +8,7 @@
 #   - Recurring delivery with deadline
 #   - Schema conformance
 #   - Quality SLA (conformTo + constraint)
-#   - Change notification with lead time
+#   - Change notification (a notice period cannot be expressed yet)
 #   - Consumer reporting duty
 #   - Display / non-display / derivation permissions
 #   - Purpose, classification, environment constraints
@@ -506,11 +506,10 @@ ex:compliance
 
     odrl:obligation [
         a odrl:Duty ;
-        rdfs:label "Schema change notification (90 days)" ;
+        rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/hr> ;
         odrl:action ex:notify ;
-        odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P90D"^^xsd:duration
+        odrl:target <https://example.org/assets/schema-changes>
     ] ;
 
     odrl:permission [
@@ -579,8 +578,7 @@ ex:compliance
         rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:notify ;
-        odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P14D"^^xsd:duration
+        odrl:target <https://example.org/assets/schema-changes>
     ] ;
 
     odrl:permission [

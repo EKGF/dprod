@@ -31,11 +31,10 @@
     },
     {
       "type": "Duty",
-      "label": "Change notification: 14 days notice",
+      "label": "Change notification",
       "subjectOfDuty": "ex:dataPlatformTeam",
       "action": "ex:notify",
-      "target": "ex:schemaChanges",
-      "deadline": { "@value": "P14D", "type": "xsd:duration" }
+      "target": "ex:schemaChanges"
     },
     {
       "type": "Duty",
