@@ -994,8 +994,10 @@
     <li>
       <strong>Schedules and deadlines.</strong> A duty may recur on a
       reusable, identified <a href="#schedule"><code>dprod:Schedule</code></a> (for example an [[RFC5545]]
-      recurrence rule with its start time and timezone), referenced through <code>dprod:schedule</code>,
-      and each instance has a fulfilment window (<a href="#deadline"><code>dprod:deadline</code></a>).
+      recurrence rule with its start time and timezone), referenced through <code>dprod:schedule</code>.
+      Each occurrence is an instance of the duty, fulfilled only by an action between the occurrence and
+      its deadline (<a href="#deadline"><code>dprod:deadline</code></a>). A duty without a schedule may
+      have a deadline too.
     </li>
     <li>
       <strong>Authored status and computed state.</strong> A publisher records where an offer or contract is
