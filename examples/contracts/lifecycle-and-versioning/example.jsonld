@@ -60,15 +60,6 @@
       "action": "ex:deliver",
       "deadline": { "@value": "2026-02-05T07:30:00Z", "type": "xsd:dateTime" },
       "dutyState": "Violated"
-    },
-    {
-      "id": "ex:delivery-2026-02-06",
-      "type": "Duty",
-      "subjectOfDuty": "ex:dataPlatformTeam",
-      "objectOfDuty": "ex:analyticsTeam",
-      "action": "ex:deliver",
-      "deadline": { "@value": "2026-02-06T07:30:00Z", "type": "xsd:dateTime" },
-      "dutyState": "Pending"
     }
   ]
 }
