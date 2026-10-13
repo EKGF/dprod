@@ -42,7 +42,7 @@
         "type": "Constraint",
         "leftOperand": {
           "id": "ex:completeness",
-          "operandSource": "requestSource",
+          "operandSource": "stateSource",
           "operandProperty": "ex:completeness"
         },
         "operator": "eq",
@@ -57,7 +57,7 @@
         "type": "Constraint",
         "leftOperand": {
           "id": "ex:retentionPeriod",
-          "operandSource": "requestSource",
+          "operandSource": "stateSource",
           "operandProperty": "ex:retentionPeriod"
         },
         "operator": "gt",

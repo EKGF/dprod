@@ -270,11 +270,18 @@ odrl:constraint [
 ## 6. Operands Quick Reference
 
 All operands are `odrl:LeftOperand` values with exactly one
-`dprod:operandSource` and one IRI-valued `dprod:operandProperty`. Request and
-state producers normalize policy-relevant facts onto their source node before
-evaluation. Policies never traverse nested RDF.
+`dprod:operandSource` and one IRI-valued `dprod:operandProperty`, so a policy's
+operands say which facts it needs. Which source an operand uses follows from
+who knows the fact. Facts the platform already holds, about assets and parties,
+are read from the state-of-the-world snapshot. The agent and the clock come from
+the context. Only what the requester alone can say, such as the purpose, goes on
+the request. The calling system assembles all three before it calls the
+evaluator. Policies never traverse nested RDF.
 
 ### Request Operands
+
+Facts only the requester can supply. `ex:recipientType` describes who will
+receive the data, which need not be the requesting agent.
 
 | Operand | Source | Property | Values / Type |
 |---------|--------|----------|---------------|
@@ -292,38 +299,41 @@ evaluation. Policies never traverse nested RDF.
 | `ex:volumeLimit` | `dprod:requestSource` | `ex:volumeLimit` | Integer |
 | `ex:rateLimit` | `dprod:requestSource` | `ex:rateLimit` | Integer |
 | `ex:project` | `dprod:requestSource` | `ex:project` | String |
-
-### Normalized Asset Facts on the Request
-
-| Operand | Source | Property | Values / Type |
-|---------|--------|----------|---------------|
-| `ex:classification` | `dprod:requestSource` | `ex:classification` | `public`, `internal`, `confidential`, `restricted` |
-| `ex:sensitivity` | `dprod:requestSource` | `ex:sensitivity` | `pii`, `mnpi`, `phi` |
-| `ex:assetClass` | `dprod:requestSource` | `ex:assetClass` | String (equity, fx, etc.) |
-| `ex:market` | `dprod:requestSource` | `ex:market` | String (NYSE, LSE, etc.) |
-| `ex:isBenchmark` | `dprod:requestSource` | `ex:isBenchmark` | Boolean |
-| `ex:residency` | `dprod:requestSource` | `ex:residency` | String (country) |
-| `ex:retentionPeriod` | `dprod:requestSource` | `ex:retentionPeriod` | `xsd:duration` |
-| `ex:expiry` | `dprod:requestSource` | `ex:expiry` | `xsd:dateTime` |
-| `ex:timeliness` | `dprod:requestSource` | `ex:timeliness` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
-| `ex:delayMinutes` | `dprod:requestSource` | `ex:delayMinutes` | Integer |
-| `ex:auditRequired` | `dprod:requestSource` | `ex:auditRequired` | Boolean |
-| `ex:completeness` | `dprod:requestSource` | `ex:completeness` | Decimal |
-| `ex:volumeCount` | `dprod:requestSource` | `ex:volumeCount` | Integer |
-
-### Normalized Agent Facts on the Request
-
-| Operand | Source | Property | Values / Type |
-|---------|--------|----------|---------------|
-| `ex:role` | `dprod:requestSource` | `ex:role` | String |
-| `ex:organization` | `dprod:requestSource` | `ex:organization` | IRI |
-| `ex:costCenter` | `dprod:requestSource` | `ex:costCenter` | String |
 | `ex:recipientType` | `dprod:requestSource` | `ex:recipientType` | `internal`, etc. |
 
 ### State-of-the-World Operands
 
-Profiles may declare operands against the immutable world snapshot supplied by
-the evaluator by selecting `dprod:stateSource`:
+Facts the platform holds. The calling system copies those about the requested
+asset and the requesting party onto the immutable world snapshot, along with
+facts about the world such as market hours.
+
+#### Asset facts
+
+| Operand | Source | Property | Values / Type |
+|---------|--------|----------|---------------|
+| `ex:classification` | `dprod:stateSource` | `ex:classification` | `public`, `internal`, `confidential`, `restricted` |
+| `ex:sensitivity` | `dprod:stateSource` | `ex:sensitivity` | `pii`, `mnpi`, `phi` |
+| `ex:assetClass` | `dprod:stateSource` | `ex:assetClass` | String (equity, fx, etc.) |
+| `ex:market` | `dprod:stateSource` | `ex:market` | String (NYSE, LSE, etc.) |
+| `ex:isBenchmark` | `dprod:stateSource` | `ex:isBenchmark` | Boolean |
+| `ex:residency` | `dprod:stateSource` | `ex:residency` | String (country) |
+| `ex:retentionPeriod` | `dprod:stateSource` | `ex:retentionPeriod` | `xsd:duration` |
+| `ex:expiry` | `dprod:stateSource` | `ex:expiry` | `xsd:dateTime` |
+| `ex:timeliness` | `dprod:stateSource` | `ex:timeliness` | `realtime`, `nearRealtime`, `delayed`, `endOfDay`, `historical` |
+| `ex:delayMinutes` | `dprod:stateSource` | `ex:delayMinutes` | Integer |
+| `ex:auditRequired` | `dprod:stateSource` | `ex:auditRequired` | Boolean |
+| `ex:completeness` | `dprod:stateSource` | `ex:completeness` | Decimal |
+| `ex:volumeCount` | `dprod:stateSource` | `ex:volumeCount` | Integer |
+
+#### Party facts
+
+| Operand | Source | Property | Values / Type |
+|---------|--------|----------|---------------|
+| `ex:role` | `dprod:stateSource` | `ex:role` | String |
+| `ex:organization` | `dprod:stateSource` | `ex:organization` | IRI |
+| `ex:costCenter` | `dprod:stateSource` | `ex:costCenter` | String |
+
+#### World facts
 
 | Operand | Source | Property | Values / Type |
 |---------|--------|----------|---------------|

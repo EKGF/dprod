@@ -46,7 +46,7 @@
         "type": "Constraint",
         "leftOperand": {
           "id": "ex:timeliness",
-          "operandSource": "requestSource",
+          "operandSource": "stateSource",
           "operandProperty": "ex:timeliness"
         },
         "operator": "eq",

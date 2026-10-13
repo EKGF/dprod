@@ -96,8 +96,8 @@ ex:timeliness
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "timeliness" ;
-  dct:description "Required data freshness category."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "Freshness category of the data."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:timeliness ;
 .
 
@@ -106,7 +106,7 @@ ex:completeness
   rdfs:isDefinedBy ex: ;
   rdfs:label "completeness" ;
   dct:description "Data completeness percentage."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:completeness ;
 .
 
@@ -115,7 +115,7 @@ ex:volumeCount
   rdfs:isDefinedBy ex: ;
   rdfs:label "volume count" ;
   dct:description "Row or record count."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:volumeCount ;
 .
 
@@ -123,8 +123,8 @@ ex:retentionPeriod
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
-  dct:description "Maximum time data may be retained."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "How long the data has been retained."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:retentionPeriod ;
 .
 
@@ -151,7 +151,7 @@ ex:classification
   rdfs:isDefinedBy ex: ;
   rdfs:label "classification" ;
   dct:description "Data classification level."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:classification ;
 .
 
