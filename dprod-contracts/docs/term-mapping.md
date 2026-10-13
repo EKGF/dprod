@@ -400,4 +400,4 @@ odrl:permission [
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-19
+**Version**: 0.7 | **Date**: 2026-10-13
