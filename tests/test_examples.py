@@ -7,14 +7,17 @@ test asked for in #92.
 
 Three properties are checked for every example, including the JSON-LD blocks
 embedded in the example ``README.md`` files, which are what the specification
-actually renders:
+actually renders, and a fourth for the data contract examples:
 
 1. it parses as JSON;
 2. expanding it against the generated DPROD contexts drops no term — an
    undefined term must be a build failure rather than a silent omission, which
    is the whole reason neither published context carries an ``@vocab``;
 3. expansion produces triples, and IRI-valued properties produce resources
-   rather than literals.
+   rather than literals;
+4. a data contract example conforms to ``dprod-contracts-shapes.ttl``, as the
+   specification says it does. ``dprod-contracts/validate.py`` checks only the
+   Turtle examples next to the profile.
 """
 
 from __future__ import annotations
@@ -31,6 +34,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY_ROOT / "spec-generator"))
 
 from pyld import jsonld  # noqa: E402
+from pyshacl import validate  # noqa: E402
 from rdflib import Graph, Literal, OWL, RDF  # noqa: E402
 
 from jsonld_context import ApplicationContext, SimpleContext  # noqa: E402
@@ -39,6 +43,8 @@ CONTEXT_IRI = "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld"
 SIMPLE_CONTEXT_IRI = "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld"
 EXAMPLES_DIR = REPOSITORY_ROOT / "examples"
 SPEC_TEMPLATE = REPOSITORY_ROOT / "respec" / "template.html"
+CONTRACTS_DIR = REPOSITORY_ROOT / "dprod-contracts"
+CONTRACT_EXAMPLE_PREFIXES = ("examples/contracts/", "respec/template.html#eg-contract")
 JSON_BLOCK = re.compile(r"```(?:json|jsonld|json-ld)\n(.*?)```", re.DOTALL)
 TURTLE_BLOCK = re.compile(r"```turtle\n(.*?)```", re.DOTALL)
 SPEC_JSON_BLOCK = re.compile(
@@ -310,6 +316,28 @@ class ExampleValidationTest(unittest.TestCase):
                 self.assertGreater(
                     len(graph), 0, f"{name} produced no triples at all."
                 )
+
+    def test_contract_examples_conform_to_the_contracts_shapes(self) -> None:
+        """Validated as ``dprod-contracts/validate.py`` validates the Turtle examples."""
+        shapes = Graph().parse(CONTRACTS_DIR / "dprod-contracts-shapes.ttl", format="ttl")
+        vocabulary = Graph().parse(CONTRACTS_DIR / "dprod-contracts.ttl", format="ttl")
+        contract_examples = [
+            (name, source)
+            for name, source in self.documents
+            if name.startswith(CONTRACT_EXAMPLE_PREFIXES)
+        ]
+        self.assertGreater(len(contract_examples), 5)
+
+        for name, source in contract_examples:
+            with self.subTest(example=name):
+                conforms, _, report = validate(
+                    self.graph_for(source),
+                    shacl_graph=shapes,
+                    ont_graph=vocabulary,
+                    inference="rdfs",
+                    advanced=True,
+                )
+                self.assertTrue(conforms, f"{name} does not conform:\n{report}")
 
     def test_ontology_object_properties_are_all_coerced(self) -> None:
         """Every ``owl:ObjectProperty`` must carry ``"@type": "@id"``.
