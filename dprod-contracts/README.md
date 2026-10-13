@@ -105,9 +105,9 @@ ex:environment
     dprod:operandSource dprod:requestSource ;
     dprod:operandProperty ex:environment .
 
-# Asset facts are flattened onto that same request node
+# Asset facts the platform holds go on the immutable world snapshot
 ex:timeliness
-    dprod:operandSource dprod:requestSource ;
+    dprod:operandSource dprod:stateSource ;
     dprod:operandProperty ex:timeliness .
 
 # Direct property on the immutable world snapshot

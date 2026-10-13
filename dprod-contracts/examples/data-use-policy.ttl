@@ -46,7 +46,7 @@ ex:classification
   rdfs:isDefinedBy ex: ;
   rdfs:label "classification" ;
   dct:description "Data classification level."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:classification ;
 .
 
@@ -81,8 +81,8 @@ ex:retentionPeriod
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
-  dct:description "Maximum time data may be retained."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "How long the data has been retained."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:retentionPeriod ;
 .
 

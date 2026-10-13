@@ -12,3 +12,5 @@ The [Open Data Contract Standard (ODCS)](https://github.com/bitol-io/open-data-c
 | `description.limitations` | an `odrl:Prohibition` |
 
 ODCS fields that are workflow or operations rather than policy, such as approver chains, severity and `servers`, have no counterpart and stay in ODCS.
+
+The quality and retention duties read `ex:completeness` and `ex:retentionPeriod` from the state snapshot, not the request: they are facts the platform measures about the data, and a requester cannot vouch for them.
