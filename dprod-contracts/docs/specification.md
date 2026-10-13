@@ -538,4 +538,4 @@ DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics ar
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-19
+**Version**: 0.7 | **Date**: 2026-10-13
