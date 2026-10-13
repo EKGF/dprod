@@ -20,8 +20,13 @@ DPROD Contracts is designed for organizations that need:
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+ex:daily-0600-london a dprod:Schedule ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
 
 ex:contract a dprod:DataOffer ;
     odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
@@ -31,7 +36,7 @@ ex:contract a dprod:DataOffer ;
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0600-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
     odrl:permission [
@@ -47,8 +52,13 @@ A `dprod:DataContract` activates an offer, binding both parties:
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix dct:      <http://purl.org/dc/terms/> .
 @prefix ex:       <https://example.org/> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+ex:daily-0600-london a dprod:Schedule ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
 
 ex:agreement a dprod:DataContract ;
     odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
@@ -62,7 +72,7 @@ ex:agreement a dprod:DataContract ;
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0600-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
     odrl:obligation [
@@ -151,9 +161,14 @@ Pending ──────────────> Active
 
 A `dprod:DataOffer` (subclass of `odrl:Offer`) is a provider's offer specifying SLAs, permissions, and restrictions. A `dprod:DataContract` (subclass of `odrl:Agreement`) is an activated offer binding both parties.
 
-### Recurrence
+### Schedule
 
-Recurring duties use `dprod:recurrence` -- an RFC 5545 RRULE string. Combined with `dprod:deadline`, this defines a schedule and per-instance fulfillment window. Each generated instance follows the lifecycle independently.
+Resources refer to reusable, identified `dprod:Schedule` instances through
+`dprod:schedule`. Each Schedule declares one exact format and one authoritative
+expression. RFC 5545 and POSIX crontab are built in; exact third-party formats
+can be added through validation and processor profiles. A Schedule on a duty,
+combined with `dprod:deadline`, defines instance generation and the
+per-instance fulfillment window.
 
 ---
 
@@ -169,7 +184,7 @@ ODRL 2.2 Core (W3C Standard)
          | proper profile (thin extension)
          v
 DPROD Core (dprod:)
-  State, deadline, recurrence, DataOffer, DataContract,
+  State, deadline, Schedule, ScheduleFormat, DataOffer, DataContract,
   EvaluationContext, OperandSource, operandSource, operandProperty, not
          |
          | domain profiles define (ex:)
@@ -198,9 +213,9 @@ ODRL 2.2 is a flexible framework. DPROD Contracts makes it deterministic and gov
 | Duty lifecycle | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Agreement evaluation | Assignee duties only | Both assigner and assignee duties (bilateral) |
 | Conflict resolution | Configurable | Default: Prohibition > Permission; per-policy override allowed |
-| Evaluation order | Undefined | Deterministic left-to-right |
+| Evaluation order | Undefined | Order-independent; errors never fail open |
 | Operand resolution | Implicit | One-hop source + property bindings over normalized inputs |
-| Recurring duties | Not supported | `recurrence` (RFC 5545 RRULE) + `deadline` |
+| Scheduling | Not supported | Reusable schedules with pluggable exact formats + `deadline` |
 | Contract types | Generic Offer/Agreement | `DataOffer` (Offer) / `DataContract` (Agreement) |
 | Logical negation | Not supported | `dprod:not` on LogicalConstraint |
 
@@ -232,4 +247,4 @@ Which document to read next depends on your role:
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-19
+**Version**: 0.7 | **Date**: 2026-10-13
