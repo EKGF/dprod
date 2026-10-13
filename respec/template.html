@@ -983,7 +983,9 @@
       <code>odrl:Offer</code> published by a data provider. A
       <a href="#datacontract"><code>dprod:DataContract</code></a> is an <code>odrl:Agreement</code> that
       records a consumer's acceptance of exactly one offer, through
-      <a href="#acceptsoffer"><code>dprod:acceptsOffer</code></a>, and binds both parties.
+      <a href="#acceptsoffer"><code>dprod:acceptsOffer</code></a>, and binds both parties to the rules it
+      states. Like any ODRL agreement it is complete in itself: its rules are authoritative, and the link
+      to the offer records lineage.
     </li>
     <li>
       <strong>Bilateral duties.</strong> ODRL duties fall on the assignee. In a data contract the provider
@@ -1043,8 +1045,9 @@
     A provider publishes a <a href="#dataoffer"><code>dprod:DataOffer</code></a>, an <code>odrl:Offer</code>
     setting out the provider's duties, the consumer's rights and what is prohibited. When a consumer accepts
     it, the result is a <a href="#datacontract"><code>dprod:DataContract</code></a>, an
-    <code>odrl:Agreement</code> that binds both parties, may add duties on the consumer, and links back to
-    the offer it accepts. Each row of the figure pairs a part of the offer or contract with the property
+    <code>odrl:Agreement</code> that links back to the offer it accepts and states every rule that binds
+    the two parties. The contract does not inherit the offer's rules: it restates those it takes over, and
+    may narrow them or add duties on the consumer. Each row of the figure pairs a part of the offer or contract with the property
     that records it; DPROD terms are shown in blue. The lower part shows the state an evaluator computes for each duty.
   </p>
   <figure id="ContractModel">
@@ -1085,8 +1088,8 @@
   <p>
     In this example the Trading Data Team offers its Market Price Data product with a single provider duty
     (deliver every 15 minutes, within 5 minutes of the scheduled time), one consumer permission and one
-    prohibition. The Analytics Team has accepted the offer for 2026; the contract names both parties and
-    links to the offer it accepts.
+    prohibition. The Analytics Team has accepted the offer for 2026; the contract names both parties,
+    restates the three rules, and links to the offer it accepts.
   </p>
 
   <pre id="eg-contract" class="example hljs json ekgfexample">
@@ -1104,10 +1107,22 @@
     "contractLifecycleStatus": "Active",
     "effectiveDate": "2026-01-15T00:00:00Z",
     "expirationDate": "2026-12-31T23:59:59Z",
+    "obligation": {
+      "type": "Duty",
+      "subjectOfDuty": "ex:tradingDataTeam",
+      "action": "ex:deliver",
+      "schedule": "ex:every15Minutes",
+      "deadline": { "@value": "PT5M", "type": "xsd:duration" }
+    },
     "permission": {
       "type": "Permission",
       "assignee": "ex:analyticsTeam",
       "action": "display"
+    },
+    "prohibition": {
+      "type": "Prohibition",
+      "assignee": "ex:analyticsTeam",
+      "action": "distribute"
     },
     "acceptsOffer": {
       "id": "ex:marketDataFeed",

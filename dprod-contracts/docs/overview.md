@@ -47,7 +47,7 @@ ex:contract a dprod:DataOffer ;
 
 ### Minimal Data Contract
 
-A `dprod:DataContract` activates an offer, binding both parties:
+A `dprod:DataContract` accepts an offer and binds both parties to the rules it states:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .

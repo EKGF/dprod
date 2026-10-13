@@ -8,6 +8,7 @@
   "profile": "https://ekgf.org/dprod/spec/develop/",
   "assigner": "ex:dataPlatformTeam",
   "assignee": "ex:analyticsTeam",
+  "target": "ex:customerData",
   "contractLifecycleStatus": "Active",
   "effectiveDate": "2026-02-01T00:00:00Z",
   "expirationDate": "2026-12-31T23:59:59Z",
@@ -43,6 +44,15 @@
     }
   },
   "obligation": [
+    {
+      "id": "ex:dailyDelivery",
+      "type": "Duty",
+      "subjectOfDuty": "ex:dataPlatformTeam",
+      "objectOfDuty": "ex:analyticsTeam",
+      "action": "ex:deliver",
+      "schedule": "ex:dailyAt0700",
+      "deadline": { "@value": "PT30M", "type": "xsd:duration" }
+    },
     {
       "id": "ex:delivery-2026-02-04",
       "type": "Duty",
