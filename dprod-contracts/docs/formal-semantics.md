@@ -223,7 +223,7 @@ Policy ::= Set(target: Set<Asset>, clauses: Norm+)
 **Notes**:
 
 - `Set`: Unilateral declaration, no parties. Maps to `odrl:Set` in the RDF encoding.
-- `Offer`: Proposal from grantor, grantee optional (open offer). Maps to `odrl:Offer`. `DataOffer` is a subtype of `Offer`.
+- `Offer`: Proposal from grantor, grantee optional (open offer). Maps to `odrl:Offer`. `DataOffer` is a subtype of `Offer`. An Offer states the rules its grantor proposes. It grants, forbids and obliges nothing until an Agreement restates them (§7.3).
 - `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `DataContract` is a subtype of `Agreement`. As in ODRL, its clauses are only those it states: `dprod:acceptsOffer` records the offer a DataContract accepts but contributes no clauses.
 - The formal `grantor` parameter maps to `odrl:assigner` (the party granting rights) in the RDF encoding.
 - The formal `grantee` parameter maps to `odrl:assignee` (the party receiving rights) in the RDF encoding.
@@ -237,7 +237,7 @@ Policy ::= Set(target: Set<Asset>, clauses: Norm+)
 - several policy targets: the rule stands for one copy per target, each with that target as its `asset`. Each copy is a distinct norm, identified by the rule and its target; for a duty, Σ tracks each copy's state separately;
 - no policy target: the rule's `asset` is ⊥, and the rule applies to any asset (§7.4).
 
-Likewise, a permission or prohibition without its own `odrl:assignee` takes the policy's `grantee` as its `subject`, if the policy has one; an Offer addressed to a consumer does not grant its permissions to anyone else. A rule's own value is never combined with the policy's: a duty on `ex:usageStats` in a policy targeting `ex:marketData` applies to `ex:usageStats`. After this step every norm has at most one `asset`, and the policy's target and grantee play no further part in rule matching.
+Likewise, a permission or prohibition without its own `odrl:assignee` takes the policy's `grantee` as its `subject`, if the policy has one; an Agreement does not grant its permissions to anyone but its grantee. A rule's own value is never combined with the policy's: a duty on `ex:usageStats` in a policy targeting `ex:marketData` applies to `ex:usageStats`. After this step every norm has at most one `asset`, and the policy's target and grantee play no further part in rule matching.
 
 ### 3.5 Requests
 
@@ -922,7 +922,7 @@ Duty states are updated in Step 3, whatever decision follows, so a duty activate
 
 ```
 PolicyApplicable(p, Env) =
-    // Validity window, inclusive at both ends (Offers and Agreements)
+    // Validity window, inclusive at both ends (Agreements)
     (p.effectiveDate = ⊥ ∨ p.effectiveDate ≤ Env.Σ.clock) ∧
     (p.expirationDate = ⊥ ∨ Env.Σ.clock ≤ p.expirationDate)
 ```
@@ -938,6 +938,14 @@ PolicyApplicable(Agreement(grantor, grantee, ...), Env) =
     ... ∧ (Env.agent matches grantee ∨ Env.agent matches grantor)
 ```
 
+An Offer is a proposal and binds no one, so none of its rules apply:
+
+```
+PolicyApplicable(Offer(...), Env) = false
+```
+
+An Offer passed to `Eval` therefore contributes no permission, prohibition or duty. Its rules take effect only when an Agreement restates them (§3.4).
+
 ### 7.4 Norm Activation
 
 A norm within a policy is active when both the policy is applicable and the norm's own conditions hold:
@@ -951,7 +959,7 @@ NormActive(norm, Env) =
     (norm.condition = ⊥ ∨ ⟦norm.condition⟧(Env))
 ```
 
-Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and `partOf⁺` is typed transitive ODRL collection membership. In standard ODRL usage, Set and Offer policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
+Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and `partOf⁺` is typed transitive ODRL collection membership. In standard ODRL usage, Set policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
 
 ---
 
