@@ -23,7 +23,12 @@
       "type": "Duty",
       "subjectOfDuty": "ex:dataPlatformTeam",
       "action": "ex:deliver",
-      "recurrence": "FREQ=DAILY;BYHOUR=7;BYMINUTE=0",
+      "schedule": {
+        "id": "ex:dailyAt0700",
+        "type": "Schedule",
+        "conformsTo": "dprod:Rfc5545ScheduleFormat",
+        "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T070000\nRRULE:FREQ=DAILY"
+      },
       "deadline": { "@value": "PT30M", "type": "xsd:duration" }
     },
     "wasRevisionOf": {

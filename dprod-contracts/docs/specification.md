@@ -484,6 +484,7 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
 | `dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
 | `dprod-shapes:RejectObsoleteRecurrenceShape` | Legacy `dprod:recurrence` property | Use `dprod:schedule` and an identified Schedule |
+| `dprod-shapes:RejectAnonymousScheduleShape` | A `dprod:Schedule` that is a blank node | A Schedule must have an IRI identifier |
 
 ---
 
