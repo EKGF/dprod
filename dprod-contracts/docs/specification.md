@@ -274,6 +274,14 @@ missing context are errors, not empty schedules. Bare frequency vocabulary
 entries such as `dct:accrualPeriodicity` remain descriptive catalog metadata and
 are not executable schedules.
 
+On a duty, the schedule's occurrences from the duty's activation up to the
+evaluation time are the duty's instances (formal semantics §5.5). The schedule
+sets the times (for RFC 5545, from `DTSTART` and `TZID`); activation only
+limits the range. Each instance follows the standard duty lifecycle
+independently (Pending -> Active -> Fulfilled/Violated). The `deadline`
+property defines the per-instance fulfillment window, and only an action at or
+after the instance's occurrence fulfills it.
+
 ### 4.4 dprod:acceptsOffer
 
 | Property | Value |

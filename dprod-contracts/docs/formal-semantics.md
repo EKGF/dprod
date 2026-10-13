@@ -434,25 +434,28 @@ Activation is **condition-driven**: when the duty's condition first evaluates to
 
 ```
 Σ.state(duty) = Active
-performed(duty.subject, duty.action, duty.asset, Σ) = true
-effectiveDeadline(duty, Σ) ≥ Σ.clock  ∨  effectiveDeadline(duty, Σ) = ∞
-────────────────────────────────────────────────────────────────────────
+duty.schedule = ⊥
+performed(duty.subject, duty.action, duty.asset, window(duty, Σ), Σ) = true
+────────────────────────────────────────────────────────────────────────────
 Σ' = Σ[state(duty) ↦ Fulfilled]
 ```
 
-Fulfillment is **event-driven**: when a performed action matches the duty's required action (including narrower actions via `includedIn` subsumption), the duty is fulfilled.
+Fulfillment is **event-driven**: when a performed action matches the duty's required action (including narrower actions via `includedIn` subsumption) within the duty's window (§5.4), the duty is fulfilled. The window, not the evaluation time, decides: an action performed before the deadline fulfills the duty even if evaluation happens after the deadline.
 
 **Rule D-VIOLATE** (Active → Violated):
 
 ```
 Σ.state(duty) = Active
+duty.schedule = ⊥
 Σ.clock > effectiveDeadline(duty, Σ)
-performed(duty.subject, duty.action, duty.asset, Σ) = false
-────────────────────────────────────────────────────────────
+performed(duty.subject, duty.action, duty.asset, window(duty, Σ), Σ) = false
+────────────────────────────────────────────────────────────────────────────
 Σ' = Σ[state(duty) ↦ Violated]
 ```
 
 Violation is **time-driven**: when the deadline passes without fulfillment, the duty is violated.
+
+A duty with a schedule is a template (§5.5): it becomes Active by Rule D-ACTIVATE, but it is never fulfilled or violated itself. Its instances are, by Rules D-FULFILL and D-VIOLATE.
 
 **Rule D-FREEZE** (schedule error — no transition):
 
@@ -474,7 +477,11 @@ conformant processor reaches the same frozen state instead of diverging.
 
 ```
 updateDutyStates(duties, Env, Σ) =
-    foldl(updateOneDuty(Env), Σ, duties)
+    let Σ₁ = foldl(updateOneDuty(Env), Σ, duties)
+    in  foldl(updateOneDuty(Env), Σ₁, instancesOf(duties, Σ₁))
+
+instancesOf(duties, Σ) =
+    { instantiate(d, t) | d ∈ duties, d.schedule ≠ ⊥, occurrences(d, Σ) = times, t ∈ times }
 
 updateOneDuty(Env)(Σ, d) =
     if d.schedule ≠ ⊥ ∧ occurrences(d, Σ) = Error(e)
@@ -483,7 +490,8 @@ updateOneDuty(Env)(Σ, d) =
         Pending → if (d.condition = ⊥ ∨ ⟦d.condition⟧(Env)) = true
                   then Σ[state(d) ↦ Active, activatedAt(d) ↦ Σ.clock]
                   else Σ
-        Active  → if performed(d.subject, d.action, d.asset, Σ)
+        Active  → if d.schedule ≠ ⊥ then Σ   -- a template is neither fulfilled nor violated
+                  else if performed(d.subject, d.action, d.asset, window(d, Σ), Σ)
                   then Σ[state(d) ↦ Fulfilled]
                   else if Σ.clock > effectiveDeadline(d, Σ)
                   then Σ[state(d) ↦ Violated]
@@ -516,17 +524,26 @@ Where `includedIn⁺` is the transitive closure of `odrl:includedIn` and `partOf
 The subsumption-aware performed check is:
 
 ```
-performed(a, x, s, Σ) :=
+performed(a, x, s, (from, to), Σ) :=
     ∃(a', x', s', t) ∈ Σ.performed :
-        a' = a ∧ (x' = x ∨ x' includedIn⁺ x) ∧ s' matches s
+        a' = a ∧ (x' = x ∨ x' includedIn⁺ x) ∧ (s = ⊥ ∨ s' matches s) ∧ from ≤ t ≤ to
+
+window(d, Σ) = (since(d), effectiveDeadline(d, Σ))
+
+since(d) = t                            if d is the instance of a scheduled duty at occurrence time t (§5.5)
+           policy(d).effectiveDate      else if the policy has one
+           −∞                           otherwise
 ```
 
-`Σ.performed` records exact actions as they occur. `performed()` is the query-time subsumption check used in all fulfillment and violation rules. This is a bounded graph traversal over the `odrl:includedIn` hierarchy.
+`Σ.performed` records exact actions as they occur. `performed()` is the query-time subsumption check used in all fulfillment and violation rules. This is a bounded graph traversal over the `odrl:includedIn` hierarchy. A duty without an asset (allowed by §7.4) matches any performed asset.
+
+The window's upper bound makes a late action a violation rather than a fulfillment. An action fulfills the instance at `t` only if it occurred at or after `t`, so yesterday's delivery does not fulfill today's. Any other duty counts actions from the start of its policy's validity (§7.3), so an action recorded before the duty's first evaluation (for example, a payment made in advance) still fulfills it, but one from before the contract does not.
 
 ### 5.5 Schedule Semantics
 
-A duty with a `schedule` field is a template for obligations generated at the
-schedule's occurrences. The schedule is an identified resource, independent of
+A duty with a `schedule` field is a **template** for obligations generated at
+the schedule's occurrences. The template is never fulfilled or violated itself;
+its **instances** are. The schedule is an identified resource, independent of
 the duty and reusable by other resources. The resource that refers to the
 schedule determines what an occurrence means; the Schedule only determines when
 it occurs.
@@ -537,19 +554,29 @@ it occurs.
 ScheduleError ::= UnrecognizedScheduleFormat(format: IRI)
                 | InvalidScheduleExpression(schedule: IRI, reason: String)
 
-expand : Schedule × (ScheduleFormat → Processor?) × Time → Set<Time> | ScheduleError
+expand : Schedule × (ScheduleFormat → Processor?) × Time? × Time → Set<Time> | ScheduleError
 
-expand(schedule, processors, clock) =
+expand(schedule, processors, from, to) =
     case processors(schedule.format) of
         None    → UnrecognizedScheduleFormat(schedule.format)
         Some(p) → case p.parse(schedule.expression, schedule.timeZone) of
                       Error(reason) → InvalidScheduleExpression(schedule.identifier, reason)
-                      Valid(rule)   → p.occurrences(rule, clock)
+                      Valid(rule)   → if from = ⊥ then ∅
+                                      else { t ∈ p.occurrences(rule) | from ≤ t ≤ to }
 ```
 
+`p.occurrences(rule)` is the sequence of times the expression generates. The
+expression alone fixes these times: for `Rfc5545` its `DTSTART` and `TZID`
+anchor the sequence, and `COUNT` and `UNTIL` count from `DTSTART`; for
+`PosixCrontab` the five fields in `dprod:scheduleTimeZone` fix them. The range
+`from ≤ t ≤ to` only selects which of these times are returned; it never moves
+them. Whether `expand` returns an error depends only on the schedule and the
+registry, never on the range.
+
 `expand` is a **pure function**: given the same Schedule, processor registry,
-and clock value, it produces the same occurrence times or the same explicit
-error. The registry is `Σ.processors` (§4.1), so expansion depends only on Σ.
+and range, it produces the same occurrence times or the same explicit
+error. It is total and finite: the range is bounded, and the finest frequency
+is `SECONDLY`. The registry is `Σ.processors` (§4.1), so expansion depends only on Σ.
 An unknown format, missing processor, malformed expression, missing anchor, or
 missing timezone is a hard error. It MUST NOT be interpreted as an empty
 schedule. SHACL catches structural errors before evaluation; the selected
@@ -561,15 +588,24 @@ processor consumes exactly five time fields and requires
 `dprod:scheduleTimeZone`. Extension formats are processable only when the
 runtime has an explicitly registered processor for their format IRI.
 
-**Condition Guard**: If the duty template has a condition, instances are only generated for occurrence times where the condition holds:
+**Range and Condition**: The template follows Rule D-ACTIVATE: it becomes
+Active when its condition first evaluates to `true` (or at its first evaluation
+if it has none), and `Σ.activatedAt(duty)` records when. The condition is
+evaluated once, there, against the evaluation environment of that moment. A
+condition in error leaves the template Pending, and the error is collected in
+E₃ (§7.2). A template that has never been activated has no instances.
+Instances occur at the schedule's times from the activation up to the
+evaluation time:
 
 ```
 occurrences(duty, Σ) =
-    case expand(duty.schedule, Σ.processors, Σ.clock) of
-        Error(e) → Error(e)
-        times    → { t ∈ times |
-                     duty.condition = ⊥ ∨ ⟦duty.condition⟧(Σ.env) }
+    expand(duty.schedule, Σ.processors, Σ.activatedAt(duty), Σ.clock)
 ```
+
+Activation therefore limits the range but does not set the times: a schedule
+`DTSTART;TZID=Europe/London:20260101T060000` with `RRULE:FREQ=DAILY` has an
+instance at 06:00 London time each day from the activation on, whatever time of
+day the template was activated.
 
 An `Error` result freezes the duty (Rule D-FREEZE, §5.2) and is collected in
 E₅ (§7.2). No lifecycle rule consumes an errored schedule as if it had
@@ -577,7 +613,7 @@ occurrences.
 
 **Per-Instance Lifecycle**:
 
-Each occurrence time `t` from `occurrences(duty, Σ)` produces an independent duty instance:
+Each occurrence time `t` from `occurrences(duty, Σ)` gives an instance, identified by the pair `(duty, t)`:
 
 ```
 instantiate(duty, t) =
@@ -588,7 +624,10 @@ instantiate(duty, t) =
          condition  = ⊥,
          deadline   = duty.deadline,
          schedule   = ⊥)
-    with activationTime = t
+    identified by (duty, t)
+
+Σ.state(instantiate(duty, t))       = Active   until updated
+Σ.activatedAt(instantiate(duty, t)) = t
 ```
 
 Fields carried from the template: `subject`, `action`, `asset`, `object`,
@@ -596,15 +635,26 @@ Fields carried from the template: `subject`, `action`, `asset`, `object`,
 generation, not individual instances) and `schedule` (instances are not
 themselves scheduled templates).
 
-Each instance follows the standard lifecycle (§5.1–§5.2) independently:
-- Activation occurs at the occurrence time `t`
+An instance is Active from its first evaluation, with `activatedAt = t` (not
+the time of that evaluation), so its relative deadline runs from `t`. It then
+follows Rules D-FULFILL and D-VIOLATE (§5.2) independently of the other
+instances:
 - The `deadline` defines the per-instance fulfillment window from `t`
+- Only an action at or after `t` counts (`since`, §5.4)
 - Fulfillment and violation are tracked per instance
+
+In the algorithmic form (§5.2), `updateOneDuty` applies to a template only the
+Pending → Active step, and `updateDutyStates` then applies it to the instances
+of the updated Σ. From Step 3 of `Eval` (§7.2) on, each template is replaced by
+its instances, which keep the template's bearer: violations and active duties
+are reported for instances, not templates.
 
 **Interaction with other fields**:
 
 - `schedule` defines **when** duty instances are generated
 - `deadline` defines **how long** each instance has to be fulfilled (window)
+- Instances accumulate with `clock − activatedAt`; evaluators may prune a
+  terminal instance whose outcome has been recorded elsewhere
 - Other resources may refer to the same Schedule, but their profile must define
   what schedule occurrences mean for that resource
 
@@ -812,6 +862,8 @@ Eval(request, policies, Σ, world) =
     let E₃ = errors({ ⟦d.condition⟧(Env) | d ∈ allDuties, Σ.state(d) = Pending, d.condition ≠ ⊥ })
     let E₅ = { e | d ∈ allDuties, d.schedule ≠ ⊥, occurrences(d, Σ) = Error(e) }
     let Σ' = updateDutyStates(allDuties, Env, Σ)
+    // From here on, each template is replaced by its instances (§5.5)
+    let tracked(D) = { d ∈ D | d.schedule = ⊥ } ∪ instancesOf(D, Σ')
 
     // Step 4: Prohibition overrides. An active prohibition denies, even if
     // other rules or policies are in error. If none is active, an error in a
@@ -834,8 +886,8 @@ Eval(request, policies, Σ, world) =
     // Step 6: Check for violations. A duty violated on the requester's side
     // denies; a grantor's violation is reported with the result but is not
     // held against the grantee, since Violated is terminal.
-    let violatedGrantor = { d ∈ grantorDuties | Σ'.state(d) = Violated }
-    let violatedGrantee = { d ∈ granteeDuties | Σ'.state(d) = Violated }
+    let violatedGrantor = { d ∈ tracked(grantorDuties) | Σ'.state(d) = Violated }
+    let violatedGrantee = { d ∈ tracked(granteeDuties) | Σ'.state(d) = Violated }
     if violatedGrantee ≠ ∅ then
         return {decision: Deny, violations: violatedGrantee ∪ violatedGrantor, ...}
 
@@ -845,8 +897,8 @@ Eval(request, policies, Σ, world) =
         return Failure(E₃ ∪ E₄ ∪ E₅)
 
     // Step 8: Collect active duties for both parties
-    let activeGrantor = { d ∈ grantorDuties | Σ'.state(d) = Active }
-    let activeGrantee = { d ∈ granteeDuties | Σ'.state(d) = Active }
+    let activeGrantor = { d ∈ tracked(grantorDuties) | Σ'.state(d) = Active }
+    let activeGrantee = { d ∈ tracked(granteeDuties) | Σ'.state(d) = Active }
 
     return {
         decision: Permit,
@@ -939,7 +991,9 @@ and returns either occurrences or an explicit error (§5.5); it never hides an
 invalid schedule as an empty set. An unprocessable schedule freezes its duty
 (Rule D-FREEZE, §5.2), and its error is reported by `Failure` on the
 `Permit` path (§7.2), so it changes the outcome, never whether one exists.
-Each generated duty instance follows the standard lifecycle independently.
+Expansion is bounded by the template's activation and the evaluation time, so
+each evaluation tracks finitely many instances, and each instance follows the
+standard lifecycle independently.
 
 ### 9.1 Totality
 
