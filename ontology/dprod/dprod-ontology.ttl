@@ -42,7 +42,7 @@ dprod:
   # value below is for the working draft, which has no OMG document number
   # yet, so it tracks owl:versionIRI instead.
   dct:issued "2026-06-01"^^xsd:date ;
-  dct:modified "2026-08-04"^^xsd:date ;
+  dct:modified "2026-10-13"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
