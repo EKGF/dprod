@@ -321,7 +321,10 @@ dprod:schedule
     """Links any DPROD or ODRL resource to an identified dprod:Schedule.
     This property deliberately has no domain: duties, permissions, maintenance
     arrangements, backup obligations, and other resources may all refer to a
-    schedule. The referring resource determines what the occurrences mean."""@en ;
+    schedule. The referring resource determines what the occurrences mean.
+    On an odrl:Duty, each occurrence from the duty's activation up to the
+    evaluation time is an instance of the duty, with its own fulfilment window;
+    only an action at or after the occurrence fulfils it."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:range dprod:Schedule ;
   rdfs:label "schedule" ;
