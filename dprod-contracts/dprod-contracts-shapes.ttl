@@ -291,10 +291,12 @@ dprod-shapes:ScheduleReferenceShape
 
 # The IRI-identifier requirement lives in its own shape so its message is
 # attached only to nodeKind violations, not to every ScheduleShape result.
-dprod-shapes:ScheduleIdentifierShape
+# It is named Reject* so the spec generator does not render it as a second
+# Schedule class.
+dprod-shapes:RejectAnonymousScheduleShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
-  rdfs:label "schedule identifier shape" ;
+  rdfs:label "reject anonymous schedule" ;
   sh:targetClass dprod:Schedule ;
   sh:nodeKind sh:IRI ;
   sh:message "A Schedule must have an IRI identifier." ;
