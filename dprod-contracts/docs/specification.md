@@ -434,9 +434,10 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`, without `odrl:refinement`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`, without `odrl:refinement`; at most one `odrl:target` (inherited from policy if absent) |
 | `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
+| `dprod-shapes:ActionShape` | Objects of `odrl:action` | An IRI, or a refined action: exactly one `rdf:value` IRI naming the action, and refinements that are `odrl:Constraint` or `odrl:LogicalConstraint` |
 
 ### Schedule shapes
 
@@ -542,6 +543,7 @@ DPROD Contracts restricts certain ODRL features:
 | `odrl:Ticket` | Not used | Not applicable to data governance |
 | `odrl:Request` | Rejected (support deferred) | Offer-Request-Agreement semantics are undefined; accepting it would imply unsupported semantics. |
 | `odrl:assignee` (on Duty) | Replaced by `dprod:subjectOfDuty` | `dprod:subjectOfDuty rdfs:subPropertyOf odrl:function` -- avoids role overloading on duties |
+| `odrl:refinement` (on an action) | Supported on duty actions as an agreed term; rejected on permissions and prohibitions | A duty's refinement states what it requires (ODRL 2.2 §2.6.3), while its `odrl:constraint` says when it applies. Evaluators match the action alone, so an unevaluated refinement would change what a permission grants or a prohibition forbids |
 | `odrl:AssetCollection` | Supported with explicit membership | Assets and nested asset collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
 | `odrl:PartyCollection` | Supported with explicit membership | Parties and nested party collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
 

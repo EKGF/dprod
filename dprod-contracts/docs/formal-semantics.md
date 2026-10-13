@@ -24,7 +24,7 @@ DPROD Contracts provides:
 - Explicit duty lifecycle with state machine semantics
 - Bilateral agreement evaluation (grantor and grantee duties)
 - Total evaluation functions (always terminate with defined result)
-- Clear separation of Condition (pre-requisite) from Duty (obligation)
+- Clear separation of Condition (pre-requisite) from Duty (obligation): a duty's constraint says when it applies, and its action, with the action's refinements, says what it requires
 - One-hop operand resolution over normalized request, state, and context graphs
 
 ### 1.1 Scope and Runtime Boundary
@@ -94,10 +94,10 @@ Permission:
 Duty:
 
 ```
-Γ ⊢ a : Agent     Γ ⊢ x : Action     Γ ⊢ s : Asset
+Γ ⊢ a : Agent     Γ ⊢ x : Action     Γ ⊢ r : Condition     Γ ⊢ s : Asset
 Γ ⊢ c : Condition     Γ ⊢ dl : Deadline     Γ ⊢ sc : Schedule
 --------------------------------------------------------------------------
-        Γ ⊢ Duty(a, x, s, c, dl, sc) : Norm
+        Γ ⊢ Duty(a, x, r, s, c, dl, sc) : Norm
 ```
 
 Prohibition:
@@ -139,7 +139,7 @@ We define DPROD Contracts's abstract syntax using a typed algebraic grammar.
 
 ```
 Norm ::= Permission(subject: Agent, action: Action, asset: Asset?, condition: Condition?)
-       | Duty(subject: Agent, action: Action, asset: Asset?,
+       | Duty(subject: Agent, action: Action, refinement: Condition?, asset: Asset?,
               object: Agent?, condition: Condition?, deadline: Deadline?, schedule: Schedule?)
        | Prohibition(subject: Agent, action: Action, asset: Asset?, condition: Condition?)
 
@@ -157,6 +157,7 @@ ScheduleFormat ::= Rfc5545 | PosixCrontab | Extension(identifier: IRI)
 - `Permission` corresponds to `odrl:Permission`; `Prohibition` to `odrl:Prohibition`; `Duty` to `odrl:Duty`.
 - The formal `subject` parameter maps to `dprod:subjectOfDuty` on duties (rdfs:subPropertyOf `odrl:function`) and to `odrl:assignee` on permissions/prohibitions.
 - **Default bearer**: A duty's `subject` is its bearer. Before evaluation, a duty without `dprod:subjectOfDuty` takes as its subject the policy's `grantee`, or, in a policy without one, the requesting agent (`Env.request.agent`). In a bilateral policy this is the party the rights are granted to; provider duties name the provider explicitly. A duty whose bearer is the requesting agent stands for one duty per agent, each tracked separately in Σ: one agent's missed duty is not held against another.
+- **Condition and refinement** (duties only). A duty's `condition` says when the duty applies: it is the activation condition of Rule D-ACTIVATE (§5.2), such as a retention period having passed. What the duty requires is its action with all refinements satisfied (ODRL 2.2 §2.6.3), and `refinement` states that requirement, such as the completeness the delivered data must reach. This profile records a refinement as an agreed term and does not evaluate it: Rules D-FULFILL and D-VIOLATE match a duty on its action alone. A refined action is written `odrl:action [ rdf:value x ; odrl:refinement r ]`, and its action is `x`. Permissions and prohibitions take no refinement, since a refinement the evaluator ignores would widen what a permission grants or narrow what a prohibition forbids.
 - The formal `object` parameter (duties only) maps to `dprod:objectOfDuty` — the party affected by the duty action (e.g., who is notified). Not used in norm matching.
 - `AbsoluteDeadline`: Fixed point in time (e.g., 2026-12-31T23:59:59Z)
 - `RelativeDeadline`: Duration from activation (e.g., P30D, PT24H)
@@ -174,6 +175,7 @@ ScheduleFormat ::= Rfc5545 | PosixCrontab | Extension(identifier: IRI)
 | `grantor` | `odrl:assigner` | Party granting rights |
 | `grantee` | `odrl:assignee` | Party receiving rights (policy-level) |
 | `condition` | `odrl:constraint` | |
+| `refinement` (Duty) | `odrl:refinement` on the duty's action | The action is the action node's `rdf:value` |
 | `Set` | `odrl:Set` | |
 | `Offer` | `odrl:Offer` | `DataOffer` is a subtype |
 | `Agreement` | `odrl:Agreement` | `DataContract` is a subtype |
@@ -622,6 +624,7 @@ Each occurrence time `t` from `occurrences(duty, Σ)` gives an instance, identif
 instantiate(duty, t) =
     Duty(subject    = duty.subject,
          action     = duty.action,
+         refinement = duty.refinement,
          asset      = duty.asset,
          object     = duty.object,
          condition  = ⊥,
@@ -633,8 +636,8 @@ instantiate(duty, t) =
 Σ.activatedAt(instantiate(duty, t)) = t
 ```
 
-Fields carried from the template: `subject`, `action`, `asset`, `object`,
-`deadline`. Fields dropped: `condition` (the template condition gates instance
+Fields carried from the template: `subject`, `action`, `refinement`, `asset`,
+`object`, `deadline`. Fields dropped: `condition` (the template condition gates instance
 generation, not individual instances) and `schedule` (instances are not
 themselves scheduled templates).
 

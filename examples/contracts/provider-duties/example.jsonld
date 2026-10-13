@@ -41,16 +41,18 @@
       "type": "Duty",
       "label": "Quality: data must be real-time",
       "subjectOfDuty": "ex:dataPlatformTeam",
-      "action": "ex:conformTo",
-      "constraint": {
-        "type": "Constraint",
-        "leftOperand": {
-          "id": "ex:timeliness",
-          "operandSource": "stateSource",
-          "operandProperty": "ex:timeliness"
-        },
-        "operator": "eq",
-        "rightOperand": { "id": "ex:realtime" }
+      "action": {
+        "rdf:value": { "id": "ex:conformTo" },
+        "refinement": {
+          "type": "Constraint",
+          "leftOperand": {
+            "id": "ex:timeliness",
+            "operandSource": "stateSource",
+            "operandProperty": "ex:timeliness"
+          },
+          "operator": "eq",
+          "rightOperand": { "id": "ex:realtime" }
+        }
       }
     }
   ]

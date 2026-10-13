@@ -254,20 +254,22 @@ odrl:obligation [
 ### Quality SLA
 
 **Business term:** `quality guarantee`, `accuracy SLA`, `data quality commitment`
-**DPROD pattern:** `odrl:Duty` with `ex:conformTo` + `odrl:constraint`
+**DPROD pattern:** `odrl:Duty` with `ex:conformTo`, refined by the required level (`odrl:refinement`)
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
-    odrl:action ex:conformTo ;
-    odrl:target ex:riskMetricsSchema ;
-    odrl:constraint [
-        a odrl:Constraint ;
-        odrl:leftOperand ex:timeliness ;
-        odrl:operator odrl:eq ;
-        odrl:rightOperand ex:realtime
-    ]
+    odrl:action [
+        rdf:value ex:conformTo ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:timeliness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:realtime
+        ]
+    ] ;
+    odrl:target ex:riskMetricsSchema
 ] .
 ```
 
@@ -384,7 +386,7 @@ odrl:permission [
 | State (duty) | `dprod:dutyState` (`skos:Concept`) | DPROD |
 | Delivery SLA | Duty + `deliver` + `schedule` + `deadline` | DPROD |
 | Schema guarantee | Duty + `conformTo` | DPROD |
-| Quality SLA | Duty + `conformTo` + constraint | DPROD |
+| Quality SLA | Duty + `conformTo` + refinement | DPROD |
 | Change notice | Duty + `notify` + agreed notice period[^notice] | DPROD |
 | Usage report | Duty + `report` + `deadline` | DPROD |
 | View rights | Permission + `display` | ODRL |

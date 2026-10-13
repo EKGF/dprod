@@ -190,6 +190,11 @@ dprod-shapes:PermissionShape
     sh:maxCount 1 ;
     sh:message "Permission may have at most one target (inherits from policy if absent)."
   ] ;
+  sh:property [
+    sh:path ( odrl:action odrl:refinement ) ;
+    sh:maxCount 0 ;
+    sh:message "Refinements are supported on duty actions only."
+  ] ;
 .
 
 dprod-shapes:ProhibitionShape
@@ -208,6 +213,11 @@ dprod-shapes:ProhibitionShape
     sh:path odrl:target ;
     sh:maxCount 1 ;
     sh:message "Prohibition may have at most one target (inherits from policy if absent)."
+  ] ;
+  sh:property [
+    sh:path ( odrl:action odrl:refinement ) ;
+    sh:maxCount 0 ;
+    sh:message "Refinements are supported on duty actions only."
   ] ;
 .
 
@@ -252,6 +262,39 @@ dprod-shapes:DutyShape
     sh:message "Duty object must be a single odrl:Party."
   ] ;
   sh:property dprod-shapes:DutyStatePropertyGroup ;
+.
+
+# A refined action (ODRL 2.2 §2.5.4) is a node whose rdf:value names the
+# action and whose odrl:refinement states what the duty requires. The profile
+# records refinements as agreed terms; on a permission or prohibition an
+# unevaluated refinement would change what is granted or forbidden, so those
+# rule shapes reject it.
+dprod-shapes:ActionShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "action shape" ;
+  sh:targetObjectsOf odrl:action ;
+  sh:name "Action Shape" ;
+  sh:or (
+    [ sh:nodeKind sh:IRI ]
+    [
+      sh:property [
+        sh:path rdf:value ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI
+      ]
+    ]
+  ) ;
+  sh:message "An action must be an IRI, or a refined action with exactly one rdf:value IRI naming the action." ;
+  sh:property [
+    sh:path odrl:refinement ;
+    sh:or (
+      [ sh:class odrl:Constraint ]
+      [ sh:class odrl:LogicalConstraint ]
+    ) ;
+    sh:message "An action refinement must be an odrl:Constraint or odrl:LogicalConstraint."
+  ] ;
 .
 
 # Duty-only properties (#239). Their OWL domains infer odrl:Duty rather than

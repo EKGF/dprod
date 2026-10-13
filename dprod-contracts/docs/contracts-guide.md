@@ -233,24 +233,26 @@ odrl:obligation [
 
 ### Quality SLA Pattern
 
-Provider guarantees data quality via `conformTo` with a constraint.
+Provider guarantees data quality via `conformTo`, refined by the level it must reach. The refinement narrows the action, so it states what the duty requires (ODRL 2.2 §2.6.3). A constraint on the duty would say when the duty applies instead.
 
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
-    odrl:action ex:conformTo ;
-    odrl:target ex:riskMetricsSchema ;
-    odrl:constraint [
-        a odrl:Constraint ;
-        odrl:leftOperand ex:timeliness ;
-        odrl:operator odrl:eq ;
-        odrl:rightOperand ex:realtime
-    ]
+    odrl:action [
+        rdf:value ex:conformTo ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:timeliness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:realtime
+        ]
+    ] ;
+    odrl:target ex:riskMetricsSchema
 ] .
 ```
 
-The constraint can check any DPROD operand -- timeliness, classification, environment, etc.
+The refinement can use any DPROD operand -- timeliness, completeness, volume, etc.
 
 ---
 
@@ -405,14 +407,16 @@ ex:contract a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
-        odrl:action ex:conformTo ;
-        odrl:target ex:riskSchema ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:timeliness ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand ex:realtime
-        ]
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:timeliness ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand ex:realtime
+            ]
+        ] ;
+        odrl:target ex:riskSchema
     ] ;
     odrl:obligation [
         a odrl:Duty ;

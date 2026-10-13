@@ -31,22 +31,24 @@
       "type": "Duty",
       "label": "quality nullValues mustBe 0, checked nightly",
       "subjectOfDuty": "ex:sellerDataTeam",
-      "action": "ex:conformTo",
+      "action": {
+        "rdf:value": { "id": "ex:conformTo" },
+        "refinement": {
+          "type": "Constraint",
+          "leftOperand": {
+            "id": "ex:completeness",
+            "operandSource": "stateSource",
+            "operandProperty": "ex:completeness"
+          },
+          "operator": "eq",
+          "rightOperand": { "@value": "100", "type": "xsd:decimal" }
+        }
+      },
       "schedule": {
         "id": "ex:nightlyAt2000",
         "type": "Schedule",
         "conformsTo": "dprod:Rfc5545ScheduleFormat",
         "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T200000\nRRULE:FREQ=DAILY"
-      },
-      "constraint": {
-        "type": "Constraint",
-        "leftOperand": {
-          "id": "ex:completeness",
-          "operandSource": "stateSource",
-          "operandProperty": "ex:completeness"
-        },
-        "operator": "eq",
-        "rightOperand": { "@value": "100", "type": "xsd:decimal" }
       }
     },
     {
