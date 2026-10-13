@@ -239,7 +239,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
-| **Definition** | When the contract/subscription becomes effective |
+| **Definition** | When the contract/subscription becomes effective. Before this instant the policy is not applicable (formal semantics §7.3). |
 
 ### 4.6 dprod:expirationDate
 
@@ -249,7 +249,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
-| **Definition** | When the contract/subscription expires |
+| **Definition** | When the contract/subscription expires. After this instant the policy is not applicable (formal semantics §7.3); the instant itself is included. |
 
 ### 4.7 odrl:partOf Collection Membership
 
