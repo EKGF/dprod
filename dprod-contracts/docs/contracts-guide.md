@@ -218,7 +218,7 @@ odrl:obligation [
 
 ### Notification Pattern (Change Notification)
 
-Provider must notify consumers before making changes, with a lead time expressed as a duration deadline. Use `dprod:objectOfDuty` to identify who is notified.
+Provider must notify consumers of changes. Use `dprod:objectOfDuty` to identify who is notified. A notice period, such as 14 days before the change, cannot be expressed yet: a `dprod:deadline` runs forward from when the duty becomes active, not back from the change.
 
 ```turtle
 odrl:obligation [
@@ -226,8 +226,7 @@ odrl:obligation [
     dprod:subjectOfDuty ex:dataTeam ;
     dprod:objectOfDuty ex:consumer ;
     odrl:action ex:notify ;
-    odrl:target ex:schemaChanges ;
-    dprod:deadline "P14D"^^xsd:duration
+    odrl:target ex:schemaChanges
 ] .
 ```
 
@@ -418,8 +417,7 @@ ex:contract a dprod:DataOffer ;
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:notify ;
-        odrl:target ex:schemaChanges ;
-        dprod:deadline "P14D"^^xsd:duration
+        odrl:target ex:schemaChanges
     ] ;
     odrl:permission [
         a odrl:Permission ;
