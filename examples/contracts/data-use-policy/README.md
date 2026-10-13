@@ -1,4 +1,4 @@
-Not every rule about data is a contract between two parties. An organisation also has standing rules: who may read employee data and for what purpose, what must be logged, what may never be done. These are expressed as an `odrl:Set`, an ODRL policy with no assigner or assignee, and evaluated by the same DPROD evaluator as a contract. The profile's fixed conflict rule applies: a prohibition always wins over a permission.
+Not every rule about data is a contract between two parties. An organisation also has standing rules: who may read employee data and for what purpose, what must be logged, what may never be done. These are expressed as an `odrl:Set`, an ODRL policy with no assigner or assignee, and evaluated by the same DPROD evaluator as a contract. The profile's default conflict rule applies: a prohibition wins over a permission that matches the same request.
 
 The HR data access policy shows the constraint patterns a policy writer typically needs:
 
