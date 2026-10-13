@@ -86,7 +86,15 @@ class ErrorSemanticsDocumentationTest(unittest.TestCase):
         self.assertNotIn("immediately returns Failure", self.evaluation)
         deny = self.evaluation.index("return {decision: Deny, ...}")
         self.assertLess(deny, self.evaluation.index("return Failure("))
-        self.assertLess(deny, self.evaluation.index("updateDutyStates("))
+
+    def test_duty_states_update_before_the_decision_steps(self) -> None:
+        update = self.evaluation.index("updateDutyStates(")
+        self.assertLess(update, self.evaluation.index("return {decision: Deny, ...}"))
+        self.assertLess(
+            self.evaluation.index("return {decision: NotApplicable, ...}"),
+            self.evaluation.index("return Failure(E₃)"),
+        )
+        self.assertNotIn("Duty states advance only when", self.evaluation)
 
     def test_order_independence_and_error_soundness_are_stated(self) -> None:
         self.assertIn("### 9.6 Order Independence", self.text)
