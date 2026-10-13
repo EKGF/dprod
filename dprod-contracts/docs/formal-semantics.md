@@ -222,7 +222,7 @@ Policy ::= Set(target: Set<Asset>, clauses: Norm+)
 
 - `Set`: Unilateral declaration, no parties. Maps to `odrl:Set` in the RDF encoding.
 - `Offer`: Proposal from grantor, grantee optional (open offer). Maps to `odrl:Offer`. `DataOffer` is a subtype of `Offer`.
-- `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `DataContract` is a subtype of `Agreement`.
+- `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `DataContract` is a subtype of `Agreement`. As in ODRL, its clauses are only those it states: `dprod:acceptsOffer` records the offer a DataContract accepts but contributes no clauses.
 - The formal `grantor` parameter maps to `odrl:assigner` (the party granting rights) in the RDF encoding.
 - The formal `grantee` parameter maps to `odrl:assignee` (the party receiving rights) in the RDF encoding.
 - The formal `target` parameter maps to the policy's `odrl:target` values (0..*).

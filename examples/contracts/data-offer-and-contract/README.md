@@ -4,9 +4,9 @@ Below, the Trading Data Team offers its market prices with two commitments of it
 
 Four things are worth noticing:
 
-- **The provider's duties name their bearer.** `dprod:subjectOfDuty` says who must act. The usage report has no subject in the offer because the consumer is not yet known; it becomes the consumer's duty when the contract is made.
+- **The provider's duties name their bearer.** `dprod:subjectOfDuty` says who must act. The usage report has no subject in the offer because the consumer is not yet known; the contract names the Analytics Team as its subject.
 - **Rules inherit the offer's target.** Only the schema-conformance duty states its own `odrl:target`, because it is about the schema rather than the data.
-- **The contract binds the named consumer.** It restates the rules that now apply to the Analytics Team, each with an `odrl:assignee`; a contract must carry at least one rule of its own.
+- **The contract is authoritative.** It restates every rule that binds the two parties: the permissions and the prohibition with an `odrl:assignee`, and each duty with its bearer. `dprod:acceptsOffer` records which offer the contract came from but adds no rules to it, so a contract can also narrow or add to what the offer says. A schedule is an identified resource, so the contract's duties refer to the offer's schedules by identifier.
 - **The offer is shown nested inside the contract** so the whole agreement can be read top to bottom. In practice the provider publishes the offer once and each contract refers to it by its identifier.
 
 ODRL terms are written as plain names, so `"action": "display"` denotes `odrl:display` without any wrapping. Only values whose datatype the context cannot know, such as a `deadline` that may be a duration or a timestamp, carry an explicit `type`.

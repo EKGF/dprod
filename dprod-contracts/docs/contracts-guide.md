@@ -6,7 +6,7 @@ A guide for data platform teams using DPROD for data contracts and subscriptions
 
 ## Overview
 
-DPROD models internal data sharing agreements as ODRL 2.2 policies. A **DataOffer** is an offer from a data provider. A **DataContract** is an activated offer binding provider and consumer.
+DPROD models internal data sharing agreements as ODRL 2.2 policies. A **DataOffer** is an offer from a data provider. A **DataContract** is an agreement that accepts an offer and binds provider and consumer to the rules it states.
 
 ```
 DataOffer (Offer)          DataContract (Agreement)
@@ -530,7 +530,7 @@ ex:contract-v3 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v2 .
 ```
 
-DataContracts reference the specific offer version they activate:
+DataContracts reference the specific offer version they accept:
 
 ```turtle
 ex:subscription dprod:acceptsOffer ex:contract-v2 .
@@ -577,7 +577,7 @@ ex:contract-v2 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v1 .
 ```
 
-DataContracts reference the offer they activate via `dprod:acceptsOffer`:
+DataContracts reference the offer they accept via `dprod:acceptsOffer`. The link records lineage only: like any `odrl:Agreement`, a contract inherits no rules from the offer, so it restates the rules it binds the parties to.
 
 ```turtle
 ex:subscription dprod:acceptsOffer ex:contract-v2 .

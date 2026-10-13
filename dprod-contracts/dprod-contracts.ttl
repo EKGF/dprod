@@ -363,7 +363,7 @@ dprod:carriesTimeZone
 
 dprod:acceptsOffer
   a owl:ObjectProperty ;
-  dct:description "The offer this contract activates."@en ;
+  dct:description "The offer this contract accepts. The link records lineage; the contract inherits no rules from the offer."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataContract ;
   rdfs:range dprod:DataOffer ;

@@ -290,7 +290,10 @@ after the instance's occurrence fulfills it.
 | **Domain** | `dprod:DataContract` |
 | **Range** | `dprod:DataOffer` |
 | **Cardinality** | 1 |
-| **Definition** | The offer this contract activates. |
+| **Definition** | The offer this contract accepts. The link records lineage; the contract inherits no rules from the offer. |
+
+Like any `odrl:Agreement`, a contract is complete in itself. It restates the
+offer's rules it takes over, and may narrow them or add to them.
 
 ### 4.5 dprod:effectiveDate
 
