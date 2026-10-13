@@ -24,7 +24,7 @@ odrl:core
 <https://ekgf.org/dprod/spec/develop/>
   a prof:Profile ;
   dct:title "DPROD Data Contracts — ODRL 2.2 Profile Extension"@en ;
-  dct:modified "2026-08-20"^^xsd:date ;
+  dct:modified "2026-10-13"^^xsd:date ;
   dct:description
     """Proper ODRL 2.2 profile for deterministic data governance.
     Uses ODRL terms for standard constructs; adds lifecycle state,

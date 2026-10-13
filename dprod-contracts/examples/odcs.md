@@ -239,4 +239,4 @@ The bridge between them is the core DPROD ontology: a `dprod:DataProduct` links 
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-12
+**Version**: 0.7 | **Date**: 2026-10-13
