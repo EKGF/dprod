@@ -572,14 +572,16 @@ ex:compliance
         a odrl:Duty ;
         rdfs:label "Quality SLA: real-time conformance" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
-        odrl:action ex:conformTo ;
-        odrl:target <https://example.org/assets/risk-metrics-schema> ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:timeliness ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand ex:realtime
-        ]
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:timeliness ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand ex:realtime
+            ]
+        ] ;
+        odrl:target <https://example.org/assets/risk-metrics-schema>
     ] ;
 
     odrl:obligation [

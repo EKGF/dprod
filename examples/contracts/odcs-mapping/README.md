@@ -6,7 +6,7 @@ The [Open Data Contract Standard (ODCS)](https://github.com/bitol-io/open-data-c
 | `team` owner | `odrl:assigner` |
 | `slaProperties` `frequency` and `timeOfAvailability` | a delivery duty with a `dprod:schedule` and a `dprod:deadline` |
 | `slaProperties` `generalAvailability` and `endOfSupport` | `dprod:effectiveDate` and `dprod:expirationDate` |
-| `quality` `nullValues mustBe 0`, scheduled nightly | a conformance duty constrained on completeness, with a `dprod:schedule` |
+| `quality` `nullValues mustBe 0`, scheduled nightly | a conformance duty whose action is refined by completeness, with a `dprod:schedule` |
 | `slaProperties` `retention` | a duty to `odrl:delete` beyond the retention period |
 | `roles` with `access: read` | an `odrl:Permission` for the role's party |
 | `description.limitations` | an `odrl:Prohibition` |

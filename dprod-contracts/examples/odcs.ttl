@@ -20,6 +20,7 @@
 @prefix dct:      <http://purl.org/dc/terms/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix ex:       <https://example.org/> .
@@ -286,6 +287,8 @@ ex:contract-seller-quantum a dprod:DataOffer ;
 # ─────────────────────────────────────────────────
 #
 # DPROD Contracts:
+#   driver: regulatory says why the SLA exists, not when it applies, so it
+#   stays in ODCS.
 
     odrl:obligation [
         a odrl:Duty ;
@@ -293,13 +296,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:deliver ;
         dprod:schedule ex:daily-0900-london ;
-        dprod:deadline "PT1H"^^xsd:duration ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand odrl:purpose ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand ex:regulatory
-        ]
+        dprod:deadline "PT1H"^^xsd:duration
     ] ;
 
 
@@ -322,12 +319,14 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Data latency SLA (max 4 days)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:conformTo ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:timeliness ;
-            odrl:operator odrl:lteq ;
-            odrl:rightOperand "P4D"^^xsd:duration
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:timeliness ;
+                odrl:operator odrl:lteq ;
+                odrl:rightOperand "P4D"^^xsd:duration
+            ]
         ]
     ] ;
 
@@ -379,7 +378,8 @@ ex:contract-seller-quantum a dprod:DataOffer ;
 # ─────────────────────────────────────────────────
 #
 # DPROD Contracts:
-#   The quality rule becomes a conformance duty with a completeness constraint.
+#   The quality rule becomes a conformance duty whose action is refined by
+#   completeness: the refinement states what the duty requires.
 #   ODCS severity/businessImpact are operational metadata, not policy.
 #   ODCS schedule (cron) maps to an identified dprod:schedule.
 
@@ -387,15 +387,17 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "No null values in transaction date" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:conformTo ;
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:completeness ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "100"^^xsd:decimal
+            ]
+        ] ;
         odrl:target ex:tbl-core-payments ;
-        dprod:schedule ex:daily-2000-london ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:completeness ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand "100"^^xsd:decimal
-        ]
+        dprod:schedule ex:daily-2000-london
     ] ;
 
 
@@ -427,15 +429,17 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Row count above 1M" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:conformTo ;
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:volumeCount ;
+                odrl:operator odrl:gt ;
+                odrl:rightOperand "1000000"^^xsd:integer
+            ]
+        ] ;
         odrl:target ex:tbl-core-payments ;
-        dprod:schedule ex:daily-2000-london ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:volumeCount ;
-            odrl:operator odrl:gt ;
-            odrl:rightOperand "1000000"^^xsd:integer
-        ]
+        dprod:schedule ex:daily-2000-london
     ] ;
 
 
@@ -494,18 +498,20 @@ ex:contract-seller-quantum a dprod:DataOffer ;
 #
 # DPROD Contracts:
 #   Each support channel becomes a notification duty.
-#   Service hours become a serviceWindow constraint.
+#   The channel and the service hours refine the notify action.
 
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Slack support (#product-help)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:notify ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:channel ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand "slack"
+        odrl:action [
+            rdf:value ex:notify ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:channel ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "slack"
+            ]
         ]
     ] ;
 
@@ -513,12 +519,14 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Email support (datacontract-ann)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:notify ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:channel ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand "email"
+        odrl:action [
+            rdf:value ex:notify ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:channel ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "email"
+            ]
         ]
     ] ;
 
@@ -526,23 +534,25 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Teams issue support (9-5 CET)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:notify ;
-        odrl:constraint [
-            a odrl:LogicalConstraint ;
-            odrl:and (
-                [
-                    a odrl:Constraint ;
-                    odrl:leftOperand ex:channel ;
-                    odrl:operator odrl:eq ;
-                    odrl:rightOperand "teams"
-                ]
-                [
-                    a odrl:Constraint ;
-                    odrl:leftOperand ex:serviceWindow ;
-                    odrl:operator odrl:eq ;
-                    odrl:rightOperand "business-hours"
-                ]
-            )
+        odrl:action [
+            rdf:value ex:notify ;
+            odrl:refinement [
+                a odrl:LogicalConstraint ;
+                odrl:and (
+                    [
+                        a odrl:Constraint ;
+                        odrl:leftOperand ex:channel ;
+                        odrl:operator odrl:eq ;
+                        odrl:rightOperand "teams"
+                    ]
+                    [
+                        a odrl:Constraint ;
+                        odrl:leftOperand ex:serviceWindow ;
+                        odrl:operator odrl:eq ;
+                        odrl:rightOperand "business-hours"
+                    ]
+                )
+            ]
         ]
     ] ;
 
