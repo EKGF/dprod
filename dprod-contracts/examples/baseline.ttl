@@ -8,7 +8,7 @@
 #   - Recurring delivery with deadline
 #   - Schema conformance
 #   - Quality SLA (conformTo + constraint)
-#   - Change notification (a notice period cannot be expressed yet)
+#   - Change notification, with the notice period as an agreed term
 #   - Consumer reporting duty
 #   - Display / non-display / derivation permissions
 #   - Purpose, classification, environment constraints
@@ -19,6 +19,7 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dct:      <http://purl.org/dc/terms/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
@@ -100,6 +101,13 @@ ex:report
   rdfs:label "report" ;
   dct:description "Submit usage reports."@en ;
   odrl:includedIn odrl:inform ;
+.
+
+ex:noticePeriod
+  a rdf:Property ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notice period" ;
+  dct:description "Agreed notice period before the change a notification announces. Recorded for the parties; DPROD does not evaluate it."@en ;
 .
 
 ex:notify
@@ -509,7 +517,8 @@ ex:compliance
         rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/hr> ;
         odrl:action ex:notify ;
-        odrl:target <https://example.org/assets/schema-changes>
+        odrl:target <https://example.org/assets/schema-changes> ;
+        ex:noticePeriod "P90D"^^xsd:duration
     ] ;
 
     odrl:permission [
@@ -578,7 +587,8 @@ ex:compliance
         rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:notify ;
-        odrl:target <https://example.org/assets/schema-changes>
+        odrl:target <https://example.org/assets/schema-changes> ;
+        ex:noticePeriod "P14D"^^xsd:duration
     ] ;
 
     odrl:permission [

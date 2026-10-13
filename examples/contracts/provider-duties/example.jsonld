@@ -34,7 +34,8 @@
       "label": "Change notification",
       "subjectOfDuty": "ex:dataPlatformTeam",
       "action": "ex:notify",
-      "target": "ex:schemaChanges"
+      "target": "ex:schemaChanges",
+      "ex:noticePeriod": { "@value": "P14D", "type": "xsd:duration" }
     },
     {
       "type": "Duty",

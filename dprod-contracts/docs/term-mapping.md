@@ -274,14 +274,15 @@ odrl:obligation [
 ### Change Notification
 
 **Business term:** `notification`, `advance notice`, `change alert`
-**DPROD pattern:** `odrl:Duty` with `ex:notify`. A notice period, such as 14 days before the change, cannot be expressed yet: a `dprod:deadline` runs forward from when the duty becomes active, not back from the change.
+**DPROD pattern:** `odrl:Duty` with `ex:notify`, with the notice period recorded as an agreed term such as `ex:noticePeriod`.[^notice]
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:notify ;
-    odrl:target ex:schemaChanges
+    odrl:target ex:schemaChanges ;
+    ex:noticePeriod "P14D"^^xsd:duration
 ] .
 ```
 
@@ -384,7 +385,7 @@ odrl:permission [
 | Delivery SLA | Duty + `deliver` + `schedule` + `deadline` | DPROD |
 | Schema guarantee | Duty + `conformTo` | DPROD |
 | Quality SLA | Duty + `conformTo` + constraint | DPROD |
-| Change notice | Duty + `notify` (no notice period yet) | DPROD |
+| Change notice | Duty + `notify` + agreed notice period[^notice] | DPROD |
 | Usage report | Duty + `report` + `deadline` | DPROD |
 | View rights | Permission + `display` | ODRL |
 | Algo use | Permission + `nonDisplay` | DPROD |
@@ -396,6 +397,8 @@ odrl:permission [
 | Schedule | `dprod:schedule` → identified `dprod:Schedule` | DPROD |
 | Deadline | `dprod:deadline` | DPROD |
 | Contract link | `dprod:acceptsOffer` | DPROD |
+
+[^notice]: DPROD does not yet evaluate a notice period. A `dprod:deadline` runs forward from when a duty becomes active, not back from a later action, so an evaluator cannot tell a timely notice from a late one. The property records what the parties agreed, and checking it is left to the change process.
 
 ---
 

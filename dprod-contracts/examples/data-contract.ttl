@@ -7,6 +7,7 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dct:      <http://purl.org/dc/terms/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
@@ -39,6 +40,13 @@ ex:deliver
   rdfs:label "deliver" ;
   dct:description "Deliver data to consumer."@en ;
   odrl:includedIn odrl:distribute ;
+.
+
+ex:noticePeriod
+  a rdf:Property ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notice period" ;
+  dct:description "Agreed notice period before the change a notification announces. Recorded for the parties; DPROD does not evaluate it."@en ;
 .
 
 ex:notify
@@ -143,15 +151,16 @@ ex:internal
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
 
-    # Schema change notification. A notice period (e.g. 14 days before the
-    # change) cannot be expressed yet: a deadline runs from activation.
+    # Schema change notification with 14 days' notice. The notice period is
+    # an agreed term; DPROD does not evaluate it yet.
     # Target differs from policy — schema-changes, not market-prices
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
         odrl:action ex:notify ;
-        odrl:target <https://example.org/assets/schema-changes>
+        odrl:target <https://example.org/assets/schema-changes> ;
+        ex:noticePeriod "P14D"^^xsd:duration
     ] ;
 
     # ----- CONSUMER RIGHTS (Permissions — assignee omitted in Offer) -----
