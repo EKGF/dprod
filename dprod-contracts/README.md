@@ -29,6 +29,8 @@ See [examples/](examples/) for complete working policies:
 
 - [data-contract.ttl](examples/data-contract.ttl) -- DataOffer, DataContract, bilateral duties
 - [data-use-policy.ttl](examples/data-use-policy.ttl) -- Role-based access, purpose constraints
+- [odcs.ttl](examples/odcs.ttl) -- An ODCS v3.1.0 contract translated to DPROD; [odcs.md](examples/odcs.md) compares the two
+- [baseline.ttl](examples/baseline.ttl) -- Nine offers and two contracts covering schedules, quality SLAs and display rights
 
 ---
 
@@ -44,7 +46,7 @@ See [examples/](examples/) for complete working policies:
 | Scheduling | -- | Reusable `dprod:Schedule` resources with format-specific expressions and per-instance `deadline` |
 | Contract types | -- | `DataOffer` (subclass of Offer), `DataContract` (subclass of Agreement) |
 
-**Note**: DPROD Contracts is an ODRL profile, not a parallel vocabulary. Standard ODRL processors can parse DPROD policies; DPROD-aware processors additionally enforce lifecycle, bilateral duties, and deterministic evaluation.
+**Note**: DPROD Contracts is an ODRL profile, not a parallel vocabulary. Standard ODRL processors can parse DPROD policies; DPROD-aware evaluators also compute duty state, return the duties of both parties, and evaluate deterministically. DPROD declares what a policy grants, forbids and obliges; enforcing it is up to the systems that act on the decision.
 
 ---
 
@@ -134,10 +136,14 @@ dprod-contracts/
 ├── dprod-contracts.ttl              # Core ontology (ODRL profile extension)
 ├── dprod-contracts-shapes.ttl       # SHACL validation shapes
 ├── dprod-contracts-prof.ttl         # DXPROF profile declaration
+├── validate.py                      # Parse and SHACL-validate the examples
 ├── examples/
 │   ├── data-contract.ttl            # Complete contract example (with schedule)
 │   ├── data-use-policy.ttl          # Access control example
-│   └── baseline.ttl                 # Comprehensive test data (8 offers, 2 contracts)
+│   ├── odcs.ttl                     # ODCS v3.1.0 contract translated to DPROD
+│   ├── odcs.md                      # ODCS vs DPROD Contracts comparison
+│   └── baseline.ttl                 # Comprehensive test data (9 offers, 2 contracts)
+├── tests/                           # Profile, shape and documentation tests
 └── docs/
     ├── overview.md                  # What is DPROD Contracts? (start here)
     ├── specification.md             # Technical vocabulary reference
