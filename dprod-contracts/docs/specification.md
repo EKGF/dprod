@@ -111,7 +111,7 @@ ex:contract a dprod:DataOffer ;
 | **Type** | `owl:Class` |
 | **Superclass** | `odrl:Agreement` |
 | **Label** | Data Contract |
-| **Definition** | Activated data offer binding provider and consumer |
+| **Definition** | Agreement that accepts a data offer and binds provider and consumer to the rules it states |
 
 **Required properties**:
 
@@ -150,9 +150,19 @@ ex:subscription a dprod:DataContract ;
 | **Label** | Evaluation Context |
 | **Definition** | Immutable, provenance-bearing input graph for one policy evaluation |
 
-The evaluator constructs one context per evaluation. It is a `prov:Entity` and
-retains the exact request and state snapshot provenance required to reproduce a
-decision. It has four normative roots:
+DPROD does not evaluate policies. An evaluator is an external program that
+implements this specification. It is invoked by a calling system (for example an
+application, an API gateway or a data platform) that needs an access decision.
+
+The calling system constructs one context per evaluation and passes it, with the
+policies, to the evaluator. Building the context is where facts are gathered:
+the calling system describes what is being asked for, flattens every
+policy-relevant fact onto the request or state node, and freezes the result. The
+evaluator reads only the context it is given and MUST NOT query live data while
+resolving operands (see formal-semantics.md §4.2).
+
+The context is a `prov:Entity` and retains the exact request and state snapshot
+provenance required to reproduce a decision. It has four normative roots:
 
 | Property | Range | Definition |
 |----------|-------|------------|
@@ -165,13 +175,42 @@ Operand bindings select one of three closed sources:
 
 | Source | Node selected |
 |--------|---------------|
-| `dprod:requestSource` | Normalized authorization request |
-| `dprod:stateSource` | Immutable normalized world snapshot |
-| `dprod:contextSource` | Evaluation context itself |
+| `dprod:requestSource` | The request node: what is being asked for (agent, action, asset) plus any request facts the policies need, built by the calling system. It is plain RDF, not an `odrl:Request`. |
+| `dprod:stateSource` | The state snapshot node: facts about the world at the time of the request, frozen by the calling system |
+| `dprod:contextSource` | The evaluation context itself, which carries the built-in agent and clock |
 
 `dprod:currentAgent` binds `contextSource` to property `dprod:agent`. Standard
 `odrl:dateTime` binds `contextSource` to `dprod:clock`; DPROD does not define a
 duplicate clock operand.
+
+### 3.5 dprod:Schedule
+
+| Property | Value |
+|----------|-------|
+| **Type** | `owl:Class` |
+| **Label** | Schedule |
+| **Definition** | Reusable, identified definition of scheduled occurrences |
+
+A Schedule determines **when**, without determining **what** happens. Any DPROD
+or ODRL resource may refer to it through `dprod:schedule`; that resource retains
+the business meaning of the occurrences. Every Schedule has an IRI, exactly one
+`dct:conformsTo` format, and exactly one `dprod:scheduleExpression`.
+
+### 3.6 dprod:ScheduleFormat
+
+| Property | Value |
+|----------|-------|
+| **Type** | `owl:Class` |
+| **Label** | Schedule Format |
+| **Definition** | Exact grammar and interpretation rules for schedule expressions |
+
+Built-in individuals are `dprod:Rfc5545ScheduleFormat` and
+`dprod:PosixCrontabScheduleFormat`. Every ScheduleFormat declares
+`dprod:carriesTimeZone`: whether its expressions embed their own timezone
+(true for RFC 5545, false for POSIX crontab). Extensions may define additional
+identified formats, but must declare `dprod:carriesTimeZone` and provide
+matching validation rules and a processor. A general label such as “cron” is
+not an exact format.
 
 ---
 
@@ -208,18 +247,50 @@ Two forms:
 | Absolute | `xsd:dateTime` | Fixed deadline | `"2026-12-31T23:59:59Z"^^xsd:dateTime` |
 | Relative | `xsd:duration` | Offset from activation | `"P30D"^^xsd:duration` |
 
-### 4.3 dprod:recurrence
+### 4.3 Scheduling
 
 | Property | Value |
 |----------|-------|
-| **Type** | `owl:DatatypeProperty` |
-| **Domain** | `odrl:Duty` |
-| **Range** | `xsd:string` |
-| **Cardinality** | 0..1 |
-| **Pattern** | `^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)` |
-| **Definition** | RFC 5545 RRULE defining when duty instances are generated |
+| **Property** | `dprod:schedule` |
+| **Type** | `owl:ObjectProperty` |
+| **Domain** | None; reusable across DPROD and ODRL resources |
+| **Range** | `dprod:Schedule` |
+| **Duty cardinality** | 0..1 |
+| **Definition** | Link to an identified reusable Schedule |
 
-Each generated instance follows the standard duty lifecycle independently (Pending -> Active -> Fulfilled/Violated). The `deadline` property defines the per-instance fulfillment window. Any iCal-compliant library can parse the value.
+| Schedule property | Type | Cardinality | Definition |
+|-------------------|------|-------------|------------|
+| `dct:conformsTo` | IRI of `dprod:ScheduleFormat` | 1 | Exact grammar/dialect |
+| `dprod:scheduleExpression` | `xsd:string` | 1 | Authoritative expression |
+| `dprod:scheduleTimeZone` | IANA timezone string | 0..1 | Required when the format carries no timezone (`dprod:carriesTimeZone false`); when the format embeds a timezone, must match the embedded value if present |
+
+```turtle
+ex:daily-delivery a dprod:Schedule ;
+    rdfs:label "Daily delivery at 06:00 London time" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
+
+ex:delivery-duty a odrl:Duty ;
+    odrl:action ex:deliver ;
+    dprod:schedule ex:daily-delivery .
+```
+
+An RFC 5545 schedule must contain anchored `DTSTART` (with `TZID`) and `RRULE`
+content, optionally followed by `EXDATE`/`RDATE` lines; the embedded `TZID` is
+the timezone authority. A POSIX crontab schedule contains exactly five time
+fields, separated by spaces or tabs, and
+declares `dprod:scheduleTimeZone`. Unknown formats, malformed expressions, and
+missing context are errors, not empty schedules. Bare frequency vocabulary
+entries such as `dct:accrualPeriodicity` remain descriptive catalog metadata and
+are not executable schedules.
+
+On a duty, the schedule's occurrences from the duty's activation up to the
+evaluation time are the duty's instances (formal semantics §5.5). The schedule
+sets the times (for RFC 5545, from `DTSTART` and `TZID`); activation only
+limits the range. Each instance follows the standard duty lifecycle
+independently (Pending -> Active -> Fulfilled/Violated). The `deadline`
+property defines the per-instance fulfillment window, and only an action at or
+after the instance's occurrence fulfills it.
 
 ### 4.4 dprod:acceptsOffer
 
@@ -229,7 +300,10 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataContract` |
 | **Range** | `dprod:DataOffer` |
 | **Cardinality** | 1 |
-| **Definition** | The offer this contract activates. |
+| **Definition** | The offer this contract accepts. The link records lineage; the contract inherits no rules from the offer. |
+
+Like any `odrl:Agreement`, a contract is complete in itself. It restates the
+offer's rules it takes over, and may narrow them or add to them.
 
 ### 4.5 dprod:effectiveDate
 
@@ -239,7 +313,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
-| **Definition** | When the contract/subscription becomes effective |
+| **Definition** | When the contract/subscription becomes effective. Before this instant the policy is not applicable (formal semantics §7.3). |
 
 ### 4.6 dprod:expirationDate
 
@@ -249,7 +323,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
-| **Definition** | When the contract/subscription expires |
+| **Definition** | When the contract/subscription expires. After this instant the policy is not applicable (formal semantics §7.3); the instant itself is included. |
 
 ### 4.7 odrl:partOf Collection Membership
 
@@ -282,10 +356,13 @@ The evaluator performs one lookup:
 | `ex:marketOpen` | `stateSource` | `ex:marketOpen` | `?state ex:marketOpen ?value` |
 | `odrl:dateTime` | `contextSource` | `dprod:clock` | `?context dprod:clock ?value` |
 
-Request and state producers MUST flatten policy-relevant facts onto their source
-nodes before evaluation. RDF lists, traversal through `odrl:target` or party
+The calling system MUST flatten policy-relevant facts onto the request and state
+nodes before evaluation. A fact that sits more than one hop away in the source
+data, such as the jurisdiction of the requesting agent's organisation, is
+resolved by the calling system and written onto the request as one property. RDF lists, traversal through `odrl:target` or party
 nodes, and extension sources are rejected. Missing bindings, missing or multiple
-values, and type mismatches are hard evaluation errors.
+values, and type mismatches are evaluation errors, never `false`; evaluation
+fails unless its outcome is decided without them (formal semantics §7.2).
 
 ### 4.9 dprod:not
 
@@ -311,6 +388,8 @@ ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `
 | **Definition** | Party bearing the duty (must perform the action) |
 
 The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading -- in a bilateral agreement, the data provider is `odrl:assigner` at the policy level but would also need to be `odrl:assignee` on their own delivery duty. `dprod:subjectOfDuty` removes this confusion. Bridges to ODRL via `rdfs:subPropertyOf odrl:function` (the abstract umbrella for party-roles in a Rule), so ODRL processors retain a generic role link without inheriting the contested `odrl:assignee` semantics. Aligns with `md:subject` (W3C Market Data), which likewise scopes the property to `odrl:Duty`.
+
+When `dprod:subjectOfDuty` is omitted, the bearer is the policy's `odrl:assignee`, or the requesting agent in a policy without one (formal semantics §3.2). Provider duties therefore name the provider explicitly.
 
 ### 4.11 dprod:objectOfDuty
 
@@ -355,9 +434,17 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `recurrence` 0..1 (RRULE pattern); `state` 0..1 |
+| `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`, without `odrl:refinement`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`, without `odrl:refinement`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
+| `dprod-shapes:ActionShape` | Objects of `odrl:action` | An IRI, or a refined action: exactly one `rdf:value` IRI naming the action, and refinements that are `odrl:Constraint` or `odrl:LogicalConstraint` |
+
+### Schedule shapes
+
+| Shape | Target | Key Constraints |
+|-------|--------|-----------------|
+| `dprod-shapes:ScheduleReferenceShape` | Subjects using `dprod:schedule` | Values are IRIs identifying `dprod:Schedule` resources |
+| `dprod-shapes:ScheduleShape` | `dprod:Schedule` | IRI identifier; one exact format; one string expression; built-in format requirements |
 
 ### Constraint-level shapes
 
@@ -408,6 +495,8 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 | `dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape` | Contract lifecycle properties on `dprod:DataProduct` | Use `dprod:dataProductLifecycleStatus` |
 | `dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
 | `dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
+| `dprod-shapes:RejectObsoleteRecurrenceShape` | Legacy `dprod:recurrence` property | Use `dprod:schedule` and an identified Schedule |
+| `dprod-shapes:RejectAnonymousScheduleShape` | A `dprod:Schedule` that is a blank node | A Schedule must have an IRI identifier |
 
 ---
 
@@ -417,22 +506,27 @@ Which concrete authoring properties are valid on which policy classes
 (`dprod:lifecycleStatus` is abstract; runtime-only EvaluationContext roots are
 documented in §3.4 and omitted):
 
-| Property | Duty | DataProduct | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
-|----------|------|-------------|-----------|--------------|-------------|-------------------|-------|-------|
-| `dprod:dutyState` | Yes | | | | | | | |
-| `dprod:dataProductLifecycleStatus` | | Yes | | | | | | |
-| `dprod:offerLifecycleStatus` | | | Yes | | | | | |
-| `dprod:contractLifecycleStatus` | | | | Yes | | | | |
-| `dprod:deadline` | Yes | | | | | | | |
-| `dprod:recurrence` | Yes | | | | | | | |
-| `dprod:subjectOfDuty` | Yes | | | | | | | |
-| `dprod:objectOfDuty` | Yes | | | | | | | |
-| `dprod:acceptsOffer` | | | | Yes | | | | |
-| `dprod:effectiveDate` | | | Yes | Yes | | | | |
-| `dprod:expirationDate` | | | Yes | Yes | | | | |
-| `dprod:operandSource` | | | | | Yes | | | |
-| `dprod:operandProperty` | | | | | Yes | | | |
-| `dprod:not` | | | | | | Yes | | |
+| Property | Duty | Schedule | DataProduct | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
+|----------|------|----------|-------------|-----------|--------------|-------------|-------------------|-------|-------|
+| `dprod:dutyState` | Yes | | | | | | | | |
+| `dprod:dataProductLifecycleStatus` | | | Yes | | | | | | |
+| `dprod:offerLifecycleStatus` | | | | Yes | | | | | |
+| `dprod:contractLifecycleStatus` | | | | | Yes | | | | |
+| `dprod:deadline` | Yes | | | | | | | | |
+| `dprod:schedule` | Yes* | | | | | | | | |
+| `dprod:scheduleExpression` | | Yes | | | | | | | |
+| `dprod:scheduleTimeZone` | | Yes | | | | | | | |
+| `dprod:subjectOfDuty` | Yes | | | | | | | | |
+| `dprod:objectOfDuty` | Yes | | | | | | | | |
+| `dprod:acceptsOffer` | | | | | Yes | | | | |
+| `dprod:effectiveDate` | | | | Yes | Yes | | | | |
+| `dprod:expirationDate` | | | | Yes | Yes | | | | |
+| `dprod:operandSource` | | | | | | Yes | | | |
+| `dprod:operandProperty` | | | | | | Yes | | | |
+| `dprod:not` | | | | | | | Yes | | |
+
+\* `dprod:schedule` has no OWL domain and may be used by other resources. The
+table shows the duty use whose operational semantics are defined by this profile.
 
 ---
 
@@ -449,6 +543,7 @@ DPROD Contracts restricts certain ODRL features:
 | `odrl:Ticket` | Not used | Not applicable to data governance |
 | `odrl:Request` | Rejected (support deferred) | Offer-Request-Agreement semantics are undefined; accepting it would imply unsupported semantics. |
 | `odrl:assignee` (on Duty) | Replaced by `dprod:subjectOfDuty` | `dprod:subjectOfDuty rdfs:subPropertyOf odrl:function` -- avoids role overloading on duties |
+| `odrl:refinement` (on an action) | Supported on duty actions as an agreed term; rejected on permissions and prohibitions | A duty's refinement states what it requires (ODRL 2.2 §2.6.3), while its `odrl:constraint` says when it applies. Evaluators match the action alone, so an unevaluated refinement would change what a permission grants or a prohibition forbids |
 | `odrl:AssetCollection` | Supported with explicit membership | Assets and nested asset collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
 | `odrl:PartyCollection` | Supported with explicit membership | Parties and nested party collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
 
@@ -456,4 +551,4 @@ DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics ar
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-19
+**Version**: 0.7 | **Date**: 2026-10-13

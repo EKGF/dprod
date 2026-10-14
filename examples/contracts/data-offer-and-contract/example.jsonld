@@ -12,11 +12,40 @@
   "contractLifecycleStatus": "Active",
   "effectiveDate": "2026-01-15T00:00:00Z",
   "expirationDate": "2026-12-31T23:59:59Z",
-  "permission": {
-    "type": "Permission",
-    "assignee": "ex:analyticsTeam",
-    "action": "display"
-  },
+  "obligation": [
+    {
+      "type": "Duty",
+      "subjectOfDuty": "ex:tradingDataTeam",
+      "action": "ex:deliver",
+      "schedule": "ex:every15Minutes",
+      "deadline": { "@value": "PT5M", "type": "xsd:duration" }
+    },
+    {
+      "type": "Duty",
+      "subjectOfDuty": "ex:tradingDataTeam",
+      "action": "ex:conformTo",
+      "target": "ex:marketDataSchema"
+    },
+    {
+      "type": "Duty",
+      "subjectOfDuty": "ex:analyticsTeam",
+      "action": "ex:reportUsage",
+      "schedule": "ex:monthlyOnThe1st",
+      "deadline": { "@value": "P5D", "type": "xsd:duration" }
+    }
+  ],
+  "permission": [
+    {
+      "type": "Permission",
+      "assignee": "ex:analyticsTeam",
+      "action": "display"
+    },
+    {
+      "type": "Permission",
+      "assignee": "ex:analyticsTeam",
+      "action": "derive"
+    }
+  ],
   "prohibition": {
     "type": "Prohibition",
     "assignee": "ex:analyticsTeam",
@@ -34,7 +63,12 @@
         "type": "Duty",
         "subjectOfDuty": "ex:tradingDataTeam",
         "action": "ex:deliver",
-        "recurrence": "FREQ=MINUTELY;INTERVAL=15",
+        "schedule": {
+          "id": "ex:every15Minutes",
+          "type": "Schedule",
+          "conformsTo": "dprod:Rfc5545ScheduleFormat",
+          "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MINUTELY;INTERVAL=15"
+        },
         "deadline": { "@value": "PT5M", "type": "xsd:duration" }
       },
       {
@@ -46,7 +80,12 @@
       {
         "type": "Duty",
         "action": "ex:reportUsage",
-        "recurrence": "FREQ=MONTHLY;BYMONTHDAY=1",
+        "schedule": {
+          "id": "ex:monthlyOnThe1st",
+          "type": "Schedule",
+          "conformsTo": "dprod:Rfc5545ScheduleFormat",
+          "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=1"
+        },
         "deadline": { "@value": "P5D", "type": "xsd:duration" }
       }
     ],

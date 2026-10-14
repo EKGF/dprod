@@ -4,11 +4,13 @@ The [Open Data Contract Standard (ODCS)](https://github.com/bitol-io/open-data-c
 |---|---|
 | `kind: DataContract`, `status: active`, `version` | `dprod:DataOffer`, `dprod:offerLifecycleStatus`, `dct:hasVersion` |
 | `team` owner | `odrl:assigner` |
-| `slaProperties` `frequency` and `timeOfAvailability` | a delivery duty with `dprod:recurrence` and `dprod:deadline` |
+| `slaProperties` `frequency` and `timeOfAvailability` | a delivery duty with a `dprod:schedule` and a `dprod:deadline` |
 | `slaProperties` `generalAvailability` and `endOfSupport` | `dprod:effectiveDate` and `dprod:expirationDate` |
-| `quality` `nullValues mustBe 0`, scheduled nightly | a conformance duty constrained on completeness, with `dprod:recurrence` |
+| `quality` `nullValues mustBe 0`, scheduled nightly | a conformance duty whose action is refined by completeness, with a `dprod:schedule` |
 | `slaProperties` `retention` | a duty to `odrl:delete` beyond the retention period |
 | `roles` with `access: read` | an `odrl:Permission` for the role's party |
 | `description.limitations` | an `odrl:Prohibition` |
 
 ODCS fields that are workflow or operations rather than policy, such as approver chains, severity and `servers`, have no counterpart and stay in ODCS.
+
+The quality and retention duties read `ex:completeness` and `ex:retentionPeriod` from the state snapshot, not the request: they are facts the platform measures about the data, and a requester cannot vouch for them.

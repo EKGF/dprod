@@ -14,8 +14,8 @@ ODCS and DPROD Contracts solve the same problem — formalizing data agreements 
 | **Foundation** | Custom schema | W3C ODRL 2.2 standard |
 | **Scope** | Bilateral contracts only | Bilateral contracts + organizational data-use policies |
 | **Schema definition** | Inline (tables, columns, types) | External (DCAT, SHACL — separation of concerns) |
-| **Quality rules** | Inline metrics with operators | `odrl:Duty` + `ex:conformTo` + `odrl:Constraint` |
-| **SLAs** | `slaProperties` key-value list | `odrl:Duty` with measurable constraints |
+| **Quality rules** | Inline metrics with operators | `odrl:Duty` + `ex:conformTo` + `odrl:refinement` |
+| **SLAs** | `slaProperties` key-value list | `odrl:Duty` with measurable refinements |
 | **Access control** | `roles` with approval chains | `odrl:Permission` / `odrl:Prohibition` with constraints |
 | **Pricing** | `price` section | Out of scope (rights and obligations only) |
 | **Formal semantics** | No | Yes (deterministic evaluation, conflict resolution) |
@@ -37,19 +37,21 @@ ODCS and DPROD Contracts solve the same problem — formalizing data agreements 
 
 **ODCS** has purpose-built sections for quality (`schema[].quality`) and SLAs (`slaProperties`) with domain-specific operators (`mustBe`, `mustBeGreaterThan`, etc.) and dimensions (`accuracy`, `completeness`, etc.).
 
-**DPROD Contracts** unifies quality and SLAs as duties with constraints:
+**DPROD Contracts** unifies quality and SLAs as duties whose actions are refined by the required level:
 
 ```turtle
 # ODCS quality rule: nullValues mustBe 0
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:data-team ;
-    odrl:action ex:conformTo ;
-    odrl:constraint [
-        a odrl:Constraint ;
-        odrl:leftOperand ex:completeness ;
-        odrl:operator odrl:eq ;
-        odrl:rightOperand "100"^^xsd:decimal
+    odrl:action [
+        rdf:value ex:conformTo ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:completeness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand "100"^^xsd:decimal
+        ]
     ]
 ] .
 ```
@@ -146,32 +148,32 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 
 | ODCS Quality | DPROD Contracts | Notes |
 |---|---|---|
-| `metric: nullValues` | Constraint: `ex:completeness` | Quality dimension operand |
-| `metric: rowCount` | Constraint: `ex:volumeCount` | Custom constraint |
+| `metric: nullValues` | Refinement: `ex:completeness` | Quality dimension operand |
+| `metric: rowCount` | Refinement: `ex:volumeCount` | Custom operand |
 | `mustBe` / `mustBeGreaterThan` | `odrl:operator` (`odrl:eq`, `odrl:gt`, `odrl:gteq`) | Standard ODRL operators |
 | `dimension: accuracy` | `ex:accuracy` | DPROD operand |
 | `dimension: completeness` | `ex:completeness` | DPROD operand |
 | `dimension: timeliness` | `ex:timeliness` | DPROD operand |
-| `dimension: uniqueness` | Constraint on `ex:conformTo` | Custom quality constraint |
+| `dimension: uniqueness` | Refinement of `ex:conformTo` | Custom quality operand |
 | `severity` | Not directly modeled | Operational metadata |
 | `businessImpact` | Not directly modeled | Operational metadata |
-| `schedule` / `scheduler` | `dprod:recurrence` on duty | RFC 5545 RRULE |
+| `schedule` / `scheduler` | Identified `dprod:Schedule` referenced by the duty | Exact format declared with `dct:conformsTo` |
 
 ### SLA Properties
 
 | ODCS SLA | DPROD Contracts | Notes |
 |---|---|---|
-| `latency` | `ex:latency` + constraint | On conformance duty |
-| `availability` | `ex:availability` + constraint | On conformance duty |
-| `throughput` | `ex:throughput` + constraint | On conformance duty |
-| `frequency` | `dprod:recurrence` on delivery duty | RFC 5545 RRULE string |
+| `latency` | `ex:latency` + refinement | Of the conformance duty's action |
+| `availability` | `ex:availability` + refinement | Of the conformance duty's action |
+| `throughput` | `ex:throughput` + refinement | Of the conformance duty's action |
+| `frequency` | `dprod:schedule` on delivery duty | Reusable RFC 5545 or POSIX crontab schedule |
 | `timeOfAvailability` | `dprod:deadline` on delivery duty | XSD duration |
 | `retention` | `odrl:Duty` + `odrl:delete` + `ex:retentionPeriod` | Retention as obligation |
 | `generalAvailability` | `dprod:effectiveDate` | Contract start date |
 | `endOfSupport` / `endOfLife` | `dprod:expirationDate` | Contract end date |
 | `timeToRepair` | `dprod:deadline` on repair duty | Per-incident SLA |
 | `timeToNotify` | `dprod:deadline` on notify duty | Notification SLA |
-| `driver` | `odrl:purpose` constraint | Regulatory, analytics, operational |
+| `driver` | Not mapped | Says why the SLA exists, not when it applies |
 
 ### Team and Roles
 
@@ -189,8 +191,8 @@ Each duty instance tracks its own state, enabling fine-grained compliance monito
 
 | ODCS | DPROD Contracts | Notes |
 |---|---|---|
-| `support[].channel` | `odrl:Duty` + `ex:notify` | With channel constraint |
-| `support[].tool` | `ex:channel` constraint value | Slack, email, teams |
+| `support[].channel` | `odrl:Duty` + `ex:notify` | Action refined by channel |
+| `support[].tool` | `ex:channel` refinement value | Slack, email, teams |
 | Response time | `dprod:deadline` on notify duty | SLA as duration |
 
 ### Pricing and Infrastructure
@@ -239,4 +241,4 @@ The bridge between them is the core DPROD ontology: a `dprod:DataProduct` links 
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-02-26
+**Version**: 0.7 | **Date**: 2026-10-13

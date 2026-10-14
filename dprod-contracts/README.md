@@ -10,10 +10,14 @@ DPROD Contracts is an ODRL 2.2 profile. It uses ODRL terms for all standard cons
 
 1. **Explicit duty state**: Pending -> Active -> Fulfilled/Violated, computed by an evaluator
 2. **Bilateral agreements**: Both assigner and assignee may have duties
-3. **Deterministic evaluation**: Total functions, no undefined states
+3. **Deterministic evaluation**: Total functions, no undefined states — an
+   unprocessable schedule freezes its duty and gives `Failure` with an explicit
+   error instead of a `Permit` (formal-semantics §5.2, §7.2); it never yields
+   an undefined outcome or a silent violation
 4. **Formal verification target**: Amenable to Dafny, Why3, Coq
 5. **Structured operand resolution**: one-hop bindings over normalized request, state, and context nodes
-6. **Recurring duties**: `recurrence` via RFC 5545 RRULE for scheduled obligations
+6. **Reusable schedules**: identified `dprod:Schedule` resources with pluggable,
+   exact formats such as RFC 5545 and POSIX crontab
 
 DPROD Contracts is **specification-first**. The semantics document defines what any conformant implementation must do. Every DPROD policy is a valid ODRL 2.2 policy.
 
@@ -25,6 +29,8 @@ See [examples/](examples/) for complete working policies:
 
 - [data-contract.ttl](examples/data-contract.ttl) -- DataOffer, DataContract, bilateral duties
 - [data-use-policy.ttl](examples/data-use-policy.ttl) -- Role-based access, purpose constraints
+- [odcs.ttl](examples/odcs.ttl) -- An ODCS v3.1.0 contract translated to DPROD; [odcs.md](examples/odcs.md) compares the two
+- [baseline.ttl](examples/baseline.ttl) -- Nine offers and two contracts covering schedules, quality SLAs and display rights
 
 ---
 
@@ -35,12 +41,12 @@ See [examples/](examples/) for complete working policies:
 | Duty state | Undefined | Pending -> Active -> Fulfilled/Violated |
 | Bilateral duties | Unilateral (assignee only) | Assigner duties + assignee duties |
 | Conflict resolution | Configurable | Default: Prohibition > Permission; per-policy override allowed |
-| Evaluation order | Undefined | Deterministic left-to-right |
+| Evaluation order | Undefined | Order-independent; errors never fail open |
 | Operand resolution | Implicit | Explicit source + property bindings over normalized inputs |
-| Recurring duties | -- | `recurrence` via RFC 5545 RRULE with per-instance `deadline` |
+| Scheduling | -- | Reusable `dprod:Schedule` resources with format-specific expressions and per-instance `deadline` |
 | Contract types | -- | `DataOffer` (subclass of Offer), `DataContract` (subclass of Agreement) |
 
-**Note**: DPROD Contracts is an ODRL profile, not a parallel vocabulary. Standard ODRL processors can parse DPROD policies; DPROD-aware processors additionally enforce lifecycle, bilateral duties, and deterministic evaluation.
+**Note**: DPROD Contracts is an ODRL profile, not a parallel vocabulary. Standard ODRL processors can parse DPROD policies; DPROD-aware evaluators also compute duty state, return the duties of both parties, and evaluate deterministically. DPROD declares what a policy grants, forbids and obliges; enforcing it is up to the systems that act on the decision.
 
 ---
 
@@ -90,8 +96,10 @@ An `odrl:Duty` progresses through evaluator-computed `dprod:dutyState` values. I
 
 ### 5. Structured Operand Resolution
 
-Every operand selects one normalized source and one direct property. Request and
-state producers flatten policy-relevant facts before evaluation:
+Every operand selects one normalized source and one direct property. DPROD does
+not evaluate policies: an external evaluator does, and the calling system that
+asks it for a decision flattens policy-relevant facts onto the request and state
+nodes before evaluation:
 
 ```turtle
 # Direct property on the normalized authorization request
@@ -99,9 +107,9 @@ ex:environment
     dprod:operandSource dprod:requestSource ;
     dprod:operandProperty ex:environment .
 
-# Asset facts are flattened onto that same request node
+# Asset facts the platform holds go on the immutable world snapshot
 ex:timeliness
-    dprod:operandSource dprod:requestSource ;
+    dprod:operandSource dprod:stateSource ;
     dprod:operandProperty ex:timeliness .
 
 # Direct property on the immutable world snapshot
@@ -128,10 +136,14 @@ dprod-contracts/
 ├── dprod-contracts.ttl              # Core ontology (ODRL profile extension)
 ├── dprod-contracts-shapes.ttl       # SHACL validation shapes
 ├── dprod-contracts-prof.ttl         # DXPROF profile declaration
+├── validate.py                      # Parse and SHACL-validate the examples
 ├── examples/
-│   ├── data-contract.ttl            # Complete contract example (with recurrence)
+│   ├── data-contract.ttl            # Complete contract example (with schedule)
 │   ├── data-use-policy.ttl          # Access control example
-│   └── baseline.ttl                 # Comprehensive test data (8 offers, 2 contracts)
+│   ├── odcs.ttl                     # ODCS v3.1.0 contract translated to DPROD
+│   ├── odcs.md                      # ODCS vs DPROD Contracts comparison
+│   └── baseline.ttl                 # Comprehensive test data (9 offers, 2 contracts)
+├── tests/                           # Profile, shape and documentation tests
 └── docs/
     ├── overview.md                  # What is DPROD Contracts? (start here)
     ├── specification.md             # Technical vocabulary reference
@@ -149,7 +161,7 @@ dprod-contracts/
 | Prefix | Namespace | Role |
 |--------|-----------|------|
 | `odrl:` | `http://www.w3.org/ns/odrl/2/` | Primary -- all standard constructs |
-| `dprod:` | `https://ekgf.org/dprod/spec/develop/` | Extensions (State, deadline, recurrence, DataOffer, DataContract, EvaluationContext, operand bindings) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
+| `dprod:` | `https://ekgf.org/dprod/spec/develop/` | Extensions (State, deadline, Schedule, DataOffer, DataContract, EvaluationContext, operand bindings) + domain-specific actions, operands, and concept values; collection membership reuses ODRL |
 
 ---
 
@@ -160,7 +172,7 @@ An implementation conforms to DPROD Contracts if:
 1. It accepts policies that validate against `dprod-contracts-shapes.ttl`
 2. It uses `odrl:Permission`, `odrl:Duty`, `odrl:Prohibition`, `odrl:Agreement` for standard constructs
 3. Its evaluation function produces identical results for identical inputs
-4. All functions are total (no undefined behavior)
+4. All functions are total (no undefined behavior); unprocessable schedules freeze the affected duty and surface an explicit error, and are never treated as empty schedules or violations
 5. State transitions match the operational semantics
 6. Agreement evaluation returns duties for both assigner and assignee
 
@@ -174,4 +186,4 @@ An implementation conforms to DPROD Contracts if:
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-20
+**Version**: 0.7 | **Date**: 2026-10-13

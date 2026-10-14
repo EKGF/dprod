@@ -8,6 +8,7 @@
   "profile": "https://ekgf.org/dprod/spec/develop/",
   "assigner": "ex:dataPlatformTeam",
   "assignee": "ex:analyticsTeam",
+  "target": "ex:customerData",
   "contractLifecycleStatus": "Active",
   "effectiveDate": "2026-02-01T00:00:00Z",
   "expirationDate": "2026-12-31T23:59:59Z",
@@ -23,7 +24,12 @@
       "type": "Duty",
       "subjectOfDuty": "ex:dataPlatformTeam",
       "action": "ex:deliver",
-      "recurrence": "FREQ=DAILY;BYHOUR=7;BYMINUTE=0",
+      "schedule": {
+        "id": "ex:dailyAt0700",
+        "type": "Schedule",
+        "conformsTo": "dprod:Rfc5545ScheduleFormat",
+        "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T070000\nRRULE:FREQ=DAILY"
+      },
       "deadline": { "@value": "PT30M", "type": "xsd:duration" }
     },
     "wasRevisionOf": {
@@ -37,33 +43,13 @@
       "permission": { "type": "Permission", "action": "use" }
     }
   },
-  "obligation": [
-    {
-      "id": "ex:delivery-2026-02-04",
-      "type": "Duty",
-      "subjectOfDuty": "ex:dataPlatformTeam",
-      "objectOfDuty": "ex:analyticsTeam",
-      "action": "ex:deliver",
-      "deadline": { "@value": "2026-02-04T07:30:00Z", "type": "xsd:dateTime" },
-      "dutyState": "Fulfilled"
-    },
-    {
-      "id": "ex:delivery-2026-02-05",
-      "type": "Duty",
-      "subjectOfDuty": "ex:dataPlatformTeam",
-      "objectOfDuty": "ex:analyticsTeam",
-      "action": "ex:deliver",
-      "deadline": { "@value": "2026-02-05T07:30:00Z", "type": "xsd:dateTime" },
-      "dutyState": "Violated"
-    },
-    {
-      "id": "ex:delivery-2026-02-06",
-      "type": "Duty",
-      "subjectOfDuty": "ex:dataPlatformTeam",
-      "objectOfDuty": "ex:analyticsTeam",
-      "action": "ex:deliver",
-      "deadline": { "@value": "2026-02-06T07:30:00Z", "type": "xsd:dateTime" },
-      "dutyState": "Pending"
-    }
-  ]
+  "obligation": {
+    "id": "ex:dailyDelivery",
+    "type": "Duty",
+    "subjectOfDuty": "ex:dataPlatformTeam",
+    "objectOfDuty": "ex:analyticsTeam",
+    "action": "ex:deliver",
+    "schedule": "ex:dailyAt0700",
+    "deadline": { "@value": "PT30M", "type": "xsd:duration" }
+  }
 }
