@@ -285,7 +285,8 @@ The evaluator performs one lookup:
 Request and state producers MUST flatten policy-relevant facts onto their source
 nodes before evaluation. RDF lists, traversal through `odrl:target` or party
 nodes, and extension sources are rejected. Missing bindings, missing or multiple
-values, and type mismatches are hard evaluation errors.
+values, and type mismatches are evaluation errors, never `false`; evaluation
+fails unless its outcome is decided without them (formal semantics §7.2).
 
 ### 4.9 dprod:not
 
@@ -311,6 +312,8 @@ ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `
 | **Definition** | Party bearing the duty (must perform the action) |
 
 The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading -- in a bilateral agreement, the data provider is `odrl:assigner` at the policy level but would also need to be `odrl:assignee` on their own delivery duty. `dprod:subjectOfDuty` removes this confusion. Bridges to ODRL via `rdfs:subPropertyOf odrl:function` (the abstract umbrella for party-roles in a Rule), so ODRL processors retain a generic role link without inheriting the contested `odrl:assignee` semantics. Aligns with `md:subject` (W3C Market Data), which likewise scopes the property to `odrl:Duty`.
+
+When `dprod:subjectOfDuty` is omitted, the bearer is the policy's `odrl:assignee`, or the requesting agent in a policy without one (formal semantics §3.2). Provider duties therefore name the provider explicitly.
 
 ### 4.11 dprod:objectOfDuty
 
