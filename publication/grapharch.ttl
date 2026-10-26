@@ -1,0 +1,65 @@
+@prefix ga: <https://ekgf.org/ontology/grapharch#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix doc: <urn:dprod-showcase:> .
+
+# Documentation settings and source hints only. The existing ReSpec pipeline,
+# ontology axioms, publication dates and normative standards process are unchanged.
+doc:project a ga:Project ;
+    ga:repository <https://github.com/EKGF/dprod> ;
+    ga:scope doc:scope ;
+    ga:target doc:specification, doc:website, doc:pdf ;
+    ga:collector doc:source:ontology, doc:source:shapes, doc:source:abstract,
+        doc:source:status, doc:source:overview, doc:source:example .
+
+doc:scope a ga:Scope .
+doc:profile a ga:Profile ; ga:style "reader" .
+doc:specification a ga:Target ;
+    ga:scope doc:scope ; ga:profile doc:profile ;
+    ga:renderer "specification" ; ga:destination "specification" ;
+    ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> ;
+    ga:publicationStatus "Documentation Preview" ;
+    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/specification/> ;
+    ga:latestVersion <https://www.omg.org/spec/DPROD/> ;
+    ga:editorDraft <https://github.com/EKGF/dprod/tree/develop> .
+
+doc:website a ga:Target ; dct:title "DPROD: ideas and guides" ;
+    ga:scope doc:website-scope ; ga:profile doc:website-profile ;
+    ga:renderer "website" ; ga:destination "website" .
+doc:website-scope a ga:Scope .
+doc:website-profile a ga:Profile .
+doc:pdf a ga:Target ; dct:title "DPROD ontology and SHACL reference — review edition" ;
+    ga:scope doc:scope ; ga:profile doc:pdf-profile ;
+    ga:renderer "typst" ; ga:destination "pdf" ;
+    ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> .
+doc:pdf-profile a ga:Profile .
+
+# Source selectors, interpreted by specialised collectors from the pinned tree.
+doc:source:ontology a ga:Collector ; ga:kind "rdf" ;
+    ga:sourcePath "ontology/dprod/dprod-ontology.ttl" ;
+    ga:subject <https://ekgf.org/dprod/spec/develop/> .
+doc:source:shapes a ga:Collector ; ga:kind "rdf" ;
+    ga:sourcePath "ontology/dprod/dprod-shapes.ttl" ;
+    ga:subject <https://ekgf.org/dprod/spec/develop/shapes/> .
+doc:source:abstract a ga:Collector ; ga:kind "markdown" ;
+    ga:sourcePath "publication/abstract.md" ; ga:fragment doc:abstract ;
+    dct:identifier "abstract" .
+doc:source:status a ga:Collector ; ga:kind "markdown" ;
+    ga:sourcePath "publication/status.md" ; ga:fragment doc:status ;
+    dct:identifier "status" .
+doc:source:overview a ga:Collector ; ga:kind "markdown-page" ;
+    ga:sourcePath "README.md" ; ga:fragment doc:overview ;
+    dct:title "DPROD Ontology" ; ga:route "" ;
+    dct:identifier "overview" .
+doc:source:example a ga:Collector ; ga:kind "markdown-page" ;
+    ga:sourcePath "examples/data-schema/README.md" ; ga:fragment doc:example ;
+    dct:title "Describe a dataset schema" ; ga:route "guides/dataset-schema/" ;
+    dct:identifier "example" .
+
+# Reuse the registered EKGF authority role and its distinct organization player.
+<urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> a ga:Authority ;
+    rdfs:label "OMG - Enterprise Knowledge Graph Forum"@en ;
+    ga:shortName "EKGF" ; ga:accentColor "#2b5f9f" ; ga:url "https://ekgf.org/" ;
+    <https://www.omg.org/spec/Commons/RolesAndCompositions/isPlayedBy> <urn:uuid:ee14e632-d8c2-43c1-95d8-72491ce7a846> .
+<urn:uuid:ee14e632-d8c2-43c1-95d8-72491ce7a846> a <https://www.omg.org/spec/Commons/Organizations/Organization> ;
+    rdfs:label "Enterprise Knowledge Graph Forum"@en .
