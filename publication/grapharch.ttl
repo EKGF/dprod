@@ -36,23 +36,23 @@ doc:pdf-profile a ga:Profile .
 
 # Source selectors, interpreted by specialised collectors from the pinned tree.
 doc:source:ontology a ga:Collector ; ga:kind "rdf" ;
-    ga:sourcePath "ontology/dprod/dprod-ontology.ttl" ;
+    ga:sourcePath "ontology/dprod/dprod-ontology.ttl" ; ga:source "ontology/dprod/dprod-ontology.ttl" ;
     ga:subject <https://ekgf.org/dprod/spec/develop/> .
 doc:source:shapes a ga:Collector ; ga:kind "rdf" ;
-    ga:sourcePath "ontology/dprod/dprod-shapes.ttl" ;
+    ga:sourcePath "ontology/dprod/dprod-shapes.ttl" ; ga:source "ontology/dprod/dprod-shapes.ttl" ;
     ga:subject <https://ekgf.org/dprod/spec/develop/shapes/> .
 doc:source:abstract a ga:Collector ; ga:kind "markdown" ;
-    ga:sourcePath "publication/abstract.md" ; ga:fragment doc:abstract ;
+    ga:sourcePath "publication/abstract.md" ; ga:source "publication/abstract.md" ; ga:fragment doc:abstract ;
     dct:identifier "abstract" .
 doc:source:status a ga:Collector ; ga:kind "markdown" ;
-    ga:sourcePath "publication/status.md" ; ga:fragment doc:status ;
+    ga:sourcePath "publication/status.md" ; ga:source "publication/status.md" ; ga:fragment doc:status ;
     dct:identifier "status" .
 doc:source:overview a ga:Collector ; ga:kind "markdown-page" ;
-    ga:sourcePath "README.md" ; ga:fragment doc:overview ;
+    ga:sourcePath "README.md" ; ga:source "README.md" ; ga:fragment doc:overview ;
     dct:title "DPROD Ontology" ; ga:route "" ;
     dct:identifier "overview" .
 doc:source:example a ga:Collector ; ga:kind "markdown-page" ;
-    ga:sourcePath "examples/data-schema/README.md" ; ga:fragment doc:example ;
+    ga:sourcePath "examples/data-schema/README.md" ; ga:source "examples/data-schema/README.md" ; ga:fragment doc:example ;
     dct:title "Describe a dataset schema" ; ga:route "guides/dataset-schema/" ;
     dct:identifier "example" .
 

@@ -13,6 +13,7 @@ class PreviewTests(unittest.TestCase):
         self.assertEqual(len(set(graph.objects(DOC.project,GA.target))),3)
         for collector in graph.objects(DOC.project,GA.collector):
             self.assertIn((collector,RDF.type,GA.Collector),graph)
+            self.assertIsNotNone(graph.value(collector,GA.source), "collector hints must retain their source identity")
             path=str(graph.value(collector,GA.sourcePath))
             self.assertTrue((ROOT/path).is_file(),path)
         self.assertEqual(str(graph.value(DOC.specification,GA.publicationStatus)),"Documentation Preview")
