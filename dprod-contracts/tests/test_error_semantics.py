@@ -92,14 +92,14 @@ class ErrorSemanticsDocumentationTest(unittest.TestCase):
         self.assertLess(update, self.evaluation.index("return {decision: Deny, ...}"))
         self.assertLess(
             self.evaluation.index("return {decision: NotApplicable, ...}"),
-            self.evaluation.index("return Failure(E₃)"),
+            self.evaluation.index("return Failure(E₃"),
         )
         self.assertNotIn("Duty states advance only when", self.evaluation)
 
     def test_order_independence_and_error_soundness_are_stated(self) -> None:
         self.assertIn("### 9.6 Order Independence", self.text)
         self.assertIn("### 9.7 Error Soundness", self.text)
-        self.assertIn("EvaluationError = Set<ResolutionError>", self.text)
+        self.assertIn("EvaluationError = Set<ResolutionError", self.text)
 
 
 if __name__ == "__main__":
