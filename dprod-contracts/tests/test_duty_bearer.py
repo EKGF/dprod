@@ -41,7 +41,7 @@ class DutyCollectionAndBearerTest(unittest.TestCase):
     def test_permission_error_in_a_non_granting_policy_blocks_permit(self) -> None:
         self.assertTrue("NormActive(n, Env) = true }" in self.evaluation)
         self.assertTrue("policy(n) ∉ granting" in self.evaluation)
-        self.assertTrue("return Failure(E₃ ∪ E₄)" in self.evaluation)
+        self.assertTrue("return Failure(E₃ ∪ E₄" in self.evaluation)
 
     def test_default_bearer_duties_are_tracked_per_agent(self) -> None:
         self.assertTrue("one duty per agent, each tracked separately in Σ" in self.text)

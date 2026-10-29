@@ -19,7 +19,12 @@
       "label": "slaProperties frequency + timeOfAvailability: daily, by 09:00",
       "subjectOfDuty": "ex:sellerDataTeam",
       "action": "ex:deliver",
-      "recurrence": "FREQ=DAILY;BYHOUR=9;BYMINUTE=0",
+      "schedule": {
+        "id": "ex:dailyAt0900",
+        "type": "Schedule",
+        "conformsTo": "dprod:Rfc5545ScheduleFormat",
+        "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T090000\nRRULE:FREQ=DAILY"
+      },
       "deadline": { "@value": "PT1H", "type": "xsd:duration" }
     },
     {
@@ -27,7 +32,12 @@
       "label": "quality nullValues mustBe 0, checked nightly",
       "subjectOfDuty": "ex:sellerDataTeam",
       "action": "ex:conformTo",
-      "recurrence": "FREQ=DAILY;BYHOUR=20;BYMINUTE=0",
+      "schedule": {
+        "id": "ex:nightlyAt2000",
+        "type": "Schedule",
+        "conformsTo": "dprod:Rfc5545ScheduleFormat",
+        "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T200000\nRRULE:FREQ=DAILY"
+      },
       "constraint": {
         "type": "Constraint",
         "leftOperand": {

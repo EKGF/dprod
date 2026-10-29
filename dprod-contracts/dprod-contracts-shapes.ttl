@@ -24,7 +24,7 @@ dprod-shapes:
   rdfs:comment
     "This is intended to be used with SHACL, not as an ontology: the ontology element is to provide the metadata for the set of shapes."@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-20"^^xsd:date ;
+  dct:modified "2026-10-13"^^xsd:date ;
   owl:imports <https://ekgf.org/dprod/spec/develop/contracts/> ;
   owl:imports sh: ;
   owl:versionInfo "0.7" ;
@@ -233,11 +233,11 @@ dprod-shapes:DutyShape
     sh:message "Deadline must be xsd:dateTime or xsd:duration."
   ] ;
   sh:property [
-    sh:path dprod:recurrence ;
+    sh:path dprod:schedule ;
     sh:maxCount 1 ;
-    sh:datatype xsd:string ;
-    sh:pattern "^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)" ;
-    sh:message "Recurrence must be a valid RFC 5545 RRULE starting with FREQ=."
+    sh:nodeKind sh:IRI ;
+    sh:class dprod:Schedule ;
+    sh:message "Duty schedule must be a single IRI identifying a dprod:Schedule."
   ] ;
   sh:property [
     sh:path dprod:subjectOfDuty ;
@@ -258,16 +258,172 @@ dprod-shapes:DutyShape
 # validate it, so a Permission or Prohibition carrying one would silently gain
 # a second, ODRL-disjoint rule type. Reject that explicitly: the subject must be
 # a Duty and must not be a Permission or Prohibition, whatever inference says.
+# dprod:schedule is not duty-only (it has no domain), and the obsolete
+# dprod:recurrence is rejected on every subject by RejectObsoleteRecurrenceShape.
 dprod-shapes:DutyOnlyPropertiesShape
   a sh:NodeShape ;
   rdfs:isDefinedBy dprod-shapes: ;
   rdfs:label "duty-only properties shape" ;
   sh:name "Duty-Only Properties Shape" ;
-  sh:targetSubjectsOf dprod:deadline, dprod:recurrence, dprod:subjectOfDuty, dprod:objectOfDuty ;
+  sh:targetSubjectsOf dprod:deadline, dprod:subjectOfDuty, dprod:objectOfDuty ;
   sh:class odrl:Duty ;
   sh:not [ sh:class odrl:Permission ] ;
   sh:not [ sh:class odrl:Prohibition ] ;
-  sh:message "dprod:deadline, dprod:recurrence, dprod:subjectOfDuty and dprod:objectOfDuty are duty-only: the subject must be an odrl:Duty and not an odrl:Permission or odrl:Prohibition." ;
+  sh:message "dprod:deadline, dprod:subjectOfDuty and dprod:objectOfDuty are duty-only: the subject must be an odrl:Duty and not an odrl:Permission or odrl:Prohibition." ;
+.
+
+
+############################# Schedule Shapes #########################
+
+
+dprod-shapes:ScheduleReferenceShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "schedule reference shape" ;
+  sh:targetSubjectsOf dprod:schedule ;
+  sh:property [
+    sh:path dprod:schedule ;
+    sh:nodeKind sh:IRI ;
+    sh:class dprod:Schedule ;
+    sh:message "Schedule references must be IRIs identifying dprod:Schedule resources."
+  ] ;
+.
+
+# The IRI-identifier requirement lives in its own shape so its message is
+# attached only to nodeKind violations, not to every ScheduleShape result.
+# It is named Reject* so the spec generator does not render it as a second
+# Schedule class.
+dprod-shapes:RejectAnonymousScheduleShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "reject anonymous schedule" ;
+  sh:targetClass dprod:Schedule ;
+  sh:nodeKind sh:IRI ;
+  sh:message "A Schedule must have an IRI identifier." ;
+.
+
+# Every ScheduleFormat, including third-party extensions, must state whether
+# its expressions embed a timezone; the ScheduleShape timezone rule keys on it.
+dprod-shapes:ScheduleFormatShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "schedule format shape" ;
+  sh:targetClass dprod:ScheduleFormat ;
+  sh:property [
+    sh:path dprod:carriesTimeZone ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:boolean ;
+    sh:message "A ScheduleFormat must declare dprod:carriesTimeZone so validators can enforce timezone completeness."
+  ] ;
+.
+
+dprod-shapes:ScheduleShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "schedule shape" ;
+  sh:targetClass dprod:Schedule ;
+  sh:property [
+    sh:path dct:conformsTo ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:or (
+      [ sh:in (dprod:Rfc5545ScheduleFormat dprod:PosixCrontabScheduleFormat) ]
+      [ sh:class dprod:ScheduleFormat ]
+    ) ;
+    sh:message "Schedule format must be an identified dprod:ScheduleFormat."
+  ] ;
+  sh:property [
+    sh:path dprod:scheduleExpression ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:message "Schedule must have exactly one authoritative expression as an xsd:string."
+  ] ;
+  sh:property [
+    sh:path dprod:scheduleTimeZone ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:pattern "^[A-Za-z0-9._+-]+(/[A-Za-z0-9._+-]+)*$" ;
+    sh:message "scheduleTimeZone must be one IANA timezone name."
+  ] ;
+  sh:sparql [
+    sh:message "RFC 5545 schedules must include DTSTART with TZID and RRULE (optionally EXDATE/RDATE lines); RRULE parts must be standard and must not repeat FREQ." ;
+    sh:select """
+      PREFIX dct: <http://purl.org/dc/terms/>
+      PREFIX dprod: <https://ekgf.org/dprod/spec/develop/>
+      SELECT $this
+      WHERE {
+        $this dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+              dprod:scheduleExpression ?expression .
+        FILTER (!REGEX(
+          STR(?expression),
+          "^DTSTART;TZID=[A-Za-z0-9._+-]+(/[A-Za-z0-9._+-]+)*:[0-9]{8}T[0-9]{6}(\\r?\\n(EXDATE|RDATE)(;[A-Za-z0-9-]+=[^:;\\r\\n]+)*:[^\\r\\n]+)*\\r?\\nRRULE:FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)(;(UNTIL|COUNT|INTERVAL|BYSECOND|BYMINUTE|BYHOUR|BYDAY|BYMONTHDAY|BYYEARDAY|BYWEEKNO|BYMONTH|BYSETPOS|WKST)=[^;\\r\\n]+)*(\\r?\\n(EXDATE|RDATE)(;[A-Za-z0-9-]+=[^:;\\r\\n]+)*:[^\\r\\n]+)*$"
+        ))
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    sh:message "scheduleTimeZone must match the TZID embedded in the RFC 5545 expression." ;
+    sh:select """
+      PREFIX dct: <http://purl.org/dc/terms/>
+      PREFIX dprod: <https://ekgf.org/dprod/spec/develop/>
+      SELECT $this
+      WHERE {
+        $this dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+              dprod:scheduleExpression ?expression ;
+              dprod:scheduleTimeZone ?timeZone .
+        BIND (REPLACE(STR(?expression), "^DTSTART;TZID=([^:]+):(.|\\n|\\r)*$", "$1") AS ?embedded)
+        FILTER (STR(?timeZone) != ?embedded)
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    sh:message "POSIX crontab schedules must contain exactly five time fields." ;
+    sh:select """
+      PREFIX dct: <http://purl.org/dc/terms/>
+      PREFIX dprod: <https://ekgf.org/dprod/spec/develop/>
+      SELECT $this
+      WHERE {
+        $this dct:conformsTo dprod:PosixCrontabScheduleFormat ;
+              dprod:scheduleExpression ?expression .
+        FILTER (
+          !REGEX(STR(?expression), "^([^ \\t\\r\\n]+[ \\t]+){4}[^ \\t\\r\\n]+$") ||
+          CONTAINS(STR(?expression), "\\n") ||
+          CONTAINS(STR(?expression), "\\r")
+        )
+      }
+    """ ;
+  ] ;
+  sh:sparql [
+    sh:message "Schedules whose format carries no timezone must declare one IANA timezone." ;
+    sh:select """
+      PREFIX dct: <http://purl.org/dc/terms/>
+      PREFIX dprod: <https://ekgf.org/dprod/spec/develop/>
+      SELECT $this
+      WHERE {
+        $this dct:conformsTo ?format .
+        FILTER (?format = dprod:PosixCrontabScheduleFormat ||
+                EXISTS { ?format dprod:carriesTimeZone false })
+        FILTER NOT EXISTS { $this dprod:scheduleTimeZone ?timeZone }
+      }
+    """ ;
+  ] ;
+.
+
+dprod-shapes:RejectObsoleteRecurrenceShape
+  a sh:NodeShape ;
+  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:label "reject obsolete recurrence property" ;
+  sh:targetSubjectsOf dprod:recurrence ;
+  sh:property [
+    sh:path dprod:recurrence ;
+    sh:maxCount 0 ;
+    sh:severity sh:Violation ;
+    sh:message
+      "dprod:recurrence is obsolete; use dprod:schedule with an identified dprod:Schedule."
+  ] ;
 .
 
 
