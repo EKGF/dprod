@@ -17,10 +17,11 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+# dct:modified is deliberately not declared an AnnotationProperty: DCAT uses it
+# as a date on dcat:Resource, so it stays rdf:Property as Dublin Core defines it (#276).
 dct:description a owl:AnnotationProperty .
 dct:contributor a owl:AnnotationProperty .
 dct:license a owl:AnnotationProperty .
-dct:modified a owl:AnnotationProperty .
 
 <https://ekgf.org/dprod/spec/develop/contracts/>
   a owl:Ontology ;
@@ -45,7 +46,7 @@ dct:modified a owl:AnnotationProperty .
     can partially understand them; DPROD-aware processors handle the
     extensions."""@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-20"^^xsd:date ;
+  dct:modified "2026-10-13"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;

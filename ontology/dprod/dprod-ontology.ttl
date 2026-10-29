@@ -13,12 +13,12 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-# Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL
+# Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL.
+# dct:issued and dct:modified are deliberately not declared: DCAT uses them as dates on dcat:Resource,
+# so DPROD data carries them as data, and they stay rdf:Property as Dublin Core defines them (#276).
 dct:description a owl:AnnotationProperty .
 dct:contributor a owl:AnnotationProperty .
 dct:license a owl:AnnotationProperty .
-dct:modified a owl:AnnotationProperty .
-dct:issued a owl:AnnotationProperty .
 
 dprod:
   a owl:Ontology ;
@@ -41,7 +41,7 @@ dprod:
   # value below is for the working draft, which has no OMG document number
   # yet, so it tracks owl:versionIRI instead.
   dct:issued "2026-06-01"^^xsd:date ;
-  dct:modified "2026-08-04"^^xsd:date ;
+  dct:modified "2026-10-13"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
