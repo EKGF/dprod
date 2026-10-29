@@ -47,7 +47,7 @@
         "type": "Constraint",
         "leftOperand": {
           "id": "ex:classification",
-          "operandSource": "requestSource",
+          "operandSource": "stateSource",
           "operandProperty": "ex:classification"
         },
         "operator": "eq",
@@ -63,7 +63,7 @@
         "type": "Constraint",
         "leftOperand": {
           "id": "ex:retentionPeriod",
-          "operandSource": "requestSource",
+          "operandSource": "stateSource",
           "operandProperty": "ex:retentionPeriod"
         },
         "operator": "gt",

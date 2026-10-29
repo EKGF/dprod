@@ -20,9 +20,29 @@
 @prefix dct:      <http://purl.org/dc/terms/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix ex:       <https://example.org/> .
+
+
+############################# Reusable Schedules #############################
+
+ex:daily-0900-london a dprod:Schedule ;
+    rdfs:label "Daily at 09:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T090000\nRRULE:FREQ=DAILY" .
+
+ex:daily-2000-london a dprod:Schedule ;
+    rdfs:label "Daily at 20:00 Europe/London" ;
+    dct:conformsTo dprod:PosixCrontabScheduleFormat ;
+    dprod:scheduleExpression "0 20 * * *" ;
+    dprod:scheduleTimeZone "Europe/London" .
+
+ex:monthly-day-5-london a dprod:Schedule ;
+    rdfs:label "Monthly on day 5 in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260105T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=5" .
 
 
 ############################# Inline Domain Vocabulary #########################
@@ -77,8 +97,8 @@ ex:timeliness
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "timeliness" ;
-  dct:description "Required data freshness category."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "Freshness category of the data."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:timeliness ;
 .
 
@@ -87,7 +107,7 @@ ex:completeness
   rdfs:isDefinedBy ex: ;
   rdfs:label "completeness" ;
   dct:description "Data completeness percentage."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:completeness ;
 .
 
@@ -96,7 +116,7 @@ ex:volumeCount
   rdfs:isDefinedBy ex: ;
   rdfs:label "volume count" ;
   dct:description "Row or record count."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:volumeCount ;
 .
 
@@ -104,8 +124,8 @@ ex:retentionPeriod
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
-  dct:description "Maximum time data may be retained."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "How long the data has been retained."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:retentionPeriod ;
 .
 
@@ -132,7 +152,7 @@ ex:classification
   rdfs:isDefinedBy ex: ;
   rdfs:label "classification" ;
   dct:description "Data classification level."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:classification ;
 .
 
@@ -267,20 +287,16 @@ ex:contract-seller-quantum a dprod:DataOffer ;
 # ─────────────────────────────────────────────────
 #
 # DPROD Contracts:
+#   driver: regulatory says why the SLA exists, not when it applies, so it
+#   stays in ODCS.
 
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Daily data delivery by 09:00" ;
         dprod:subjectOfDuty ex:seller-data-team ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=9;BYMINUTE=0" ;
-        dprod:deadline "PT1H"^^xsd:duration ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand odrl:purpose ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand ex:regulatory
-        ]
+        dprod:schedule ex:daily-0900-london ;
+        dprod:deadline "PT1H"^^xsd:duration
     ] ;
 
 
@@ -303,12 +319,14 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Data latency SLA (max 4 days)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:conformTo ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:timeliness ;
-            odrl:operator odrl:lteq ;
-            odrl:rightOperand "P4D"^^xsd:duration
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:timeliness ;
+                odrl:operator odrl:lteq ;
+                odrl:rightOperand "P4D"^^xsd:duration
+            ]
         ]
     ] ;
 
@@ -360,23 +378,26 @@ ex:contract-seller-quantum a dprod:DataOffer ;
 # ─────────────────────────────────────────────────
 #
 # DPROD Contracts:
-#   The quality rule becomes a conformance duty with a completeness constraint.
+#   The quality rule becomes a conformance duty whose action is refined by
+#   completeness: the refinement states what the duty requires.
 #   ODCS severity/businessImpact are operational metadata, not policy.
-#   ODCS schedule (cron) maps to dprod:recurrence (RFC 5545 RRULE).
+#   ODCS schedule (cron) maps to an identified dprod:schedule.
 
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "No null values in transaction date" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:conformTo ;
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:completeness ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "100"^^xsd:decimal
+            ]
+        ] ;
         odrl:target ex:tbl-core-payments ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:completeness ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand "100"^^xsd:decimal
-        ]
+        dprod:schedule ex:daily-2000-london
     ] ;
 
 
@@ -408,15 +429,17 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Row count above 1M" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:conformTo ;
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:volumeCount ;
+                odrl:operator odrl:gt ;
+                odrl:rightOperand "1000000"^^xsd:integer
+            ]
+        ] ;
         odrl:target ex:tbl-core-payments ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=20;BYMINUTE=0" ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:volumeCount ;
-            odrl:operator odrl:gt ;
-            odrl:rightOperand "1000000"^^xsd:integer
-        ]
+        dprod:schedule ex:daily-2000-london
     ] ;
 
 
@@ -475,18 +498,20 @@ ex:contract-seller-quantum a dprod:DataOffer ;
 #
 # DPROD Contracts:
 #   Each support channel becomes a notification duty.
-#   Service hours become a serviceWindow constraint.
+#   The channel and the service hours refine the notify action.
 
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Slack support (#product-help)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:notify ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:channel ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand "slack"
+        odrl:action [
+            rdf:value ex:notify ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:channel ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "slack"
+            ]
         ]
     ] ;
 
@@ -494,12 +519,14 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Email support (datacontract-ann)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:notify ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:channel ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand "email"
+        odrl:action [
+            rdf:value ex:notify ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:channel ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand "email"
+            ]
         ]
     ] ;
 
@@ -507,23 +534,25 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Teams issue support (9-5 CET)" ;
         dprod:subjectOfDuty ex:seller-data-team ;
-        odrl:action ex:notify ;
-        odrl:constraint [
-            a odrl:LogicalConstraint ;
-            odrl:and (
-                [
-                    a odrl:Constraint ;
-                    odrl:leftOperand ex:channel ;
-                    odrl:operator odrl:eq ;
-                    odrl:rightOperand "teams"
-                ]
-                [
-                    a odrl:Constraint ;
-                    odrl:leftOperand ex:serviceWindow ;
-                    odrl:operator odrl:eq ;
-                    odrl:rightOperand "business-hours"
-                ]
-            )
+        odrl:action [
+            rdf:value ex:notify ;
+            odrl:refinement [
+                a odrl:LogicalConstraint ;
+                odrl:and (
+                    [
+                        a odrl:Constraint ;
+                        odrl:leftOperand ex:channel ;
+                        odrl:operator odrl:eq ;
+                        odrl:rightOperand "teams"
+                    ]
+                    [
+                        a odrl:Constraint ;
+                        odrl:leftOperand ex:serviceWindow ;
+                        odrl:operator odrl:eq ;
+                        odrl:rightOperand "business-hours"
+                    ]
+                )
+            ]
         ]
     ] ;
 
@@ -707,7 +736,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
         a odrl:Duty ;
         rdfs:label "Monthly usage reporting" ;
         odrl:action ex:report ;
-        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=5" ;
+        dprod:schedule ex:monthly-day-5-london ;
         dprod:deadline "P5D"^^xsd:duration
     ] .
 

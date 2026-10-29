@@ -33,7 +33,7 @@ dct:modified a owl:AnnotationProperty .
     Constraint types, operators, core properties). Adds only:
     - Explicit duty lifecycle (Pending -> Active -> Fulfilled/Violated)
     - Deadline property on odrl:Duty
-    - Recurrence property on odrl:Duty (RFC 5545 RRULE)
+    - Reusable schedules with pluggable, explicitly identified formats
     - Duty party roles (subject = duty bearer, object = affected party)
     - Data offer and data contract subtypes
     - Deterministic transitive matching over ODRL collection membership
@@ -45,7 +45,7 @@ dct:modified a owl:AnnotationProperty .
     can partially understand them; DPROD-aware processors handle the
     extensions."""@en ;
   dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-  dct:modified "2026-08-20"^^xsd:date ;
+  dct:modified "2026-10-13"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -78,9 +78,9 @@ dprod:DataOffer
 
 dprod:DataContract
   a owl:Class ;
-  dct:description "Activated data offer binding provider and consumer."@en ;
+  dct:description "Agreement that accepts a data offer and binds provider and consumer to the rules it states."@en ;
   rdfs:comment
-    """A DataContract is an activated DataOffer.
+    """A DataContract is an odrl:Agreement, complete in itself; dprod:acceptsOffer records the offer it accepts.
     - assigner: data provider (from offer)
     - assignee: data consumer
     Bilateral: both parties may have active duties."""@en ;
@@ -144,6 +144,58 @@ dprod:contextSource
   dct:description "Evaluation context node containing built-in agent and clock values."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:label "context source" ;
+.
+
+dprod:Schedule
+  a owl:Class ;
+  dct:description "Reusable, identified definition of scheduled occurrences."@en ;
+  rdfs:comment
+    """A Schedule defines when something occurs without defining what occurs or
+    what the occurrence means. DPROD resources refer to it through
+    dprod:schedule; the referring resource and property retain the business
+    meaning. Each Schedule has one authoritative expression and identifies its
+    exact representation through dct:conformsTo. Format-specific profiles may
+    extend the built-in RFC 5545 and POSIX crontab formats."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "schedule" ;
+.
+
+dprod:ScheduleFormat
+  a owl:Class ;
+  dct:description "Identified grammar and interpretation rules for schedule expressions."@en ;
+  rdfs:comment
+    """A ScheduleFormat identifies an exact schedule grammar or dialect rather
+    than a general implementation family. Third parties may define additional
+    formats and supply corresponding validation and processing profiles."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "schedule format" ;
+.
+
+
+############################# DPROD Schedule Formats #########################
+
+
+dprod:Rfc5545ScheduleFormat
+  a dprod:ScheduleFormat ;
+  dct:conformsTo <https://www.rfc-editor.org/rfc/rfc5545> ;
+  dct:description "RFC 5545 iCalendar content containing DTSTART and RRULE."@en ;
+  dprod:carriesTimeZone true ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "RFC 5545 schedule format" ;
+  rdfs:seeAlso <https://www.rfc-editor.org/rfc/rfc5545#section-3.3.10> ;
+.
+
+dprod:PosixCrontabScheduleFormat
+  a dprod:ScheduleFormat ;
+  dct:conformsTo <https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html> ;
+  dct:description "Five-field POSIX crontab time specification without a command."@en ;
+  dprod:carriesTimeZone false ;
+  rdfs:comment
+    """The expression contains minute, hour, day-of-month, month, and
+    day-of-week fields. The Schedule separately declares an IANA timezone so
+    evaluation does not depend on the processor's local timezone."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:label "POSIX crontab schedule format" ;
 .
 
 
@@ -262,24 +314,62 @@ dprod:deadline
   rdfs:label "deadline" ;
 .
 
-dprod:recurrence
-  a owl:DatatypeProperty ;
-  dct:description "RFC 5545 RRULE defining when duty instances are generated."@en ;
+dprod:schedule
+  a owl:ObjectProperty ;
+  dct:description "Reusable schedule governing occurrences associated with a resource."@en ;
   rdfs:comment
-    """An RFC 5545 RRULE string (e.g., FREQ=DAILY;BYHOUR=6;BYMINUTE=0).
-    Defines the schedule on which duty instances are created.
-    Each instance follows the standard duty lifecycle independently.
-    The deadline property defines the per-instance fulfillment window.
-    Any iCal-compliant library can parse the value."""@en ;
+    """Links any DPROD or ODRL resource to an identified dprod:Schedule.
+    This property deliberately has no domain: duties, permissions, maintenance
+    arrangements, backup obligations, and other resources may all refer to a
+    schedule. The referring resource determines what the occurrences mean.
+    On an odrl:Duty, each occurrence from the duty's activation up to the
+    evaluation time is an instance of the duty, with its own fulfilment window;
+    only an action at or after the occurrence fulfils it."""@en ;
   rdfs:isDefinedBy dprod: ;
-  rdfs:domain odrl:Duty ;
+  rdfs:range dprod:Schedule ;
+  rdfs:label "schedule" ;
+.
+
+dprod:scheduleExpression
+  a owl:DatatypeProperty ;
+  dct:description "The single authoritative expression of a schedule."@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:Schedule ;
   rdfs:range xsd:string ;
-  rdfs:label "recurrence" ;
+  rdfs:label "schedule expression" ;
+.
+
+dprod:scheduleTimeZone
+  a owl:DatatypeProperty ;
+  dct:description "IANA timezone used to interpret a schedule expression."@en ;
+  rdfs:comment
+    """Required when the selected schedule format does not carry its own
+    timezone (dprod:carriesTimeZone false). When the format embeds a timezone
+    in the expression, the expression is authoritative and this property, if
+    present, must agree with it."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:Schedule ;
+  rdfs:range xsd:string ;
+  rdfs:label "schedule timezone" ;
+.
+
+dprod:carriesTimeZone
+  a owl:DatatypeProperty ;
+  dct:description "Whether expressions in this schedule format embed their own timezone."@en ;
+  rdfs:comment
+    """Declared by every dprod:ScheduleFormat. When false, each Schedule using
+    the format must declare dprod:scheduleTimeZone; when true, the expression
+    is the timezone authority. This flag lets validation enforce timezone
+    completeness for extension formats without knowing their grammar."""@en ;
+  rdfs:isDefinedBy dprod: ;
+  rdfs:domain dprod:ScheduleFormat ;
+  rdfs:range xsd:boolean ;
+  rdfs:label "carries timezone" ;
 .
 
 dprod:acceptsOffer
   a owl:ObjectProperty ;
-  dct:description "The offer this contract activates."@en ;
+  dct:description "The offer this contract accepts. The link records lineage; the contract inherits no rules from the offer."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataContract ;
   rdfs:range dprod:DataOffer ;
@@ -308,7 +398,7 @@ dprod:subjectOfDuty
   a owl:ObjectProperty ;
   dct:description "Party bearing the duty (must perform the action)."@en ;
   rdfs:comment
-    "The duty bearer. When omitted, the bearer defaults to the data product owner (dprod:dataProductOwner) of the data product the policy applies to. Sub-property of odrl:function for ODRL processor compatibility."@en ;
+    "The duty bearer. When omitted, the bearer is the policy's assignee (odrl:assignee), or the requesting agent in a policy without one; provider duties name the provider explicitly. Sub-property of odrl:function for ODRL processor compatibility."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:subPropertyOf odrl:function ;
   rdfs:domain odrl:Duty ;

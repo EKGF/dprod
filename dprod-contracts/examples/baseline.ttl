@@ -8,7 +8,7 @@
 #   - Recurring delivery with deadline
 #   - Schema conformance
 #   - Quality SLA (conformTo + constraint)
-#   - Change notification with lead time
+#   - Change notification, with the notice period as an agreed term
 #   - Consumer reporting duty
 #   - Display / non-display / derivation permissions
 #   - Purpose, classification, environment constraints
@@ -19,12 +19,41 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dct:      <http://purl.org/dc/terms/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix ex:       <https://example.org/> .
+
+
+############################# Reusable Schedules #############################
+
+ex:daily-0700-london a dprod:Schedule ;
+    rdfs:label "Daily at 07:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T070000\nRRULE:FREQ=DAILY" .
+
+ex:every-minute-london a dprod:Schedule ;
+    rdfs:label "Every minute in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MINUTELY;INTERVAL=1" .
+
+ex:every-15-minutes-london a dprod:Schedule ;
+    rdfs:label "Every 15 minutes in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MINUTELY;INTERVAL=15" .
+
+ex:monthly-day-1-london a dprod:Schedule ;
+    rdfs:label "Monthly on day 1 in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=1" .
+
+ex:monthly-day-15-london a dprod:Schedule ;
+    rdfs:label "Monthly on day 15 in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260115T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=15" .
 
 
 ############################# Inline Domain Vocabulary #########################
@@ -72,6 +101,13 @@ ex:report
   rdfs:label "report" ;
   dct:description "Submit usage reports."@en ;
   odrl:includedIn odrl:inform ;
+.
+
+ex:noticePeriod
+  a rdf:Property ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notice period" ;
+  dct:description "Agreed notice period before the change a notification announces. Recorded for the parties; DPROD does not evaluate it."@en ;
 .
 
 ex:notify
@@ -130,8 +166,8 @@ ex:timeliness
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "timeliness" ;
-  dct:description "Required data freshness category."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "Freshness category of the data."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:timeliness ;
 .
 
@@ -139,8 +175,8 @@ ex:retentionPeriod
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
-  dct:description "Maximum time data may be retained."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "How long the data has been retained."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:retentionPeriod ;
 .
 
@@ -279,7 +315,7 @@ ex:compliance
 
 
 ############################# Contract 1: Customer API v2 #########################
-# Daily delivery + recurrence + deadline + schema
+# Daily delivery + schedule + deadline + schema
 
 <https://example.org/offers/customer-api-v1> a dprod:DataOffer ;
     rdfs:label "Customer API v1 (retired)" ;
@@ -306,7 +342,7 @@ ex:compliance
         rdfs:label "Daily customer data delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0700-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
 
@@ -364,7 +400,7 @@ ex:compliance
         rdfs:label "15-minute market data delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+        dprod:schedule ex:every-15-minutes-london ;
         dprod:deadline "PT5M"^^xsd:duration
     ] ;
 
@@ -401,7 +437,7 @@ ex:compliance
 
 
 ############################# Contract 3: Country Reference SQL #########################
-# Simple read-only, no recurrence
+# Simple read-only, no schedule
 
 <https://example.org/offers/country-ref> a dprod:DataOffer ;
     rdfs:label "Country Reference Data" ;
@@ -442,7 +478,7 @@ ex:compliance
         rdfs:label "Monthly transaction file delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/finance> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
+        dprod:schedule ex:monthly-day-1-london ;
         dprod:deadline "P3D"^^xsd:duration
     ] ;
 
@@ -456,7 +492,7 @@ ex:compliance
         rdfs:label "Monthly reconciliation report" ;
         odrl:action ex:report ;
         odrl:target <https://example.org/assets/monthly-report> ;
-        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=15" ;
+        dprod:schedule ex:monthly-day-15-london ;
         dprod:deadline "P5D"^^xsd:duration
     ] ;
 
@@ -478,11 +514,11 @@ ex:compliance
 
     odrl:obligation [
         a odrl:Duty ;
-        rdfs:label "Schema change notification (90 days)" ;
+        rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/hr> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P90D"^^xsd:duration
+        ex:noticePeriod "P90D"^^xsd:duration
     ] ;
 
     odrl:permission [
@@ -528,7 +564,7 @@ ex:compliance
         rdfs:label "Real-time risk metrics delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
+        dprod:schedule ex:every-minute-london ;
         dprod:deadline "PT30S"^^xsd:duration
     ] ;
 
@@ -536,14 +572,16 @@ ex:compliance
         a odrl:Duty ;
         rdfs:label "Quality SLA: real-time conformance" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
-        odrl:action ex:conformTo ;
-        odrl:target <https://example.org/assets/risk-metrics-schema> ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:timeliness ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand ex:realtime
-        ]
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:timeliness ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand ex:realtime
+            ]
+        ] ;
+        odrl:target <https://example.org/assets/risk-metrics-schema>
     ] ;
 
     odrl:obligation [
@@ -552,7 +590,7 @@ ex:compliance
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P14D"^^xsd:duration
+        ex:noticePeriod "P14D"^^xsd:duration
     ] ;
 
     odrl:permission [
@@ -775,7 +813,7 @@ ex:compliance
     dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/customer-data> ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0700-london ;
     dprod:deadline "PT30M"^^xsd:duration ;
     dprod:dutyState dprod:Fulfilled .
 
@@ -802,7 +840,7 @@ ex:compliance
     dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    dprod:schedule ex:every-15-minutes-london ;
     dprod:deadline "PT5M"^^xsd:duration ;
     dprod:dutyState dprod:Fulfilled .
 
@@ -819,6 +857,6 @@ ex:compliance
     dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    dprod:schedule ex:every-15-minutes-london ;
     dprod:deadline "PT5M"^^xsd:duration ;
     dprod:dutyState dprod:Violated .

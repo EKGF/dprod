@@ -115,17 +115,20 @@ dprod:deadline "2026-12-31T23:59:59Z"^^xsd:dateTime .
 dprod:deadline "P30D"^^xsd:duration .
 ```
 
-### Recurrence Schedule
+### Schedule
 
 **Business term:** `schedule`, `frequency`, `how often`
-**DPROD property:** `dprod:recurrence`
-**Used on:** `odrl:Duty`
-**Cardinality:** 0..1
-**Datatype:** `xsd:string` (RFC 5545 RRULE)
+**DPROD property:** `dprod:schedule`
+**Used on:** Any resource whose meaning includes scheduled occurrences; duties use 0..1
+**Value:** IRI of a `dprod:Schedule`
 **Source:** DPROD
 **Example:**
 ```turtle
-dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" .
+ex:daily-0600-london a dprod:Schedule ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
+
+ex:deliveryDuty dprod:schedule ex:daily-0600-london .
 ```
 
 ---
@@ -165,7 +168,7 @@ ex:subscription a dprod:DataContract ;
 **Used on:** `odrl:Duty`
 **Cardinality:** 0..1
 **Source:** DPROD (`rdfs:subPropertyOf odrl:function`)
-**Note:** In a DataOffer (Offer), provider duties have `dprod:subjectOfDuty` set to the provider. Consumer duties omit `dprod:subjectOfDuty` -- it is filled in when the DataContract is created.
+**Note:** In a DataOffer (Offer), provider duties have `dprod:subjectOfDuty` set to the provider. Consumer duties omit `dprod:subjectOfDuty` -- it is filled in when the DataContract is created. Where it is still omitted, the bearer is the policy's `odrl:assignee`, or the requesting agent in a policy without one.
 ### Party Hierarchy
 
 **Business term:** `team membership`, `department`, `division`
@@ -221,7 +224,7 @@ ex:marketDataLake a odrl:AssetCollection .
 ### Delivery SLA
 
 **Business term:** `data delivery`, `SLA`, `timeliness guarantee`
-**DPROD pattern:** `odrl:Duty` with `ex:deliver` + `dprod:recurrence` + `dprod:deadline`
+**DPROD pattern:** `odrl:Duty` with `ex:deliver` + `dprod:schedule` + `dprod:deadline`
 **Example:**
 ```turtle
 odrl:obligation [
@@ -229,7 +232,7 @@ odrl:obligation [
     dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:deliver ;
     odrl:target ex:marketPrices ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0600-london ;
     dprod:deadline "PT30M"^^xsd:duration
 ] .
 ```
@@ -251,27 +254,29 @@ odrl:obligation [
 ### Quality SLA
 
 **Business term:** `quality guarantee`, `accuracy SLA`, `data quality commitment`
-**DPROD pattern:** `odrl:Duty` with `ex:conformTo` + `odrl:constraint`
+**DPROD pattern:** `odrl:Duty` with `ex:conformTo`, refined by the required level (`odrl:refinement`)
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
-    odrl:action ex:conformTo ;
-    odrl:target ex:riskMetricsSchema ;
-    odrl:constraint [
-        a odrl:Constraint ;
-        odrl:leftOperand ex:timeliness ;
-        odrl:operator odrl:eq ;
-        odrl:rightOperand ex:realtime
-    ]
+    odrl:action [
+        rdf:value ex:conformTo ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:timeliness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:realtime
+        ]
+    ] ;
+    odrl:target ex:riskMetricsSchema
 ] .
 ```
 
 ### Change Notification
 
 **Business term:** `notification`, `advance notice`, `change alert`
-**DPROD pattern:** `odrl:Duty` with `ex:notify` + `dprod:deadline`
+**DPROD pattern:** `odrl:Duty` with `ex:notify`, with the notice period recorded as an agreed term such as `ex:noticePeriod`.[^notice]
 **Example:**
 ```turtle
 odrl:obligation [
@@ -279,7 +284,7 @@ odrl:obligation [
     dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:notify ;
     odrl:target ex:schemaChanges ;
-    dprod:deadline "P14D"^^xsd:duration
+    ex:noticePeriod "P14D"^^xsd:duration
 ] .
 ```
 
@@ -379,10 +384,10 @@ odrl:permission [
 | Status (offer) | `dprod:offerLifecycleStatus` (`skos:Concept`) | DPROD |
 | Status (contract) | `dprod:contractLifecycleStatus` (`skos:Concept`) | DPROD |
 | State (duty) | `dprod:dutyState` (`skos:Concept`) | DPROD |
-| Delivery SLA | Duty + `deliver` + `recurrence` + `deadline` | DPROD |
+| Delivery SLA | Duty + `deliver` + `schedule` + `deadline` | DPROD |
 | Schema guarantee | Duty + `conformTo` | DPROD |
-| Quality SLA | Duty + `conformTo` + constraint | DPROD |
-| Change notice | Duty + `notify` + `deadline` | DPROD |
+| Quality SLA | Duty + `conformTo` + refinement | DPROD |
+| Change notice | Duty + `notify` + agreed notice period[^notice] | DPROD |
 | Usage report | Duty + `report` + `deadline` | DPROD |
 | View rights | Permission + `display` | ODRL |
 | Algo use | Permission + `nonDisplay` | DPROD |
@@ -391,10 +396,12 @@ odrl:permission [
 | Team membership | `odrl:partOf` + `odrl:PartyCollection` | ODRL |
 | Data hierarchy | `odrl:partOf` + `odrl:AssetCollection` | ODRL |
 | Version chain | `prov:wasRevisionOf` | W3C PROV |
-| Schedule | `dprod:recurrence` (RRULE) | DPROD |
+| Schedule | `dprod:schedule` → identified `dprod:Schedule` | DPROD |
 | Deadline | `dprod:deadline` | DPROD |
 | Contract link | `dprod:acceptsOffer` | DPROD |
 
+[^notice]: DPROD does not yet evaluate a notice period. A `dprod:deadline` runs forward from when a duty becomes active, not back from a later action, so an evaluator cannot tell a timely notice from a late one. The property records what the parties agreed, and checking it is left to the change process.
+
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-19
+**Version**: 0.7 | **Date**: 2026-10-13

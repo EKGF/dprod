@@ -96,6 +96,7 @@ EXTERNAL_IRI_VALUED_TERMS: tuple[str, ...] = (
     "odrl:permission",
     "odrl:profile",
     "odrl:prohibition",
+    "odrl:refinement",
     "odrl:target",
     "prov:wasRevisionOf",
     "skos:inScheme",

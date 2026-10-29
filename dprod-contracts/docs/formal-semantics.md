@@ -3,7 +3,7 @@ title: "DPROD Contracts Formal Semantics"
 subtitle: "Deterministic Policy Evaluation for Data Governance"
 version: "0.7"
 status: "Draft"
-date: 2026-08-20
+date: 2026-10-13
 abstract: |
   DPROD Contracts is a proper ODRL 2.2 profile with deterministic, total evaluation
   semantics and bilateral agreement support. This document specifies the formal
@@ -24,7 +24,7 @@ DPROD Contracts provides:
 - Explicit duty lifecycle with state machine semantics
 - Bilateral agreement evaluation (grantor and grantee duties)
 - Total evaluation functions (always terminate with defined result)
-- Clear separation of Condition (pre-requisite) from Duty (obligation)
+- Clear separation of Condition (pre-requisite) from Duty (obligation): a duty's constraint says when it applies, and its action, with the action's refinements, says what it requires
 - One-hop operand resolution over normalized request, state, and context graphs
 
 ### 1.1 Scope and Runtime Boundary
@@ -77,7 +77,8 @@ Where Γ is a typing context mapping identifiers to types.
 ### 2.2 Types
 
 ```
-τ ::= Agent | Action | Asset | Condition | Time | Duration | Boolean | Value | Norm | State | Policy
+τ ::= Agent | Action | Asset | Condition | Time | Duration | Boolean | Value
+    | Schedule | ScheduleFormat | Norm | State | Policy
 ```
 
 ### 2.3 Key Typing Rules
@@ -93,10 +94,10 @@ Permission:
 Duty:
 
 ```
-Γ ⊢ a : Agent     Γ ⊢ x : Action     Γ ⊢ s : Asset
-Γ ⊢ c : Condition     Γ ⊢ dl : Deadline     Γ ⊢ r : Recurrence
+Γ ⊢ a : Agent     Γ ⊢ x : Action     Γ ⊢ r : Condition     Γ ⊢ s : Asset
+Γ ⊢ c : Condition     Γ ⊢ dl : Deadline     Γ ⊢ sc : Schedule
 --------------------------------------------------------------------------
-        Γ ⊢ Duty(a, x, s, c, dl, r) : Norm
+        Γ ⊢ Duty(a, x, r, s, c, dl, sc) : Norm
 ```
 
 Prohibition:
@@ -138,20 +139,25 @@ We define DPROD Contracts's abstract syntax using a typed algebraic grammar.
 
 ```
 Norm ::= Permission(subject: Agent, action: Action, asset: Asset?, condition: Condition?)
-       | Duty(subject: Agent, action: Action, asset: Asset?,
-              object: Agent?, condition: Condition?, deadline: Deadline?, recurrence: Recurrence?)
+       | Duty(subject: Agent, action: Action, refinement: Condition?, asset: Asset?,
+              object: Agent?, condition: Condition?, deadline: Deadline?, schedule: Schedule?)
        | Prohibition(subject: Agent, action: Action, asset: Asset?, condition: Condition?)
 
 Deadline ::= AbsoluteDeadline(time: Time)
            | RelativeDeadline(duration: Duration)
 
-Recurrence ::= RRule(rule: String)
+Schedule ::= Schedule(identifier: IRI, format: ScheduleFormat,
+                      expression: String, timeZone: String?)
+
+ScheduleFormat ::= Rfc5545 | PosixCrontab | Extension(identifier: IRI)
 ```
 
 **Notes**:
 
 - `Permission` corresponds to `odrl:Permission`; `Prohibition` to `odrl:Prohibition`; `Duty` to `odrl:Duty`.
 - The formal `subject` parameter maps to `dprod:subjectOfDuty` on duties (rdfs:subPropertyOf `odrl:function`) and to `odrl:assignee` on permissions/prohibitions.
+- **Default bearer**: A duty's `subject` is its bearer. Before evaluation, a duty without `dprod:subjectOfDuty` takes as its subject the policy's `grantee`, or, in a policy without one, the requesting agent (`Env.request.agent`). In a bilateral policy this is the party the rights are granted to; provider duties name the provider explicitly. A duty whose bearer is the requesting agent stands for one duty per agent, each tracked separately in Σ: one agent's missed duty is not held against another.
+- **Condition and refinement** (duties only). A duty's `condition` says when the duty applies: it is the activation condition of Rule D-ACTIVATE (§5.2), such as a retention period having passed. What the duty requires is its action with all refinements satisfied (ODRL 2.2 §2.6.3), and `refinement` states that requirement, such as the completeness the delivered data must reach. This profile records a refinement as an agreed term and does not evaluate it: Rules D-FULFILL and D-VIOLATE match a duty on its action alone. A refined action is written `odrl:action [ rdf:value x ; odrl:refinement r ]`, and its action is `x`. Permissions and prohibitions take no refinement, since a refinement the evaluator ignores would widen what a permission grants or narrow what a prohibition forbids.
 - The formal `object` parameter (duties only) maps to `dprod:objectOfDuty` — the party affected by the duty action (e.g., who is notified). Not used in norm matching.
 - `AbsoluteDeadline`: Fixed point in time (e.g., 2026-12-31T23:59:59Z)
 - `RelativeDeadline`: Duration from activation (e.g., P30D, PT24H)
@@ -169,12 +175,16 @@ Recurrence ::= RRule(rule: String)
 | `grantor` | `odrl:assigner` | Party granting rights |
 | `grantee` | `odrl:assignee` | Party receiving rights (policy-level) |
 | `condition` | `odrl:constraint` | |
+| `refinement` (Duty) | `odrl:refinement` on the duty's action | The action is the action node's `rdf:value` |
 | `Set` | `odrl:Set` | |
 | `Offer` | `odrl:Offer` | `DataOffer` is a subtype |
 | `Agreement` | `odrl:Agreement` | `DataContract` is a subtype |
 | `lte` | `odrl:lteq` | |
 | `gte` | `odrl:gteq` | |
-| `recurrence` | `dprod:recurrence` | RFC 5545 RRULE string |
+| `schedule` | `dprod:schedule` | IRI of a reusable `dprod:Schedule` |
+| `format` | `dct:conformsTo` | Exact `dprod:ScheduleFormat` identifier |
+| `expression` | `dprod:scheduleExpression` | One authoritative schedule expression |
+| `timeZone` | `dprod:scheduleTimeZone` | IANA timezone when the format does not carry one |
 | `target` (Policy) | `odrl:target` | 0..*; distributed to rules without their own target (§3.4) |
 | `effectiveDate` | `dprod:effectiveDate` | DataOffer and DataContract |
 | `expirationDate` | `dprod:expirationDate` | DataOffer and DataContract |
@@ -213,8 +223,8 @@ Policy ::= Set(target: Set<Asset>, clauses: Norm+)
 **Notes**:
 
 - `Set`: Unilateral declaration, no parties. Maps to `odrl:Set` in the RDF encoding.
-- `Offer`: Proposal from grantor, grantee optional (open offer). Maps to `odrl:Offer`. `DataOffer` is a subtype of `Offer`.
-- `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `DataContract` is a subtype of `Agreement`.
+- `Offer`: Proposal from grantor, grantee optional (open offer). Maps to `odrl:Offer`. `DataOffer` is a subtype of `Offer`. An Offer states the rules its grantor proposes. It grants, forbids and obliges nothing until an Agreement restates them (§7.3).
+- `Agreement`: Bilateral binding, both parties identified. Maps to `odrl:Agreement`. `DataContract` is a subtype of `Agreement`. As in ODRL, its clauses are only those it states: `dprod:acceptsOffer` records the offer a DataContract accepts but contributes no clauses.
 - The formal `grantor` parameter maps to `odrl:assigner` (the party granting rights) in the RDF encoding.
 - The formal `grantee` parameter maps to `odrl:assignee` (the party receiving rights) in the RDF encoding.
 - The formal `target` parameter maps to the policy's `odrl:target` values (0..*).
@@ -227,7 +237,7 @@ Policy ::= Set(target: Set<Asset>, clauses: Norm+)
 - several policy targets: the rule stands for one copy per target, each with that target as its `asset`. Each copy is a distinct norm, identified by the rule and its target; for a duty, Σ tracks each copy's state separately;
 - no policy target: the rule's `asset` is ⊥, and the rule applies to any asset (§7.4).
 
-Likewise, a permission or prohibition without its own `odrl:assignee` takes the policy's `grantee` as its `subject`, if the policy has one; an Offer addressed to a consumer does not grant its permissions to anyone else. A rule's own value is never combined with the policy's: a duty on `ex:usageStats` in a policy targeting `ex:marketData` applies to `ex:usageStats`. After this step every norm has at most one `asset`, and the policy's target and grantee play no further part in rule matching.
+Likewise, a permission or prohibition without its own `odrl:assignee` takes the policy's `grantee` as its `subject`, if the policy has one; an Agreement does not grant its permissions to anyone but its grantee. A rule's own value is never combined with the policy's: a duty on `ex:usageStats` in a policy targeting `ex:marketData` applies to `ex:usageStats`. After this step every norm has at most one `asset`, and the policy's target and grantee play no further part in rule matching.
 
 ### 3.5 Requests
 
@@ -262,7 +272,8 @@ before evaluation. Policies do not traverse through `odrl:target` or party nodes
     clock       : Time,
     state       : Duty → State,
     activatedAt : Duty → Time?,           // When duty became Active
-    performed   : Set<(Agent, Action, Asset, Time)>
+    performed   : Set<(Agent, Action, Asset, Time)>,
+    processors  : ScheduleFormat → Processor?   // Registered schedule processors
 }
 
 State ::= Pending | Active | Fulfilled | Violated
@@ -280,18 +291,24 @@ State ::= Pending | Active | Fulfilled | Violated
     clock       = currentSystemTime,
     state       = λd. Pending,
     activatedAt = λd. ⊥,
-    performed   = ∅
+    performed   = ∅,
+    processors  = configuredProcessorRegistry
 }
 ```
+
+`processors` is the deployment's registry of schedule-format processors. It is
+part of the evaluation state so that schedule expansion (§5.5) is a function of
+Σ alone: two evaluators with the same Σ — including the same registry — produce
+the same occurrences or the same explicit error.
 
 **State Update Notation**: We use `Σ[f ↦ v]` to denote state update:
 
 ```
 Σ[state(d) ↦ Active] =
-    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt, Σ.performed)
+    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt, Σ.performed, Σ.processors)
 
 Σ[state(d) ↦ Active, activatedAt(d) ↦ t] =
-    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt[d ↦ t], Σ.performed)
+    (Σ.clock, Σ.state[d ↦ Active], Σ.activatedAt[d ↦ t], Σ.performed, Σ.processors)
 ```
 
 ### 4.2 Evaluation Environment
@@ -378,6 +395,12 @@ Result = {
 }
 ```
 
+A schedule that cannot be processed (§5.5) is not reported in a `Result`. It
+freezes its duty (§5.2) and, where the decision would otherwise be `Permit`,
+gives `Failure` with the schedule error (§7.1, §7.2). Conformant processors
+MUST surface the error and MUST NOT silently drop, fulfill, or violate the
+affected duty.
+
 ---
 
 ## 5. Duty Lifecycle
@@ -416,38 +439,64 @@ Activation is **condition-driven**: when the duty's condition first evaluates to
 
 ```
 Σ.state(duty) = Active
-performed(duty.subject, duty.action, duty.asset, Σ) = true
-effectiveDeadline(duty, Σ) ≥ Σ.clock  ∨  effectiveDeadline(duty, Σ) = ∞
-────────────────────────────────────────────────────────────────────────
+duty.schedule = ⊥
+performed(duty.subject, duty.action, duty.asset, window(duty, Σ), Σ) = true
+────────────────────────────────────────────────────────────────────────────
 Σ' = Σ[state(duty) ↦ Fulfilled]
 ```
 
-Fulfillment is **event-driven**: when a performed action matches the duty's required action (including narrower actions via `includedIn` subsumption), the duty is fulfilled.
+Fulfillment is **event-driven**: when a performed action matches the duty's required action (including narrower actions via `includedIn` subsumption) within the duty's window (§5.4), the duty is fulfilled. The window, not the evaluation time, decides: an action performed before the deadline fulfills the duty even if evaluation happens after the deadline.
 
 **Rule D-VIOLATE** (Active → Violated):
 
 ```
 Σ.state(duty) = Active
+duty.schedule = ⊥
 Σ.clock > effectiveDeadline(duty, Σ)
-performed(duty.subject, duty.action, duty.asset, Σ) = false
-────────────────────────────────────────────────────────────
+performed(duty.subject, duty.action, duty.asset, window(duty, Σ), Σ) = false
+────────────────────────────────────────────────────────────────────────────
 Σ' = Σ[state(duty) ↦ Violated]
 ```
 
 Violation is **time-driven**: when the deadline passes without fulfillment, the duty is violated.
 
+A duty with a schedule is a template (§5.5): it becomes Active by Rule D-ACTIVATE, but it is never fulfilled or violated itself. Its instances are, by Rules D-FULFILL and D-VIOLATE.
+
+**Rule D-FREEZE** (schedule error — no transition):
+
+```
+d.schedule ≠ ⊥
+occurrences(d, Σ) = Error(e)
+─────────────────────────────
+Σ' = Σ    ∧    e ∈ E₅   (§7.2)
+```
+
+A duty whose schedule cannot be processed (§5.5) is **frozen**: it makes no
+state transition — in particular it never becomes Violated for want of
+occurrences — and the error is collected in E₅, which gives `Failure` on
+the `Permit` path (§7.2). Freezing is deliberate: an unprocessable schedule is a configuration
+defect of the deployment, not a breach by the obligated party, and every
+conformant processor reaches the same frozen state instead of diverging.
+
 **Algorithmic form** (for implementation):
 
 ```
 updateDutyStates(duties, Env, Σ) =
-    foldl(updateOneDuty(Env), Σ, duties)
+    let Σ₁ = foldl(updateOneDuty(Env), Σ, duties)
+    in  foldl(updateOneDuty(Env), Σ₁, instancesOf(duties, Σ₁))
+
+instancesOf(duties, Σ) =
+    { instantiate(d, t) | d ∈ duties, d.schedule ≠ ⊥, occurrences(d, Σ) = times, t ∈ times }
 
 updateOneDuty(Env)(Σ, d) =
-    case Σ.state(d) of
+    if d.schedule ≠ ⊥ ∧ occurrences(d, Σ) = Error(e)
+    then Σ                                   -- D-FREEZE: no transition
+    else case Σ.state(d) of
         Pending → if (d.condition = ⊥ ∨ ⟦d.condition⟧(Env)) = true
                   then Σ[state(d) ↦ Active, activatedAt(d) ↦ Σ.clock]
                   else Σ
-        Active  → if performed(d.subject, d.action, d.asset, Σ)
+        Active  → if d.schedule ≠ ⊥ then Σ   -- a template is neither fulfilled nor violated
+                  else if performed(d.subject, d.action, d.asset, window(d, Σ), Σ)
                   then Σ[state(d) ↦ Fulfilled]
                   else if Σ.clock > effectiveDeadline(d, Σ)
                   then Σ[state(d) ↦ Violated]
@@ -480,65 +529,140 @@ Where `includedIn⁺` is the transitive closure of `odrl:includedIn` and `partOf
 The subsumption-aware performed check is:
 
 ```
-performed(a, x, s, Σ) :=
+performed(a, x, s, (from, to), Σ) :=
     ∃(a', x', s', t) ∈ Σ.performed :
-        a' = a ∧ (x' = x ∨ x' includedIn⁺ x) ∧ s' matches s
+        a' = a ∧ (x' = x ∨ x' includedIn⁺ x) ∧ (s = ⊥ ∨ s' matches s) ∧ from ≤ t ≤ to
+
+window(d, Σ) = (since(d), effectiveDeadline(d, Σ))
+
+since(d) = t                            if d is the instance of a scheduled duty at occurrence time t (§5.5)
+           policy(d).effectiveDate      else if the policy has one
+           −∞                           otherwise
 ```
 
-`Σ.performed` records exact actions as they occur. `performed()` is the query-time subsumption check used in all fulfillment and violation rules. This is a bounded graph traversal over the `odrl:includedIn` hierarchy.
+`Σ.performed` records exact actions as they occur. `performed()` is the query-time subsumption check used in all fulfillment and violation rules. This is a bounded graph traversal over the `odrl:includedIn` hierarchy. A duty without an asset (allowed by §7.4) matches any performed asset.
 
-### 5.5 Recurrence Semantics
+The window's upper bound makes a late action a violation rather than a fulfillment. An action fulfills the instance at `t` only if it occurred at or after `t`, so yesterday's delivery does not fulfill today's. Any other duty counts actions from the start of its policy's validity (§7.3), so an action recorded before the duty's first evaluation (for example, a payment made in advance) still fulfills it, but one from before the contract does not.
 
-A duty with a `recurrence` field defines a recurring obligation. The recurrence value is an RFC 5545 RRULE string (e.g., `FREQ=DAILY;BYHOUR=6;BYMINUTE=0`).
+### 5.5 Schedule Semantics
+
+A duty with a `schedule` field is a **template** for obligations generated at
+the schedule's occurrences. The template is never fulfilled or violated itself;
+its **instances** are. The schedule is an identified resource, independent of
+the duty and reusable by other resources. The resource that refers to the
+schedule determines what an occurrence means; the Schedule only determines when
+it occurs.
 
 **Instance Generation**:
 
 ```
-expand : Recurrence × Time → Set<Time>
+ScheduleError ::= UnrecognizedScheduleFormat(format: IRI)
+                | InvalidScheduleExpression(schedule: IRI, reason: String)
 
-expand(RRule(rule), clock) =
-    The set of occurrence times generated by parsing rule as an
-    RFC 5545 RRULE, evaluated relative to clock.
+expand : Schedule × (ScheduleFormat → Processor?) × Time? × Time → Set<Time> | ScheduleError
+
+expand(schedule, processors, from, to) =
+    case processors(schedule.format) of
+        None    → UnrecognizedScheduleFormat(schedule.format)
+        Some(p) → case p.parse(schedule.expression, schedule.timeZone) of
+                      Error(reason) → InvalidScheduleExpression(schedule.identifier, reason)
+                      Valid(rule)   → if from = ⊥ then ∅
+                                      else { t ∈ p.occurrences(rule) | from ≤ t ≤ to }
 ```
 
-`expand` is a **pure function**: given the same `RRule` value and clock value, it always produces the same set of occurrence times. It is total (an invalid RRULE yields ∅) and deterministic.
+`p.occurrences(rule)` is the sequence of times the expression generates. The
+expression alone fixes these times: for `Rfc5545` its `DTSTART` and `TZID`
+anchor the sequence, and `COUNT` and `UNTIL` count from `DTSTART`; for
+`PosixCrontab` the five fields in `dprod:scheduleTimeZone` fix them. The range
+`from ≤ t ≤ to` only selects which of these times are returned; it never moves
+them. Whether `expand` returns an error depends only on the schedule and the
+registry, never on the range.
 
-**Condition Guard**: If the duty template has a condition, instances are only generated for occurrence times where the condition holds:
+`expand` is a **pure function**: given the same Schedule, processor registry,
+and range, it produces the same occurrence times or the same explicit
+error. It is total and finite: the range is bounded, and the finest frequency
+is `SECONDLY`. The registry is `Σ.processors` (§4.1), so expansion depends only on Σ.
+An unknown format, missing processor, malformed expression, missing anchor, or
+missing timezone is a hard error. It MUST NOT be interpreted as an empty
+schedule. SHACL catches structural errors before evaluation; the selected
+format processor performs complete grammar validation.
+
+The built-in `Rfc5545` processor consumes RFC 5545 content containing an
+anchored `DTSTART` with `TZID` and an `RRULE`. The built-in `PosixCrontab`
+processor consumes exactly five time fields and requires
+`dprod:scheduleTimeZone`. Extension formats are processable only when the
+runtime has an explicitly registered processor for their format IRI.
+
+**Range and Condition**: The template follows Rule D-ACTIVATE: it becomes
+Active when its condition first evaluates to `true` (or at its first evaluation
+if it has none), and `Σ.activatedAt(duty)` records when. The condition is
+evaluated once, there, against the evaluation environment of that moment. A
+condition in error leaves the template Pending, and the error is collected in
+E₃ (§7.2). A template that has never been activated has no instances.
+Instances occur at the schedule's times from the activation up to the
+evaluation time:
 
 ```
 occurrences(duty, Σ) =
-    let times = expand(duty.recurrence, Σ.clock)
-    in  { t ∈ times | duty.condition = ⊥ ∨ ⟦duty.condition⟧(Σ.env) }
+    expand(duty.schedule, Σ.processors, Σ.activatedAt(duty), Σ.clock)
 ```
+
+Activation therefore limits the range but does not set the times: a schedule
+`DTSTART;TZID=Europe/London:20260101T060000` with `RRULE:FREQ=DAILY` has an
+instance at 06:00 London time each day from the activation on, whatever time of
+day the template was activated.
+
+An `Error` result freezes the duty (Rule D-FREEZE, §5.2) and is collected in
+E₅ (§7.2). No lifecycle rule consumes an errored schedule as if it had
+occurrences.
 
 **Per-Instance Lifecycle**:
 
-Each occurrence time `t` from `occurrences(duty, Σ)` produces an independent duty instance:
+Each occurrence time `t` from `occurrences(duty, Σ)` gives an instance, identified by the pair `(duty, t)`:
 
 ```
 instantiate(duty, t) =
     Duty(subject    = duty.subject,
          action     = duty.action,
+         refinement = duty.refinement,
          asset      = duty.asset,
          object     = duty.object,
          condition  = ⊥,
          deadline   = duty.deadline,
-         recurrence = ⊥)
-    with activationTime = t
+         schedule   = ⊥)
+    identified by (duty, t)
+
+Σ.state(instantiate(duty, t))       = Active   until updated
+Σ.activatedAt(instantiate(duty, t)) = t
 ```
 
-Fields carried from the template: `subject`, `action`, `asset`, `object`, `deadline`. Fields dropped: `condition` (the template condition gates instance generation, not individual instances) and `recurrence` (instances are not themselves recurring).
+Fields carried from the template: `subject`, `action`, `refinement`, `asset`,
+`object`, `deadline`. Fields dropped: `condition` (the template condition gates instance
+generation, not individual instances) and `schedule` (instances are not
+themselves scheduled templates).
 
-Each instance follows the standard lifecycle (§5.1–§5.2) independently:
-- Activation occurs at the occurrence time `t`
+An instance is Active from its first evaluation, with `activatedAt = t` (not
+the time of that evaluation), so its relative deadline runs from `t`. It then
+follows Rules D-FULFILL and D-VIOLATE (§5.2) independently of the other
+instances:
 - The `deadline` defines the per-instance fulfillment window from `t`
+- Only an action at or after `t` counts (`since`, §5.4)
 - Fulfillment and violation are tracked per instance
+
+In the algorithmic form (§5.2), `updateOneDuty` applies to a template only the
+Pending → Active step, and `updateDutyStates` then applies it to the instances
+of the updated Σ. From Step 3 of `Eval` (§7.2) on, each template is replaced by
+its instances, which keep the template's bearer: violations and active duties
+are reported for instances, not templates.
 
 **Interaction with other fields**:
 
-- `recurrence` defines **when** duty instances are generated (scheduling)
+- `schedule` defines **when** duty instances are generated
 - `deadline` defines **how long** each instance has to be fulfilled (window)
-- Permissions and prohibitions are unaffected by recurrence (recurrence applies only to duties)
+- Instances accumulate with `clock − activatedAt`; evaluators may prune a
+  terminal instance whose outcome has been recorded elsewhere
+- Other resources may refer to the same Schedule, but their profile must define
+  what schedule occurrences mean for that resource
 
 ---
 
@@ -702,7 +826,7 @@ apply(op, left, right) =
 ```
 EvaluationOutcome ::= Success(Result) | Failure(EvaluationError)
 
-EvaluationError = Set<ResolutionError>      -- non-empty
+EvaluationError = Set<ResolutionError | ScheduleError>      -- non-empty
 
 Eval : Request × Set<Policy> × Σ × WorldSnapshot → EvaluationOutcome
 ```
@@ -727,16 +851,25 @@ Eval(request, policies, Σ, world) =
     // Step 1: Collect matching norms within applicable policies
     let prohibitions = { n ∈ p.clauses | p ∈ applicable, n : Prohibition, matches(n, request) }
     let permissions  = { n ∈ p.clauses | p ∈ applicable, n : Permission, matches(n, request) }
-    let allDuties    = { n ∈ p.clauses | p ∈ applicable, n : Duty, matches(n, request) }
+    let granting     = { policy(n) | n ∈ permissions, NormActive(n, Env) = true }
+    let allDuties    = { d ∈ p.clauses | p ∈ granting, d : Duty }
+    // A permission in error in a policy that does not otherwise grant leaves
+    // unknown whether that policy's duties are engaged (E₄)
+    let E₄ = errors({ NormActive(n, Env) | n ∈ permissions, policy(n) ∉ granting })
 
     // Step 2: Partition duties by bearer (bilateral)
     let grantorDuties = { d ∈ allDuties | d.subject = policy(d).grantor }
-    let granteeDuties = { d ∈ allDuties | d.subject = policy(d).grantee }
+    let granteeDuties = allDuties \ grantorDuties
 
     // Step 3: Update duty states. A pending duty whose activation condition
-    // is in error has an unknown state (E₃) and stays Pending in Σ'.
+    // is in error has an unknown state (E₃) and stays Pending in Σ'. A duty
+    // whose schedule cannot be processed is frozen (Rule D-FREEZE) and its
+    // schedule error is collected in E₅.
     let E₃ = errors({ ⟦d.condition⟧(Env) | d ∈ allDuties, Σ.state(d) = Pending, d.condition ≠ ⊥ })
+    let E₅ = { e | d ∈ allDuties, d.schedule ≠ ⊥, occurrences(d, Σ) = Error(e) }
     let Σ' = updateDutyStates(allDuties, Env, Σ)
+    // From here on, each template is replaced by its instances (§5.5)
+    let tracked(D) = { d ∈ D | d.schedule = ⊥ } ∪ instancesOf(D, Σ')
 
     // Step 4: Prohibition overrides. An active prohibition denies, even if
     // other rules or policies are in error. If none is active, an error in a
@@ -756,34 +889,40 @@ Eval(request, policies, Σ, world) =
             return Failure(E₂)
         return {decision: NotApplicable, ...}
 
-    // Step 6: Check for violations
-    let violated = { d ∈ allDuties | Σ'.state(d) = Violated }
-    if violated ≠ ∅ then
-        return {decision: Deny, violations: violated, ...}
+    // Step 6: Check for violations. A duty violated on the requester's side
+    // denies; a grantor's violation is reported with the result but is not
+    // held against the grantee, since Violated is terminal.
+    let violatedGrantor = { d ∈ tracked(grantorDuties) | Σ'.state(d) = Violated }
+    let violatedGrantee = { d ∈ tracked(granteeDuties) | Σ'.state(d) = Violated }
+    if violatedGrantee ≠ ∅ then
+        return {decision: Deny, violations: violatedGrantee ∪ violatedGrantor, ...}
 
-    // Step 7: A duty in an unknown state could be active
-    if E₃ ≠ ∅ then
-        return Failure(E₃)
+    // Step 7: A duty in an unknown state, a frozen duty, or a duty of a
+    // policy that might grant, could be active or violated
+    if E₃ ∪ E₄ ∪ E₅ ≠ ∅ then
+        return Failure(E₃ ∪ E₄ ∪ E₅)
 
     // Step 8: Collect active duties for both parties
-    let activeGrantor = { d ∈ grantorDuties | Σ'.state(d) = Active }
-    let activeGrantee = { d ∈ granteeDuties | Σ'.state(d) = Active }
+    let activeGrantor = { d ∈ tracked(grantorDuties) | Σ'.state(d) = Active }
+    let activeGrantee = { d ∈ tracked(granteeDuties) | Σ'.state(d) = Active }
 
     return {
         decision: Permit,
         grantorDuties: activeGrantor,
         granteeDuties: activeGrantee,
-        violations: ∅
+        violations: violatedGrantor
     }
 ```
 
-Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation where that holds. An error in a pending duty's activation condition leaves it Pending and gives `Failure` only on the `Permit` path (Step 7): it cannot change a `Deny` or `NotApplicable`, since a duty that becomes active is not yet violated.
+A duty is not matched against the request: its action and asset are what the bearer must do, not what is requested. A request to display `ex:marketData` engages a contract's duty to report on `ex:usageStats`. Duties are collected from every policy that grants the request, that is, has a permission in force for it. A duty borne by a third party is reported with the grantee's duties, since it conditions the grantee's permission. Because every duty of a granting policy is collected, a provider's missed delivery is a violation in every later evaluation; it is reported in `violations`, and only violations by the grantee's side deny.
+
+Duty states are updated in Step 3, whatever decision follows, so a duty activates, and is found violated, at the first evaluation of a request its policy grants. An error in a pending duty's activation condition (E₃), in a permission of a policy that does not otherwise grant (E₄), or in a duty's schedule (E₅), gives `Failure` only on the `Permit` path (Step 7). It cannot change a `Deny` or `NotApplicable`: resolving it can only add duties, a duty that becomes active is not yet violated, and more violations still deny.
 
 ### 7.3 Policy Applicability
 
 ```
 PolicyApplicable(p, Env) =
-    // Validity window, inclusive at both ends (Offers and Agreements)
+    // Validity window, inclusive at both ends (Agreements)
     (p.effectiveDate = ⊥ ∨ p.effectiveDate ≤ Env.Σ.clock) ∧
     (p.expirationDate = ⊥ ∨ Env.Σ.clock ≤ p.expirationDate)
 ```
@@ -798,6 +937,14 @@ For Agreements (including DataContracts), the agent must be a party:
 PolicyApplicable(Agreement(grantor, grantee, ...), Env) =
     ... ∧ (Env.agent matches grantee ∨ Env.agent matches grantor)
 ```
+
+An Offer is a proposal and binds no one, so none of its rules apply:
+
+```
+PolicyApplicable(Offer(...), Env) = false
+```
+
+An Offer passed to `Eval` therefore contributes no permission, prohibition or duty. Its rules take effect only when an Agreement restates them (§3.4).
 
 ### 7.4 Norm Activation
 
@@ -829,7 +976,7 @@ NormActive(norm, Env) =
     (norm.condition = ⊥ ∨ ⟦norm.condition⟧(Env))
 ```
 
-Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and agent subsumption is typed transitive ODRL collection membership (`partOf⁺`). In standard ODRL usage, Set and Offer policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
+Where `⊥` indicates no assignee specified (rule applies to any requesting agent), `*` is the wildcard agent, and agent subsumption is typed transitive ODRL collection membership (`partOf⁺`). In standard ODRL usage, Set policies omit `odrl:assignee` on rules that apply to any requesting agent; `dprod:currentAgent` is reserved for constraint comparisons (identity binding), not for assignee position.
 
 ---
 
@@ -869,11 +1016,22 @@ No specificity ordering within norm types. All matching norms contribute. An act
 
 ## 9. Correctness Properties
 
-**Note on recurrence**: All four theorems below hold in the presence of `recurrence`. The `expand` function is total and deterministic (§5.5), each generated instance follows the standard lifecycle independently, and recurrence applies only to duties — permissions and prohibitions are unaffected.
+**Note on schedules**: The theorems below hold for all well-formed inputs,
+including those whose schedules cannot be processed. `expand` is deterministic
+and returns either occurrences or an explicit error (§5.5); it never hides an
+invalid schedule as an empty set. An unprocessable schedule freezes its duty
+(Rule D-FREEZE, §5.2), and its error is reported by `Failure` on the
+`Permit` path (§7.2), so it changes the outcome, never whether one exists.
+Expansion is bounded by the template's activation and the evaluation time, so
+each evaluation tracks finitely many instances, and each instance follows the
+standard lifecycle independently.
 
 ### 9.1 Totality
 
-**Theorem**: For all well-formed inputs, `Eval` terminates with a defined result.
+**Theorem**: For all well-formed inputs, `Eval` terminates with a defined
+outcome. When a schedule is unprocessable, the outcome is a decision that
+does not depend on it, or `Failure` carrying the schedule error; there is no
+undefined branch.
 
 ```
 ∀ request, policies, Σ, world.
@@ -959,14 +1117,15 @@ It follows from §6.1 (each connective is a function of the set of its operand v
 
 ### 9.7 Error Soundness
 
-**Theorem**: A successful decision never depends on an error. A *completion* replaces every `Err` produced by an atomic constraint with `true` or `false`.
+**Theorem**: A successful decision never depends on an error. A *completion* replaces every `Err` produced by an atomic constraint with `true` or `false`, and every schedule error with some set of occurrence times.
 
 ```
 ∀ request, policies, Σ, world, r.
     Eval(request, policies, Σ, world) = Success(r)
     ⟹ every completion yields Success(r') with r'.decision = r.decision,
        and if r.decision = Permit then
-       r'.grantorDuties = r.grantorDuties ∧ r'.granteeDuties = r.granteeDuties
+       r'.grantorDuties = r.grantorDuties ∧ r'.granteeDuties = r.granteeDuties ∧
+       r'.violations = r.violations
 ```
 
 In particular, a type or data error in a prohibition never yields `Permit`. For `Deny` on violations, `r.violations` lists the violations found without resolving any error; a completion may find more. The converse does not hold: `Failure` is returned whenever an error is consulted, which may include cases where every completion agrees.
@@ -1138,8 +1297,10 @@ For an Agreement (or DataContract), duties are partitioned by bearer:
 
 ```
 grantorDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantor }
-granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject = agreement.grantee }
+granteeDuties(agreement) = { d ∈ agreement.clauses | d : Duty ∧ d.subject ≠ agreement.grantor }
 ```
+
+A duty without `dprod:subjectOfDuty` is borne by the grantee (§3.2, default bearer), so it is a grantee duty.
 
 Both sets are included in the evaluation result, with independent lifecycle tracking.
 
@@ -1313,7 +1474,7 @@ The following properties should be proved for a verified implementation:
 4. **(S4) Terminal permanence**: Fulfilled/Violated states never revert
 5. **(S5) Lookup safety**: an unresolvable operand or incomparable comparison produces an explicit `ResolutionError`, never a Boolean result
 6. **(S6) Prohibition monotonicity**: Adding policies cannot remove prohibitions
-7. **(S7) Error soundness**: A `Success` decision is the same under every completion of its errors, and so are the duties reported with a `Permit`
+7. **(S7) Error soundness**: A `Success` decision is the same under every completion of its errors, and so are the duties and grantor violations reported with a `Permit`
 
 ---
 

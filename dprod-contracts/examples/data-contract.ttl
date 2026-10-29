@@ -7,12 +7,21 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dct:      <http://purl.org/dc/terms/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix prov:     <http://www.w3.org/ns/prov#> .
 @prefix ex:       <https://example.org/> .
+
+
+############################# Reusable Schedules #############################
+
+ex:daily-0600-london a dprod:Schedule ;
+    rdfs:label "Daily at 06:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
 
 
 ############################# Inline Domain Vocabulary #########################
@@ -31,6 +40,13 @@ ex:deliver
   rdfs:label "deliver" ;
   dct:description "Deliver data to consumer."@en ;
   odrl:includedIn odrl:distribute ;
+.
+
+ex:noticePeriod
+  a rdf:Property ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notice period" ;
+  dct:description "Agreed notice period before the change a notification announces. Recorded for the parties; DPROD does not evaluate it."@en ;
 .
 
 ex:notify
@@ -124,18 +140,19 @@ ex:internal
 
     # ----- PROVIDER COMMITMENTS (Subject Duties) -----
 
-    # SLA: Daily delivery by 6:30 AM (recurrence handles scheduling)
+    # SLA: Daily delivery by 6:30 AM (the reusable Schedule handles timing)
     # Target inherited from policy (market-prices)
     odrl:obligation [
         a odrl:Duty ;
         rdfs:label "Daily data delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0600-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
 
-    # SLA: 14-day notice for schema changes
+    # Schema change notification with 14 days' notice. The notice period is
+    # an agreed term; DPROD does not evaluate it yet.
     # Target differs from policy — schema-changes, not market-prices
     odrl:obligation [
         a odrl:Duty ;
@@ -143,7 +160,7 @@ ex:internal
         dprod:subjectOfDuty <https://example.org/agents/data-platform-team> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P14D"^^xsd:duration
+        ex:noticePeriod "P14D"^^xsd:duration
     ] ;
 
     # ----- CONSUMER RIGHTS (Permissions — assignee omitted in Offer) -----
@@ -256,7 +273,7 @@ ex:internal
     dprod:objectOfDuty <https://example.org/agents/quant-research> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=6;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0600-london ;
     dprod:deadline "PT30M"^^xsd:duration ;
     dprod:dutyState dprod:Fulfilled .
 
