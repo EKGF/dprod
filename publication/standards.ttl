@@ -1166,3 +1166,49 @@ doc:abstract dct:source <https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40
 
 doc:scope a ga:Scope .
 
+
+# Ordered specification metadata is owned by the source publication.
+doc:specification ga:metadataRow doc:metadata-version, doc:metadata-latest, doc:metadata-draft, doc:metadata-history, doc:metadata-editors, doc:metadata-authors, doc:metadata-feedback, doc:metadata-downloads .
+
+doc:metadata-version a ga:MetadataRow ;
+    ga:order 1 ;
+    ga:field "thisVersion" ;
+    dct:title "This version:" .
+
+doc:metadata-latest a ga:MetadataRow ;
+    ga:order 2 ;
+    ga:field "latestVersion" ;
+    dct:title "Latest published version:" .
+
+doc:metadata-draft a ga:MetadataRow ;
+    ga:order 3 ;
+    ga:field "editorDraft" ;
+    dct:title "Latest editor’s draft:" .
+
+doc:metadata-history a ga:MetadataRow ;
+    ga:order 4 ;
+    ga:field "custom" ;
+    dct:title "History:" ;
+    ga:body """<a href="https://github.com/EKGF/dprod/commits/develop/">Commit history</a>""" .
+
+doc:metadata-editors a ga:MetadataRow ;
+    ga:order 5 ;
+    ga:field "editor" ;
+    dct:title "Editors:" .
+
+doc:metadata-authors a ga:MetadataRow ;
+    ga:order 6 ;
+    ga:field "author" ;
+    dct:title "Authors:" .
+
+doc:metadata-feedback a ga:MetadataRow ;
+    ga:order 7 ;
+    ga:field "custom" ;
+    dct:title "Feedback:" ;
+    ga:body """<a href="https://github.com/EKGF/dprod">GitHub EKGF/dprod</a> (<a href="https://github.com/EKGF/dprod/pulls">pull requests</a>, <a href="https://github.com/EKGF/dprod/issues/new">new issue</a>, <a href="https://github.com/EKGF/dprod/issues">open issues</a>)""" .
+
+doc:metadata-downloads a ga:MetadataRow ;
+    ga:order 8 ;
+    ga:field "custom" ;
+    dct:title "Download as RDF:" ;
+    ga:body """<a href="https://ekgf.org/dprod/spec/develop/dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
