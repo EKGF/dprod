@@ -4,7 +4,7 @@ grapharch:
   subject: urn:dprod:documentation:scope
 ---
 
-The [Data Product (DPROD)](dprod.ttl) specification is a
+The [Data Product (DPROD)](../../ontology/dprod/dprod-ontology.ttl) specification is a
 profile of the [Data Catalog (DCAT) Vocabulary](https://www.w3.org/TR/vocab-dcat-3/),
 designed to describe Data Products.
 This document defines the schema and provides examples of its use.
@@ -28,7 +28,7 @@ The suggested prefix for the DPROD namespace is **`dprod`**
 - Decentralize Data Ownership: To make data integration more efficient, tasks should be shared among multiple
   teams. DCAT helps by offering a standard way to publish datasets in a decentralized manner.
 - Harmonize Data Schemas: Using shared schemas helps unify different data formats.
-  For instance, the [DPROD](dprod.ttl) specification provides a
+  For instance, the [DPROD](../../ontology/dprod/dprod-ontology.ttl) specification provides a
   common set of rules for defining a [Data Product](https://ekgf.org/dprod/spec/develop/DataProduct).
   Users of DPROD can extend this schema as needed.
 

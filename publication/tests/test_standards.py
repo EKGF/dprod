@@ -1,6 +1,8 @@
 """The source-owned draft is complete while the release remains gated."""
 from pathlib import Path
 import unittest
+import re
+from urllib.parse import urlsplit, unquote
 from rdflib import Graph, Namespace, RDF
 ROOT = Path(__file__).resolve().parents[2]
 GA = Namespace('https://ekgf.org/ontology/grapharch#')
@@ -41,6 +43,14 @@ class StandardsTests(unittest.TestCase):
                 self.assertTrue(list(self.graph.objects(component, GA.fragment)))
                 orders.append(int(self.graph.value(placement, GA.order)))
             self.assertEqual(len(orders), len(set(orders)))
+
+    def test_authored_relative_links_resolve_in_the_repository(self):
+        for path in (ROOT / 'publication/standards').glob('*.md'):
+            for target in re.findall(r'\]\(([^ )]+)', path.read_text()):
+                link = urlsplit(target)
+                if link.scheme or not link.path:
+                    continue
+                self.assertTrue((path.parent / unquote(link.path)).exists(), f'{path}: {target}')
 
     def test_model_uses_the_portable_repository_diagram(self):
         body = (ROOT / 'publication/standards/model.md').read_text()

@@ -44,7 +44,7 @@ processor additionally enforces duty state, bilateral duties and the evaluation 
 
 The profile is defined by three files, published alongside this document:
 <dprod-contracts.ttl> (the vocabulary),
-<dprod-contracts-shapes.ttl> (the [SHACL](https://www.w3.org/TR/shacl/) constraints an
+[dprod-contracts-shapes.ttl](../../dprod-contracts/dprod-contracts-shapes.ttl) (the [SHACL](https://www.w3.org/TR/shacl/) constraints an
 instance document must satisfy) and
 <dprod-contracts-prof.ttl> (the profile declaration).
 The normative evaluation semantics, which define what a conforming evaluator must compute, are
