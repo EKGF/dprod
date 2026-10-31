@@ -42,6 +42,11 @@ class StandardsTests(unittest.TestCase):
                 orders.append(int(self.graph.value(placement, GA.order)))
             self.assertEqual(len(orders), len(set(orders)))
 
+    def test_model_uses_the_portable_repository_diagram(self):
+        body = (ROOT / 'publication/standards/model.md').read_text()
+        self.assertIn('assets/dprod-model.svg', body)
+        self.assertNotIn('DPROD.drawio.svg', body)
+
     def test_release_does_not_claim_approval_or_invent_identity(self):
         self.assertEqual(len(set(self.graph.objects(DOC.project, GA.target))), 4)
         self.assertEqual(str(self.graph.value(DOC.release, GA.publicationStatus)), 'Documentation Preview')

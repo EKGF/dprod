@@ -34,7 +34,7 @@ Using standards like DCAT helps create a strong and clear way to define Data Pro
 becomes more complex, the methods for describing, sharing, and using data stay consistent and reliable. It also
 allows different organizations to share data securely and in a standardized way.
 
-![Information model for the Profile](../../assets/DPROD.drawio.svg)
+![Information model for the Profile](../../assets/dprod-model.svg)
 
 Overview of the DPROD model and its relationship with DCAT classes
 
