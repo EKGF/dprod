@@ -27,7 +27,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         titles = [str(graph.value(row, Namespace('http://purl.org/dc/terms/').title)) for row in rows]
         self.assertEqual(titles, ['This version:', 'Latest published version:',
             "Latest editor’s draft:", 'History:', 'Editors:', 'Authors:',
-            'Feedback:', 'Download as RDF:'])
+            'Feedback:', 'Download as RDF:', 'PDF editions:'])
         bodies = '\n'.join(str(graph.value(row, GA.body) or '') for row in rows)
         self.assertIn('https://github.com/EKGF/dprod/commits/develop/', bodies)
         self.assertIn('https://github.com/EKGF/dprod/pulls', bodies)

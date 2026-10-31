@@ -17,8 +17,9 @@ publisher text before release. Legal notices are collected from
 The configuration includes all eight core worked examples and seven contract
 examples. Twelve examples have separate machine-readable source files; the
 other three already contain their code in their README. Contract ontology,
-profile, and constraint files are collected alongside the core RDF. The
-existing ReSpec generator and official publication workflow are unchanged.
+profile, and constraint files are collected alongside the core RDF. The existing
+ReSpec generator remains available. GraphArch CI separately produces both draft
+PDF editions from the exact repository commit being verified.
 
 The specification and PDF profiles declare required section roles and
 metadata. Their placements control the order; the generated reference groups
@@ -26,10 +27,19 @@ belong under the explicit `reference` placement. The companion website has its
 own content selection. Marketing README material is not implicitly included in
 the formal specification.
 
-Three draft outputs are selected by the GraphArch showcase: specification,
-companion website, and PDF. A fourth target, `doc:release`, defines a stricter
-release profile. It is deliberately blocked: the document identifier, release
-date, authoritative version URL, and approval status must be supplied by the
+Four draft outputs are selected by the GraphArch showcase: the specification,
+companion website, **EKGF community PDF** (`doc:pdf`, `pdf/ekgf/document.pdf`)
+and **OMG submission preview PDF** (`doc:omg-pdf`, `pdf/omg/document.pdf`).
+Both PDFs share the same scope, technical placements, ontology, shapes and
+examples. Their source-owned status, preface and publishing authority differ;
+community HTML uses the EKGF front matter. Both retain the existing legal text
+and the same source revision in their closing provenance section. Neither
+claims OMG approval or an assigned 1.1 document number. The specification header
+links both editions explicitly.
+
+The inactive `doc:release` target defines a stricter release profile. It is
+deliberately blocked: the document identifier, release date, authoritative
+version URL, and approval status must be supplied by the
 publisher. Do not manufacture those values to make a build pass.
 
 `migration-provenance.json` records the initial source revision and import

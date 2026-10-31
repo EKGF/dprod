@@ -58,7 +58,7 @@ doc:project a ga:Project ;
     ga:repository <https://github.com/EKGF/dprod> ;
     ga:scope doc:scope ;
     ga:target doc:pdf,
-        doc:release,
+        doc:omg-pdf,
         doc:specification,
         doc:website .
 
@@ -191,7 +191,7 @@ doc:project a ga:Project ;
     ga:fragment <urn:dprod-showcase:fragment:terms> .
 
 doc:pdf a ga:Target ;
-    dct:title "Data Product Ontology (DPROD) — 1.1 draft" ;
+    dct:title "Data Product Ontology (DPROD) — EKGF community draft" ;
     ga:author <urn:dprod:documentation:author:0>,
         <urn:dprod:documentation:author:1>,
         <urn:dprod:documentation:author:2>,
@@ -201,7 +201,7 @@ doc:pdf a ga:Target ;
         <urn:dprod:documentation:author:6>,
         <urn:dprod:documentation:author:7>,
         <urn:dprod:documentation:author:8> ;
-    ga:destination "pdf" ;
+    ga:destination "pdf/ekgf" ;
     ga:editor <urn:dprod:documentation:editor:0>,
         <urn:dprod:documentation:editor:1>,
         <urn:dprod:documentation:editor:2>,
@@ -211,14 +211,108 @@ doc:pdf a ga:Target ;
     ga:editorDraft <https://github.com/EKGF/dprod/tree/develop> ;
     ga:latestVersion <https://www.omg.org/spec/DPROD/> ;
     ga:profile doc:pdf-profile ;
-    ga:publicationStatus "Documentation Preview" ;
+    ga:publicationStatus "Community Draft" ;
     ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> ;
     ga:releaseVersion "1.1 draft" ;
     ga:renderer "typst" ;
     ga:scope doc:scope ;
-    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/document.pdf> .
+    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/ekgf/document.pdf> .
+
+doc:omg-pdf a ga:Target ;
+    dct:title "Data Product Ontology (DPROD) — OMG submission preview" ;
+    ga:author <urn:dprod:documentation:author:0>,
+        <urn:dprod:documentation:author:1>,
+        <urn:dprod:documentation:author:2>,
+        <urn:dprod:documentation:author:3>,
+        <urn:dprod:documentation:author:4>,
+        <urn:dprod:documentation:author:5>,
+        <urn:dprod:documentation:author:6>,
+        <urn:dprod:documentation:author:7>,
+        <urn:dprod:documentation:author:8> ;
+    ga:destination "pdf/omg" ;
+    ga:editor <urn:dprod:documentation:editor:0>,
+        <urn:dprod:documentation:editor:1>,
+        <urn:dprod:documentation:editor:2>,
+        <urn:dprod:documentation:editor:3>,
+        <urn:dprod:documentation:editor:4>,
+        <urn:dprod:documentation:editor:5> ;
+    ga:editorDraft <https://github.com/EKGF/dprod/tree/develop> ;
+    ga:latestVersion <https://www.omg.org/spec/DPROD/> ;
+    ga:profile doc:omg-pdf-profile ;
+    ga:publicationStatus "Submission Preview" ;
+    ga:publisher doc:omg-authority ;
+    ga:releaseVersion "1.1 draft" ;
+    ga:renderer "typst" ;
+    ga:scope doc:scope ;
+    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/omg/document.pdf> .
 
 doc:pdf-profile a ga:Profile ;
+    ga:placement <urn:dprod-showcase:placement:abstract>,
+        <urn:dprod-showcase:placement:acknowledgements>,
+        <urn:dprod-showcase:placement:conformance>,
+        <urn:dprod-showcase:placement:contracts>,
+        <urn:dprod-showcase:placement:contracts-model>,
+        <urn:dprod-showcase:placement:example:contracts:collections-and-target-inheritance>,
+        <urn:dprod-showcase:placement:example:contracts:data-offer-and-contract>,
+        <urn:dprod-showcase:placement:example:contracts:data-use-policy>,
+        <urn:dprod-showcase:placement:example:contracts:evaluation-context>,
+        <urn:dprod-showcase:placement:example:contracts:lifecycle-and-versioning>,
+        <urn:dprod-showcase:placement:example:contracts:odcs-mapping>,
+        <urn:dprod-showcase:placement:example:contracts:provider-duties>,
+        <urn:dprod-showcase:placement:example:core:core-data-product-extensions>,
+        <urn:dprod-showcase:placement:example:core:data-lineage>,
+        <urn:dprod-showcase:placement:example:core:data-quality>,
+        <urn:dprod-showcase:placement:example:core:data-rights>,
+        <urn:dprod-showcase:placement:example:core:data-schema>,
+        <urn:dprod-showcase:placement:example:core:equity-trade>,
+        <urn:dprod-showcase:placement:example:core:observability-ports>,
+        <urn:dprod-showcase:placement:example:core:sba-pool-rates>,
+        <urn:dprod-showcase:placement:model>,
+        <urn:dprod-showcase:placement:namespaces>,
+        <urn:dprod-showcase:placement:community-preface>,
+        <urn:dprod-showcase:placement:reference>,
+        <urn:dprod-showcase:placement:references>,
+        <urn:dprod-showcase:placement:scope>,
+        <urn:dprod-showcase:placement:community-status>,
+        <urn:dprod-showcase:placement:symbols>,
+        <urn:dprod-showcase:placement:terms> ;
+    ga:requiredMetadata dct:title,
+        ga:preamble,
+        ga:publicationDate,
+        ga:publicationStatus,
+        ga:publisher ;
+    ga:requiredSectionRole "abstract",
+        "acknowledgements",
+        "conformance",
+        "contracts",
+        "contracts-model",
+        "example:contracts:collections-and-target-inheritance",
+        "example:contracts:data-offer-and-contract",
+        "example:contracts:data-use-policy",
+        "example:contracts:evaluation-context",
+        "example:contracts:lifecycle-and-versioning",
+        "example:contracts:odcs-mapping",
+        "example:contracts:provider-duties",
+        "example:core:core-data-product-extensions",
+        "example:core:data-lineage",
+        "example:core:data-quality",
+        "example:core:data-rights",
+        "example:core:data-schema",
+        "example:core:equity-trade",
+        "example:core:observability-ports",
+        "example:core:sba-pool-rates",
+        "model",
+        "namespaces",
+        "preface",
+        "reference",
+        "references",
+        "scope",
+        "status",
+        "symbols",
+        "terms" ;
+    ga:style "specification" .
+
+doc:omg-pdf-profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
         <urn:dprod-showcase:placement:acknowledgements>,
         <urn:dprod-showcase:placement:conformance>,
@@ -245,7 +339,7 @@ doc:pdf-profile a ga:Profile ;
         <urn:dprod-showcase:placement:reference>,
         <urn:dprod-showcase:placement:references>,
         <urn:dprod-showcase:placement:scope>,
-        <urn:dprod-showcase:placement:status>,
+        <urn:dprod-showcase:placement:omg-status>,
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
@@ -307,11 +401,11 @@ doc:profile a ga:Profile ;
         <urn:dprod-showcase:placement:example:core:sba-pool-rates>,
         <urn:dprod-showcase:placement:model>,
         <urn:dprod-showcase:placement:namespaces>,
-        <urn:dprod-showcase:placement:preface>,
+        <urn:dprod-showcase:placement:community-preface>,
         <urn:dprod-showcase:placement:reference>,
         <urn:dprod-showcase:placement:references>,
         <urn:dprod-showcase:placement:scope>,
-        <urn:dprod-showcase:placement:status>,
+        <urn:dprod-showcase:placement:community-status>,
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
@@ -1222,3 +1316,55 @@ doc:project ga:collector <urn:dprod-showcase:source:product-logo> .
     ga:asset doc:product-logo .
 doc:product-logo dct:title "DPROD" .
 doc:specification ga:productLogo doc:product-logo .
+doc:pdf ga:productLogo doc:product-logo .
+doc:omg-pdf ga:productLogo doc:product-logo .
+
+# Publication editions share technical placements but supply their own front matter.
+doc:omg-authority a <https://ekgf.org/ontology/artifact-governance#Authority> ;
+    rdfs:label "Object Management Group"@en ;
+    ga:shortName "OMG" ; ga:accentColor "#2b5f9f" ;
+    ga:url "https://www.omg.org/" ;
+    ns1:isPlayedBy <https://www.omg.org/> .
+<https://www.omg.org/> a <https://www.omg.org/spec/Commons/Organizations/Organization> ;
+    rdfs:label "Object Management Group"@en .
+
+doc:specification ga:metadataRow doc:metadata-pdfs .
+doc:metadata-pdfs a ga:MetadataRow ; ga:order 9 ; ga:field "custom" ;
+    dct:title "PDF editions:" ;
+    ga:body """<a href="../pdf/ekgf/document.pdf">EKGF community draft</a><br><a href="../pdf/omg/document.pdf">OMG submission preview</a>""" .
+
+doc:project ga:collector <urn:dprod-showcase:source:community-status> .
+<urn:dprod-showcase:source:community-status> a ga:Collector ;
+    dct:identifier "community-status" ; dct:title "Status of This Document" ;
+    ga:fragment <urn:dprod-showcase:fragment:community-status> ; ga:kind "markdown" ;
+    ga:source "publication/standards/community-status.md" ;
+    ga:sourcePath "publication/standards/community-status.md" .
+<urn:dprod-showcase:component:community-status> a ga:Component ; dct:title "Status of This Document" ;
+    ga:fragment <urn:dprod-showcase:fragment:community-status> .
+<urn:dprod-showcase:placement:community-status> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:community-status> ; ga:order 1 ;
+    ga:sectionKind "status" ; ga:sectionRole "status" .
+
+doc:project ga:collector <urn:dprod-showcase:source:community-preface> .
+<urn:dprod-showcase:source:community-preface> a ga:Collector ;
+    dct:identifier "community-preface" ; dct:title "Community preface" ;
+    ga:fragment <urn:dprod-showcase:fragment:community-preface> ; ga:kind "markdown" ;
+    ga:source "publication/standards/community-preface.md" ;
+    ga:sourcePath "publication/standards/community-preface.md" .
+<urn:dprod-showcase:component:community-preface> a ga:Component ; dct:title "Community preface" ;
+    ga:fragment <urn:dprod-showcase:fragment:community-preface> .
+<urn:dprod-showcase:placement:community-preface> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:community-preface> ; ga:order 2 ;
+    ga:sectionKind "preface" ; ga:sectionRole "preface" .
+
+doc:project ga:collector <urn:dprod-showcase:source:omg-status> .
+<urn:dprod-showcase:source:omg-status> a ga:Collector ;
+    dct:identifier "omg-status" ; dct:title "Status of This Document" ;
+    ga:fragment <urn:dprod-showcase:fragment:omg-status> ; ga:kind "markdown" ;
+    ga:source "publication/standards/omg-status.md" ;
+    ga:sourcePath "publication/standards/omg-status.md" .
+<urn:dprod-showcase:component:omg-status> a ga:Component ; dct:title "Status of This Document" ;
+    ga:fragment <urn:dprod-showcase:fragment:omg-status> .
+<urn:dprod-showcase:placement:omg-status> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:omg-status> ; ga:order 1 ;
+    ga:sectionKind "status" ; ga:sectionRole "status" .
