@@ -7,7 +7,7 @@
     {
       "id": "ex:tradingDivisionBundle2026",
       "type": "DataContract",
-      "profile": "https://ekgf.org/dprod/spec/develop/",
+      "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
       "assigner": "ex:dataPlatformTeam",
       "assignee": "ex:tradingDivision",
       "target": ["ex:marketPrices", "ex:referenceData", "ex:riskMetrics"],
@@ -20,7 +20,7 @@
       "acceptsOffer": {
         "id": "ex:marketDataBundle",
         "type": "DataOffer",
-        "profile": "https://ekgf.org/dprod/spec/develop/",
+        "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
         "assigner": "ex:dataPlatformTeam",
         "target": ["ex:marketPrices", "ex:referenceData", "ex:riskMetrics"],
         "permission": [

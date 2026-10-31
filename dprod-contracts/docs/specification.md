@@ -1,5 +1,9 @@
 # DPROD Contracts Technical Specification
 
+The contracts profile identifier is [`https://ekgf.org/dprod/spec/develop/contracts/profile/`](https://ekgf.org/dprod/spec/develop/contracts/profile/).
+Policies declare this IRI with `odrl:profile`. It identifies the contracts profile;
+the DPROD ontology and term namespace remain `https://ekgf.org/dprod/spec/develop/`.
+
 RDF/OWL vocabulary reference for the DPROD Contracts ODRL 2.2 profile.
 
 ---
@@ -97,7 +101,7 @@ The formal evaluator may also use these concept IRIs as `dprod:dutyState` values
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -134,7 +138,7 @@ ex:contract a dprod:DataOffer ;
 
 ```turtle
 ex:subscription a dprod:DataContract ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;

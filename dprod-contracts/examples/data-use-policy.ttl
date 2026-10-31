@@ -175,7 +175,7 @@ ex:legitimateInterest
 
 <https://example.org/policies/hr-data-access> a odrl:Set ;
     rdfs:label "HR Data Access Policy" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:target <https://example.org/assets/employee-data> ;
 
     # ===== RULE 1: HR Analytics can read for analytics purposes =====
@@ -262,7 +262,7 @@ ex:legitimateInterest
 
 <https://example.org/policies/compensation-access> a odrl:Set ;
     rdfs:label "Compensation Data Access Policy" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:target <https://example.org/assets/employee-compensation> ;
 
     # Only HR Division (not just analytics sub-team)

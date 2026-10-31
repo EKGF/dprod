@@ -82,11 +82,11 @@ dprod-shapes:DutyStatePropertyGroup
 dprod-shapes:ProfilePropertyGroup
   a sh:PropertyShape ;
   sh:name "profile" ;
-  sh:description "The ODRL profile token a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes."@en ;
+  sh:description "The ODRL profile IRI a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes."@en ;
   sh:path odrl:profile ;
   sh:minCount 1 ;
-  sh:hasValue <https://ekgf.org/dprod/spec/develop/> ;
-  sh:message "DPROD policies must declare odrl:profile <https://ekgf.org/dprod/spec/develop/>." ;
+  sh:hasValue <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
+  sh:message "DPROD policies must declare odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/>." ;
 .
 
 dprod-shapes:NonEmptyClausesConstraint
@@ -112,8 +112,8 @@ dprod-shapes:PolicyShape
   sh:property [
     sh:path odrl:profile ;
     sh:minCount 1 ;
-    sh:hasValue <https://ekgf.org/dprod/spec/develop/> ;
-    sh:message "DPROD policies must declare odrl:profile <https://ekgf.org/dprod/spec/develop/>."
+    sh:hasValue <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
+    sh:message "DPROD policies must declare odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/>."
   ] ;
 .
 

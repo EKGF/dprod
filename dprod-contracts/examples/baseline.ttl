@@ -311,7 +311,7 @@ ex:compliance
 
 <https://example.org/offers/customer-api-v1> a dprod:DataOffer ;
     rdfs:label "Customer API v1 (retired)" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:offerLifecycleStatus dprod:Fulfilled ;
@@ -322,7 +322,7 @@ ex:compliance
 
 <https://example.org/offers/customer-api-v2> a dprod:DataOffer ;
     rdfs:label "Customer API v2" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -380,7 +380,7 @@ ex:compliance
 
 <https://example.org/offers/market-data-feed> a dprod:DataOffer ;
     rdfs:label "Market Data Feed" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -433,7 +433,7 @@ ex:compliance
 
 <https://example.org/offers/country-ref> a dprod:DataOffer ;
     rdfs:label "Country Reference Data" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/country-codes> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -459,7 +459,7 @@ ex:compliance
 
 <https://example.org/offers/transaction-files> a dprod:DataOffer ;
     rdfs:label "Transaction Files" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/finance> ;
     odrl:target <https://example.org/assets/transaction-files> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -499,7 +499,7 @@ ex:compliance
 
 <https://example.org/offers/employee-directory> a dprod:DataOffer ;
     rdfs:label "Employee Directory" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/hr> ;
     odrl:target <https://example.org/assets/employee-directory> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -546,7 +546,7 @@ ex:compliance
 
 <https://example.org/offers/risk-metrics> a dprod:DataOffer ;
     rdfs:label "Risk Metrics" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/risk-metrics> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -599,7 +599,7 @@ ex:compliance
 
 <https://example.org/offers/audit-logs> a dprod:DataOffer ;
     rdfs:label "Audit Log Archive" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/audit-logs> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -643,7 +643,7 @@ ex:compliance
 
 <https://example.org/offers/multi-asset> a dprod:DataOffer ;
     rdfs:label "Multi-Asset Data Bundle" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/market-prices> ,
                <https://example.org/assets/reference-data> ,
@@ -717,7 +717,7 @@ ex:compliance
 
 <https://example.org/agreements/analytics-customer-2026> a dprod:DataContract ;
     rdfs:label "Analytics Customer Data 2026" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer <https://example.org/offers/customer-api-v2> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:assignee <https://example.org/agents/analytics> ;
@@ -759,7 +759,7 @@ ex:compliance
 
 <https://example.org/agreements/trading-market-data-2026> a dprod:DataContract ;
     rdfs:label "Trading Market Data 2026" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer <https://example.org/offers/market-data-feed> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:assignee <https://example.org/agents/analytics> ;

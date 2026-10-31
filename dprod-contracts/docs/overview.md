@@ -1,5 +1,9 @@
 # DPROD Contracts Overview
 
+The contracts profile identifier is [`https://ekgf.org/dprod/spec/develop/contracts/profile/`](https://ekgf.org/dprod/spec/develop/contracts/profile/).
+Policies declare this IRI with `odrl:profile`. It identifies the contracts profile;
+the DPROD ontology and term namespace remain `https://ekgf.org/dprod/spec/develop/`.
+
 What DPROD Contracts is, who it is for, and how to get started.
 
 ---
@@ -29,7 +33,7 @@ ex:daily-0600-london a dprod:Schedule ;
     dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
 
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     odrl:obligation [
@@ -61,7 +65,7 @@ ex:daily-0600-london a dprod:Schedule ;
     dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
 
 ex:agreement a dprod:DataContract ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:quantResearch ;
@@ -98,7 +102,7 @@ ex:agreement a dprod:DataContract ;
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:target ex:employeeData ;
     odrl:permission [
         a odrl:Permission ;

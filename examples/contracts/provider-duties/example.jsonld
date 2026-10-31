@@ -5,7 +5,7 @@
   ],
   "id": "ex:riskMetricsOffer",
   "type": "DataOffer",
-  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
   "assigner": "ex:dataPlatformTeam",
   "target": "ex:riskMetrics",
   "obligation": [

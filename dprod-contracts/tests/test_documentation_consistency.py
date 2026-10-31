@@ -14,7 +14,7 @@ ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 SH = Namespace("http://www.w3.org/ns/shacl#")
 
 CONTRACTS_ONTOLOGY = URIRef("https://ekgf.org/dprod/spec/develop/contracts/")
-DPROD_PROFILE = URIRef("https://ekgf.org/dprod/spec/develop/")
+DPROD_PROFILE = URIRef("https://ekgf.org/dprod/spec/develop/contracts/profile/")
 SET_SHAPE = URIRef("https://ekgf.org/dprod/spec/develop/contracts/shapes/SetShape")
 
 

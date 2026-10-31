@@ -261,7 +261,7 @@ ex:contract-seller-quantum a dprod:DataOffer ;
     dct:description "Views built on top of the seller tables. Predict sales over time." ;
     dct:hasVersion "1.1.0" ;
     dct:created "2022-11-15T02:59:43+00:00"^^xsd:dateTime ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:seller-data-team ;
     odrl:target ex:seller-data ;
     dprod:offerLifecycleStatus dprod:Active ;

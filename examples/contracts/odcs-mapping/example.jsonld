@@ -7,7 +7,7 @@
   "type": "DataOffer",
   "description": "Views built on top of the seller tables. Predict sales over time.",
   "hasVersion": "1.1.0",
-  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
   "assigner": "ex:sellerDataTeam",
   "target": "ex:sellerData",
   "offerLifecycleStatus": "Active",

@@ -22,7 +22,7 @@ This policy permits internal recipients to use market prices while the market is
   ],
   "id": "ex:marketHoursPolicy",
   "type": "Set",
-  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
   "target": "ex:marketPrices",
   "permission": {
     "type": "Permission",
@@ -77,7 +77,7 @@ An operand cannot follow `ex:memberOf` and then `ex:regulatedIn`; earlier drafts
   ],
   "id": "ex:euRecipientPolicy",
   "type": "Set",
-  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
   "target": "ex:marketPrices",
   "permission": {
     "type": "Permission",

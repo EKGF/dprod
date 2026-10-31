@@ -5,7 +5,7 @@
   ],
   "id": "ex:hrDataAccessPolicy",
   "type": "Set",
-  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
   "target": "ex:employeeData",
   "permission": [
     {

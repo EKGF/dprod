@@ -52,7 +52,7 @@ links to the offer it accepts.
     ],
     "id": "ex:tradingMarketData2026",
     "type": "DataContract",
-    "profile": "https://ekgf.org/dprod/spec/develop/",
+    "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
     "assigner": "ex:tradingDataTeam",
     "assignee": "ex:analyticsTeam",
     "target": "ex:marketPrices",
@@ -67,7 +67,7 @@ links to the offer it accepts.
     "acceptsOffer": {
       "id": "ex:marketDataFeed",
       "type": "DataOffer",
-      "profile": "https://ekgf.org/dprod/spec/develop/",
+      "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
       "assigner": "ex:tradingDataTeam",
       "target": "ex:marketPrices",
       "offerLifecycleStatus": "Active",

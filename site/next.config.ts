@@ -46,6 +46,12 @@ const nextConfig: NextConfig = {
       // (basePath is automatically prepended, so this resolves to
       // /dprod/spec/ → /dprod/spec/index.html under the zone.)
       { source: "/spec/", destination: "/spec/index.html" },
+      // The contracts profile is distinct from the ontology/term namespace.
+      // Serve its RDF description at the profile identifier itself.
+      {
+        source: "/spec/contracts/profile/",
+        destination: "/spec/dprod-contracts-prof.ttl",
+      },
       // /spec/main/ → frozen OMG 1.0 archive
       { source: "/spec/main/", destination: "/spec/archive/1.0/index.html" },
       {

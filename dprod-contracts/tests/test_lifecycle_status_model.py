@@ -218,7 +218,7 @@ class LifecycleStatusValidationTest(unittest.TestCase):
                 ex:status a skos:Concept .
                 ex:offer
                     a dprod:DataOffer ;
-                    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+                    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
                     odrl:assigner ex:provider ;
                     odrl:permission [
                         a odrl:Permission ;
