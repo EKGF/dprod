@@ -95,7 +95,7 @@ the shared FIBO specification for callable bonds.
 >
 > The JSON above can be pasted into [https://json-ld.org/playground](https://json-ld.org/playground/)
 > to see the RDF it denotes.
->
+
 > [!NOTE]
 > The following sections are driven by the Shapes definitions for DPROD, which represent the properties
 > expected to be used for instances of the above classes.

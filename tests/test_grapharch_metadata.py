@@ -13,6 +13,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         model = (ROOT / 'publication/standards/model.md').read_text()
         self.assertIn('```json example\n', model)
         self.assertEqual(model.count('> [!NOTE]'), 2)
+        self.assertNotIn('>\n> [!NOTE]', model)
         self.assertIn('> DPROD publishes two JSON-LD contexts', model)
         self.assertIn('> The following sections are driven by the Shapes', model)
 
