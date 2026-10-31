@@ -56,7 +56,7 @@ example,
 the UK Bonds Data Product includes an output port, which is a RESTful API. This API delivers JSON data conforming to
 the shared FIBO specification for callable bonds.
 
-```
+```json example
   {
     "@context": "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
     "id": "https://y.com/products/uk-bonds",
@@ -83,19 +83,21 @@ the shared FIBO specification for callable bonds.
   }
 ```
 
-DPROD publishes two JSON-LD contexts that denote the same graph. The examples in this specification
-use the simple context, `dprod-simple.jsonld`, which lets a document use plain terms such
-as `outputPort`, `title`, `id` and `type`. When DPROD
-JSON is combined with other JSON-LD contexts, use `dprod-context.jsonld` and prefixed
-terms such as `dprod:outputPort` and `dct:title` with the keywords
-`@id` and `@type`, so that neither side claims generic names such as
-`title` or `format`. Neither context has an `@vocab`, so an
-undefined term is visibly undefined rather than silently coined in the DPROD namespace.
-  
-The JSON above can be pasted into [https://json-ld.org/playground](https://json-ld.org/playground/)
-to see the RDF it denotes.
-
-The following sections are driven by the Shapes definitions for DPROD, which represent the properties
-expected to be used for instances of the above classes.
-As such, they include properties defined by the DCAT specification which DPROD extends.
-The prefix in the *identifier* for each entry indicates the ontology defining the property.
+> [!NOTE]
+> DPROD publishes two JSON-LD contexts that denote the same graph. The examples in this specification
+> use the simple context, `dprod-simple.jsonld`, which lets a document use plain terms such
+> as `outputPort`, `title`, `id` and `type`. When DPROD
+> JSON is combined with other JSON-LD contexts, use `dprod-context.jsonld` and prefixed
+> terms such as `dprod:outputPort` and `dct:title` with the keywords
+> `@id` and `@type`, so that neither side claims generic names such as
+> `title` or `format`. Neither context has an `@vocab`, so an
+> undefined term is visibly undefined rather than silently coined in the DPROD namespace.
+>
+> The JSON above can be pasted into [https://json-ld.org/playground](https://json-ld.org/playground/)
+> to see the RDF it denotes.
+>
+> [!NOTE]
+> The following sections are driven by the Shapes definitions for DPROD, which represent the properties
+> expected to be used for instances of the above classes.
+> As such, they include properties defined by the DCAT specification which DPROD extends.
+> The prefix in the *identifier* for each entry indicates the ontology defining the property.

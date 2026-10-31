@@ -9,6 +9,13 @@ GA = Namespace('https://ekgf.org/ontology/grapharch#')
 DOC = Namespace('urn:dprod-showcase:')
 
 class GrapharchMetadataTests(unittest.TestCase):
+    def test_model_preserves_numbered_example_and_two_notes(self):
+        model = (ROOT / 'publication/standards/model.md').read_text()
+        self.assertIn('```json example\n', model)
+        self.assertEqual(model.count('> [!NOTE]'), 2)
+        self.assertIn('> DPROD publishes two JSON-LD contexts', model)
+        self.assertIn('> The following sections are driven by the Shapes', model)
+
     def test_ordered_header_preserves_people_and_publication_links(self):
         graph = Graph().parse(ROOT / 'publication/standards.ttl')
         target = DOC.specification
