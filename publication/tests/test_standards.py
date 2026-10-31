@@ -52,6 +52,10 @@ class StandardsTests(unittest.TestCase):
                     continue
                 self.assertTrue((path.parent / unquote(link.path)).exists(), f'{path}: {target}')
 
+    def test_normative_filenames_are_real_links(self):
+        for path in (ROOT / 'publication/standards').glob('*.md'):
+            self.assertNotRegex(path.read_text(), r'<[\w-]+\.ttl>')
+
     def test_model_uses_the_portable_repository_diagram(self):
         body = (ROOT / 'publication/standards/model.md').read_text()
         self.assertIn('assets/dprod-model.svg', body)
