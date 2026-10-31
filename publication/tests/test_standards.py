@@ -19,7 +19,8 @@ class StandardsTests(unittest.TestCase):
         examples, code = [], []
         for collector in collectors:
             self.assertIn((collector, RDF.type, GA.Collector), self.graph)
-            path = str(self.graph.value(collector, GA.sourcePath))
+            self.assertEqual(self.graph.value(collector, GA.source), self.graph.value(collector, GA.sourcePath))
+            path = str(self.graph.value(collector, GA.source))
             self.assertTrue((ROOT / path).is_file(), path)
             kind = str(self.graph.value(collector, GA.kind))
             if kind == 'markdown' and path.startswith('examples/'):

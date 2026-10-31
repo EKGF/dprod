@@ -40,7 +40,9 @@ class GrapharchMetadataTests(unittest.TestCase):
         self.assertIn(collector, graph.objects(DOC.project, GA.collector))
         self.assertEqual(str(graph.value(collector, GA.kind)), 'image')
         self.assertEqual(graph.value(collector, GA.asset), asset)
-        path = ROOT / str(graph.value(collector, GA.sourcePath))
+        self.assertEqual(str(graph.value(collector, GA.source)), 'assets/dprod.jpg')
+        self.assertEqual(graph.value(collector, GA.source), graph.value(collector, GA.sourcePath))
+        path = ROOT / str(graph.value(collector, GA.source))
         self.assertEqual(path, ROOT / 'assets/dprod.jpg')
         self.assertTrue(path.is_file())
 

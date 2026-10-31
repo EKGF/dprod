@@ -1217,7 +1217,8 @@ doc:metadata-downloads a ga:MetadataRow ;
 # The DPROD product identity is independent of the publishing authority logo.
 doc:project ga:collector <urn:dprod-showcase:source:product-logo> .
 <urn:dprod-showcase:source:product-logo> a ga:Collector ;
-    ga:kind "image" ; ga:sourcePath "assets/dprod.jpg" ;
+    ga:kind "image" ; ga:source "assets/dprod.jpg" ;
+    ga:sourcePath "assets/dprod.jpg" ;
     ga:asset doc:product-logo .
 doc:product-logo dct:title "DPROD" .
 doc:specification ga:productLogo doc:product-logo .
