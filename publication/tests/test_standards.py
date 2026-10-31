@@ -2,6 +2,7 @@
 from pathlib import Path
 import unittest
 import re
+import xml.etree.ElementTree as ET
 from urllib.parse import urlsplit, unquote
 from rdflib import Graph, Namespace, RDF
 ROOT = Path(__file__).resolve().parents[2]
@@ -57,10 +58,21 @@ class StandardsTests(unittest.TestCase):
         for path in (ROOT / 'publication/standards').glob('*.md'):
             self.assertNotRegex(path.read_text(), r'<[\w-]+\.ttl>')
 
-    def test_model_uses_the_portable_repository_diagram(self):
+    def test_model_uses_the_same_diagram_as_the_develop_specification(self):
+        template = (ROOT / 'respec/template.html').read_text()
+        published = re.search(r'<img alt="Information model for the Profile" src="\./([^"]+)"', template).group(1)
         body = (ROOT / 'publication/standards/model.md').read_text()
-        self.assertIn('assets/dprod-model.svg', body)
-        self.assertNotIn('DPROD.drawio.svg', body)
+        selected = re.search(r'!\[Information model for the Profile\]\(([^)]+)\)', body).group(1)
+        self.assertEqual((ROOT / 'publication/standards' / selected).resolve(), ROOT / published)
+
+    def test_overview_diagram_has_complete_native_svg_labels(self):
+        root = ET.parse(ROOT / 'assets/DPROD.drawio.svg').getroot()
+        self.assertFalse(root.findall('.//{http://www.w3.org/2000/svg}foreignObject'))
+        labels = {' '.join(''.join(node.itertext()).split()) for node in root.findall('.//{http://www.w3.org/2000/svg}text')}
+        self.assertTrue({'Data Product', 'Dataset', 'DataService', 'Distribution',
+            'informationSensitivityClassification', 'isDistributionOf',
+            'isAccessServiceOf (inverse)', 'dataProductLifecycleStatus'} <= labels)
+        self.assertFalse(any('...' in label for label in labels))
 
     def test_release_does_not_claim_approval_or_invent_identity(self):
         self.assertEqual(len(set(self.graph.objects(DOC.project, GA.target))), 4)
