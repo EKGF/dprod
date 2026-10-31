@@ -46,5 +46,17 @@ class GrapharchMetadataTests(unittest.TestCase):
         self.assertEqual(path, ROOT / 'assets/dprod.jpg')
         self.assertTrue(path.is_file())
 
+    def test_publication_authorities_use_imported_governance_class(self):
+        from rdflib import RDF, URIRef
+        canonical = URIRef('https://ekgf.org/ontology/artifact-governance#Authority')
+        removed = GA.Authority
+        for name in ('standards.ttl', 'grapharch.ttl'):
+            graph = Graph().parse(ROOT / 'publication' / name)
+            publishers = list(graph.objects(None, GA.publisher))
+            self.assertTrue(publishers, name)
+            for publisher in publishers:
+                self.assertIn((publisher, RDF.type, canonical), graph, name)
+                self.assertNotIn((publisher, RDF.type, removed), graph, name)
+
 if __name__ == '__main__':
     unittest.main()

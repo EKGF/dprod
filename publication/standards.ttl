@@ -1157,7 +1157,7 @@ doc:abstract dct:source <https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40
     ga:sectionKind "section" ;
     ga:sectionRole "terms" .
 
-<urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> a ga:Authority ;
+<urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> a <https://ekgf.org/ontology/artifact-governance#Authority> ;
     rdfs:label "OMG - Enterprise Knowledge Graph Forum"@en ;
     ga:accentColor "#2b5f9f" ;
     ga:shortName "EKGF" ;

@@ -57,7 +57,7 @@ doc:source:example a ga:Collector ; ga:kind "markdown-page" ;
     dct:identifier "example" .
 
 # Reuse the registered EKGF authority role and its distinct organization player.
-<urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> a ga:Authority ;
+<urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> a <https://ekgf.org/ontology/artifact-governance#Authority> ;
     rdfs:label "OMG - Enterprise Knowledge Graph Forum"@en ;
     ga:shortName "EKGF" ; ga:accentColor "#2b5f9f" ; ga:url "https://ekgf.org/" ;
     <https://www.omg.org/spec/Commons/RolesAndCompositions/isPlayedBy> <urn:uuid:ee14e632-d8c2-43c1-95d8-72491ce7a846> .
