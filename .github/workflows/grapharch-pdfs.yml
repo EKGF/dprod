@@ -1,0 +1,78 @@
+name: GraphArch PDF editions
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grapharch-pdfs-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pin a reviewed GraphArch implementation until the next binary release.
+  GRAPHARCH_COMMIT: b875accc22c57279f20e750ca6c9f3983cf2d997
+
+jobs:
+  editions:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the exact DPROD source revision
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+      - name: Check out the pinned GraphArch generator
+        uses: actions/checkout@v7
+        with:
+          repository: EKGF/grapharch
+          ref: ${{ env.GRAPHARCH_COMMIT }}
+          path: .grapharch-tool
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v2
+        with:
+          toolchain: nightly
+          rust-src-dir: .grapharch-tool
+      - name: Install native compiler dependencies
+        run: sudo apt-get update && sudo apt-get install -y clang libclang-dev pkg-config libssl-dev
+      - name: Build the pinned generator
+        working-directory: .grapharch-tool
+        run: cargo build --locked --release --bin grapharch
+      - name: Reuse the bare source repository cache
+        uses: actions/cache@v6
+        with:
+          path: output/grapharch-input/output/cache/git
+          key: dprod-grapharch-git-${{ runner.os }}-${{ github.sha }}
+          restore-keys: dprod-grapharch-git-${{ runner.os }}-
+      - name: Generate both editions from this exact Git commit
+        run: >-
+          python3 scripts/grapharch_editions.py
+          --grapharch .grapharch-tool/target/release/grapharch
+          --source-revision "$GITHUB_SHA"
+          --grapharch-revision "$GRAPHARCH_COMMIT"
+          --output output/grapharch-editions
+      - name: Retain the EKGF community edition
+        uses: actions/upload-artifact@v6
+        with:
+          name: dprod-ekgf-community-${{ github.sha }}
+          path: output/grapharch-editions/ekgf-community/
+          if-no-files-found: error
+      - name: Retain the OMG submission preview
+        uses: actions/upload-artifact@v6
+        with:
+          name: dprod-omg-submission-preview-${{ github.sha }}
+          path: output/grapharch-editions/omg-submission-preview/
+          if-no-files-found: error
+      - name: Retain machine-readable build evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: dprod-grapharch-evidence-${{ github.sha }}
+          path: |
+            output/grapharch-editions/report.json
+            output/grapharch-editions/build-provenance.json
+            output/grapharch-editions/artifacts/dprod/documentation.nq
+          if-no-files-found: warn

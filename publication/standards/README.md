@@ -46,3 +46,25 @@ publisher. Do not manufacture those values to make a build pass.
 hashes, plus the Beta 2 comparison baseline. These hashes describe the import;
 they do not freeze future edits. Imported fragment nodes also retain queryable
 `dct:source` and `prov:wasDerivedFrom` references in the RDF configuration.
+
+
+## CI artifacts
+
+The **GraphArch PDF editions** workflow runs for pushes to `develop` and can
+also be dispatched manually on that branch. It builds an explicitly pinned
+GraphArch source commit and gives its Git collector the exact DPROD
+`GITHUB_SHA`. It does not copy ontology content into the GraphArch repository
+or select a moving `develop` branch during the build.
+
+Each successful run uploads two separately named artifacts:
+
+- `dprod-ekgf-community-<commit>`: `dprod-ekgf-community.pdf`.
+- `dprod-omg-submission-preview-<commit>`:
+  `dprod-omg-submission-preview.pdf`.
+
+Both include a `build-provenance.json` file with the exact source and generator
+commits and the SHA-256 digest of each PDF. A third evidence artifact retains
+the verification report and exported documentation KG. These are review
+artifacts; the workflow does not promote either edition to an approved OMG
+publication. The GraphArch showcase publishes the matching editions through its
+normal website build.
