@@ -31,5 +31,18 @@ class GrapharchMetadataTests(unittest.TestCase):
             self.assertIn(label, bodies)
             self.assertIn('https://ekgf.org/dprod/spec/develop/' + path, bodies)
 
+    def test_product_logo_is_a_retained_source_asset_separate_from_authority(self):
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        asset = DOC['product-logo']
+        collector = DOC['source:product-logo']
+        self.assertEqual(graph.value(DOC.specification, GA.productLogo), asset)
+        self.assertEqual(str(graph.value(asset, Namespace('http://purl.org/dc/terms/').title)), 'DPROD')
+        self.assertIn(collector, graph.objects(DOC.project, GA.collector))
+        self.assertEqual(str(graph.value(collector, GA.kind)), 'image')
+        self.assertEqual(graph.value(collector, GA.asset), asset)
+        path = ROOT / str(graph.value(collector, GA.sourcePath))
+        self.assertEqual(path, ROOT / 'assets/dprod.jpg')
+        self.assertTrue(path.is_file())
+
 if __name__ == '__main__':
     unittest.main()

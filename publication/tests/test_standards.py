@@ -15,7 +15,7 @@ class StandardsTests(unittest.TestCase):
 
     def test_every_declared_collector_has_an_existing_source(self):
         collectors = list(self.graph.objects(DOC.project, GA.collector))
-        self.assertEqual(len(collectors), 48)
+        self.assertEqual(len(collectors), 49)
         examples, code = [], []
         for collector in collectors:
             self.assertIn((collector, RDF.type, GA.Collector), self.graph)

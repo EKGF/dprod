@@ -1212,3 +1212,12 @@ doc:metadata-downloads a ga:MetadataRow ;
     ga:field "custom" ;
     dct:title "Download as RDF:" ;
     ga:body """<a href="https://ekgf.org/dprod/spec/develop/dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
+
+
+# The DPROD product identity is independent of the publishing authority logo.
+doc:project ga:collector <urn:dprod-showcase:source:product-logo> .
+<urn:dprod-showcase:source:product-logo> a ga:Collector ;
+    ga:kind "image" ; ga:sourcePath "assets/dprod.jpg" ;
+    ga:asset doc:product-logo .
+doc:product-logo dct:title "DPROD" .
+doc:specification ga:productLogo doc:product-logo .
