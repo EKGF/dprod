@@ -12,6 +12,8 @@ DCT = Namespace("http://purl.org/dc/terms/")
 DPROD = Namespace("https://ekgf.org/dprod/spec/develop/")
 ODRL = Namespace("http://www.w3.org/ns/odrl/2/")
 SH = Namespace("http://www.w3.org/ns/shacl#")
+SKOS = Namespace("http://www.w3.org/2004/02/skos/core#")
+RDFS = Namespace("http://www.w3.org/2000/01/rdf-schema#")
 
 CONTRACTS_ONTOLOGY = URIRef("https://ekgf.org/dprod/spec/develop/contracts/")
 DPROD_PROFILE = URIRef("https://ekgf.org/dprod/spec/develop/contracts/profile/")
@@ -27,6 +29,22 @@ class DocumentationConsistencyTest(unittest.TestCase):
 
     def read(self, relative_path: str) -> str:
         return (CONTRACTS_DIR / relative_path).read_text(encoding="utf-8")
+
+    def test_negation_code_example_is_separate_from_explanatory_prose(self) -> None:
+        term = DPROD["not"]
+        examples = list(self.ontology.objects(term, SKOS.example))
+        self.assertEqual(len(examples), 1)
+        example = str(examples[0])
+        parsed = Graph().parse(data=(
+            "@prefix odrl: <http://www.w3.org/ns/odrl/2/> .\n"
+            "@prefix dprod: <https://ekgf.org/dprod/spec/develop/> .\n" + example
+        ), format="turtle")
+        self.assertEqual(len(parsed), 2)
+        self.assertIn("_:lc a odrl:LogicalConstraint", example)
+        self.assertIn("\n", example)
+        comment = str(self.ontology.value(term, RDFS.comment))
+        self.assertIn("DPROD adds dprod:not", comment)
+        self.assertNotIn("_:lc", comment)
 
     def test_formal_semantics_subsection_numbers_are_unique(self) -> None:
         formal_semantics = self.read("docs/formal-semantics.md")
