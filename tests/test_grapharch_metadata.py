@@ -42,6 +42,15 @@ class GrapharchMetadataTests(unittest.TestCase):
         contracts = (ROOT / 'publication/standards/contracts-model.md').read_text()
         self.assertIn('```json example\n', contracts)
 
+    def test_contributors_have_explicit_family_names(self):
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        schema = Namespace('https://schema.org/')
+        people = set(graph.objects(DOC.specification, GA.editor)) | set(graph.objects(DOC.specification, GA.author))
+        self.assertEqual(len(people), 15)
+        for person in people:
+            self.assertTrue(str(graph.value(person, schema.familyName) or '').strip(), str(person))
+        self.assertEqual(str(graph.value(Namespace('urn:dprod:documentation:author:')['1'], schema.familyName)), 'Whittam Smith')
+
     def test_ordered_header_preserves_people_and_publication_links(self):
         graph = Graph().parse(ROOT / 'publication/standards.ttl')
         target = DOC.specification

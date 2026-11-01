@@ -1009,48 +1009,63 @@ doc:abstract dct:source <https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40
     prov:wasDerivedFrom <https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html> .
 
 <urn:dprod:documentation:author:0> dct:title "Andrea Gioia" ;
+    <https://schema.org/familyName> "Gioia" ;
     ga:url "https://www.linkedin.com/in/andreagioia/" .
 
 <urn:dprod:documentation:author:1> dct:title "Ben Whittam Smith" ;
+    <https://schema.org/familyName> "Whittam Smith" ;
     ga:url "https://www.linkedin.com/in/benedictws/" .
 
 <urn:dprod:documentation:author:2> dct:title "Steve Fisher" ;
+    <https://schema.org/familyName> "Fisher" ;
     ga:url "https://www.linkedin.com/in/steve-fisher-b9463a3/" .
 
 <urn:dprod:documentation:author:3> dct:title "Oli Bage" ;
+    <https://schema.org/familyName> "Bage" ;
     ga:url "https://www.linkedin.com/in/olibage/" .
 
 <urn:dprod:documentation:author:4> dct:title "Ben Clinch" ;
+    <https://schema.org/familyName> "Clinch" ;
     ga:url "https://www.linkedin.com/in/benclinch/" .
 
 <urn:dprod:documentation:author:5> dct:title "Carl Mattocks" ;
+    <https://schema.org/familyName> "Mattocks" ;
     ga:url "https://www.linkedin.com/in/carlmattocks/" .
 
 <urn:dprod:documentation:author:6> dct:title "Carlos Tubbax" ;
+    <https://schema.org/familyName> "Tubbax" ;
     ga:url "https://www.linkedin.com/in/carlos-tubbax-975058118/" .
 
 <urn:dprod:documentation:author:7> dct:title "Charles Ivie" ;
+    <https://schema.org/familyName> "Ivie" ;
     ga:url "https://www.linkedin.com/in/charlesivie/" .
 
 <urn:dprod:documentation:author:8> dct:title "Josh Cornejo" ;
+    <https://schema.org/familyName> "Cornejo" ;
     ga:url "https://www.linkedin.com/in/joshuacornejo/" .
 
 <urn:dprod:documentation:editor:0> dct:title "Tony Seale, Chair" ;
+    <https://schema.org/familyName> "Seale" ;
     ga:url "https://www.linkedin.com/in/tonyseale/" .
 
 <urn:dprod:documentation:editor:1> dct:title "Natasa Varytimou" ;
+    <https://schema.org/familyName> "Varytimou" ;
     ga:url "https://www.linkedin.com/in/natasavaritimou/" .
 
 <urn:dprod:documentation:editor:2> dct:title "Pete Rivett" ;
+    <https://schema.org/familyName> "Rivett" ;
     ga:url "https://www.linkedin.com/in/peterivett/" .
 
 <urn:dprod:documentation:editor:3> dct:title "Marcel Fröhlich" ;
+    <https://schema.org/familyName> "Fröhlich" ;
     ga:url "https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/" .
 
 <urn:dprod:documentation:editor:4> dct:title "Matthias Autrata" ;
+    <https://schema.org/familyName> "Autrata" ;
     ga:url "https://www.linkedin.com/in/matthiasautrata/" .
 
 <urn:dprod:documentation:editor:5> dct:title "Jacobus Geluk, Initiator" ;
+    <https://schema.org/familyName> "Geluk" ;
     ga:url "https://www.linkedin.com/in/jgeluk/" .
 
 <urn:dprod-showcase:example:contracts:collections-and-target-inheritance> ga:order 0 .
