@@ -44,7 +44,7 @@ In this example the Trading Data Team offers its Market Price Data product with 
 prohibition. The Analytics Team has accepted the offer for 2026; the contract names both parties and
 links to the offer it accepts.
 
-```
+```json example
   {
     "@context": [
       "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",

@@ -1,5 +1,6 @@
 """Source-owned Grapharch metadata preserves the develop specification links."""
 from pathlib import Path
+import json
 import re
 import unittest
 from rdflib import Graph, Namespace
@@ -16,6 +17,30 @@ class GrapharchMetadataTests(unittest.TestCase):
         self.assertNotIn('>\n> [!NOTE]', model)
         self.assertIn('> DPROD publishes two JSON-LD contexts', model)
         self.assertIn('> The following sections are driven by the Shapes', model)
+
+    def test_publication_json_examples_declare_their_language(self):
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        paths = sorted({str(path) for path in graph.objects(None, GA.sourcePath)
+                        if str(path).endswith('.md')})
+        checked = 0
+        for relative in paths:
+            body = (ROOT / relative).read_text()
+            for match in re.finditer(r'^```([^\n]*)\n(.*?)^```[ \t]*$', body,
+                                     re.MULTILINE | re.DOTALL):
+                info, code = match.groups()
+                try:
+                    value = json.loads(code)
+                except json.JSONDecodeError:
+                    continue
+                if not isinstance(value, (dict, list)):
+                    continue
+                checked += 1
+                language = info.split()[0] if info.split() else ''
+                self.assertIn(language, ('json', 'jsonld', 'json-ld'),
+                              f'{relative}: JSON example needs an explicit language')
+        self.assertGreater(checked, 1)
+        contracts = (ROOT / 'publication/standards/contracts-model.md').read_text()
+        self.assertIn('```json example\n', contracts)
 
     def test_ordered_header_preserves_people_and_publication_links(self):
         graph = Graph().parse(ROOT / 'publication/standards.ttl')
