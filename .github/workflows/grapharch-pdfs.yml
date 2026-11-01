@@ -14,7 +14,7 @@ concurrency:
 
 env:
   # Pin a reviewed GraphArch implementation until the next binary release.
-  GRAPHARCH_COMMIT: b875accc22c57279f20e750ca6c9f3983cf2d997
+  GRAPHARCH_COMMIT: 2f75d1b934e9ac0e3869bc453ef0f1f98f560b31
 
 jobs:
   editions:
@@ -34,7 +34,6 @@ jobs:
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
-          toolchain: nightly
           rust-src-dir: .grapharch-tool
       - name: Install native compiler dependencies
         run: sudo apt-get update && sudo apt-get install -y clang libclang-dev pkg-config libssl-dev
