@@ -82,13 +82,13 @@ Background reading on why formal semantics matter for AI—and why linking data 
 
 [Read the article](https://hyperight.com/beyond-the-hype-how-ontologies-unlock-the-potential-of-large-language-models-tony-seale-the-knowledge-graph-guy/)
 
-### OMG Standard with W3C Technologies
+## OMG Standard with W3C Technologies
 
 DPROD is an OMG standard built on established W3C technologies including DCAT, RDF, OWL, SHACL, and PROV. The specification includes:
 
-* •Complete ontology with classes and properties
-* •SHACL shapes for validation
-* •JSON-LD context for easy JSON integration
-* •Worked examples and best practices
+* Complete ontology with classes and properties
+* SHACL shapes for validation
+* JSON-LD context for easy JSON integration
+* Worked examples and best practices
 
 [View Specification](https://ekgf.org/dprod/spec-versions/) [OMG Public Comment Notice](https://www.omg.org/news/releases/pr2024/09-24-24.htm) [GitHub Repository](https://github.com/EKGF/dprod)

@@ -41,7 +41,8 @@ pipelines are unchanged.
 The generated artifact works as static files on Vercel or GitHub Pages; neither
 requires a Next.js project. Production cutover still requires preserving the
 `/dprod/` zone's specification rewrites, the live version service, SEO redirects,
-and the existing archived specification URLs. A build-time version inventory
+and the existing archived specification URLs. The current pilot is light-theme
+only; the existing project site's dark-mode toggle is not yet reproduced. A build-time version inventory
 with an explicit freshness policy can eventually replace that service.
 
 The project preview is retained as a CI artifact beside the two PDF editions.
