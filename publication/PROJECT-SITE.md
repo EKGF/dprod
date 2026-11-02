@@ -1,4 +1,4 @@
-# DPROD project-site pilot
+# DPROD project website
 
 The five public project pages are authored in `project-site/*.md`; their
 publication definition is `project-site.ttl`. GraphArch generates static HTML,
@@ -29,21 +29,51 @@ examples are retained. JSON and citation fences have explicit language metadata;
 timeline status/date separators and the community contact link are normalized.
 The source Next.js files remain in place until the pilot is reviewed.
 
-The pilot includes the home, why, concepts, adopt and roadmap routes. It does
-**not** replace the live specification-version service or cross-branch routing.
-Those currently query GitHub/Vercel on requests; the generated site links to that
-existing service, rather than publishing a stale list of branch deployments.
-The normative and development specification sites, downloads and PDF edition
-pipelines are unchanged.
+The source-owned pages include home, why, concepts, adopt and roadmap. A
+build-time version inventory discovers GitHub/Vercel publication versions and
+produces the specification-version page and its routing manifest from the same
+pinned documentation graph. The EKGF project theme supports a persistent light
+or dark preference and uses the operating system's preference initially.
+
+Frontmatter descriptions retain the current project's search descriptions. The
+website target supplies the public canonical base, `https://ekgf.org/dprod/`;
+GraphArch generates canonical/Open Graph metadata, a sitemap and robots file.
+Preview deployments intentionally keep those production canonical URLs.
 
 ## Hosting and migration boundary
 
 The generated artifact works as static files on Vercel or GitHub Pages; neither
-requires a Next.js project. Production cutover still requires preserving the
-`/dprod/` zone's specification rewrites, the live version service, SEO redirects,
-and the existing archived specification URLs. The current pilot is light-theme
-only; the existing project site's dark-mode toggle is not yet reproduced. A build-time version inventory
-with an explicit freshness policy can eventually replace that service.
+requires a Next.js project. The project preview is retained as a CI artifact
+beside the two PDF editions. The existing production Next.js deployment remains
+active until the static preview is verified; no production integration has been
+removed or switched by this workflow.
 
-The project preview is retained as a CI artifact beside the two PDF editions.
-This pilot does not remove or switch the existing production Next.js deployment.
+Remaining review work includes a complete preview browser/HTTP parity check,
+version-inventory freshness triggers, referencing `/dprod/sitemap.xml` from the
+main domain's root robots configuration, production routing cutover, and removing
+the old application after successful cutover. The generated 404 page currently
+uses a minimal document rather than the branded project shell.
+
+### Static deployment preview
+
+`publication/hosting.yml` assembles the generated project website with the
+existing Python specification output and frozen 1.0 archive. It emits Vercel's
+Build Output API directly, without Next.js or server functions. CI retains this
+portable artifact and deploys a separate preview; it does not promote that
+preview to production.
+
+The `/dprod/` mount matches the existing EKGF website proxy. `/dprod/spec/` and
+`/dprod/spec/develop/` serve the current specification; `/dprod/spec/main/` serves
+the byte-identical frozen 1.0 release. The archive keeps its existing slashless
+canonical URL. The contracts profile IRIs serve the published Turtle profile.
+Other version URLs redirect to the deployment observed in the generated version
+inventory, including versions omitted from the public listing.
+
+The artifact's `static/` tree is also usable on a static host. For a GitHub Pages
+project prefix, package with `--mount /` and publish that tree under the host's
+configured project path. Remote version redirects and explicit RDF media types
+remain hosting rules, so they require equivalent host routing configuration.
+
+Production still uses the existing site until the static preview's URLs, assets,
+version routing, and presentation have been verified. Removing that application
+and changing the production deployment is a separate, reviewable cutover.

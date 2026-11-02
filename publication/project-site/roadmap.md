@@ -1,5 +1,6 @@
 ---
 title: "Roadmap"
+description: "Where DPROD came from, what's in flight today, and how the OMG ballot process shapes the evolution of the standard."
 permalink: /roadmap/
 nav_order: 5
 grapharch:

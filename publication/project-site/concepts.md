@@ -1,5 +1,6 @@
 ---
 title: "Core Concepts"
+description: "The core concepts of the Data Product Ontology: Data Product, Ports (Data Services), Distributions & Datasets, and the use cases DPROD enables."
 permalink: /concepts/
 nav_order: 3
 grapharch:

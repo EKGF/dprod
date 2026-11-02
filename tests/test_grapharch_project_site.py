@@ -19,16 +19,19 @@ class ProjectSiteTests(unittest.TestCase):
             self.assertNotIn("<div", source)
             self.assertNotIn("className=", source)
             for target in re.findall(r"\]\(([^)]+)\)", source):
-                if target.endswith(".md"):
+                if target.endswith(".md") and target != "spec-versions.md":
                     self.assertTrue((CONTENT / target).is_file(), target)
 
-    def test_current_specification_service_is_not_replaced_by_a_stale_snapshot(self):
+    def test_specification_inventory_is_collected_and_retained_in_the_graph(self):
         home = (CONTENT / "index.md").read_text()
-        self.assertIn("https://ekgf.org/dprod/spec-versions/", home)
+        self.assertIn("spec-versions.md", home)
         self.assertFalse((CONTENT / "spec-versions.md").exists())
         configuration = (ROOT / "publication" / "project-site.ttl").read_text()
-        self.assertIn('ga:style "ekgf-project"', configuration)
-        self.assertIn('ga:url "https://ekgf.org/dprod/spec-versions/"', configuration)
+        self.assertIn('ga:kind "repository-publications"', configuration)
+        self.assertIn('ga:kind "publication-inventory"', configuration)
+        self.assertIn('ga:url "spec-versions/"', configuration)
+        self.assertIn('ga:thisVersion <https://ekgf.org/dprod/>', configuration)
+        self.assertIn('ga:unlistedBranchPrefix "dependabot/"', configuration)
 
     def test_ci_retains_a_static_project_preview(self):
         workflow = (ROOT / ".github" / "workflows" / "grapharch-pdfs.yml").read_text()

@@ -1,0 +1,26 @@
+# Assemble generated artifacts; no website application code is required.
+version: 1
+mount: /dprod
+site: ../output/grapharch-project-site/site
+static_trees:
+  - source: ../dist
+    destination: spec
+  - source: ../site/public/spec/archive
+    destination: spec/archive
+directory_aliases:
+  - path: spec/develop
+    target: spec
+  - path: spec/main
+    target: spec/archive/1.0
+file_aliases:
+  - path: spec/archive/1.0
+    target: spec/archive/1.0/index.html
+    content_type: text/html; charset=utf-8
+  - path: spec/contracts/profile/
+    target: spec/dprod-contracts-prof.ttl
+    content_type: text/turtle
+  - path: spec/develop/contracts/profile/
+    target: spec/develop/dprod-contracts-prof.ttl
+    content_type: text/turtle
+inventory: ../output/grapharch-project-site/site/publication-versions.json
+version_path: spec

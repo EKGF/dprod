@@ -1,9 +1,12 @@
 @prefix ga: <https://ekgf.org/ontology/grapharch#> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 
 <urn:dprod:project-site> a ga:Project ;
     dct:title "DPROD" ;
     ga:repository <https://github.com/EKGF/dprod> ;
+    ga:collector <urn:dprod:project-site:version-collector> ;
     ga:scope <urn:dprod:project-site:scope> ;
     ga:target <urn:dprod:project-site:website> .
 <urn:dprod:project-site:scope> a ga:Scope .
@@ -11,9 +14,35 @@
     dct:title "DPROD project website" ;
     ga:scope <urn:dprod:project-site:scope> ;
     ga:profile <urn:dprod:project-site:profile> ;
+    ga:thisVersion <https://ekgf.org/dprod/> ;
     ga:renderer "website" ; ga:destination "site" .
 <urn:dprod:project-site:profile> a ga:Profile ;
     ga:style "ekgf-project" ;
     ga:headerLink <urn:dprod:project-site:specification> .
 <urn:dprod:project-site:specification> dct:title "Specification" ;
-    ga:url "https://ekgf.org/dprod/spec-versions/" ; ga:order 1 .
+    ga:url "spec-versions/" ; ga:order 1 .
+
+<urn:dprod:project-site:version-collector> a ga:Collector ;
+    ga:kind "repository-publications" ;
+    ga:source "https://github.com/EKGF/dprod" ;
+    ga:subject <urn:dprod:project-site:versions> ;
+    ga:publicationPath "dprod/spec/" ;
+    ga:unlistedBranchPrefix "dependabot/" .
+<urn:dprod:project-site:versions> dct:hasPart
+    <urn:dprod:project-site:version:main>, <urn:dprod:project-site:version:develop> .
+<urn:dprod:project-site:version:main> a doap:Version ;
+    dct:title "DPROD 1.0 (Beta)" ; dct:identifier "main" ;
+    doap:branch "main" ; dcat:accessURL <https://ekgf.org/dprod/spec/main/> ;
+    ga:advertised true .
+<urn:dprod:project-site:version:develop> a doap:Version ;
+    dct:title "Develop (latest)" ; dct:identifier "develop" ;
+    doap:branch "develop" ; dcat:accessURL <https://ekgf.org/dprod/spec/develop/> ;
+    ga:advertised true .
+<urn:dprod:project-site:versions-page> a ga:Documentor ;
+    ga:project <urn:dprod:project-site> ; ga:kind "publication-inventory" ;
+    ga:subject <urn:dprod:project-site:versions> ;
+    ga:fragment <urn:dprod:project-site:page:versions> ;
+    dct:title "Specification versions" ; ga:route "spec-versions/" ;
+    ga:sourcePath "spec-versions.md" ; ga:navigationOrder 6 .
+<urn:dprod:project-site:page:versions> dct:description
+    "All available versions of the DPROD specification: the frozen OMG 1.0, the current develop draft, and every in-flight ballot branch." .

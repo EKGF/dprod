@@ -1,5 +1,6 @@
 ---
 title: "Why DPROD?"
+description: "Why the OMG developed the Data Product Ontology: to solve inconsistent metadata, limited discoverability, and interoperability challenges in decentralized data architectures."
 permalink: /why/
 nav_order: 2
 grapharch:

@@ -1,5 +1,6 @@
 ---
 title: "Get Started"
+description: "How to reference the Data Product Ontology in your own work: the JSON-LD @context, how to cite the OMG standard, and where to find worked examples."
 permalink: /adopt/
 nav_order: 4
 grapharch:

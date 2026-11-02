@@ -1,5 +1,6 @@
 ---
 title: "Data Product Ontology"
+description: "An OMG standard for describing Data Products using W3C Linked Data technologies, enabling interoperability and discoverability in decentralized data ecosystems."
 permalink: /
 nav_order: 1
 grapharch:
@@ -12,7 +13,7 @@ OMG Standard
 
 An OMG standard for describing Data Products using W3C Linked Data technologies, enabling interoperability and discoverability in decentralized data ecosystems
 
-[View Specification](https://ekgf.org/dprod/spec-versions/) [Get Started](adopt.md)
+[View Specification](spec-versions.md) [Get Started](adopt.md)
 
 ## What is DPROD?
 
@@ -91,4 +92,4 @@ DPROD is an OMG standard built on established W3C technologies including DCAT, R
 * JSON-LD context for easy JSON integration
 * Worked examples and best practices
 
-[View Specification](https://ekgf.org/dprod/spec-versions/) [OMG Public Comment Notice](https://www.omg.org/news/releases/pr2024/09-24-24.htm) [GitHub Repository](https://github.com/EKGF/dprod)
+[View Specification](spec-versions.md) [OMG Public Comment Notice](https://www.omg.org/news/releases/pr2024/09-24-24.htm) [GitHub Repository](https://github.com/EKGF/dprod)
