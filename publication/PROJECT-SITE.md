@@ -14,6 +14,11 @@ grapharch publication build-site \
   --output-root output/grapharch-project-site
 ```
 
+The build-time version inventory requires `GITHUB_TOKEN` (repository pull-request
+read access), `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. CI provides
+these from its configured identity and secrets; credentials are not retained in
+the generated graph or website.
+
 Serve the resulting `output/grapharch-project-site/site/` directory at any static
 host. Internal links and bundled fonts/styles are relative, so it also works
 under a GitHub Pages project path. The publication profile chooses the reusable
@@ -32,7 +37,11 @@ The source Next.js files remain in place until the pilot is reviewed.
 The source-owned pages include home, why, concepts, adopt and roadmap. A
 build-time version inventory discovers GitHub/Vercel publication versions and
 produces the specification-version page and its routing manifest from the same
-pinned documentation graph. The EKGF project theme supports a persistent light
+pinned documentation graph. Source-owned `ga:order` values keep the frozen release
+and develop draft before previews. The page displays a readable UTC observation
+time below the version-list heading. CI retains the native website KG alongside
+the deployment for rendering without the original sources or API credentials.
+The EKGF project theme supports a persistent light
 or dark preference and uses the operating system's preference initially.
 
 Frontmatter descriptions retain the current project's search descriptions. The

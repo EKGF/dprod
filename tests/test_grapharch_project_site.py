@@ -32,6 +32,8 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn('ga:url "spec-versions/"', configuration)
         self.assertIn('ga:thisVersion <https://ekgf.org/dprod/>', configuration)
         self.assertIn('ga:unlistedBranchPrefix "dependabot/"', configuration)
+        self.assertIn('ga:order 1', configuration)
+        self.assertIn('ga:order 2', configuration)
 
     def test_ci_retains_a_static_project_preview(self):
         workflow = (ROOT / ".github" / "workflows" / "grapharch-pdfs.yml").read_text()

@@ -15,7 +15,7 @@ concurrency:
 
 env:
   # Pin a reviewed GraphArch implementation until the next binary release.
-  GRAPHARCH_COMMIT: 0ed66009257dd9c40362cf5427abeb385db7fa06
+  GRAPHARCH_COMMIT: 0ca0b02e7d29d2046ae42d48d7826aaa324ff88a
 
 jobs:
   editions:
@@ -117,17 +117,18 @@ jobs:
           fi
       - name: Verify the deployed preview routes
         working-directory: .
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           if preview_url="$(cat .vercel/preview-url.txt)"; then :; else exit 1; fi
           if mkdir .vercel/smoke; then :; else exit 1; fi
           for route in /dprod/ /dprod/why/ /dprod/concepts/ /dprod/adopt/ /dprod/roadmap/ /dprod/spec-versions/ /dprod/spec/ /dprod/spec/main/ /dprod/spec/develop/ /dprod/spec/archive/1.0 /dprod/spec/contracts/profile/ /dprod/spec/develop/contracts/profile/ /dprod/spec/main/assets/DPROD.drawio.svg /dprod/spec/develop/assets/DPROD.drawio.svg; do
             if name="$(printf '%s' "$route" | tr '/.' '__')"; then :; else exit 1; fi
-            if npx --yes vercel@54.21.1 curl "$route" --deployment "$preview_url" --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" -- --fail --silent --show-error --write-out '%{http_code} %{content_type}\n' --output ".vercel/smoke/$name.body" > ".vercel/smoke/$name.meta"; then
-              printf 'Verified %s\n' "$route"
+            if curl "$preview_url$route" --fail --silent --show-error --write-out '%{http_code} %{content_type}\n' --output ".vercel/smoke/$name.body" > ".vercel/smoke/$name.meta"; then
+              if read -r status media_type < ".vercel/smoke/$name.meta"; then :; else exit 1; fi
+            if [ "$status" != 200 ]; then
+              printf 'Public preview route returned %s: %s\n' "$status" "$route" >&2
+              exit 1
+            fi
+            printf 'Verified %s (%s)\n' "$route" "$media_type"
             else
               printf 'Preview route failed: %s\n' "$route" >&2
               exit 1

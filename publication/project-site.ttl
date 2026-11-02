@@ -31,11 +31,11 @@
 <urn:dprod:project-site:versions> dct:hasPart
     <urn:dprod:project-site:version:main>, <urn:dprod:project-site:version:develop> .
 <urn:dprod:project-site:version:main> a doap:Version ;
-    dct:title "DPROD 1.0 (Beta)" ; dct:identifier "main" ;
+    ga:order 1 ; dct:title "DPROD 1.0 (Beta)" ; dct:identifier "main" ;
     doap:branch "main" ; dcat:accessURL <https://ekgf.org/dprod/spec/main/> ;
     ga:advertised true .
 <urn:dprod:project-site:version:develop> a doap:Version ;
-    dct:title "Develop (latest)" ; dct:identifier "develop" ;
+    ga:order 2 ; dct:title "Develop (latest)" ; dct:identifier "develop" ;
     doap:branch "develop" ; dcat:accessURL <https://ekgf.org/dprod/spec/develop/> ;
     ga:advertised true .
 <urn:dprod:project-site:versions-page> a ga:Documentor ;
