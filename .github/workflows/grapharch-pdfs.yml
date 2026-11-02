@@ -14,7 +14,7 @@ concurrency:
 
 env:
   # Pin a reviewed GraphArch implementation until the next binary release.
-  GRAPHARCH_COMMIT: 92312e24d4e30f7760563b07856158439232ac66
+  GRAPHARCH_COMMIT: b0ce95fa44f778bee8089499fc38fff4fd389cd2
 
 jobs:
   editions:
@@ -53,6 +53,20 @@ jobs:
           --source-revision "$GITHUB_SHA"
           --grapharch-revision "$GRAPHARCH_COMMIT"
           --output output/grapharch-editions
+      - name: Generate the source-owned project website preview
+        run: >-
+          .grapharch-tool/target/release/grapharch publication build-site
+          --source publication/project-site
+          --definitions publication/project-site.ttl
+          --project urn:dprod:project-site
+          --target urn:dprod:project-site:website
+          --output-root output/grapharch-project-site
+      - name: Retain the static project website preview
+        uses: actions/upload-artifact@v6
+        with:
+          name: dprod-project-website-${{ github.sha }}
+          path: output/grapharch-project-site/site/
+          if-no-files-found: error
       - name: Retain the EKGF community edition
         uses: actions/upload-artifact@v6
         with:

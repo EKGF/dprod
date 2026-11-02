@@ -1,0 +1,19 @@
+@prefix ga: <https://ekgf.org/ontology/grapharch#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+<urn:dprod:project-site> a ga:Project ;
+    dct:title "DPROD" ;
+    ga:repository <https://github.com/EKGF/dprod> ;
+    ga:scope <urn:dprod:project-site:scope> ;
+    ga:target <urn:dprod:project-site:website> .
+<urn:dprod:project-site:scope> a ga:Scope .
+<urn:dprod:project-site:website> a ga:Target ;
+    dct:title "DPROD project website" ;
+    ga:scope <urn:dprod:project-site:scope> ;
+    ga:profile <urn:dprod:project-site:profile> ;
+    ga:renderer "website" ; ga:destination "site" .
+<urn:dprod:project-site:profile> a ga:Profile ;
+    ga:style "ekgf-project" ;
+    ga:headerLink <urn:dprod:project-site:specification> .
+<urn:dprod:project-site:specification> dct:title "Specification" ;
+    ga:url "https://ekgf.org/dprod/spec-versions/" ; ga:order 1 .
