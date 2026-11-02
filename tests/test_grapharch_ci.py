@@ -1,6 +1,7 @@
 """CI compiles a pinned generator and documents the exact DPROD revision."""
 import importlib.util
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -29,6 +30,18 @@ class GrapharchCITests(unittest.TestCase):
         for invalid in ('develop', 'main', 'abc', 'x' * 40, '0' * 40):
             with self.assertRaises(ValueError):
                 module.require_commit(invalid)
+
+    def test_static_preview_uses_the_existing_vercel_project_root(self):
+        text = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
+        deploy = text.split('- name: Deploy a reviewable static preview', 1)[1].split('- name:', 1)[0]
+        directory = re.search(r'working-directory: (.+)', deploy)
+        deploy_root = ROOT / (directory.group(1).strip() if directory else '.')
+        # The active Vercel project has rootDirectory=site. Prebuilt deployments
+        # still validate that directory; deployment must preserve its source root.
+        self.assertTrue((deploy_root / 'site').is_dir())
+        package = text.split('- name: Package the project website', 1)[1].split('- name:', 1)[0]
+        package_root = ROOT / re.search(r'--output-root (\S+)', package).group(1)
+        self.assertEqual(package_root.resolve(), deploy_root.resolve())
 
     def test_workflow_uploads_two_named_editions_from_pinned_grapharch(self):
         text = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()

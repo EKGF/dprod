@@ -79,16 +79,16 @@ jobs:
         run: >-
           .grapharch-tool/target/release/grapharch publication package-site
           --config publication/hosting.yml
-          --output-root output/grapharch-deployment
+          --output-root .
       - name: Verify frozen specification bytes were preserved
         run: |
-          if diff --recursive --brief site/public/spec/archive output/grapharch-deployment/.vercel/output/static/dprod/spec/archive; then
+          if diff --recursive --brief site/public/spec/archive .vercel/output/static/dprod/spec/archive; then
             printf 'Frozen specification archive preserved byte for byte\n'
           else
             printf 'Frozen specification archive changed during packaging\n' >&2
             exit 1
           fi
-          if diff --recursive --brief site/public/spec/archive/1.0 output/grapharch-deployment/.vercel/output/static/dprod/spec/main; then
+          if diff --recursive --brief site/public/spec/archive/1.0 .vercel/output/static/dprod/spec/main; then
             printf 'Main specification alias preserves the frozen release\n'
           else
             printf 'Main specification alias differs from the frozen release\n' >&2
@@ -98,42 +98,42 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: dprod-static-deployment-${{ github.sha }}
-          path: output/grapharch-deployment/.vercel/output/
+          path: .vercel/output/
           include-hidden-files: true
           if-no-files-found: error
       - name: Deploy a reviewable static preview
-        working-directory: output/grapharch-deployment
+        working-directory: .
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          if npx --yes vercel@54.21.1 deploy --prebuilt --yes --token "$VERCEL_TOKEN" > preview-url.txt; then
-            if preview_url="$(cat preview-url.txt)"; then :; else exit 1; fi
+          if npx --yes vercel@54.21.1 deploy --prebuilt --yes --token "$VERCEL_TOKEN" > .vercel/preview-url.txt; then
+            if preview_url="$(cat .vercel/preview-url.txt)"; then :; else exit 1; fi
             if printf 'Static preview: %s/dprod/\n' "$preview_url" >> "$GITHUB_STEP_SUMMARY"; then :; else exit 1; fi
           else
             printf 'Static preview deployment failed\n' >&2
             exit 1
           fi
       - name: Verify the deployed preview routes
-        working-directory: output/grapharch-deployment
+        working-directory: .
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          if preview_url="$(cat preview-url.txt)"; then :; else exit 1; fi
-          if mkdir smoke; then :; else exit 1; fi
+          if preview_url="$(cat .vercel/preview-url.txt)"; then :; else exit 1; fi
+          if mkdir .vercel/smoke; then :; else exit 1; fi
           for route in /dprod/ /dprod/why/ /dprod/concepts/ /dprod/adopt/ /dprod/roadmap/ /dprod/spec-versions/ /dprod/spec/ /dprod/spec/main/ /dprod/spec/develop/ /dprod/spec/archive/1.0 /dprod/spec/contracts/profile/ /dprod/spec/develop/contracts/profile/ /dprod/spec/main/assets/DPROD.drawio.svg /dprod/spec/develop/assets/DPROD.drawio.svg; do
             if name="$(printf '%s' "$route" | tr '/.' '__')"; then :; else exit 1; fi
-            if npx --yes vercel@54.21.1 curl "$route" --deployment "$preview_url" --token "$VERCEL_TOKEN" -- --fail --silent --show-error --write-out '%{http_code} %{content_type}\n' --output "smoke/$name.body" > "smoke/$name.meta"; then
+            if npx --yes vercel@54.21.1 curl "$route" --deployment "$preview_url" --token "$VERCEL_TOKEN" -- --fail --silent --show-error --write-out '%{http_code} %{content_type}\n' --output ".vercel/smoke/$name.body" > ".vercel/smoke/$name.meta"; then
               printf 'Verified %s\n' "$route"
             else
               printf 'Preview route failed: %s\n' "$route" >&2
               exit 1
             fi
           done
-          if cmp ../../dprod-contracts/dprod-contracts-prof.ttl smoke/_dprod_spec_contracts_profile_.body; then :; else
+          if cmp dprod-contracts/dprod-contracts-prof.ttl .vercel/smoke/_dprod_spec_contracts_profile_.body; then :; else
             printf 'Profile IRI did not return the exact RDF artifact\n' >&2
             exit 1
           fi
@@ -142,13 +142,13 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: dprod-static-http-${{ github.sha }}
-          path: output/grapharch-deployment/smoke/
+          path: .vercel/smoke/
           if-no-files-found: warn
       - name: Retain the preview deployment address
         uses: actions/upload-artifact@v6
         with:
           name: dprod-static-preview-${{ github.sha }}
-          path: output/grapharch-deployment/preview-url.txt
+          path: .vercel/preview-url.txt
           if-no-files-found: error
       - name: Retain the static project website preview
         uses: actions/upload-artifact@v6
