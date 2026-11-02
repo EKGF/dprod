@@ -37,6 +37,7 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn("--definitions publication/project-site.ttl", workflow)
         self.assertIn("name: dprod-project-website-${{ github.sha }}", workflow)
         self.assertIn("path: output/grapharch-project-site/site/", workflow)
+        self.assertIn("include-hidden-files: true", workflow)
 
     def test_code_examples_have_explicit_language(self):
         source = (CONTENT / "adopt.md").read_text()

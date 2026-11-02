@@ -66,6 +66,7 @@ jobs:
         with:
           name: dprod-project-website-${{ github.sha }}
           path: output/grapharch-project-site/site/
+          include-hidden-files: true
           if-no-files-found: error
       - name: Retain the EKGF community edition
         uses: actions/upload-artifact@v6
