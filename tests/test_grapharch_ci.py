@@ -43,6 +43,13 @@ class GrapharchCITests(unittest.TestCase):
         package_root = ROOT / re.search(r'--output-root (\S+)', package).group(1)
         self.assertEqual(package_root.resolve(), deploy_root.resolve())
 
+    def test_preview_checks_target_the_configured_vercel_team(self):
+        text = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
+        smoke = text.split('- name: Verify the deployed preview routes', 1)[1].split('- name:', 1)[0]
+        self.assertIn('--scope "$VERCEL_ORG_ID"', smoke)
+        evidence = text.split('- name: Retain machine-readable build evidence', 1)[1]
+        self.assertIn('output/grapharch-project-site/documentation.nq', evidence)
+
     def test_workflow_uploads_two_named_editions_from_pinned_grapharch(self):
         text = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
         self.assertRegex(text, r'GRAPHARCH_COMMIT: [0-9a-f]{40}')
