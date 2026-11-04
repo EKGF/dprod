@@ -5,6 +5,7 @@ permalink: /
 nav_order: 1
 grapharch:
   subject: urn:dprod:project-site:page:home
+  panel_sections: [what-is-dprod]
 ---
 
 OMG Standard

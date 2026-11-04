@@ -44,6 +44,11 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn("path: output/grapharch-project-site/site/", workflow)
         self.assertIn("include-hidden-files: true", workflow)
 
+    def test_home_overview_panel_is_selected_in_source_content(self):
+        source = (CONTENT / "index.md").read_text()
+        self.assertIn("  panel_sections: [what-is-dprod]\n", source)
+        self.assertIn("## What is DPROD?", source)
+
     def test_code_examples_have_explicit_language(self):
         source = (CONTENT / "adopt.md").read_text()
         self.assertIn("```json\n", source)
