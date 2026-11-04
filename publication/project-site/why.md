@@ -13,6 +13,11 @@ grapharch:
     working-group-leadership: urn:dprod:content:why:working-group-leadership
     omg-request-for-comments: urn:dprod:content:why:omg-request-for-comments
     built-on-w3c-standards: urn:dprod:content:why:built-on-w3c-standards
+    dcat: urn:dprod:content:why:dcat
+    rdf: urn:dprod:content:why:rdf
+    owl: urn:dprod:content:why:owl
+    shacl: urn:dprod:content:why:shacl
+    prov: urn:dprod:content:why:prov
 ---
 
 Motivation
@@ -53,24 +58,34 @@ OMG published the DPROD proposed specification for public comment as part of its
 
 DPROD does not reinvent the wheel. It profiles a stack of established W3C standards so data products inherit decades of work on semantics, validation, and interoperability.
 
-[DCAT
+### [DCAT](https://www.w3.org/TR/vocab-dcat-3/)
 
-Data Catalog Vocabulary
+**Data Catalog Vocabulary**
 
-The W3C vocabulary DPROD extends. Provides the core building blocks for describing datasets, distributions, and data services — which DPROD profiles and specialises for data products.](https://www.w3.org/TR/vocab-dcat-3/) [RDF
+The W3C vocabulary DPROD extends. Provides the core building blocks for describing datasets, distributions, and data services — which DPROD profiles and specialises for data products.
 
-Resource Description Framework
+ ### [RDF](https://www.w3.org/RDF/)
 
-The graph data model that lets every DPROD concept be identified by a URI and linked to concepts from other vocabularies without translation layers.](https://www.w3.org/RDF/) [OWL
+**Resource Description Framework**
 
-Web Ontology Language
+The graph data model that lets every DPROD concept be identified by a URI and linked to concepts from other vocabularies without translation layers.
 
-The formal logic layer DPROD uses to define classes and properties with precise semantics — so tools can reason about data products, not just store records about them.](https://www.w3.org/OWL/) [SHACL
+ ### [OWL](https://www.w3.org/OWL/)
 
-Shapes Constraint Language
+**Web Ontology Language**
 
-The validation layer. DPROD ships SHACL shapes that let any tool verify whether a data product description conforms to the standard — no custom validators required.](https://www.w3.org/TR/shacl/) [PROV
+The formal logic layer DPROD uses to define classes and properties with precise semantics — so tools can reason about data products, not just store records about them.
 
-Provenance Vocabulary
+ ### [SHACL](https://www.w3.org/TR/shacl/)
 
-The lineage layer. PROV lets DPROD describe how data products were produced, by whom, and from which inputs — essential for trust, audit, and compliance.](https://www.w3.org/TR/prov-o/)
+**Shapes Constraint Language**
+
+The validation layer. DPROD ships SHACL shapes that let any tool verify whether a data product description conforms to the standard — no custom validators required.
+
+ ### [PROV](https://www.w3.org/TR/prov-o/)
+
+**Provenance Vocabulary**
+
+The lineage layer. PROV lets DPROD describe how data products were produced, by whom, and from which inputs — essential for trust, audit, and compliance.
+
+

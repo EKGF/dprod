@@ -72,3 +72,9 @@ class OverviewPublication(unittest.TestCase):
         graph = Graph().parse(ROOT / 'publication/standards.ttl')
         subject = URIRef('urn:dprod:documentation:conformance')
         self.assertEqual(str(graph.value(subject, GA.url)), 'https://ekgf.org/dprod/spec/develop/#conformance')
+
+    def test_canonical_standards_use_valid_markdown_sections(self):
+        content = (ROOT / 'publication/project-site/why.md').read_text()
+        for name in ['DCAT', 'RDF', 'OWL', 'SHACL', 'PROV']:
+            self.assertIn('### [' + name + '](', content)
+            self.assertNotIn('[' + name + '\n\n', content)

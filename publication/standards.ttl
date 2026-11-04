@@ -1433,47 +1433,42 @@ doc:project ga:collector <urn:dprod-showcase:source:overview:09-reading> .
     ga:source "publication/overview/09-reading.md" ; ga:sourcePath "publication/overview/09-reading.md" ;
     ga:fragment <urn:dprod-showcase:fragment:overview:09-reading> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:intro> .
-<urn:dprod-showcase:placement:overview:intro> a ga:Placement ; ga:order 1 ;
+<urn:dprod-showcase:placement:overview:intro> a ga:Placement ; ga:order 10 ;
     ga:component <urn:dprod-showcase:component:overview:intro> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:intro> a ga:Component ; dct:title "About this guide" ;
-    ga:fragment <urn:dprod-showcase:fragment:overview:01-brief> .
-doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:home> .
-<urn:dprod-showcase:placement:overview:home> a ga:Placement ; ga:order 2 ;
-    ga:component <urn:dprod-showcase:component:overview:home> ; ga:sectionKind "section" .
-<urn:dprod-showcase:component:overview:home> a ga:Component ; dct:title "What is DPROD?" ;
-    ga:fragment <urn:dprod:content:index:what-is-dprod> .
+    ga:fragment <urn:dprod-showcase:fragment:overview:01-brief>, <urn:dprod:content:index:what-is-dprod> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:why> .
-<urn:dprod-showcase:placement:overview:why> a ga:Placement ; ga:order 3 ;
+<urn:dprod-showcase:placement:overview:why> a ga:Placement ; ga:order 20 ;
     ga:component <urn:dprod-showcase:component:overview:why> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:why> a ga:Component ; dct:title "Why shared meaning matters" ;
-    ga:fragment <urn:dprod:content:why:inconsistent-metadata>, <urn:dprod:content:why:limited-discoverability>, <urn:dprod:content:why:interoperability-friction>, <urn:dprod:content:why:working-group-leadership>, <urn:dprod:content:why:omg-request-for-comments>, <urn:dprod:content:why:built-on-w3c-standards> .
+    ga:fragment <urn:dprod:content:why:inconsistent-metadata>, <urn:dprod:content:why:limited-discoverability>, <urn:dprod:content:why:interoperability-friction>, <urn:dprod:content:why:working-group-leadership>, <urn:dprod:content:why:omg-request-for-comments> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:concepts> .
-<urn:dprod-showcase:placement:overview:concepts> a ga:Placement ; ga:order 4 ;
+<urn:dprod-showcase:placement:overview:concepts> a ga:Placement ; ga:order 40 ;
     ga:component <urn:dprod-showcase:component:overview:concepts> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:concepts> a ga:Component ; dct:title "Four building blocks" ;
     ga:fragment <urn:dprod:content:concepts:core-concepts>, <urn:dprod:content:concepts:data-product>, <urn:dprod:content:concepts:ports-data-services>, <urn:dprod:content:concepts:distributions>, <urn:dprod:content:concepts:datasets> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:example> .
-<urn:dprod-showcase:placement:overview:example> a ga:Placement ; ga:order 5 ;
+<urn:dprod-showcase:placement:overview:example> a ga:Placement ; ga:order 50 ;
     ga:component <urn:dprod-showcase:component:overview:example> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:example> a ga:Component ; dct:title "A product in practice" ;
     ga:fragment <urn:dprod:content:model:uk-bonds> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:contracts> .
-<urn:dprod-showcase:placement:overview:contracts> a ga:Placement ; ga:order 6 ;
+<urn:dprod-showcase:placement:overview:contracts> a ga:Placement ; ga:order 60 ;
     ga:component <urn:dprod-showcase:component:overview:contracts> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:contracts> a ga:Component ; dct:title "When terms need to be explicit" ;
     ga:fragment <urn:dprod:content:contracts:purpose>, <urn:dprod:content:contracts:optional> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:adopt> .
-<urn:dprod-showcase:placement:overview:adopt> a ga:Placement ; ga:order 7 ;
+<urn:dprod-showcase:placement:overview:adopt> a ga:Placement ; ga:order 70 ;
     ga:component <urn:dprod-showcase:component:overview:adopt> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:adopt> a ga:Component ; dct:title "Getting started" ;
     ga:fragment <urn:dprod:content:adopt:1-reference-the-json-ld-context>, <urn:dprod:content:adopt:2-study-the-worked-examples>, <urn:dprod:content:adopt:3-validate-with-the-shacl-shapes>, <urn:dprod:content:adopt:4-cite-the-omg-standard> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:roadmap> .
-<urn:dprod-showcase:placement:overview:roadmap> a ga:Placement ; ga:order 8 ;
+<urn:dprod-showcase:placement:overview:roadmap> a ga:Placement ; ga:order 80 ;
     ga:component <urn:dprod-showcase:component:overview:roadmap> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:roadmap> a ga:Component ; dct:title "How DPROD evolves" ;
-    ga:fragment <urn:dprod:content:roadmap> .
+    ga:fragment <urn:dprod:content:roadmap:introduction>, <urn:dprod:content:roadmap:timeline> .
 doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:reading> .
-<urn:dprod-showcase:placement:overview:reading> a ga:Placement ; ga:order 9 ;
+<urn:dprod-showcase:placement:overview:reading> a ga:Placement ; ga:order 90 ;
     ga:component <urn:dprod-showcase:component:overview:reading> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:reading> a ga:Component ; dct:title "Where to go next" ;
     ga:fragment <urn:dprod-showcase:fragment:overview:09-reading> .
@@ -1482,3 +1477,9 @@ doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:reading
 # public reference when another profile selects a fragment that cites it.
 <urn:dprod:documentation:conformance> a ga:ExternalReference ;
     ga:url "https://ekgf.org/dprod/spec/develop/#conformance" .
+
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:standards> .
+<urn:dprod-showcase:placement:overview:standards> a ga:Placement ; ga:order 35 ;
+    ga:component <urn:dprod-showcase:component:overview:standards> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:standards> a ga:Component ; dct:title "Standards that work together" ;
+    ga:fragment <urn:dprod:content:why:built-on-w3c-standards>, <urn:dprod:content:why:dcat>, <urn:dprod:content:why:rdf>, <urn:dprod:content:why:owl>, <urn:dprod:content:why:shacl>, <urn:dprod:content:why:prov> .

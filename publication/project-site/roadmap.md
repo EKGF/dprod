@@ -6,6 +6,9 @@ nav_order: 5
 grapharch:
   subject: urn:dprod:project-site:page:roadmap
   fragment: urn:dprod:content:roadmap
+  fragments:
+    roadmap: urn:dprod:content:roadmap:introduction
+    timeline: urn:dprod:content:roadmap:timeline
 ---
 
 Work in progress
@@ -18,22 +21,22 @@ DPROD evolves through formal OMG ballots. Here is where it has been, where it is
 
 1. Done — 2024
 
-   ### DPROD 1.0 published for public comment
+   **DPROD 1.0 published for public comment**
 
    OMG released the DPROD proposed specification as part of its standardisation process. The 1.0 version is frozen and serves as the official reference point.
 2. Done — 2024
 
-   ### OMG Request for Comments completed
+   **OMG Request for Comments completed**
 
    Community feedback gathered through the OMG RFC cycle informed a backlog of improvements now being addressed in subsequent ballots.
 3. In progress — Ballot 4
 
-   ### Modelling and clarity improvements
+   **Modelling and clarity improvements**
 
    Fixes to class identifiers in the generated spec, protocol modelling, lifecycle status values, SHACL shape hygiene, and worked examples for data rights. Approved individual issues are bundled for a single vote.
 4. Planned — Later ballots
 
-   ### Deeper alignment and new examples
+   **Deeper alignment and new examples**
 
    More worked examples, tighter alignment with neighbouring OMG and W3C vocabularies, and tooling improvements. Priorities are set by the working group and driven by community issues.
 
