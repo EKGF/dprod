@@ -62,3 +62,8 @@ class OverviewPublication(unittest.TestCase):
         self.assertIn('Data Contracts', content)
         self.assertNotIn('following provenance record', content)
         self.assertNotIn('Recent committers', content)
+
+    def test_shared_pages_link_to_generated_inventory_by_public_route(self):
+        content = (ROOT / 'publication/project-site/index.md').read_text()
+        self.assertNotIn('](spec-versions.md)', content)
+        self.assertIn('https://ekgf.org/dprod/spec-versions/', content)

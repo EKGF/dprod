@@ -10,7 +10,7 @@ CONTENT = ROOT / "publication" / "project-site"
 class ProjectSiteTests(unittest.TestCase):
     def test_static_routes_are_source_owned_markdown(self):
         routes = {"index.md": "/", "why.md": "/why/", "concepts.md": "/concepts/", "adopt.md": "/adopt/", "roadmap.md": "/roadmap/"}
-        self.assertEqual(set(path.name for path in CONTENT.iterdir()), set(routes))
+        self.assertEqual(set(path.name for path in CONTENT.iterdir()), set(routes) | {"assets"})
         for name, route in routes.items():
             source = (CONTENT / name).read_text()
             self.assertIn(f"permalink: {route}\n", source)
@@ -24,7 +24,7 @@ class ProjectSiteTests(unittest.TestCase):
 
     def test_specification_inventory_is_collected_and_retained_in_the_graph(self):
         home = (CONTENT / "index.md").read_text()
-        self.assertIn("spec-versions.md", home)
+        self.assertIn("https://ekgf.org/dprod/spec-versions/", home)
         self.assertFalse((CONTENT / "spec-versions.md").exists())
         configuration = (ROOT / "publication" / "project-site.ttl").read_text()
         self.assertIn('ga:kind "repository-publications"', configuration)
