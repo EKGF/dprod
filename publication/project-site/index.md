@@ -9,6 +9,12 @@ grapharch:
   fragments:
     what-is-dprod: urn:dprod:content:index:what-is-dprod
   panel_sections: [what-is-dprod]
+  feature_sections: [key-benefits]
+  card_icons:
+    decentralized-architecture: {name: network, tone: primary}
+    standardized-metadata: {name: file-json, tone: accent}
+    input-output-ports: {name: git-branch, tone: primary}
+    data-governance: {name: shield, tone: accent}
 ---
 
 OMG Standard
@@ -17,7 +23,7 @@ OMG Standard
 
 An OMG standard for describing Data Products using W3C Linked Data technologies, enabling interoperability and discoverability in decentralized data ecosystems
 
-[View Specification](spec-versions.md) [Get Started](adopt.md)
+[View Specification](https://ekgf.org/dprod/spec-versions/) [Get Started](adopt.md)
 
 ## What is DPROD?
 
@@ -96,4 +102,4 @@ DPROD is an OMG standard built on established W3C technologies including DCAT, R
 * JSON-LD context for easy JSON integration
 * Worked examples and best practices
 
-[View Specification](spec-versions.md) [OMG Public Comment Notice](https://www.omg.org/news/releases/pr2024/09-24-24.htm) [GitHub Repository](https://github.com/EKGF/dprod)
+[View Specification](https://ekgf.org/dprod/spec-versions/) [OMG Public Comment Notice](https://www.omg.org/news/releases/pr2024/09-24-24.htm) [GitHub Repository](https://github.com/EKGF/dprod)
