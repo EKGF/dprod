@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+<title id="title">Four connected parts of a data product description</title>
+<desc id="desc">A data product connects to data services through its ports and to datasets. Datasets have distributions, which are accessed through services.</desc>
+<defs><style>text{font-family:Arial,Helvetica,sans-serif;fill:#182b35}.title{font-weight:700;font-size:27px}.body{font-size:20px}.relation{font-size:17px;fill:#4949b5}.number{font-size:16px;font-weight:700;fill:#4949b5}</style></defs>
+<rect x="5" y="5" width="950" height="530" rx="28" fill="#f5f5fc"/>
+<g fill="none" stroke="#9595cf" stroke-width="3"><path d="M410 130H550"/><path d="M230 205V335"/><path d="M730 205V335"/><path d="M410 410H550"/></g>
+<g fill="#fff" stroke="#d9d9ec" stroke-width="2"><rect x="50" y="50" width="360" height="155" rx="18"/><rect x="550" y="50" width="360" height="155" rx="18"/><rect x="50" y="335" width="360" height="155" rx="18"/><rect x="550" y="335" width="360" height="155" rx="18"/></g>
+<g><text x="75" y="80" class="number">01  PRODUCT</text><text x="75" y="118" class="title">What is it for?</text><text x="75" y="154" class="body">Purpose, value, ownership,</text><text x="75" y="181" class="body">and lifecycle</text></g>
+<g><text x="575" y="80" class="number">02  DATA SERVICE</text><text x="575" y="118" class="title">How do I exchange it?</text><text x="575" y="154" class="body">Input and output ports,</text><text x="575" y="181" class="body">endpoints, and protocols</text></g>
+<g><text x="75" y="365" class="number">03  DATASET</text><text x="75" y="403" class="title">What does it mean?</text><text x="75" y="439" class="body">A logical collection linked</text><text x="75" y="466" class="body">to a shared schema</text></g>
+<g><text x="575" y="365" class="number">04  DISTRIBUTION</text><text x="575" y="403" class="title">In which form?</text><text x="575" y="439" class="body">A representation such as</text><text x="575" y="466" class="body">JSON, CSV, or Parquet</text></g>
+<text x="480" y="113" class="relation" text-anchor="middle">ports</text><text x="242" y="268" class="relation">datasets</text><text x="742" y="268" class="relation">access</text><text x="480" y="392" class="relation" text-anchor="middle">forms</text>
+</svg>

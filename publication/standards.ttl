@@ -1388,11 +1388,12 @@ doc:project ga:collector <urn:dprod-showcase:source:omg-status> .
 doc:project ga:target doc:overview-pdf .
 doc:overview-pdf a ga:Target ; dct:title "DPROD: the bigger picture" ;
     ga:subtitle "Shared meaning for data products" ;
+    ga:publicationDate "2026-11-04"^^xsd:date ;
     dct:description "A practical introduction to DPROD, its core model, examples, and adoption path."@en ;
     ga:scope doc:overview-scope ; ga:profile doc:overview-profile ;
     ga:renderer "typst" ; ga:destination "pdf/overview" ;
     ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> .
-doc:overview-profile a ga:Profile ; ga:style "overview" .
+doc:overview-profile a ga:Profile ; ga:style "overview" ; ga:tocDepth 1 ; ga:qualityScope "selected" .
 doc:overview-scope a ga:Scope .
 doc:project ga:collector <urn:dprod-showcase:source:overview:01-brief> .
 <urn:dprod-showcase:source:overview:01-brief> a ga:Collector ;
@@ -1471,14 +1472,26 @@ doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:07-road
     ga:component <urn:dprod-showcase:component:overview:07-roadmap> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:07-roadmap> a ga:Component ; dct:title "Plan your adoption" ;
     ga:fragment <urn:dprod-showcase:fragment:overview:07-roadmap> .
-doc:project ga:collector <urn:dprod-showcase:source:overview:08-reading> .
-<urn:dprod-showcase:source:overview:08-reading> a ga:Collector ;
-    dct:identifier "overview:08-reading" ; dct:title "Where to go next" ; ga:kind "markdown" ;
-    ga:source "publication/overview/08-reading.md" ; ga:sourcePath "publication/overview/08-reading.md" ;
-    ga:fragment <urn:dprod-showcase:fragment:overview:08-reading> .
-doc:overview-scope ga:include <urn:dprod-showcase:overview:08-reading> .
-doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:08-reading> .
-<urn:dprod-showcase:placement:overview:08-reading> a ga:Placement ; ga:order 8 ;
-    ga:component <urn:dprod-showcase:component:overview:08-reading> ; ga:sectionKind "section" .
-<urn:dprod-showcase:component:overview:08-reading> a ga:Component ; dct:title "Where to go next" ;
-    ga:fragment <urn:dprod-showcase:fragment:overview:08-reading> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:09-reading> .
+<urn:dprod-showcase:source:overview:09-reading> a ga:Collector ;
+    dct:identifier "overview:09-reading" ; dct:title "Where to go next" ; ga:kind "markdown" ;
+    ga:source "publication/overview/09-reading.md" ; ga:sourcePath "publication/overview/09-reading.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:09-reading> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:09-reading> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:09-reading> .
+<urn:dprod-showcase:placement:overview:09-reading> a ga:Placement ; ga:order 9 ;
+    ga:component <urn:dprod-showcase:component:overview:09-reading> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:09-reading> a ga:Component ; dct:title "Where to go next" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:09-reading> .
+
+doc:project ga:collector <urn:dprod-showcase:source:overview:08-standards> .
+<urn:dprod-showcase:source:overview:08-standards> a ga:Collector ;
+    dct:identifier "overview:08-standards" ; dct:title "Standards that work together" ; ga:kind "markdown" ;
+    ga:source "publication/overview/08-standards.md" ; ga:sourcePath "publication/overview/08-standards.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:08-standards> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:08-standards> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:08-standards> .
+<urn:dprod-showcase:placement:overview:08-standards> a ga:Placement ; ga:order 8 ;
+    ga:component <urn:dprod-showcase:component:overview:08-standards> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:08-standards> a ga:Component ; dct:title "Standards that work together" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:08-standards> .

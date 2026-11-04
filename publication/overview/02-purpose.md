@@ -17,8 +17,8 @@ A domain team can publish its own description using the same vocabulary as anoth
 
 This supports data mesh implementations, internal and external marketplaces, and integration across cloud platforms. The common foundation is a description that another team or tool can interpret.
 
-## What the standard does not promise
+## Connect description with operations
 
-Metadata is a foundation for interoperability. It does not, by itself, make an endpoint reliable, grant access to protected data, or prove that a product meets every business requirement. Those outcomes also depend on operational systems and agreements.
+A useful product description connects metadata to operational responsibilities: endpoint reliability, access to protected data, and the business requirements a product must satisfy. Teams manage these responsibilities through their operational systems and agreements.
 
-The practical starting point is smaller: make the product's purpose, ownership, access points, and shared meaning explicit.
+Start by making the product's purpose, ownership, access points, and shared meaning explicit. This gives consumers a common foundation for asking the next questions.

@@ -30,5 +30,5 @@ class OverviewPublication(unittest.TestCase):
         content = '\n'.join(page.read_text() for page in pages)
         self.assertIn('UK Bonds', content)
         self.assertIn('```json', content)
-        self.assertIn('../../assets/DPROD.drawio.svg', content)
+        self.assertIn('../../assets/dprod-overview-model.svg', content)
         self.assertNotIn('RDF predicate', content)

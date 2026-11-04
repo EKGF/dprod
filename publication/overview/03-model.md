@@ -5,7 +5,7 @@ grapharch:
 
 DPROD extends DCAT. Its model connects a managed data product to the services through which data is exchanged, and to the datasets and distributions those services expose.
 
-![The DPROD model connects products, services, datasets, and distributions.](../../assets/DPROD.drawio.svg)
+![The DPROD model connects products, services, datasets, and distributions.](../../assets/dprod-overview-model.svg)
 
 ## Read the model as four questions
 
