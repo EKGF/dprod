@@ -1383,3 +1383,102 @@ doc:project ga:collector <urn:dprod-showcase:source:omg-status> .
 <urn:dprod-showcase:placement:omg-status> a ga:Placement ;
     ga:component <urn:dprod-showcase:component:omg-status> ; ga:order 1 ;
     ga:sectionKind "status" ; ga:sectionRole "status" .
+
+# Audience overview: independent selection, shared native model asset.
+doc:project ga:target doc:overview-pdf .
+doc:overview-pdf a ga:Target ; dct:title "DPROD: the bigger picture" ;
+    ga:subtitle "Shared meaning for data products" ;
+    dct:description "A practical introduction to DPROD, its core model, examples, and adoption path."@en ;
+    ga:scope doc:overview-scope ; ga:profile doc:overview-profile ;
+    ga:renderer "typst" ; ga:destination "pdf/overview" ;
+    ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> .
+doc:overview-profile a ga:Profile ; ga:style "overview" .
+doc:overview-scope a ga:Scope .
+doc:project ga:collector <urn:dprod-showcase:source:overview:01-brief> .
+<urn:dprod-showcase:source:overview:01-brief> a ga:Collector ;
+    dct:identifier "overview:01-brief" ; dct:title "The bigger picture" ; ga:kind "markdown" ;
+    ga:source "publication/overview/01-brief.md" ; ga:sourcePath "publication/overview/01-brief.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:01-brief> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:01-brief> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:01-brief> .
+<urn:dprod-showcase:placement:overview:01-brief> a ga:Placement ; ga:order 1 ;
+    ga:component <urn:dprod-showcase:component:overview:01-brief> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:01-brief> a ga:Component ; dct:title "The bigger picture" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:01-brief> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:02-purpose> .
+<urn:dprod-showcase:source:overview:02-purpose> a ga:Collector ;
+    dct:identifier "overview:02-purpose" ; dct:title "Why shared meaning matters" ; ga:kind "markdown" ;
+    ga:source "publication/overview/02-purpose.md" ; ga:sourcePath "publication/overview/02-purpose.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:02-purpose> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:02-purpose> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:02-purpose> .
+<urn:dprod-showcase:placement:overview:02-purpose> a ga:Placement ; ga:order 2 ;
+    ga:component <urn:dprod-showcase:component:overview:02-purpose> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:02-purpose> a ga:Component ; dct:title "Why shared meaning matters" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:02-purpose> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:03-model> .
+<urn:dprod-showcase:source:overview:03-model> a ga:Collector ;
+    dct:identifier "overview:03-model" ; dct:title "Four building blocks" ; ga:kind "markdown" ;
+    ga:source "publication/overview/03-model.md" ; ga:sourcePath "publication/overview/03-model.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:03-model> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:03-model> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:03-model> .
+<urn:dprod-showcase:placement:overview:03-model> a ga:Placement ; ga:order 3 ;
+    ga:component <urn:dprod-showcase:component:overview:03-model> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:03-model> a ga:Component ; dct:title "Four building blocks" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:03-model> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:04-example> .
+<urn:dprod-showcase:source:overview:04-example> a ga:Collector ;
+    dct:identifier "overview:04-example" ; dct:title "A product in practice" ; ga:kind "markdown" ;
+    ga:source "publication/overview/04-example.md" ; ga:sourcePath "publication/overview/04-example.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:04-example> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:04-example> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:04-example> .
+<urn:dprod-showcase:placement:overview:04-example> a ga:Placement ; ga:order 4 ;
+    ga:component <urn:dprod-showcase:component:overview:04-example> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:04-example> a ga:Component ; dct:title "A product in practice" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:04-example> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:05-contracts> .
+<urn:dprod-showcase:source:overview:05-contracts> a ga:Collector ;
+    dct:identifier "overview:05-contracts" ; dct:title "When terms need to be explicit" ; ga:kind "markdown" ;
+    ga:source "publication/overview/05-contracts.md" ; ga:sourcePath "publication/overview/05-contracts.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:05-contracts> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:05-contracts> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:05-contracts> .
+<urn:dprod-showcase:placement:overview:05-contracts> a ga:Placement ; ga:order 5 ;
+    ga:component <urn:dprod-showcase:component:overview:05-contracts> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:05-contracts> a ga:Component ; dct:title "When terms need to be explicit" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:05-contracts> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:06-adoption> .
+<urn:dprod-showcase:source:overview:06-adoption> a ga:Collector ;
+    dct:identifier "overview:06-adoption" ; dct:title "Start small, learn quickly" ; ga:kind "markdown" ;
+    ga:source "publication/overview/06-adoption.md" ; ga:sourcePath "publication/overview/06-adoption.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:06-adoption> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:06-adoption> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:06-adoption> .
+<urn:dprod-showcase:placement:overview:06-adoption> a ga:Placement ; ga:order 6 ;
+    ga:component <urn:dprod-showcase:component:overview:06-adoption> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:06-adoption> a ga:Component ; dct:title "Start small, learn quickly" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:06-adoption> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:07-roadmap> .
+<urn:dprod-showcase:source:overview:07-roadmap> a ga:Collector ;
+    dct:identifier "overview:07-roadmap" ; dct:title "Plan your adoption" ; ga:kind "markdown" ;
+    ga:source "publication/overview/07-roadmap.md" ; ga:sourcePath "publication/overview/07-roadmap.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:07-roadmap> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:07-roadmap> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:07-roadmap> .
+<urn:dprod-showcase:placement:overview:07-roadmap> a ga:Placement ; ga:order 7 ;
+    ga:component <urn:dprod-showcase:component:overview:07-roadmap> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:07-roadmap> a ga:Component ; dct:title "Plan your adoption" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:07-roadmap> .
+doc:project ga:collector <urn:dprod-showcase:source:overview:08-reading> .
+<urn:dprod-showcase:source:overview:08-reading> a ga:Collector ;
+    dct:identifier "overview:08-reading" ; dct:title "Where to go next" ; ga:kind "markdown" ;
+    ga:source "publication/overview/08-reading.md" ; ga:sourcePath "publication/overview/08-reading.md" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:08-reading> .
+doc:overview-scope ga:include <urn:dprod-showcase:overview:08-reading> .
+doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:08-reading> .
+<urn:dprod-showcase:placement:overview:08-reading> a ga:Placement ; ga:order 8 ;
+    ga:component <urn:dprod-showcase:component:overview:08-reading> ; ga:sectionKind "section" .
+<urn:dprod-showcase:component:overview:08-reading> a ga:Component ; dct:title "Where to go next" ;
+    ga:fragment <urn:dprod-showcase:fragment:overview:08-reading> .
