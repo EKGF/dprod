@@ -67,3 +67,8 @@ class OverviewPublication(unittest.TestCase):
         content = (ROOT / 'publication/project-site/index.md').read_text()
         self.assertNotIn('](spec-versions.md)', content)
         self.assertIn('https://ekgf.org/dprod/spec-versions/', content)
+
+    def test_unselected_conformance_passage_has_an_explicit_public_reference(self):
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        subject = URIRef('urn:dprod:documentation:conformance')
+        self.assertEqual(str(graph.value(subject, GA.url)), 'https://ekgf.org/dprod/spec/develop/#conformance')

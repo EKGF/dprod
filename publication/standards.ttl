@@ -1477,3 +1477,8 @@ doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:reading
     ga:component <urn:dprod-showcase:component:overview:reading> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:reading> a ga:Component ; dct:title "Where to go next" ;
     ga:fragment <urn:dprod-showcase:fragment:overview:09-reading> .
+
+# A published passage keeps its local link in the specification, and an explicit
+# public reference when another profile selects a fragment that cites it.
+<urn:dprod:documentation:conformance> a ga:ExternalReference ;
+    ga:url "https://ekgf.org/dprod/spec/develop/#conformance" .
