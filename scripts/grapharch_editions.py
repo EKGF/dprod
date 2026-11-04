@@ -1,4 +1,4 @@
-"""Generate both DPROD PDF editions from a pinned remote repository revision."""
+"""Generate DPROD specification editions and the audience overview from a pinned remote repository revision."""
 import argparse
 import hashlib
 import json
@@ -56,6 +56,7 @@ def retain_editions(output: Path, source: str, generator: str) -> None:
     for name, source_directory in (
         ('ekgf-community', 'pdf/ekgf'),
         ('omg-submission-preview', 'pdf/omg'),
+        ('overview', 'pdf/overview'),
     ):
         pdf = publication / source_directory / 'document.pdf'
         with pdf.open('rb') as stream:
@@ -72,7 +73,7 @@ def retain_editions(output: Path, source: str, generator: str) -> None:
     rendered_graph = publication / 'documentation.nq'
     if not rendered_graph.is_file():
         raise FileNotFoundError(f'missing retained source evidence: {rendered_graph}')
-    for name in ('ekgf-community', 'omg-submission-preview'):
+    for name in ('ekgf-community', 'omg-submission-preview', 'overview'):
         (output / name / 'build-provenance.json').write_text(
             json.dumps(manifest, indent=2) + '\n', encoding='utf-8')
     (output / 'build-provenance.json').write_text(

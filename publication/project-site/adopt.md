@@ -76,3 +76,9 @@ A plain-English walkthrough of Data Products, Ports, Distributions, and Datasets
 Questions, feedback, or interested in contributing? Reach out to the EKGF community.
 
 [Get in touch](https://ekgf.org/contact/)
+
+### The bigger picture
+
+A visual introduction to DPROD's purpose, model, worked example, and adoption path.
+
+[Download the overview PDF](https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/overview/document.pdf)

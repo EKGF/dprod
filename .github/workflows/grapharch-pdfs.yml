@@ -15,7 +15,7 @@ concurrency:
 
 env:
   # Pin a reviewed GraphArch implementation until the next binary release.
-  GRAPHARCH_COMMIT: a95255994ec1874791e6f94ff11c4b9cc1b5558a
+  GRAPHARCH_COMMIT: 7214c830b04186144ac32978f6358662788a13b2
 
 jobs:
   editions:
@@ -170,6 +170,12 @@ jobs:
         with:
           name: dprod-omg-submission-preview-${{ github.sha }}
           path: output/grapharch-editions/omg-submission-preview/
+          if-no-files-found: error
+      - name: Retain the DPROD overview guide
+        uses: actions/upload-artifact@v6
+        with:
+          name: dprod-overview-${{ github.sha }}
+          path: output/grapharch-editions/overview/
           if-no-files-found: error
       - name: Retain machine-readable build evidence
         if: always()

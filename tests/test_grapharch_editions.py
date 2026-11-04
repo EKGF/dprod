@@ -24,7 +24,7 @@ class GrapharchEditionTests(unittest.TestCase):
     def test_active_editions_are_distinct_drafts_not_the_approved_release(self):
         graph = self.graph
         self.assertEqual(set(graph.objects(DOC.project, GA.target)),
-                         {DOC.specification, DOC.website, DOC.pdf, DOC['omg-pdf']})
+                         {DOC.specification, DOC.website, DOC.pdf, DOC['omg-pdf'], DOC['overview-pdf']})
         for target, destination, status in (
             (DOC.pdf, 'pdf/ekgf', 'Community Draft'),
             (DOC['omg-pdf'], 'pdf/omg', 'Submission Preview'),
