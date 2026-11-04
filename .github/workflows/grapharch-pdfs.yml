@@ -15,7 +15,7 @@ concurrency:
 
 env:
   # Pin a reviewed GraphArch implementation until the next binary release.
-  GRAPHARCH_COMMIT: 63e57397167d7c65853247833653ff2ec589e14a
+  GRAPHARCH_COMMIT: acf550530b9dcccc2c7b95f82b878d711d2f3ca9
 
 jobs:
   editions:
