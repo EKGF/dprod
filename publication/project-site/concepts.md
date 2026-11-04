@@ -5,6 +5,13 @@ permalink: /concepts/
 nav_order: 3
 grapharch:
   subject: urn:dprod:project-site:page:concepts
+  fragment: urn:dprod:content:concepts
+  fragments:
+    core-concepts: urn:dprod:content:concepts:core-concepts
+    data-product: urn:dprod:content:concepts:data-product
+    ports-data-services: urn:dprod:content:concepts:ports-data-services
+    distributions: urn:dprod:content:concepts:distributions
+    datasets: urn:dprod:content:concepts:datasets
 ---
 
 Model
@@ -12,6 +19,8 @@ Model
 # Core Concepts
 
 The building blocks of every DPROD description. Each concept links to its normative definition in the specification.
+
+![The DPROD model connects products, services, datasets, and distributions.](assets/dprod-overview-model.svg)
 
 ## Data Product
 

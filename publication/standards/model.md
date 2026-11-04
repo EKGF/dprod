@@ -2,6 +2,9 @@
 title: "Data Product (DPROD) Model"
 grapharch:
   subject: urn:dprod:documentation:model
+  fragment: urn:dprod-showcase:fragment:model
+  fragments:
+    uk-bonds-in-practice: urn:dprod:content:model:uk-bonds
 ---
 
 [Data Mesh Architectures](https://en.wikipedia.org/wiki/Data_mesh) [Data Mesh](https://en.wikipedia.org/wiki/Data_mesh) use input and output ports to manage
@@ -49,6 +52,8 @@ The Profile consists of the following classes:
   which can conform to a physical model
 - Dataset (`dcat:Dataset`) - A collection of related data that can conform to a logical model
 
+## UK Bonds in practice
+
 As [DCAT Data Services](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service),
 the DPROD [input](https://ekgf.org/dprod/spec/develop/inputPort) and
 [output](https://ekgf.org/dprod/spec/develop/outputPort) ports can specify connection details, they have [distributions](https://www.w3.org/TR/vocab-dcat-3/#Class:Distribution) that define formats, and link to [datasets](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) that conform to shared schemas. In this
@@ -82,6 +87,8 @@ the shared FIBO specification for callable bonds.
     }
   }
 ```
+
+## Working with JSON-LD contexts
 
 > [!NOTE]
 > DPROD publishes two JSON-LD contexts that denote the same graph. The examples in this specification

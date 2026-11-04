@@ -5,6 +5,12 @@ permalink: /adopt/
 nav_order: 4
 grapharch:
   subject: urn:dprod:project-site:page:adopt
+  fragment: urn:dprod:content:adopt
+  fragments:
+    1-reference-the-json-ld-context: urn:dprod:content:adopt:1-reference-the-json-ld-context
+    2-study-the-worked-examples: urn:dprod:content:adopt:2-study-the-worked-examples
+    3-validate-with-the-shacl-shapes: urn:dprod:content:adopt:3-validate-with-the-shacl-shapes
+    4-cite-the-omg-standard: urn:dprod:content:adopt:4-cite-the-omg-standard
 ---
 
 Adoption
@@ -19,14 +25,14 @@ DPROD ships a stand-alone JSON-LD `@context` so you can describe data products i
 
 ```json
 {
-  "@context": "https://ekgf.org/dprod/spec/develop/dprod-context.jsonld",
-  "@type": "DataProduct",
+  "@context": "https://ekgf.org/dprod/spec/develop/dprod-simple.jsonld",
+  "type": "DataProduct",
   "id": "https://example.com/data-products/customer-360",
-  "label": "Customer 360",
+  "title": "Customer 360",
   "description": "A unified view of the customer across domains.",
   "outputPort": [
     {
-      "@type": "DataService",
+      "type": "DataService",
       "id": "https://example.com/data-products/customer-360/api"
     }
   ]
@@ -43,7 +49,7 @@ The specification includes worked examples covering common patterns: SBA pool ra
 
 ## 3. Validate with the SHACL shapes
 
-DPROD ships SHACL shapes that any conforming RDF tool can use to validate your data product descriptions. If a description passes the shapes, it conforms to the standard — full stop. There is nothing extra to implement.
+DPROD ships SHACL shapes that any conforming RDF tool can use to validate your data product descriptions. Use the shapes for the version you are implementing. They check the constraints encoded in those shapes; operational and business requirements may require additional checks.
 
 [Browse the shapes in the spec](https://ekgf.org/dprod/spec-versions/) [Raw SHACL file](https://github.com/EKGF/dprod/blob/develop/ontology/dprod/dprod-shapes.ttl)
 

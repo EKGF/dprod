@@ -2,6 +2,10 @@
 title: "Data Contracts"
 grapharch:
   subject: urn:dprod:documentation:contracts
+  fragment: urn:dprod-showcase:fragment:contracts
+  fragments:
+    introduction: urn:dprod:content:contracts:purpose
+    optional-adoption: urn:dprod:content:contracts:optional
 ---
 
 A data product is only useful once someone can rely on it. The provider of a product commits to
@@ -14,6 +18,8 @@ DPROD Data Contracts is a profile of the W3C
 [Open Digital Rights Language (ODRL) 2.2](https://www.w3.org/TR/odrl-model/) [odrl-model](https://www.w3.org/TR/odrl-model/)
 for exactly this purpose. It uses ODRL's own terms for everything ODRL already defines: a policy, its
 permissions, prohibitions and duties, the constraints on them, and the parties and assets they refer to.
+## DPROD extensions
+
 DPROD adds vocabulary only where ODRL leaves behaviour undefined:
 
 - **Two policy types.** A [`dprod:DataOffer`](https://ekgf.org/dprod/spec/develop/DataOffer) is an
@@ -52,6 +58,8 @@ maintained in the
 [formal
 semantics](https://github.com/EKGF/dprod/blob/develop/dprod-contracts/docs/formal-semantics.md) document; authoring guidance for contract writers and policy writers is in the
 [contracts documentation](https://github.com/EKGF/dprod/tree/develop/dprod-contracts/docs).
+
+## Optional adoption
 
 The Data Contracts profile is optional. A data product description conforms to DPROD whether or not it
 carries any policy; an implementation that does process contracts must satisfy the contracts shapes as

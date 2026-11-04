@@ -21,14 +21,44 @@ class OverviewPublication(unittest.TestCase):
             self.assertNotEqual(str(graph.value(placement, GA.sectionRole)), 'reference')
         scope = graph.value(target, GA.scope)
         self.assertNotEqual(scope, DOC.scope)
-        self.assertTrue(all('overview:' in str(item) for item in graph.objects(scope, GA.include)))
+        includes = set(graph.objects(scope, GA.include))
+        for name in ['home', 'why', 'concepts', 'adopt', 'roadmap']:
+            self.assertIn(URIRef('urn:dprod:project-site:page:' + name), includes)
+        self.assertIn((scope, GA.traverse, GA.topic), graph)
+        self.assertEqual(int(graph.value(scope, GA.maxDepth)), 1)
 
-    def test_overview_sources_are_authored_content_with_a_worked_example(self):
+    def test_overview_reuses_canonical_marketing_and_specification_fragments(self):
+        import re
         directory = ROOT / 'publication/overview'
-        pages = list(directory.glob('*.md'))
-        self.assertGreaterEqual(len(pages), 7)
-        content = '\n'.join(page.read_text() for page in pages)
-        self.assertIn('UK Bonds', content)
-        self.assertIn('```json', content)
-        self.assertIn('../../assets/dprod-overview-model.svg', content)
-        self.assertNotIn('RDF predicate', content)
+        self.assertEqual({p.name for p in directory.glob('*.md')}, {'01-brief.md', '09-reading.md'})
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        profile = graph.value(DOC['overview-pdf'], GA.profile)
+        selected = {fragment for placement in graph.objects(profile, GA.placement)
+                    for component in graph.objects(placement, GA.component)
+                    for fragment in graph.objects(component, GA.fragment)}
+        for path in ['publication/project-site/index.md', 'publication/project-site/why.md',
+                     'publication/project-site/concepts.md', 'publication/project-site/adopt.md',
+                     'publication/project-site/roadmap.md', 'publication/standards/model.md',
+                     'publication/standards/contracts.md']:
+            frontmatter = (ROOT / path).read_text().split('---', 2)[1]
+            identities = {URIRef(v) for v in re.findall(r'^  fragment: (\S+)$', frontmatter, re.M)}
+            sections = re.search(r'^  fragments:\n((?:    .*\n?)+)', frontmatter, re.M)
+            if sections:
+                identities.update(URIRef(v) for v in re.findall(r'^    [^:]+: (\S+)$', sections[1], re.M))
+            self.assertTrue(selected & identities, path)
+        self.assertIn('UK Bonds', (ROOT / 'publication/standards/model.md').read_text())
+        self.assertIn('assets/dprod-overview-model.svg', (ROOT / 'publication/project-site/concepts.md').read_text())
+
+    def test_overview_credits_the_collective_team_without_a_git_appendix(self):
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        profile = graph.value(DOC['overview-pdf'], GA.profile)
+        self.assertEqual(str(graph.value(profile, GA.showProvenance)), 'false')
+        self.assertIsNone(graph.value(DOC['pdf-profile'], GA.showProvenance))
+        self.assertIsNone(graph.value(DOC['omg-pdf-profile'], GA.showProvenance))
+        content = (ROOT / 'publication/project-site/why.md').read_text()
+        for name in ['Tony Seale', 'Matthias Autrata', 'Josh Cornejo', 'Jacobus Geluk', 'Andrea Gioia', 'Ben Whittam Smith']:
+            self.assertIn(name, content)
+        self.assertIn('workgroup chair', content)
+        self.assertIn('Data Contracts', content)
+        self.assertNotIn('following provenance record', content)
+        self.assertNotIn('Recent committers', content)

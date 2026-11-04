@@ -5,6 +5,14 @@ permalink: /why/
 nav_order: 2
 grapharch:
   subject: urn:dprod:project-site:page:why
+  fragment: urn:dprod:content:why
+  fragments:
+    inconsistent-metadata: urn:dprod:content:why:inconsistent-metadata
+    limited-discoverability: urn:dprod:content:why:limited-discoverability
+    interoperability-friction: urn:dprod:content:why:interoperability-friction
+    working-group-leadership: urn:dprod:content:why:working-group-leadership
+    omg-request-for-comments: urn:dprod:content:why:omg-request-for-comments
+    built-on-w3c-standards: urn:dprod:content:why:built-on-w3c-standards
 ---
 
 Motivation
@@ -31,7 +39,11 @@ Data products built on incompatible descriptions cannot be composed. DPROD lets 
 
 ### Working Group Leadership
 
-DPROD is developed in the EKGF community and edited by [Tony Seale (Chair)](https://www.linkedin.com/in/tonyseale/) together with editors including Natasa Varytimou, Pete Rivett, and Marcel Fröhlich. Setting up the DPROD working group was an initiative by [Jacobus Geluk](https://www.linkedin.com/in/jgeluk/) .
+DPROD is the collective work of its EKGF workgroup and wider community. [Tony Seale](https://www.linkedin.com/in/tonyseale/) is the workgroup chair. [Matthias Autrata](https://www.linkedin.com/in/matthiasautrata/) has contributed especially to Data Contracts; [Josh Cornejo](https://www.linkedin.com/in/joshuacornejo/) and many others have made substantial contributions across DPROD.
+
+The project's documented editors are [Matthias Autrata](https://www.linkedin.com/in/matthiasautrata/), [Marcel Fröhlich](https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/), [Jacobus Geluk](https://www.linkedin.com/in/jgeluk/), [Pete Rivett](https://www.linkedin.com/in/peterivett/), [Tony Seale](https://www.linkedin.com/in/tonyseale/), and [Natasa Varytimou](https://www.linkedin.com/in/natasavaritimou/).
+
+Its documented authors are [Oli Bage](https://www.linkedin.com/in/olibage/), [Ben Clinch](https://www.linkedin.com/in/benclinch/), [Josh Cornejo](https://www.linkedin.com/in/joshuacornejo/), [Steve Fisher](https://www.linkedin.com/in/steve-fisher-b9463a3/), [Andrea Gioia](https://www.linkedin.com/in/andreagioia/), [Charles Ivie](https://www.linkedin.com/in/charlesivie/), [Carl Mattocks](https://www.linkedin.com/in/carlmattocks/), [Carlos Tubbax](https://www.linkedin.com/in/carlos-tubbax-975058118/), and [Ben Whittam Smith](https://www.linkedin.com/in/benedictws/). DPROD also benefits from the workgroup's reviewers, implementers, and other community contributors.
 
 ### OMG Request for Comments
 

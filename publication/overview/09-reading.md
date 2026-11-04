@@ -23,4 +23,3 @@ grapharch:
 - [SHACL](https://www.w3.org/TR/shacl/): validation of RDF descriptions.
 - [ODRL](https://www.w3.org/TR/odrl-model/): machine-readable permissions, prohibitions, and duties.
 
-This overview draws on the same repository's project pages, model illustration, UK Bonds example, and Data Contracts explanation. The following provenance record identifies the exact source revision used for this generated edition.
