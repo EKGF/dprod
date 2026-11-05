@@ -1483,3 +1483,5 @@ doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:standar
     ga:component <urn:dprod-showcase:component:overview:standards> ; ga:sectionKind "section" .
 <urn:dprod-showcase:component:overview:standards> a ga:Component ; dct:title "Standards that work together" ;
     ga:fragment <urn:dprod:content:why:built-on-w3c-standards>, <urn:dprod:content:why:dcat>, <urn:dprod:content:why:rdf>, <urn:dprod:content:why:owl>, <urn:dprod:content:why:shacl>, <urn:dprod:content:why:prov> .
+
+<urn:dprod-showcase:fragment:overview:01-brief> ga:order 0 .

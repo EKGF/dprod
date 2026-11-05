@@ -78,3 +78,8 @@ class OverviewPublication(unittest.TestCase):
         for name in ['DCAT', 'RDF', 'OWL', 'SHACL', 'PROV']:
             self.assertIn('### [' + name + '](', content)
             self.assertNotIn('[' + name + '\n\n', content)
+
+    def test_editorial_intro_has_an_explicit_order_when_composed_with_shared_content(self):
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        fragment = URIRef('urn:dprod-showcase:fragment:overview:01-brief')
+        self.assertEqual(str(graph.value(fragment, GA.order)), '0')
