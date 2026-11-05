@@ -3,6 +3,15 @@
 The Next.js app served at `https://ekgf.org/dprod` (proxied verbatim from the
 `ekgf-website` zone) and at `https://dprod.ekgf.vercel.app`.
 
+## Browser assets
+
+CSS, JavaScript, and fonts use same-origin `/dprod/_next/static/` URLs.
+The primary zone must proxy these paths alongside the page routes. Do not
+set `assetPrefix` to `VERCEL_URL`: generated deployment hostnames can be
+blocked by enterprise networks even when `ekgf.org` is allowed.
+
+Run `pnpm test` to check the asset configuration with `VERCEL_URL` set.
+
 ## Spec version discovery
 
 `src/lib/spec-versions.ts` builds the list behind `/spec-versions` and the
