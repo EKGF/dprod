@@ -10,11 +10,19 @@ grapharch:
     what-is-dprod: urn:dprod:content:index:what-is-dprod
   panel_sections: [what-is-dprod]
   feature_sections: [key-benefits]
+  resource_sections: [articles-talks]
   card_icons:
     decentralized-architecture: {name: network, tone: primary}
     standardized-metadata: {name: file-json, tone: accent}
     input-output-ports: {name: git-branch, tone: primary}
     data-governance: {name: shield, tone: accent}
+    jacobus-geluk-ai-agents-dont-read-brochureswhy-the-data-economy-needs-enforceable-meaning: {name: book-open, tone: accent}
+    tony-seale-data-products-ontologies-dprod: {name: book-open, tone: primary}
+    omg-announcement-dprod-published-for-public-comment: {name: book-open, tone: accent}
+    workshop-video-ai-agents-with-reusable-data-products-dprod: {name: book-open, tone: primary}
+    agnosai-beyond-data-meshhow-virtual-knowledge-graphs-prevent-data-mess: {name: book-open, tone: accent}
+    podcast-knowledge-first-data-products-the-data-economy-jacobus-geluk: {name: book-open, tone: primary}
+    ontologies-llms-tony-seale: {name: book-open, tone: accent}
 ---
 
 OMG Standard
