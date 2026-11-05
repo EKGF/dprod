@@ -13,6 +13,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test scripts/test-*.mjs",
     "sync-spec": "mkdir -p public/spec && (test -d ../dist || bash scripts/build-spec.sh) && cp -r ../dist/. public/spec/",
     "prebuild": "pnpm sync-spec"
   },
