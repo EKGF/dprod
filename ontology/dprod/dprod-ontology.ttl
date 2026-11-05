@@ -11,6 +11,7 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # Since Dublin Core is not an ontology, declare here that the properties used are to be treated as AnnotationProperties in OWL
@@ -41,7 +42,7 @@ dprod:
   # value below is for the working draft, which has no OMG document number
   # yet, so it tracks owl:versionIRI instead.
   dct:issued "2026-06-01"^^xsd:date ;
-  dct:modified "2026-08-04"^^xsd:date ;
+  dct:modified "2026-10-13"^^xsd:date ;
   dct:publisher <https://www.omg.org/> ;
   dct:contributor <https://www.linkedin.com/in/matthiasautrata> ;
   dct:contributor <https://www.linkedin.com/in/natasavaritimou> ;
@@ -53,6 +54,8 @@ dprod:
   dct:contributor <https://www.linkedin.com/in/joshuacornejo> ;
   owl:imports dcat: ;
   owl:versionIRI <https://ekgf.org/dprod/spec/develop/20260601/> ;
+  vann:preferredNamespacePrefix "dprod" ;
+  vann:preferredNamespaceUri "https://ekgf.org/dprod/spec/develop/" ;
 .
 
 ############################# DPROD Classes  #########################
