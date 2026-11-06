@@ -42,6 +42,7 @@ doc:pdf a ga:Target ;
         <urn:dprod-showcase:authors:7>,
         <urn:dprod-showcase:authors:8> ;
     ga:destination "pdf" ;
+    ga:latestVersion <https://ekgf.org/dprod/spec/main/> ;
     ga:editor <urn:dprod-showcase:editors:0>,
         <urn:dprod-showcase:editors:1>,
         <urn:dprod-showcase:editors:2>,
