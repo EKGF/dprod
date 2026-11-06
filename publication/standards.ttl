@@ -1,0 +1,643 @@
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix doc: <urn:dprod-showcase:> .
+@prefix ga: <https://ekgf.org/ontology/grapharch#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+doc:project a ga:Project ;
+    ga:collector <urn:dprod-showcase:source:abstract>,
+        <urn:dprod-showcase:source:acknowledgements>,
+        <urn:dprod-showcase:source:conformance>,
+        <urn:dprod-showcase:source:example-core-data-product-extensions>,
+        <urn:dprod-showcase:source:example-data-lineage>,
+        <urn:dprod-showcase:source:example-data-quality>,
+        <urn:dprod-showcase:source:example-data-rights>,
+        <urn:dprod-showcase:source:example-data-schema>,
+        <urn:dprod-showcase:source:example-equity-trade>,
+        <urn:dprod-showcase:source:example-observability-ports>,
+        <urn:dprod-showcase:source:example-sba-pool-rates>,
+        <urn:dprod-showcase:source:model>,
+        <urn:dprod-showcase:source:namespaces>,
+        <urn:dprod-showcase:source:ontology>,
+        <urn:dprod-showcase:source:reference>,
+        <urn:dprod-showcase:source:scope>,
+        <urn:dprod-showcase:source:shapes>,
+        <urn:dprod-showcase:source:status>,
+        <urn:dprod-showcase:source:symbols>,
+        <urn:dprod-showcase:source:terms> ;
+    ga:repository <https://github.com/EKGF/dprod> ;
+    ga:scope doc:scope ;
+    ga:target doc:pdf,
+        doc:specification .
+
+doc:website a ga:Target ;
+    ga:profile doc:website-profile ;
+    ga:renderer "website" ;
+    ga:scope doc:website-scope .
+
+doc:pdf a ga:Target ;
+    dct:title "Data Product Ontology (DPROD) — 1.0 beta" ;
+    ga:author <urn:dprod-showcase:authors:0>,
+        <urn:dprod-showcase:authors:1>,
+        <urn:dprod-showcase:authors:2>,
+        <urn:dprod-showcase:authors:3>,
+        <urn:dprod-showcase:authors:4>,
+        <urn:dprod-showcase:authors:5>,
+        <urn:dprod-showcase:authors:6>,
+        <urn:dprod-showcase:authors:7>,
+        <urn:dprod-showcase:authors:8> ;
+    ga:destination "pdf" ;
+    ga:editor <urn:dprod-showcase:editors:0>,
+        <urn:dprod-showcase:editors:1>,
+        <urn:dprod-showcase:editors:2>,
+        <urn:dprod-showcase:editors:3> ;
+    ga:editorDraft <https://github.com/EKGF/dprod/tree/main> ;
+    ga:profile doc:pdf-profile ;
+    ga:publicationDate "2024-08-31"^^xsd:date ;
+    ga:publicationStatus "1.0 beta" ;
+    ga:publisher doc:publisher ;
+    ga:releaseVersion "1.0 beta" ;
+    ga:renderer "typst" ;
+    ga:scope doc:scope ;
+    ga:thisVersion <https://ekgf.org/dprod/spec/main/> .
+
+doc:pdf-profile a ga:Profile ;
+    ga:placement <urn:dprod-showcase:pdf-profile:placement:abstract>,
+        <urn:dprod-showcase:pdf-profile:placement:acknowledgements>,
+        <urn:dprod-showcase:pdf-profile:placement:conformance>,
+        <urn:dprod-showcase:pdf-profile:placement:example-core-data-product-extensions>,
+        <urn:dprod-showcase:pdf-profile:placement:example-data-lineage>,
+        <urn:dprod-showcase:pdf-profile:placement:example-data-quality>,
+        <urn:dprod-showcase:pdf-profile:placement:example-data-rights>,
+        <urn:dprod-showcase:pdf-profile:placement:example-data-schema>,
+        <urn:dprod-showcase:pdf-profile:placement:example-equity-trade>,
+        <urn:dprod-showcase:pdf-profile:placement:example-observability-ports>,
+        <urn:dprod-showcase:pdf-profile:placement:example-sba-pool-rates>,
+        <urn:dprod-showcase:pdf-profile:placement:model>,
+        <urn:dprod-showcase:pdf-profile:placement:namespaces>,
+        <urn:dprod-showcase:pdf-profile:placement:reference>,
+        <urn:dprod-showcase:pdf-profile:placement:scope>,
+        <urn:dprod-showcase:pdf-profile:placement:status>,
+        <urn:dprod-showcase:pdf-profile:placement:symbols>,
+        <urn:dprod-showcase:pdf-profile:placement:terms> ;
+    ga:style "ekgf" .
+
+<urn:dprod-showcase:pdf-profile:placement:abstract> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:abstract> ;
+    ga:order 0 ;
+    ga:sectionKind "abstract" ;
+    ga:sectionRole "abstract" .
+
+<urn:dprod-showcase:pdf-profile:placement:acknowledgements> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:acknowledgements> ;
+    ga:order 170 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "acknowledgements" .
+
+<urn:dprod-showcase:pdf-profile:placement:conformance> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:conformance> ;
+    ga:order 30 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "conformance" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-core-data-product-extensions> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-core-data-product-extensions> ;
+    ga:order 90 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-core-data-product-extensions" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-data-lineage> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-lineage> ;
+    ga:order 100 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-lineage" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-data-quality> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-quality> ;
+    ga:order 110 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-quality" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-data-rights> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-rights> ;
+    ga:order 120 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-rights" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-data-schema> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-schema> ;
+    ga:order 130 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-schema" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-equity-trade> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-equity-trade> ;
+    ga:order 140 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-equity-trade" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-observability-ports> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-observability-ports> ;
+    ga:order 150 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-observability-ports" .
+
+<urn:dprod-showcase:pdf-profile:placement:example-sba-pool-rates> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-sba-pool-rates> ;
+    ga:order 160 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-sba-pool-rates" .
+
+<urn:dprod-showcase:pdf-profile:placement:model> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:model> ;
+    ga:order 70 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "model" .
+
+<urn:dprod-showcase:pdf-profile:placement:namespaces> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:namespaces> ;
+    ga:order 60 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "namespaces" .
+
+<urn:dprod-showcase:pdf-profile:placement:reference> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:reference> ;
+    ga:order 80 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "reference" .
+
+<urn:dprod-showcase:pdf-profile:placement:scope> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:scope> ;
+    ga:order 20 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "scope" .
+
+<urn:dprod-showcase:pdf-profile:placement:status> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:status> ;
+    ga:order 10 ;
+    ga:sectionKind "status" ;
+    ga:sectionRole "status" .
+
+<urn:dprod-showcase:pdf-profile:placement:symbols> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:symbols> ;
+    ga:order 50 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "symbols" .
+
+<urn:dprod-showcase:pdf-profile:placement:terms> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:terms> ;
+    ga:order 40 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "terms" .
+
+doc:profile a ga:Profile ;
+    ga:placement <urn:dprod-showcase:profile:placement:abstract>,
+        <urn:dprod-showcase:profile:placement:acknowledgements>,
+        <urn:dprod-showcase:profile:placement:conformance>,
+        <urn:dprod-showcase:profile:placement:example-core-data-product-extensions>,
+        <urn:dprod-showcase:profile:placement:example-data-lineage>,
+        <urn:dprod-showcase:profile:placement:example-data-quality>,
+        <urn:dprod-showcase:profile:placement:example-data-rights>,
+        <urn:dprod-showcase:profile:placement:example-data-schema>,
+        <urn:dprod-showcase:profile:placement:example-equity-trade>,
+        <urn:dprod-showcase:profile:placement:example-observability-ports>,
+        <urn:dprod-showcase:profile:placement:example-sba-pool-rates>,
+        <urn:dprod-showcase:profile:placement:model>,
+        <urn:dprod-showcase:profile:placement:namespaces>,
+        <urn:dprod-showcase:profile:placement:reference>,
+        <urn:dprod-showcase:profile:placement:scope>,
+        <urn:dprod-showcase:profile:placement:status>,
+        <urn:dprod-showcase:profile:placement:symbols>,
+        <urn:dprod-showcase:profile:placement:terms> ;
+    ga:style "ekgf" .
+
+<urn:dprod-showcase:profile:placement:abstract> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:abstract> ;
+    ga:order 0 ;
+    ga:sectionKind "abstract" ;
+    ga:sectionRole "abstract" .
+
+<urn:dprod-showcase:profile:placement:acknowledgements> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:acknowledgements> ;
+    ga:order 170 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "acknowledgements" .
+
+<urn:dprod-showcase:profile:placement:conformance> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:conformance> ;
+    ga:order 30 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "conformance" .
+
+<urn:dprod-showcase:profile:placement:example-core-data-product-extensions> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-core-data-product-extensions> ;
+    ga:order 90 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-core-data-product-extensions" .
+
+<urn:dprod-showcase:profile:placement:example-data-lineage> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-lineage> ;
+    ga:order 100 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-lineage" .
+
+<urn:dprod-showcase:profile:placement:example-data-quality> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-quality> ;
+    ga:order 110 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-quality" .
+
+<urn:dprod-showcase:profile:placement:example-data-rights> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-rights> ;
+    ga:order 120 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-rights" .
+
+<urn:dprod-showcase:profile:placement:example-data-schema> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-data-schema> ;
+    ga:order 130 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-data-schema" .
+
+<urn:dprod-showcase:profile:placement:example-equity-trade> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-equity-trade> ;
+    ga:order 140 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-equity-trade" .
+
+<urn:dprod-showcase:profile:placement:example-observability-ports> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-observability-ports> ;
+    ga:order 150 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-observability-ports" .
+
+<urn:dprod-showcase:profile:placement:example-sba-pool-rates> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:example-sba-pool-rates> ;
+    ga:order 160 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "example-sba-pool-rates" .
+
+<urn:dprod-showcase:profile:placement:model> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:model> ;
+    ga:order 70 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "model" .
+
+<urn:dprod-showcase:profile:placement:namespaces> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:namespaces> ;
+    ga:order 60 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "namespaces" .
+
+<urn:dprod-showcase:profile:placement:reference> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:reference> ;
+    ga:order 80 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "reference" .
+
+<urn:dprod-showcase:profile:placement:scope> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:scope> ;
+    ga:order 20 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "scope" .
+
+<urn:dprod-showcase:profile:placement:status> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:status> ;
+    ga:order 10 ;
+    ga:sectionKind "status" ;
+    ga:sectionRole "status" .
+
+<urn:dprod-showcase:profile:placement:symbols> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:symbols> ;
+    ga:order 50 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "symbols" .
+
+<urn:dprod-showcase:profile:placement:terms> a ga:Placement ;
+    ga:component <urn:dprod-showcase:component:terms> ;
+    ga:order 40 ;
+    ga:sectionKind "section" ;
+    ga:sectionRole "terms" .
+
+<urn:dprod-showcase:source:abstract> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:abstract> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/abstract.md" ;
+    ga:sourcePath "publication/standards/abstract.md" ;
+    ga:subject <urn:dprod:documentation:abstract> .
+
+<urn:dprod-showcase:source:acknowledgements> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:acknowledgements> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/acknowledgements.md" ;
+    ga:sourcePath "publication/standards/acknowledgements.md" ;
+    ga:subject <urn:dprod:documentation:acknowledgements> .
+
+<urn:dprod-showcase:source:conformance> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:conformance> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/conformance.md" ;
+    ga:sourcePath "publication/standards/conformance.md" ;
+    ga:subject <urn:dprod:documentation:conformance> .
+
+<urn:dprod-showcase:source:example-core-data-product-extensions> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-core-data-product-extensions> ;
+    ga:kind "markdown" ;
+    ga:source "examples/core-data-product-extensions/README.md" ;
+    ga:sourcePath "examples/core-data-product-extensions/README.md" ;
+    ga:subject <urn:dprod:documentation:example-core-data-product-extensions> .
+
+<urn:dprod-showcase:source:example-data-lineage> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-lineage> ;
+    ga:kind "markdown" ;
+    ga:source "examples/data-lineage/README.md" ;
+    ga:sourcePath "examples/data-lineage/README.md" ;
+    ga:subject <urn:dprod:documentation:example-data-lineage> .
+
+<urn:dprod-showcase:source:example-data-quality> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-quality> ;
+    ga:kind "markdown" ;
+    ga:source "examples/data-quality/README.md" ;
+    ga:sourcePath "examples/data-quality/README.md" ;
+    ga:subject <urn:dprod:documentation:example-data-quality> .
+
+<urn:dprod-showcase:source:example-data-rights> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-rights> ;
+    ga:kind "markdown" ;
+    ga:source "examples/data-rights/README.md" ;
+    ga:sourcePath "examples/data-rights/README.md" ;
+    ga:subject <urn:dprod:documentation:example-data-rights> .
+
+<urn:dprod-showcase:source:example-data-schema> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-schema> ;
+    ga:kind "markdown" ;
+    ga:source "examples/data-schema/README.md" ;
+    ga:sourcePath "examples/data-schema/README.md" ;
+    ga:subject <urn:dprod:documentation:example-data-schema> .
+
+<urn:dprod-showcase:source:example-equity-trade> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-equity-trade> ;
+    ga:kind "markdown" ;
+    ga:source "examples/equity-trade/README.md" ;
+    ga:sourcePath "examples/equity-trade/README.md" ;
+    ga:subject <urn:dprod:documentation:example-equity-trade> .
+
+<urn:dprod-showcase:source:example-observability-ports> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-observability-ports> ;
+    ga:kind "markdown" ;
+    ga:source "examples/observability-ports/README.md" ;
+    ga:sourcePath "examples/observability-ports/README.md" ;
+    ga:subject <urn:dprod:documentation:example-observability-ports> .
+
+<urn:dprod-showcase:source:example-sba-pool-rates> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:example-sba-pool-rates> ;
+    ga:kind "markdown" ;
+    ga:source "examples/sba-pool-rates/README.md" ;
+    ga:sourcePath "examples/sba-pool-rates/README.md" ;
+    ga:subject <urn:dprod:documentation:example-sba-pool-rates> .
+
+<urn:dprod-showcase:source:model> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:model> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/model.md" ;
+    ga:sourcePath "publication/standards/model.md" ;
+    ga:subject <urn:dprod:documentation:model> .
+
+<urn:dprod-showcase:source:namespaces> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:namespaces> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/namespaces.md" ;
+    ga:sourcePath "publication/standards/namespaces.md" ;
+    ga:subject <urn:dprod:documentation:namespaces> .
+
+<urn:dprod-showcase:source:ontology> a ga:Collector ;
+    ga:kind "rdf" ;
+    ga:source "ontology/dprod/dprod-ontology.ttl" ;
+    ga:sourcePath "ontology/dprod/dprod-ontology.ttl" ;
+    ga:subject <https://www.omg.org/spec/DPROD/dprod/> .
+
+<urn:dprod-showcase:source:reference> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:reference> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/reference.md" ;
+    ga:sourcePath "publication/standards/reference.md" ;
+    ga:subject <urn:dprod:documentation:reference> .
+
+<urn:dprod-showcase:source:scope> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:scope> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/scope.md" ;
+    ga:sourcePath "publication/standards/scope.md" ;
+    ga:subject <urn:dprod:documentation:scope> .
+
+<urn:dprod-showcase:source:shapes> a ga:Collector ;
+    ga:kind "rdf" ;
+    ga:source "ontology/dprod/dprod-shapes.ttl" ;
+    ga:sourcePath "ontology/dprod/dprod-shapes.ttl" ;
+    ga:subject <https://www.omg.org/spec/DPROD/shapes/> .
+
+<urn:dprod-showcase:source:status> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:status> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/status.md" ;
+    ga:sourcePath "publication/standards/status.md" ;
+    ga:subject <urn:dprod:documentation:status> .
+
+<urn:dprod-showcase:source:symbols> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:symbols> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/symbols.md" ;
+    ga:sourcePath "publication/standards/symbols.md" ;
+    ga:subject <urn:dprod:documentation:symbols> .
+
+<urn:dprod-showcase:source:terms> a ga:Collector ;
+    ga:fragment <urn:dprod-showcase:fragment:terms> ;
+    ga:kind "markdown" ;
+    ga:source "publication/standards/terms.md" ;
+    ga:sourcePath "publication/standards/terms.md" ;
+    ga:subject <urn:dprod:documentation:terms> .
+
+doc:specification a ga:Target ;
+    ga:author <urn:dprod-showcase:authors:0>,
+        <urn:dprod-showcase:authors:1>,
+        <urn:dprod-showcase:authors:2>,
+        <urn:dprod-showcase:authors:3>,
+        <urn:dprod-showcase:authors:4>,
+        <urn:dprod-showcase:authors:5>,
+        <urn:dprod-showcase:authors:6>,
+        <urn:dprod-showcase:authors:7>,
+        <urn:dprod-showcase:authors:8> ;
+    ga:destination "specification" ;
+    ga:editor <urn:dprod-showcase:editors:0>,
+        <urn:dprod-showcase:editors:1>,
+        <urn:dprod-showcase:editors:2>,
+        <urn:dprod-showcase:editors:3> ;
+    ga:editorDraft <https://github.com/EKGF/dprod/tree/main> ;
+    ga:profile doc:profile ;
+    ga:publicationDate "2024-08-31"^^xsd:date ;
+    ga:publicationStatus "1.0 beta" ;
+    ga:publisher doc:publisher ;
+    ga:releaseVersion "1.0 beta" ;
+    ga:renderer "specification" ;
+    ga:scope doc:scope ;
+    ga:thisVersion <https://ekgf.org/dprod/spec/main/> .
+
+doc:website-profile a ga:Profile .
+
+doc:website-scope a ga:Scope .
+
+<urn:dprod-showcase:authors:0> dct:title "Andrea Gioia" ;
+    ga:url "https://www.linkedin.com/in/andreagioia/" .
+
+<urn:dprod-showcase:authors:1> dct:title "Jacobus Geluk, Initiator" ;
+    ga:url "https://www.linkedin.com/in/jgeluk/" .
+
+<urn:dprod-showcase:authors:2> dct:title "Ben Whittam Smith" ;
+    ga:url "https://www.linkedin.com/in/benedictws/" .
+
+<urn:dprod-showcase:authors:3> dct:title "Steve Fisher" ;
+    ga:url "https://www.linkedin.com/in/steve-fisher-b9463a3/" .
+
+<urn:dprod-showcase:authors:4> dct:title "Oli Bage" ;
+    ga:url "https://www.linkedin.com/in/olibage/" .
+
+<urn:dprod-showcase:authors:5> dct:title "Ben Clinch" ;
+    ga:url "https://www.linkedin.com/in/benclinch/" .
+
+<urn:dprod-showcase:authors:6> dct:title "Carl Mattocks" ;
+    ga:url "https://www.linkedin.com/in/carlmattocks/" .
+
+<urn:dprod-showcase:authors:7> dct:title "Carlos Tubbax" ;
+    ga:url "https://www.linkedin.com/in/carlos-tubbax-975058118/" .
+
+<urn:dprod-showcase:authors:8> dct:title "Charles Ivie" ;
+    ga:url "https://www.linkedin.com/in/charlesivie/" .
+
+<urn:dprod-showcase:component:abstract> a ga:Component ;
+    dct:title "Abstract" ;
+    ga:fragment <urn:dprod-showcase:fragment:abstract> .
+
+<urn:dprod-showcase:component:acknowledgements> a ga:Component ;
+    dct:title "Acknowledgements" ;
+    ga:fragment <urn:dprod-showcase:fragment:acknowledgements> .
+
+<urn:dprod-showcase:component:conformance> a ga:Component ;
+    dct:title "Conformance" ;
+    ga:fragment <urn:dprod-showcase:fragment:conformance> .
+
+<urn:dprod-showcase:component:example-core-data-product-extensions> a ga:Component ;
+    dct:title "Core Data Product Extensions" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-core-data-product-extensions> .
+
+<urn:dprod-showcase:component:example-data-lineage> a ga:Component ;
+    dct:title "High Level Lineage: Between Data Products" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-lineage> .
+
+<urn:dprod-showcase:component:example-data-quality> a ga:Component ;
+    dct:title "Data Quality" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-quality> .
+
+<urn:dprod-showcase:component:example-data-rights> a ga:Component ;
+    dct:title "Data Rights" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-rights> .
+
+<urn:dprod-showcase:component:example-data-schema> a ga:Component ;
+    dct:title "definition of the entity as a Node Shape (1)" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-data-schema> .
+
+<urn:dprod-showcase:component:example-equity-trade> a ga:Component ;
+    dct:title "Equity Trade" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-equity-trade> .
+
+<urn:dprod-showcase:component:example-observability-ports> a ga:Component ;
+    dct:title "Defining Observability Ports in DPROD" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-observability-ports> .
+
+<urn:dprod-showcase:component:example-sba-pool-rates> a ga:Component ;
+    dct:title "Sba Pool Rates" ;
+    ga:fragment <urn:dprod-showcase:fragment:example-sba-pool-rates> .
+
+<urn:dprod-showcase:component:model> a ga:Component ;
+    dct:title "Data Product (DPROD) Model" ;
+    ga:fragment <urn:dprod-showcase:fragment:model> .
+
+<urn:dprod-showcase:component:namespaces> a ga:Component ;
+    dct:title "Normative namespaces" ;
+    ga:fragment <urn:dprod-showcase:fragment:namespaces> .
+
+<urn:dprod-showcase:component:reference> a ga:Component ;
+    dct:title "Reference" ;
+    ga:fragment <urn:dprod-showcase:fragment:reference> .
+
+<urn:dprod-showcase:component:scope> a ga:Component ;
+    dct:title "Scope" ;
+    ga:fragment <urn:dprod-showcase:fragment:scope> .
+
+<urn:dprod-showcase:component:status> a ga:Component ;
+    dct:title "Status" ;
+    ga:fragment <urn:dprod-showcase:fragment:status> .
+
+<urn:dprod-showcase:component:symbols> a ga:Component ;
+    dct:title "Symbols" ;
+    ga:fragment <urn:dprod-showcase:fragment:symbols> .
+
+<urn:dprod-showcase:component:terms> a ga:Component ;
+    dct:title "Terms and Definitions" ;
+    ga:fragment <urn:dprod-showcase:fragment:terms> .
+
+<urn:dprod-showcase:editors:0> dct:title "Tony Seale, Chair" ;
+    ga:url "https://www.linkedin.com/in/tonyseale/" .
+
+<urn:dprod-showcase:editors:1> dct:title "Natasa Varytimou" ;
+    ga:url "https://www.linkedin.com/in/natasavaritimou/" .
+
+<urn:dprod-showcase:editors:2> dct:title "Pete Rivett" ;
+    ga:url "https://www.linkedin.com/in/peterivett/" .
+
+<urn:dprod-showcase:editors:3> dct:title "Marcel Fröhlich" ;
+    ga:url "https://www.linkedin.com/in/marcel-fr%C3%B6hlich-648a043/" .
+
+<urn:dprod-showcase:fragment:abstract> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:acknowledgements> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:conformance> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:example-core-data-product-extensions> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/core-data-product-extensions/README.md> .
+
+<urn:dprod-showcase:fragment:example-data-lineage> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/data-lineage/README.md> .
+
+<urn:dprod-showcase:fragment:example-data-quality> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/data-quality/README.md> .
+
+<urn:dprod-showcase:fragment:example-data-rights> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/data-rights/README.md> .
+
+<urn:dprod-showcase:fragment:example-data-schema> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/data-schema/README.md> .
+
+<urn:dprod-showcase:fragment:example-equity-trade> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/equity-trade/README.md> .
+
+<urn:dprod-showcase:fragment:example-observability-ports> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/observability-ports/README.md> .
+
+<urn:dprod-showcase:fragment:example-sba-pool-rates> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/examples/sba-pool-rates/README.md> .
+
+<urn:dprod-showcase:fragment:model> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:namespaces> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:reference> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:scope> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:status> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:symbols> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+<urn:dprod-showcase:fragment:terms> dct:source <https://github.com/EKGF/dprod/blob/2c7de68290f14d98c42791fa75dcddebf556ea1d/respec/template.html> .
+
+doc:publisher a <https://ekgf.org/ontology/artifact-governance#Authority> ;
+    rdfs:label "Enterprise Knowledge Graph Forum" ;
+    ga:accentColor "#2b5f9f" ;
+    ga:shortName "EKGF" ;
+    ga:url "https://ekgf.org/" .
+
+doc:scope a ga:Scope .
+
