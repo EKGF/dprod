@@ -3,6 +3,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 import unittest
 
@@ -82,6 +83,23 @@ class CentralPublicationTests(unittest.TestCase):
         self.assertEqual(prefixed['dprod'], namespace)
         self.assertEqual(prefixed['dprod:outputPort']['@type'], '@id')
         self.assertEqual(simple['outputPort']['@id'], 'dprod:outputPort')
+
+    def test_false_committed_configuration_provenance_is_rejected(self):
+        import central_publications as central
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            source = root / 'manifest.json'
+            source.write_text('{}')
+            subprocess.run(['git', '-C', str(root), 'add', '.'], check=True)
+            subprocess.run(['git', '-C', str(root), '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.org',
+                            'commit', '-qm', 'fixture'], check=True)
+            self.assertRegex(central.committed_configuration(root, source), r'^[0-9a-f]{40}$')
+            source.write_text('{"changed":true}')
+            with self.assertRaises(ValueError):
+                central.committed_configuration(root, source)
+            with self.assertRaises(ValueError):
+                central.committed_configuration(root, root.parent / 'external.json')
 
     def test_workflow_executes_only_leading_branch_code_and_separates_deploy_credentials(self):
         workflow = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()

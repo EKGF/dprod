@@ -12,6 +12,22 @@ import tempfile
 import publication_manifest as manifest
 
 
+def committed_configuration(root, path):
+    root = root.resolve()
+    try:
+        relative = path.resolve().relative_to(root)
+    except ValueError as error:
+        raise ValueError('publication manifest must belong to the trusted source checkout') from error
+    subprocess.run(['git', '-C', str(root), 'ls-files', '--error-unmatch', str(relative)],
+                   check=True, stdout=subprocess.DEVNULL)
+    dirty = subprocess.check_output(['git', '-C', str(root), 'status', '--porcelain', '--untracked-files=no'], text=True)
+    untracked = subprocess.check_output(['git', '-C', str(root), 'ls-files', '--others', '--exclude-standard', '--',
+                                        'publication', 'scripts', 'spec-generator'], text=True)
+    if dirty or untracked:
+        raise ValueError('central publication requires committed configuration, content and executable inputs')
+    return manifest.require_sha(subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip())
+
+
 def assemble_atomic(output, publications, build, package):
     if output.exists():
         raise ValueError('publication output must not already exist')
@@ -130,7 +146,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
-    revision = manifest.require_sha(subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip())
+    revision = committed_configuration(root, args.manifest)
     config = manifest.validate(json.loads(args.manifest.read_text()))
     selected = manifest.discover(config, revision)
     print(json.dumps({'config_commit': revision, 'selected': selected}, indent=2), flush=True)
