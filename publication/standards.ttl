@@ -112,7 +112,7 @@ doc:pdf-profile a ga:Profile ;
         <urn:dprod-showcase:pdf-profile:placement:status>,
         <urn:dprod-showcase:pdf-profile:placement:symbols>,
         <urn:dprod-showcase:pdf-profile:placement:terms> ;
-    ga:style "ekgf" .
+    ga:style "specification" .
 
 <urn:dprod-showcase:pdf-profile:placement:abstract> a ga:Placement ;
     ga:component <urn:dprod-showcase:component:abstract> ;
@@ -353,7 +353,7 @@ doc:profile a ga:Profile ;
         <urn:dprod-showcase:profile:placement:status>,
         <urn:dprod-showcase:profile:placement:symbols>,
         <urn:dprod-showcase:profile:placement:terms> ;
-    ga:style "ekgf" .
+    ga:style "specification" .
 
 <urn:dprod-showcase:profile:placement:abstract> a ga:Placement ;
     ga:component <urn:dprod-showcase:component:abstract> ;
