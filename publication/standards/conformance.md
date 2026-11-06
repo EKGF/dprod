@@ -4,5 +4,5 @@ grapharch:
   subject: urn:dprod:documentation:conformance
 ---
 
-A data product is conformant with this specification if it satisfies the [[SHACL]] constraints provided in the file
+A data product is conformant with this specification if it satisfies the [SHACL](https://www.w3.org/TR/shacl/) constraints provided in the file
 [dprod-shapes.ttl](../../ontology/dprod/dprod-shapes.ttl).

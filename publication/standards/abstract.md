@@ -9,7 +9,7 @@ the value of data as an asset to be managed and distributed like any other produ
 As more companies adopt decentralized data architectures, such as Data Mesh,
 the need for standardized methods to describe and manage data products consistently
 across platforms has become critical.
-This is where the [[dprod]] specification, built on W3C Linked Data standards, becomes essential.
+This is where the [dprod](https://www.omg.org/spec/DPROD/dprod/) specification, built on W3C Linked Data standards, becomes essential.
 Without such a standard, organizations face significant challenges:
 inconsistent metadata across diverse data products, limited discoverability,
 and interoperability issues that hinder data integration from various sources.

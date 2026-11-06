@@ -28,7 +28,7 @@ The suggested prefix for the DPROD namespace is **`dprod`**
   common set of rules for defining a [Data Product](https://www.omg.org/spec/DPROD/dprod/DataProduct).
   Users of DPROD can extend this schema as needed.
 
-The [[dprod]]] specification builds on DCAT [[vocab-dcat-3]] by connecting
+The [dprod](https://www.omg.org/spec/DPROD/dprod/) specification builds on DCAT [vocab-dcat-3](https://www.w3.org/TR/vocab-dcat-3/) by connecting
 [DCAT Data Services](https://www.w3.org/TR/vocab-dcat-3/#Class:Data_Service) to
 DPROD [Data Products](https://www.omg.org/spec/DPROD/dprod/DataProduct) using
 [input](https://www.omg.org/spec/DPROD/dprod/inputPort) and
