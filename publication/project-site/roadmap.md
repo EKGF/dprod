@@ -9,6 +9,12 @@ grapharch:
   fragments:
     roadmap: urn:dprod:content:roadmap:introduction
     timeline: urn:dprod:content:roadmap:timeline
+  resource_sections: [how-the-omg-ballot-process-works]
+  card_icons:
+    issues-become-branches: {name: git-branch, tone: primary}
+    issue-branches-land-on-develop: {name: sparkles, tone: accent}
+    ballots-bundle-issues-for-a-formal-vote: {name: vote, tone: primary}
+    approved-ballots-update-the-standard: {name: circle-check, tone: accent}
 ---
 
 Work in progress

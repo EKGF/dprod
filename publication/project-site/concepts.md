@@ -12,6 +12,16 @@ grapharch:
     ports-data-services: urn:dprod:content:concepts:ports-data-services
     distributions: urn:dprod:content:concepts:distributions
     datasets: urn:dprod:content:concepts:datasets
+  panel_sections: [data-product, ports-data-services, distributions, datasets]
+  card_icons:
+    data-product: {name: package, tone: primary}
+    ports-data-services: {name: plug, tone: accent}
+    distributions: {name: database, tone: primary}
+    datasets: {name: file-box, tone: accent}
+    data-mesh-implementation: {name: network, tone: primary}
+    data-marketplaces: {name: store, tone: accent}
+    multi-cloud-integration: {name: cloud, tone: primary}
+    data-governance-compliance: {name: shield, tone: accent}
 ---
 
 Model

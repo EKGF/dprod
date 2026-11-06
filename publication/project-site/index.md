@@ -5,6 +5,7 @@ permalink: /
 nav_order: 1
 grapharch:
   subject: urn:dprod:project-site:page:home
+  hero: landing
   fragment: urn:dprod:content:index
   fragments:
     what-is-dprod: urn:dprod:content:index:what-is-dprod
