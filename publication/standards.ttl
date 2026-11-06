@@ -30,11 +30,6 @@ doc:project a ga:Project ;
     ga:target doc:pdf,
         doc:specification .
 
-doc:website a ga:Target ;
-    ga:profile doc:website-profile ;
-    ga:renderer "website" ;
-    ga:scope doc:website-scope .
-
 doc:pdf a ga:Target ;
     dct:title "Data Product Ontology (DPROD) — 1.0 beta" ;
     ga:author <urn:dprod-showcase:authors:0>,
@@ -473,6 +468,7 @@ doc:specification a ga:Target ;
         <urn:dprod-showcase:editors:2>,
         <urn:dprod-showcase:editors:3> ;
     ga:editorDraft <https://github.com/EKGF/dprod/tree/main> ;
+    ga:latestVersion <https://ekgf.org/dprod/spec/main/> ;
     ga:profile doc:profile ;
     ga:publicationDate "2024-08-31"^^xsd:date ;
     ga:publicationStatus "1.0 beta" ;
@@ -481,10 +477,6 @@ doc:specification a ga:Target ;
     ga:renderer "specification" ;
     ga:scope doc:scope ;
     ga:thisVersion <https://ekgf.org/dprod/spec/main/> .
-
-doc:website-profile a ga:Profile .
-
-doc:website-scope a ga:Scope .
 
 <urn:dprod-showcase:authors:0> dct:title "Andrea Gioia" ;
     ga:url "https://www.linkedin.com/in/andreagioia/" .
@@ -641,5 +633,3 @@ doc:publisher a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 
 doc:scope a ga:Scope .
 
-
-doc:website ga:destination "website" ; dct:title "DPROD source documentation" .
