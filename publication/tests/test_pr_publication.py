@@ -17,7 +17,8 @@ class BranchPublicationTests(unittest.TestCase):
         definitions = (ROOT / 'publication/standards.ttl').read_text()
         self.assertIn('ga:releaseVersion "PR 234 Schedule model"', definitions)
         self.assertNotIn('/spec/develop/', definitions)
-        self.assertIn('dprod-contracts/docs/formal-semantics.md', definitions)
+        self.assertNotIn('ga:source \"dprod-contracts/docs/', definitions)
+        self.assertIn('dprod-contracts/dprod-contracts.ttl', definitions)
         self.assertIn('ga:publicationDate "2026-08-04"', definitions)
 
     def test_extracted_sections_are_accounted_for(self):
