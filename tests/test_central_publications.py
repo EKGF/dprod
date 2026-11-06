@@ -101,6 +101,15 @@ class CentralPublicationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 central.committed_configuration(root, root.parent / 'external.json')
 
+    def test_native_svg_download_rejects_active_content_without_rewriting_source(self):
+        from publication_resources import validate_asset
+        safe = b'<svg xmlns="http://www.w3.org/2000/svg"><text>Historical label</text></svg>'
+        self.assertEqual(validate_asset('diagram.svg', safe), safe)
+        for unsafe in [b'<svg onload="alert(1)"/>', b'<svg><script>alert(1)</script></svg>',
+                       b'<svg><image href="https://tracking.example/pixel"/></svg>']:
+            with self.assertRaises(ValueError):
+                validate_asset('diagram.svg', unsafe)
+
     def test_workflow_executes_only_leading_branch_code_and_separates_deploy_credentials(self):
         workflow = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
         self.assertIn('pull_request_target:', workflow)

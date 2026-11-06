@@ -1,5 +1,6 @@
 """The project-site pilot is authored content, not another web application."""
 import pathlib
+import json
 import re
 import unittest
 
@@ -31,9 +32,9 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn('ga:kind "publication-inventory"', configuration)
         self.assertIn('ga:url "spec-versions/"', configuration)
         self.assertIn('ga:thisVersion <https://ekgf.org/dprod/>', configuration)
-        manifest = (ROOT / 'publication/publications.json').read_text()
-        self.assertIn('"exclude_branch_prefixes": ["dependabot/"]', manifest)
-        self.assertIn('"label": "DPROD 1.0 beta"', manifest)
+        manifest = json.loads((ROOT / 'publication/publications.json').read_text())
+        self.assertEqual(manifest['pull_requests']['exclude_branch_prefixes'], ['dependabot/'])
+        self.assertEqual(manifest['publications'][0]['label'], 'DPROD 1.0 beta')
 
     def test_ci_retains_a_static_project_preview(self):
         workflow = (ROOT / ".github" / "workflows" / "grapharch-pdfs.yml").read_text()

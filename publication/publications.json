@@ -13,13 +13,39 @@
     "target": "urn:dprod:project-site:website"
   },
   "publications": [
-    {"branch": "main", "slug": "main", "label": "DPROD 1.0 beta", "status": "1.0 beta", "definitions": "publication/standards.ttl"},
-    {"branch": "develop", "slug": "develop", "label": "Develop — latest working draft", "status": "Working draft — not standardized", "definitions": "publication/standards.ttl"}
+    {
+      "branch": "main",
+      "slug": "main",
+      "label": "DPROD 1.0 beta",
+      "status": "1.0 beta",
+      "definitions": "publication/standards.ttl",
+      "assets": [
+        "assets/DPROD.drawio.svg",
+        "assets/dprod.jpg",
+        "assets/favicon.ico",
+        "assets/favicon.png"
+      ]
+    },
+    {
+      "branch": "develop",
+      "slug": "develop",
+      "label": "Develop \u2014 latest working draft",
+      "status": "Working draft \u2014 not standardized",
+      "definitions": "publication/standards.ttl",
+      "assets": [
+        "assets/DPROD.drawio.svg",
+        "assets/dprod.jpg",
+        "assets/favicon.ico",
+        "assets/favicon.png"
+      ]
+    }
   ],
   "pull_requests": {
     "enabled": true,
     "same_repository_only": true,
-    "exclude_branch_prefixes": ["dependabot/"],
+    "exclude_branch_prefixes": [
+      "dependabot/"
+    ],
     "definitions": "publication/standards.ttl"
   },
   "maximum_publications": 16

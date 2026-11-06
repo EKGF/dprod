@@ -57,7 +57,7 @@ def sha256(path):
 
 
 def build_all(root, config, selected, engine, output, config_revision):
-    from publication_resources import serialize
+    from publication_resources import retain_assets, serialize
     repository = 'https://github.com/' + config['repository'] + '.git'
     cache = root / 'output/central-git-cache'
     cache.mkdir(parents=True, exist_ok=True)
@@ -98,6 +98,7 @@ def build_all(root, config, selected, engine, output, config_revision):
             shutil.copyfile(specification / name, destination / name)
         if (specification / 'contracts').exists():
             shutil.copytree(specification / 'contracts', destination / 'contracts')
+        retain_assets(git, item, destination)
 
     def package(staging):
         website = config['website']

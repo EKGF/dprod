@@ -63,9 +63,15 @@ def validate(config):
     seen = set()
     branches = set()
     for item in config['publications']:
-        keys(item, 'branch slug label status definitions')
+        keys(item, 'branch slug label status definitions assets')
         slug(item['slug'])
         source_path(item['definitions'])
+        if not isinstance(item['assets'], list) or len(item['assets']) > 32:
+            raise ValueError('invalid explicit source asset list')
+        for asset in item['assets']:
+            source_path(asset)
+            if not asset.startswith('assets/'):
+                raise ValueError('native assets must remain under assets/')
         if item['slug'] in seen or item['branch'] in branches:
             raise ValueError('duplicate publication path or branch')
         for key in ('label', 'status', 'branch'):
@@ -110,6 +116,7 @@ def select(config, heads, pull_requests):
             selected.append({'branch': branch, 'slug': f'pr-{pr["number"]}',
                              'label': f'PR #{pr["number"]}: {pr["title"]}',
                              'status': 'Pull request preview — not standardized',
+                             'assets': [],
                              'definitions': policy['definitions'], 'source_commit': require_sha(head['sha']),
                              'pull_request': pr['number']})
     if len({p['slug'] for p in selected}) != len(selected):

@@ -8,6 +8,9 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import re
+import urllib.parse
+import xml.etree.ElementTree as ET
 
 from rdflib import Graph, Namespace, OWL, RDF, URIRef
 
@@ -19,6 +22,41 @@ from jsonld_context import ApplicationContext, SimpleContext
 
 GA = Namespace('https://ekgf.org/ontology/grapharch#')
 PROJECT = URIRef('urn:dprod-showcase:project')
+
+
+def validate_asset(path, data):
+    suffix = Path(path).suffix
+    if suffix in {'.png', '.jpg', '.ico'}:
+        return data
+    if suffix != '.svg':
+        raise ValueError(f'unsupported native asset: {path}')
+    tree = ET.fromstring(data)
+    allowed = {'svg', 'defs', 'g', 'path', 'rect', 'circle', 'ellipse', 'polygon', 'polyline',
+               'line', 'text', 'tspan', 'switch', 'foreignObject', 'div', 'span', 'font', 'b', 'br', 'a',
+               'marker', 'title', 'desc', 'linearGradient', 'radialGradient', 'stop', 'clipPath'}
+    for node in tree.iter():
+        tag = node.tag.split('}')[-1]
+        if tag not in allowed:
+            raise ValueError(f'active or unsupported SVG element: {tag}')
+        for attribute, value in node.attrib.items():
+            name = attribute.split('}')[-1].lower()
+            if name.startswith('on') or name in {'src', 'srcdoc'}:
+                raise ValueError('active SVG attribute')
+            if name == 'href' and not (value.startswith('#') or
+                                       tag == 'a' and urllib.parse.urlsplit(value).scheme == 'https'):
+                raise ValueError('external SVG resource is forbidden')
+            if name == 'style' and re.search(r'url\s*\(|expression\s*\(|@import|javascript:', value, re.I):
+                raise ValueError('active SVG style')
+    return data
+
+
+def retain_assets(repository, item, destination):
+    for path in item['assets']:
+        target = destination / source_path(path)
+        if target.exists():
+            raise ValueError(f'native asset path collision: {path}')
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(validate_asset(path, blob(repository, item['source_commit'], path)))
 
 
 def blob(repository, revision, path):
