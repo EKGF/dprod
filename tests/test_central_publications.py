@@ -125,6 +125,7 @@ class CentralPublicationTests(unittest.TestCase):
         self.assertNotIn('VERCEL_TOKEN', workflow.split('  deploy:')[0])
         self.assertIn('workflow_run:', workflow)
         self.assertNotIn('set -e', workflow)
+        self.assertNotIn('--token', workflow)
 
 
 if __name__ == '__main__':

@@ -113,7 +113,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          if npx --yes vercel@54.21.1 deploy --prebuilt --yes --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" > .vercel/preview-url.txt; then
+          if npx --yes vercel@54.21.1 deploy --prebuilt --yes --scope "$VERCEL_ORG_ID" > .vercel/preview-url.txt; then
             if preview_url="$(cat .vercel/preview-url.txt)"; then :; else exit 1; fi
             if printf 'Complete publication preview: %s/dprod/\n' "$preview_url" >> "$GITHUB_STEP_SUMMARY"; then :; else exit 1; fi
           else
