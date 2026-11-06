@@ -19,11 +19,12 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: grapharch-central-publications
+  group: grapharch-central-${{ github.event_name == 'workflow_run' && (github.event.workflow_run.event != 'push' || github.event.workflow_run.head_branch == 'develop') && github.run_id || 'publications' }}
   cancel-in-progress: true
 
 jobs:
   assemble:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch != 'develop')
     runs-on: ubuntu-latest
     outputs:
       config_revision: ${{ steps.config.outputs.revision }}
