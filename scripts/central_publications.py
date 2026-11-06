@@ -56,7 +56,7 @@ def sha256(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def build_all(root, config, selected, engine, output, config_revision):
+def build_all(root, config, selected, engine, output, config_revision, hosting_profile=None):
     from publication_resources import retain_assets, serialize
     repository = 'https://github.com/' + config['repository'] + '.git'
     cache = root / 'output/central-git-cache'
@@ -103,7 +103,11 @@ def build_all(root, config, selected, engine, output, config_revision):
     def package(staging):
         website = config['website']
         definition = staging / 'project-site.ttl'
-        definition.write_text((root / website['definitions']).read_text() + '\n' +
+        source_definitions = (root / website['definitions']).read_text()
+        if hosting_profile is not None:
+            from pages_publication import website_definitions
+            source_definitions = website_definitions(source_definitions, website['target'], config['canonical_url'])
+        definition.write_text(source_definitions + '\n' +
                               manifest.inventory_turtle(config, selected, config_revision, observed))
         run_engine(engine, ['build-site', '--source', str(root / website['source']),
                            '--definitions', str(definition), '--project', website['project'],
@@ -133,6 +137,11 @@ def build_all(root, config, selected, engine, output, config_revision):
                   'mount': config['mount'],
                   'config_commit': config_revision, 'generator_revision': config['generator_revision'],
                   'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': selected}
+        if hosting_profile is not None:
+            from pages_publication import prepare_artifact
+            prepare_artifact(staging, config['mount'])
+            record['hosting_profile'] = str(hosting_profile.relative_to(root))
+            record['publication_url'] = config['canonical_url']
         record_path = staging / 'deployment/.vercel/output/static' / config['mount'][1:] / 'publication-build.json'
         record_path.write_text(json.dumps(record, indent=2) + '\n')
         (staging / 'publication-build.json').write_text(json.dumps(record, indent=2) + '\n')
@@ -143,15 +152,21 @@ def build_all(root, config, selected, engine, output, config_revision):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--manifest', type=Path, default=Path('publication/publications.json'))
+    parser.add_argument('--hosting-profile', type=Path)
     parser.add_argument('--grapharch', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     revision = committed_configuration(root, args.manifest)
     config = manifest.validate(json.loads(args.manifest.read_text()))
+    if args.hosting_profile is not None:
+        from pages_publication import hosting_configuration
+        committed_configuration(root, args.hosting_profile)
+        args.hosting_profile = args.hosting_profile.resolve()
+        config = hosting_configuration(config, json.loads(args.hosting_profile.read_text()))
     selected = manifest.discover(config, revision)
     print(json.dumps({'config_commit': revision, 'selected': selected}, indent=2), flush=True)
-    build_all(root, config, selected, args.grapharch.resolve(), args.output.resolve(), revision)
+    build_all(root, config, selected, args.grapharch.resolve(), args.output.resolve(), revision, args.hosting_profile)
 
 
 if __name__ == '__main__':

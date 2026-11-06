@@ -98,3 +98,23 @@ existing production Next.js publication remains until a separately verified
 cutover. Its Git integration and legacy PR domain workflow must be retired when
 that cutover happens, so only one publisher owns production. Root-domain sitemap
 integration and the branded 404 page remain separate work.
+
+## Independent GitHub Pages review site
+
+`.github/workflows/grapharch-pages.yml` publishes the same complete selected-source
+assembly at <https://ekgf.github.io/dprod/>. It uses the GraphArch composite action
+in source-revision install mode, pinned by `publications.json`; no branch or PR
+build code runs. `github-pages.json` supplies only hosting metadata. The existing
+ReSpec and Vercel workflows remain active in parallel, with no production cutover.
+
+The Pages upload contains the contents of the mounted `static/dprod` directory:
+GitHub supplies `/dprod/`, so it must not be nested a second time. The generated
+website canonical URL and version inventory use the Pages hostname. Normative
+ontology IRIs and source specification identities remain unchanged. `.nojekyll`
+is present and `CNAME` is forbidden; this site uses the default Pages domain.
+
+Pages cannot apply Vercel's custom response headers or file-alias routing. RDF
+artifacts remain available through their explicit `.ttl`, `.jsonld`, and `.rdf`
+URLs. Canonical profile IRIs still identify the original published RDF resources.
+The workflow verifies the deployed configuration revision and all selected
+specification routes before succeeding.

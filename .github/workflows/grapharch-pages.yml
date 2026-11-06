@@ -1,0 +1,106 @@
+name: GraphArch GitHub Pages
+
+# Independent review publication. Existing ReSpec and Vercel workflows stay active.
+# Only trusted develop code executes; selected branch/PR sources are Git blobs.
+on:
+  push:
+    branches: [develop]
+  pull_request_target:
+    types: [opened, reopened, synchronize, closed]
+  workflow_run:
+    workflows: [build-and-deploy]
+    types: [completed]
+  workflow_dispatch:
+  schedule:
+    - cron: '37 * * * *'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: grapharch-pages-${{ github.event_name == 'workflow_run' && (github.event.workflow_run.event != 'push' || github.event.workflow_run.head_branch == 'develop') && github.run_id || 'publication' }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch != 'develop')
+    runs-on: ubuntu-latest
+    outputs:
+      revision: ${{ steps.config.outputs.revision }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: develop
+          persist-credentials: false
+      - name: Read the central engine and configuration pins
+        id: config
+        run: |
+          if revision="$(git rev-parse HEAD)"; then :; else exit 1; fi
+          if printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
+          if generator="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_revision"])')"; then :; else exit 1; fi
+          if printf 'generator=%s\n' "$generator" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
+      - uses: actions/checkout@v7
+        with:
+          repository: EKGF/grapharch
+          ref: ${{ steps.config.outputs.generator }}
+          path: .grapharch-tool
+          persist-credentials: false
+      - name: Install the one pinned engine through the GraphArch action
+        id: grapharch
+        uses: ./.grapharch-tool
+        with:
+          mode: install
+          source-revision: ${{ steps.config.outputs.generator }}
+      - name: Install trusted source serialization dependencies
+        run: pip install -r requirements.txt
+      - name: Verify publication and Pages boundaries
+        run: python -m unittest discover -s tests -p 'test_*grapharch*.py'
+      - name: Verify central assembly
+        run: python -m unittest discover -s tests -p test_central_publications.py
+      - name: Rebuild every selected source for the independent Pages site
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          python scripts/central_publications.py
+          --manifest publication/publications.json
+          --hosting-profile publication/github-pages.json
+          --grapharch "${{ steps.grapharch.outputs.binary-path }}"
+          --output output/grapharch-pages
+      - name: Upload site contents under the host-owned /dprod/ prefix
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: output/grapharch-pages/deployment/.vercel/output/static/dprod
+      - name: Retain source graphs, PDFs and provenance
+        uses: actions/upload-artifact@v6
+        with:
+          name: grapharch-pages-evidence-${{ github.run_id }}
+          path: |
+            output/grapharch-pages/publications/
+            output/grapharch-pages/publication-build.json
+          include-hidden-files: true
+          if-no-files-found: error
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish the independent Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.build.outputs.revision }}
+          persist-credentials: false
+      - name: Verify the public specifications and provenance
+        run: |
+          if curl --fail --silent --show-error https://ekgf.github.io/dprod/publication-build.json --output /tmp/pages-publication-build.json; then :; else exit 1; fi
+          if python3 -c 'import json,sys; r=json.load(open("/tmp/pages-publication-build.json")); assert r["config_commit"] == sys.argv[1], "Pages serves a stale configuration revision"' "${{ needs.build.outputs.revision }}"; then :; else exit 1; fi
+          if python3 scripts/verify_publication_site.py --base-url https://ekgf.github.io --record /tmp/pages-publication-build.json; then :; else exit 1; fi
