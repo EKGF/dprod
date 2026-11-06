@@ -6,24 +6,27 @@ CSS and small navigation scripts. The content repo does not need JSX, React,
 Tailwind, or a JavaScript application build to generate these pages.
 
 ```sh
-grapharch publication build-site \
-  --source publication/project-site \
-  --definitions publication/project-site.ttl \
-  --project urn:dprod:project-site \
-  --target urn:dprod:project-site:website \
-  --output-root output/grapharch-project-site
+python scripts/central_publications.py \
+  --manifest publication/publications.json \
+  --grapharch /path/to/the/pinned/grapharch \
+  --output output/central-publications
 ```
 
-The build-time version inventory requires `GITHUB_TOKEN` (repository pull-request
-read access), `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. CI provides
-these from its configured identity and secrets; credentials are not retained in
-the generated graph or website.
+`publications.json` on the leading branch owns the selected refs, labels,
+publication status, path prefixes and one exact GraphArch revision. The leading
+branch is `develop` here; the manifest can choose another branch for another
+project. GitHub discovery needs repository pull-request read access; it never
+queries Vercel. Rendering does not receive that credential.
 
-Serve the resulting `output/grapharch-project-site/site/` directory at any static
-host. Internal links and bundled fonts/styles are relative, so it also works
-under a GitHub Pages project path. The publication profile chooses the reusable
-EKGF project layout. Ordinary Markdown headings define the hero, sections and
-cards; there is no project-specific HTML template in this directory.
+Every selected source is rebuilt using that one engine. The website, each
+specification, its PDFs and its native data artifacts are assembled into one
+portable static tree. A missing source definition, invalid branch, failed
+render, path collision or failed assembly aborts the whole publication. Nothing
+is deployed from a partial build, and no previous deployed directory is an input.
+
+The EKGF project layout uses source-owned Markdown/frontmatter for section
+composition. Branding and reusable rendering belong to GraphArch, not JSX,
+React, Tailwind or project-specific templates in this repository.
 
 ## Source and parity
 
@@ -34,55 +37,64 @@ examples are retained. JSON and citation fences have explicit language metadata;
 timeline status/date separators and the community contact link are normalized.
 The source Next.js files remain in place until the pilot is reviewed.
 
-The source-owned pages include home, why, concepts, adopt and roadmap. A
-build-time version inventory discovers GitHub/Vercel publication versions and
-produces the specification-version page and its routing manifest from the same
-pinned documentation graph. Source-owned `ga:order` values keep the frozen release
-and develop draft before previews. The page displays a readable UTC observation
-time below the version-list heading. CI retains the native website KG alongside
-the deployment for rendering without the original sources or API credentials.
-The EKGF project theme supports a persistent light
-or dark preference and uses the operating system's preference initially.
+The source-owned pages include home, why, concepts, adopt and roadmap. The
+central build resolves selected branch and PR heads once, records their exact
+SHAs, and contributes a publication inventory to the website's graph. The
+specification-version page links to local directories in this assembled site.
+Main is **DPROD 1.0 beta**; develop and PRs are explicitly unstandardized drafts.
+No approval status is inferred from a Git branch name.
+
+The manifest selects main and develop and currently includes open human PRs
+from this repository, excluding dependabot branches and forks. PR numbers give
+stable collision-free paths such as `spec/pr-234/`. Explicit long-lived branches
+can be added to `publications`; sources lacking publication definitions need
+tracked publication-only maintenance, not a fallback to develop content.
 
 Frontmatter descriptions retain the current project's search descriptions. The
 website target supplies the public canonical base, `https://ekgf.org/dprod/`;
 GraphArch generates canonical/Open Graph metadata, a sitemap and robots file.
 Preview deployments intentionally keep those production canonical URLs.
 
+## Workflow and provenance
+
+`.github/workflows/grapharch-pdfs.yml` runs the orchestrator from trusted
+`develop`, including when another ref triggered it. It runs on develop pushes,
+PR lifecycle events, completion of existing source-validation workflows, manual
+requests and an hourly refresh. Selected source branches are read as Git blobs;
+their build scripts, Python, JavaScript and dependency manifests are never run.
+A separate deployment job receives Vercel credentials only after a complete
+assembly artifact exists. Fork PRs are not published by the current manifest.
+
+The build retains each source's exported documentation KG and target manifests,
+plus a `publication-build.json` recording the source SHAs, leading configuration
+SHA, selected generator revision and executable checksum. Resource serialization
+uses the trusted leading-branch serializer with each source's ontology namespace;
+it does not fetch ontology imports. Original RDF files are retained byte for
+byte alongside derived JSON-LD/RDF/XML forms.
+
+Updating the single GraphArch pin deliberately rerenders all selected sources.
+Historical source semantics are not rewritten or renamed. Rebuilds produce a
+new build record; this workflow does not claim byte-identical historical HTML or
+that a freshly generated old-source publication is an approved new standard.
+
 ## Hosting and migration boundary
 
-The generated artifact works as static files on Vercel or GitHub Pages; neither
-requires a Next.js project. The project preview is retained as a CI artifact
-beside the two PDF editions. The existing production Next.js deployment remains
-active until the static preview is verified; no production integration has been
-removed or switched by this workflow.
+The complete package is
+`output/central-publications/deployment/.vercel/output/`. Its `static/` tree is
+portable to static hosts; `config.json` holds Vercel routes and RDF media types.
+Custom mounts belong in the manifest and must agree with the canonical base URL.
 
-Remaining review work includes a complete preview browser/HTTP parity check,
-version-inventory freshness triggers, referencing `/dprod/sitemap.xml` from the
-main domain's root robots configuration, production routing cutover, and removing
-the old application after successful cutover. The generated 404 page currently
-uses a minimal document rather than the branded project shell.
+The `/dprod/` mount matches the EKGF website proxy. `/dprod/spec/` selects develop;
+`/dprod/spec/main/` selects 1.0 beta and `/dprod/spec/develop/` selects the current
+working draft. Stable entry URLs open each bundle's `specification/` target,
+keeping target-relative PDF and asset links intact. `/dprod/spec/archive/1.0/`
+is retained as an alias for the main-source build; it is no longer described as
+a frozen approved release. The contracts profile IRIs return native Turtle.
+Selected PR directories are fully included locally, with no remote deployment
+redirects. Closing a PR removes it from the next assembled site's inventory.
 
-### Static deployment preview
-
-`publication/hosting.yml` assembles the generated project website with the
-existing Python specification output and frozen 1.0 archive. It emits Vercel's
-Build Output API directly, without Next.js or server functions. CI retains this
-portable artifact and deploys a separate preview; it does not promote that
-preview to production.
-
-The `/dprod/` mount matches the existing EKGF website proxy. `/dprod/spec/` and
-`/dprod/spec/develop/` serve the current specification; `/dprod/spec/main/` serves
-the byte-identical frozen 1.0 release. The archive keeps its existing slashless
-canonical URL. The contracts profile IRIs serve the published Turtle profile.
-Other version URLs redirect to the deployment observed in the generated version
-inventory, including versions omitted from the public listing.
-
-The artifact's `static/` tree is also usable on a static host. For a GitHub Pages
-project prefix, package with `--mount /` and publish that tree under the host's
-configured project path. Remote version redirects and explicit RDF media types
-remain hosting rules, so they require equivalent host routing configuration.
-
-Production still uses the existing site until the static preview's URLs, assets,
-version routing, and presentation have been verified. Removing that application
-and changing the production deployment is a separate, reviewable cutover.
+CI deploys a reviewable preview; it does not promote it to production. The
+existing production Next.js publication remains until a separately verified
+cutover. Its Git integration and legacy PR domain workflow must be retired when
+that cutover happens, so only one publisher owns production. Root-domain sitemap
+integration and the branded 404 page remain separate work.
