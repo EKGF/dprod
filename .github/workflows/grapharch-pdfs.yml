@@ -1,108 +1,112 @@
-name: GraphArch PDF editions
+name: GraphArch publications
 
+# All executable publication code comes from the leading branch. Other refs
+# contribute Git blobs only. PR build scripts and dependency manifests never run.
 on:
   push:
     branches: [develop]
+  pull_request_target:
+    types: [opened, reopened, synchronize, closed]
+  workflow_run:
+    workflows: [build-and-deploy]
+    types: [completed]
   workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
 
 permissions:
   contents: read
   pull-requests: read
 
 concurrency:
-  group: grapharch-pdfs-${{ github.ref }}
+  group: grapharch-central-publications
   cancel-in-progress: true
 
-env:
-  # Pin a reviewed GraphArch implementation until the next binary release.
-  GRAPHARCH_COMMIT: f87f31a20b325a71830823588fc2b56b0a08f600
-
 jobs:
-  editions:
-    if: github.ref == 'refs/heads/develop'
+  assemble:
     runs-on: ubuntu-latest
+    outputs:
+      config_revision: ${{ steps.config.outputs.revision }}
     steps:
-      - name: Check out the exact DPROD source revision
+      - name: Check out trusted leading-branch orchestration
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.sha }}
-      - name: Check out the pinned GraphArch generator
+          ref: develop
+          persist-credentials: false
+      - name: Resolve the single source-owned generator pin
+        id: config
+        run: |
+          if revision="$(git rev-parse HEAD)"; then :; else exit 1; fi
+          if printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
+          if generator="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_revision"])')"; then :; else exit 1; fi
+          if printf 'generator=%s\n' "$generator" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
+      - name: Check out the one reviewed GraphArch generator
         uses: actions/checkout@v7
         with:
           repository: EKGF/grapharch
-          ref: ${{ env.GRAPHARCH_COMMIT }}
+          ref: ${{ steps.config.outputs.generator }}
           path: .grapharch-tool
+          persist-credentials: false
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           rust-src-dir: .grapharch-tool
       - name: Install native compiler dependencies
         run: sudo apt-get update && sudo apt-get install -y clang libclang-dev pkg-config libssl-dev
-      - name: Build the pinned generator
+      - name: Build the pinned generator once
         working-directory: .grapharch-tool
         run: cargo build --locked --release --bin grapharch
-      - name: Reuse the bare source repository cache
-        uses: actions/cache@v6
-        with:
-          path: output/grapharch-input/output/cache/git
-          key: dprod-grapharch-git-${{ runner.os }}-${{ github.sha }}
-          restore-keys: dprod-grapharch-git-${{ runner.os }}-
-      - name: Generate both editions from this exact Git commit
-        run: >-
-          python3 scripts/grapharch_editions.py
-          --grapharch .grapharch-tool/target/release/grapharch
-          --source-revision "$GITHUB_SHA"
-          --grapharch-revision "$GRAPHARCH_COMMIT"
-          --output output/grapharch-editions
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
           cache: pip
-      - name: Install the existing specification generator dependencies
+      - name: Install trusted source serialization dependencies
         run: pip install -r requirements.txt
-      - name: Preserve the existing specification publication
-        run: python spec-generator/main.py
-      - name: Generate the source-owned project website preview
+      - name: Validate central publication selection and isolation
+        run: python -m unittest discover -s tests -p 'test_*grapharch*.py'
+      - name: Validate the central assembly contract
+        run: python -m unittest discover -s tests -p test_central_publications.py
+      - name: Rebuild every selected publication and assemble one complete site
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           GITHUB_TOKEN: ${{ github.token }}
         run: >-
-          .grapharch-tool/target/release/grapharch publication build-site
-          --source publication/project-site
-          --definitions publication/project-site.ttl
-          --project urn:dprod:project-site
-          --target urn:dprod:project-site:website
-          --output-root output/grapharch-project-site
-      - name: Package the project website and preserved specifications
-        run: >-
-          .grapharch-tool/target/release/grapharch publication package-site
-          --config publication/hosting.yml
-          --output-root .
-      - name: Verify frozen specification bytes were preserved
-        run: |
-          if diff --recursive --brief site/public/spec/archive .vercel/output/static/dprod/spec/archive; then
-            printf 'Frozen specification archive preserved byte for byte\n'
-          else
-            printf 'Frozen specification archive changed during packaging\n' >&2
-            exit 1
-          fi
-          if diff --recursive --brief site/public/spec/archive/1.0 .vercel/output/static/dprod/spec/main; then
-            printf 'Main specification alias preserves the frozen release\n'
-          else
-            printf 'Main specification alias differs from the frozen release\n' >&2
-            exit 1
-          fi
-      - name: Retain the portable static deployment
+          python scripts/central_publications.py
+          --manifest publication/publications.json
+          --grapharch .grapharch-tool/target/release/grapharch
+          --output output/central-publications
+      - name: Retain the complete portable publication
         uses: actions/upload-artifact@v6
         with:
-          name: dprod-static-deployment-${{ github.sha }}
-          path: .vercel/output/
+          name: dprod-static-deployment-${{ github.run_id }}
+          path: output/central-publications/deployment/.vercel/output/
           include-hidden-files: true
           if-no-files-found: error
+      - name: Retain all source graphs, PDFs and build evidence
+        uses: actions/upload-artifact@v6
+        with:
+          name: dprod-publication-evidence-${{ github.run_id }}
+          path: |
+            output/central-publications/publications/
+            output/central-publications/website/
+            output/central-publications/publication-build.json
+          include-hidden-files: true
+          if-no-files-found: error
+
+  deploy:
+    needs: assemble
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the exact trusted publication revision
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.assemble.outputs.config_revision }}
+          persist-credentials: false
+      - name: Download this run's fully assembled site
+        uses: actions/download-artifact@v7
+        with:
+          name: dprod-static-deployment-${{ github.run_id }}
+          path: .vercel/output
       - name: Deploy a reviewable static preview
-        working-directory: .
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -110,81 +114,18 @@ jobs:
         run: |
           if npx --yes vercel@54.21.1 deploy --prebuilt --yes --token "$VERCEL_TOKEN" --scope "$VERCEL_ORG_ID" > .vercel/preview-url.txt; then
             if preview_url="$(cat .vercel/preview-url.txt)"; then :; else exit 1; fi
-            if printf 'Static preview: %s/dprod/\n' "$preview_url" >> "$GITHUB_STEP_SUMMARY"; then :; else exit 1; fi
+            if printf 'Complete publication preview: %s/dprod/\n' "$preview_url" >> "$GITHUB_STEP_SUMMARY"; then :; else exit 1; fi
           else
             printf 'Static preview deployment failed\n' >&2
             exit 1
           fi
-      - name: Verify the deployed preview routes
-        working-directory: .
+      - name: Verify every deployed publication from its build record
         run: |
           if preview_url="$(cat .vercel/preview-url.txt)"; then :; else exit 1; fi
-          if mkdir .vercel/smoke; then :; else exit 1; fi
-          for route in /dprod/ /dprod/why/ /dprod/concepts/ /dprod/adopt/ /dprod/roadmap/ /dprod/spec-versions/ /dprod/spec/ /dprod/spec/main/ /dprod/spec/develop/ /dprod/spec/archive/1.0 /dprod/spec/contracts/profile/ /dprod/spec/develop/contracts/profile/ /dprod/spec/main/assets/DPROD.drawio.svg /dprod/spec/develop/assets/DPROD.drawio.svg; do
-            if name="$(printf '%s' "$route" | tr '/.' '__')"; then :; else exit 1; fi
-            if curl "$preview_url$route" --fail --silent --show-error --write-out '%{http_code} %{content_type}\n' --output ".vercel/smoke/$name.body" > ".vercel/smoke/$name.meta"; then
-              if read -r status media_type < ".vercel/smoke/$name.meta"; then :; else exit 1; fi
-            if [ "$status" != 200 ]; then
-              printf 'Public preview route returned %s: %s\n' "$status" "$route" >&2
-              exit 1
-            fi
-            printf 'Verified %s (%s)\n' "$route" "$media_type"
-            else
-              printf 'Preview route failed: %s\n' "$route" >&2
-              exit 1
-            fi
-          done
-          if cmp dprod-contracts/dprod-contracts-prof.ttl .vercel/smoke/_dprod_spec_contracts_profile_.body; then :; else
-            printf 'Profile IRI did not return the exact RDF artifact\n' >&2
-            exit 1
-          fi
-      - name: Retain deployed preview evidence
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: dprod-static-http-${{ github.sha }}
-          path: .vercel/smoke/
-          if-no-files-found: warn
+          if python3 scripts/verify_publication_site.py --base-url "$preview_url" --record .vercel/output/static/dprod/publication-build.json; then :; else exit 1; fi
       - name: Retain the preview deployment address
-        if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: dprod-static-preview-${{ github.sha }}
+          name: dprod-static-preview-${{ github.run_id }}
           path: .vercel/preview-url.txt
-          if-no-files-found: warn
-      - name: Retain the static project website preview
-        uses: actions/upload-artifact@v6
-        with:
-          name: dprod-project-website-${{ github.sha }}
-          path: output/grapharch-project-site/site/
-          include-hidden-files: true
           if-no-files-found: error
-      - name: Retain the EKGF community edition
-        uses: actions/upload-artifact@v6
-        with:
-          name: dprod-ekgf-community-${{ github.sha }}
-          path: output/grapharch-editions/ekgf-community/
-          if-no-files-found: error
-      - name: Retain the OMG submission preview
-        uses: actions/upload-artifact@v6
-        with:
-          name: dprod-omg-submission-preview-${{ github.sha }}
-          path: output/grapharch-editions/omg-submission-preview/
-          if-no-files-found: error
-      - name: Retain the DPROD overview guide
-        uses: actions/upload-artifact@v6
-        with:
-          name: dprod-overview-${{ github.sha }}
-          path: output/grapharch-editions/overview/
-          if-no-files-found: error
-      - name: Retain machine-readable build evidence
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: dprod-grapharch-evidence-${{ github.sha }}
-          path: |
-            output/grapharch-project-site/documentation.nq
-            output/grapharch-editions/report.json
-            output/grapharch-editions/build-provenance.json
-            output/grapharch-editions/artifacts/dprod/documentation.nq
-          if-no-files-found: warn

@@ -927,7 +927,7 @@ doc:specification a ga:Target ;
     ga:releaseVersion "1.1 draft" ;
     ga:renderer "specification" ;
     ga:scope doc:scope ;
-    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/specification/> .
+    ga:thisVersion <https://ekgf.org/dprod/spec/develop/specification/> .
 
 doc:website a ga:Target ;
     dct:title "DPROD: ideas and guides" ;

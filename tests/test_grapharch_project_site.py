@@ -27,21 +27,19 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn("https://ekgf.org/dprod/spec-versions/", home)
         self.assertFalse((CONTENT / "spec-versions.md").exists())
         configuration = (ROOT / "publication" / "project-site.ttl").read_text()
-        self.assertIn('ga:kind "repository-publications"', configuration)
+        self.assertNotIn('ga:kind "repository-publications"', configuration)
         self.assertIn('ga:kind "publication-inventory"', configuration)
         self.assertIn('ga:url "spec-versions/"', configuration)
         self.assertIn('ga:thisVersion <https://ekgf.org/dprod/>', configuration)
-        self.assertIn('ga:unlistedBranchPrefix "dependabot/"', configuration)
-        self.assertIn('ga:order 1', configuration)
-        self.assertIn('ga:order 2', configuration)
+        manifest = (ROOT / 'publication/publications.json').read_text()
+        self.assertIn('"exclude_branch_prefixes": ["dependabot/"]', manifest)
+        self.assertIn('"label": "DPROD 1.0 beta"', manifest)
 
     def test_ci_retains_a_static_project_preview(self):
         workflow = (ROOT / ".github" / "workflows" / "grapharch-pdfs.yml").read_text()
-        self.assertIn("Generate the source-owned project website preview", workflow)
-        self.assertIn("--source publication/project-site", workflow)
-        self.assertIn("--definitions publication/project-site.ttl", workflow)
-        self.assertIn("name: dprod-project-website-${{ github.sha }}", workflow)
-        self.assertIn("path: output/grapharch-project-site/site/", workflow)
+        self.assertIn("Rebuild every selected publication", workflow)
+        self.assertIn("--manifest publication/publications.json", workflow)
+        self.assertIn("output/central-publications/website/", workflow)
         self.assertIn("include-hidden-files: true", workflow)
 
     def test_home_overview_panel_is_selected_in_source_content(self):

@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "repository": "EKGF/dprod",
+  "leading_branch": "develop",
+  "generator_revision": "c1cb1ebd5fcd1a8a56f4524a8a26b2a93fd13bf3",
+  "canonical_url": "https://ekgf.org/dprod/",
+  "mount": "/dprod",
+  "inventory": "urn:dprod:project-site:versions",
+  "website": {
+    "source": "publication/project-site",
+    "definitions": "publication/project-site.ttl",
+    "project": "urn:dprod:project-site",
+    "target": "urn:dprod:project-site:website"
+  },
+  "publications": [
+    {"branch": "main", "slug": "main", "label": "DPROD 1.0 beta", "status": "1.0 beta", "definitions": "publication/standards.ttl"},
+    {"branch": "develop", "slug": "develop", "label": "Develop — latest working draft", "status": "Working draft — not standardized", "definitions": "publication/standards.ttl"}
+  ],
+  "pull_requests": {
+    "enabled": true,
+    "same_repository_only": true,
+    "exclude_branch_prefixes": ["dependabot/"],
+    "definitions": "publication/standards.ttl"
+  },
+  "maximum_publications": 16
+}

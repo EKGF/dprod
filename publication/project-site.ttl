@@ -6,7 +6,6 @@
 <urn:dprod:project-site> a ga:Project ;
     dct:title "DPROD" ;
     ga:repository <https://github.com/EKGF/dprod> ;
-    ga:collector <urn:dprod:project-site:version-collector> ;
     ga:scope <urn:dprod:project-site:scope> ;
     ga:target <urn:dprod:project-site:website> .
 <urn:dprod:project-site:scope> a ga:Scope .
@@ -22,22 +21,6 @@
 <urn:dprod:project-site:specification> dct:title "Specification" ;
     ga:url "spec-versions/" ; ga:order 1 .
 
-<urn:dprod:project-site:version-collector> a ga:Collector ;
-    ga:kind "repository-publications" ;
-    ga:source "https://github.com/EKGF/dprod" ;
-    ga:subject <urn:dprod:project-site:versions> ;
-    ga:publicationPath "dprod/spec/" ;
-    ga:unlistedBranchPrefix "dependabot/" .
-<urn:dprod:project-site:versions> dct:hasPart
-    <urn:dprod:project-site:version:main>, <urn:dprod:project-site:version:develop> .
-<urn:dprod:project-site:version:main> a doap:Version ;
-    ga:order 1 ; dct:title "DPROD 1.0 (Beta)" ; dct:identifier "main" ;
-    doap:branch "main" ; dcat:accessURL <https://ekgf.org/dprod/spec/main/> ;
-    ga:advertised true .
-<urn:dprod:project-site:version:develop> a doap:Version ;
-    ga:order 2 ; dct:title "Develop (latest)" ; dct:identifier "develop" ;
-    doap:branch "develop" ; dcat:accessURL <https://ekgf.org/dprod/spec/develop/> ;
-    ga:advertised true .
 <urn:dprod:project-site:versions-page> a ga:Documentor ;
     ga:project <urn:dprod:project-site> ; ga:kind "publication-inventory" ;
     ga:subject <urn:dprod:project-site:versions> ;
@@ -45,4 +28,4 @@
     dct:title "Specification versions" ; ga:route "spec-versions/" ;
     ga:sourcePath "spec-versions.md" ; ga:navigationOrder 6 .
 <urn:dprod:project-site:page:versions> dct:description
-    "All available versions of the DPROD specification: the frozen OMG 1.0, the current develop draft, and every in-flight ballot branch." .
+    "Specifications rebuilt together from selected Git revisions: DPROD 1.0 beta, the latest working draft, and selected review branches. Draft previews are not standardized versions." .

@@ -33,34 +33,28 @@ class GrapharchCITests(unittest.TestCase):
 
     def test_static_preview_uses_the_existing_vercel_project_root(self):
         text = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
-        deploy = text.split('- name: Deploy a reviewable static preview', 1)[1].split('- name:', 1)[0]
-        directory = re.search(r'working-directory: (.+)', deploy)
-        deploy_root = ROOT / (directory.group(1).strip() if directory else '.')
-        # The active Vercel project has rootDirectory=site. Prebuilt deployments
-        # still validate that directory; deployment must preserve its source root.
-        self.assertTrue((deploy_root / 'site').is_dir())
-        package = text.split('- name: Package the project website', 1)[1].split('- name:', 1)[0]
-        package_root = ROOT / re.search(r'--output-root (\S+)', package).group(1)
-        self.assertEqual(package_root.resolve(), deploy_root.resolve())
+        self.assertTrue((ROOT / 'site').is_dir())
+        self.assertIn('path: .vercel/output', text)
+        self.assertIn('needs: assemble', text)
+        self.assertIn('ref: ${{ needs.assemble.outputs.config_revision }}', text)
 
     def test_preview_checks_establish_public_reader_access(self):
         text = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
-        smoke = text.split('- name: Verify the deployed preview routes', 1)[1].split('- name:', 1)[0]
+        smoke = text.split('- name: Verify every deployed publication', 1)[1].split('- name:', 1)[0]
         self.assertNotIn('VERCEL_TOKEN', smoke)
         self.assertNotIn('vercel@', smoke)
-        self.assertIn('if curl ', smoke)
-        self.assertIn('[ "$status" != 200 ]', smoke)
-        evidence = text.split('- name: Retain machine-readable build evidence', 1)[1]
-        self.assertIn('output/grapharch-project-site/documentation.nq', evidence)
+        self.assertIn('scripts/verify_publication_site.py', smoke)
+        verifier = (ROOT / 'scripts/verify_publication_site.py').read_text()
+        self.assertIn('response.status != 200', verifier)
+        self.assertIn("provenance['source_commit']", verifier)
 
     def test_workflow_uploads_two_named_editions_from_pinned_grapharch(self):
         text = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
-        self.assertRegex(text, r'GRAPHARCH_COMMIT: [0-9a-f]{40}')
-        self.assertIn('ref: ${{ env.GRAPHARCH_COMMIT }}', text)
-        self.assertIn('--source-revision "$GITHUB_SHA"', text)
-        self.assertIn('--grapharch-revision "$GRAPHARCH_COMMIT"', text)
-        self.assertIn('dprod-ekgf-community-${{ github.sha }}', text)
-        self.assertIn('dprod-omg-submission-preview-${{ github.sha }}', text)
+        config = json.loads((ROOT / 'publication/publications.json').read_text())
+        self.assertRegex(config['generator_revision'], r'^[0-9a-f]{40}$')
+        self.assertIn('ref: ${{ steps.config.outputs.generator }}', text)
+        self.assertIn('output/central-publications/publications/', text)
+        self.assertNotIn('VERCEL_TOKEN', text.split('  deploy:')[0])
         self.assertNotIn('pull_request:', text)
         self.assertNotIn('set -e', text)
 
