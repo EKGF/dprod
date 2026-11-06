@@ -4,12 +4,12 @@ grapharch:
   subject: urn:dprod:documentation:model
 ---
 
-[Data Mesh Architectures](https://en.wikipedia.org/wiki/Data_mesh) [[Data Mesh]] use input and output ports to manage
+[Data Mesh Architectures](https://en.wikipedia.org/wiki/Data_mesh) [Data Mesh](https://en.wikipedia.org/wiki/Data_mesh) use input and output ports to manage
 how data enters and leaves a Data Product. These ports can handle different formats, schemas, and protocols. Input
 ports bring in data, while output ports send data to other Data Products for aggregation, reuse, analysis or
 reporting, etc.
 
-In the [[[vocab-dcat-3]]] framework,
+In the [vocab-dcat-3](https://www.w3.org/TR/vocab-dcat-3/) framework,
 a [Data Service](https://www.w3.org/TR/vocab-dcat-3/#Class:DataService) is a way
 to describe services that provide access to data.
 Data Services give standardized, machine-readable descriptions of how to access one or more
@@ -25,7 +25,7 @@ describing every aspect of a dataset. Finally, Datasets use the
 [conformsTo](https://www.w3.org/TR/vocab-dcat-3/#Property:resource_conforms_to) property to link to the
 "logical model" where one can specify one's own rich semantic metadata.
 
-By linking Data Product ports to DCAT DataServices ([[vocab-dcat-3]]),
+By linking Data Product ports to DCAT DataServices ([vocab-dcat-3](https://www.w3.org/TR/vocab-dcat-3/)),
 DPROD can describe Data Products in a way that machines can read
 across the organization. This makes it easier for data teams to build and manage their own data products
 independently, while still working well with the rest of the organization's data.
