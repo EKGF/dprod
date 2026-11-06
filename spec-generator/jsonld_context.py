@@ -137,7 +137,9 @@ class ApplicationContext:
         """Every term that must carry ``"@type": "@id"``, in a stable order."""
         return (
             self.dprod_object_properties()
-            + list(DPROD_IRI_VALUED_RDF_PROPERTIES)
+            + [term for term in DPROD_IRI_VALUED_RDF_PROPERTIES
+               if (URIRef(self._namespace + term.removeprefix('dprod:')),
+                   RDF.type, RDF.Property) in self._graph]
             + list(EXTERNAL_IRI_VALUED_TERMS)
         )
 
