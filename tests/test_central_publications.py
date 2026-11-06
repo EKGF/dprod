@@ -46,6 +46,12 @@ class CentralPublicationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             manifest.validate(config)
 
+    def test_leading_branch_must_be_selected_before_building(self):
+        config = self.settings()
+        config['publications'] = config['publications'][:1]
+        with self.assertRaisesRegex(ValueError, 'leading branch'):
+            manifest.validate(config)
+
     def test_inventory_has_local_links_exact_revisions_and_no_vercel_discovery(self):
         config = self.settings()
         selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [])

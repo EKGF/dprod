@@ -79,6 +79,8 @@ def validate(config):
                 raise ValueError(f'invalid publication {key}')
         seen.add(item['slug'])
         branches.add(item['branch'])
+    if config['leading_branch'] not in branches:
+        raise ValueError('the leading branch must be an explicit publication')
     keys(config['pull_requests'], 'enabled same_repository_only exclude_branch_prefixes definitions')
     policy = config['pull_requests']
     if type(policy['enabled']) is not bool or policy['same_repository_only'] is not True:
