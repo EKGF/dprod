@@ -49,11 +49,6 @@ doc:project a ga:Project ;
     ga:target doc:pdf,
         doc:specification .
 
-doc:website a ga:Target ;
-    ga:profile doc:website-profile ;
-    ga:renderer "website" ;
-    ga:scope doc:website-scope .
-
 doc:pdf a ga:Target ;
     dct:title "Data Product Ontology (DPROD) — PR 234 Schedule model" ;
     ga:author <urn:dprod-showcase:authors:0>,
@@ -859,6 +854,7 @@ doc:specification a ga:Target ;
         <urn:dprod-showcase:editors:4>,
         <urn:dprod-showcase:editors:5> ;
     ga:editorDraft <https://github.com/EKGF/dprod/tree/issue/184-schedule-model> ;
+    ga:latestVersion <https://ekgf.org/dprod/spec/pr-234/> ;
     ga:profile doc:profile ;
     ga:publicationDate "2026-08-04"^^xsd:date ;
     ga:publicationStatus "PR 234 Schedule model" ;
@@ -867,10 +863,6 @@ doc:specification a ga:Target ;
     ga:renderer "specification" ;
     ga:scope doc:scope ;
     ga:thisVersion <https://ekgf.org/dprod/spec/pr-234/> .
-
-doc:website-profile a ga:Profile .
-
-doc:website-scope a ga:Scope .
 
 <urn:dprod-showcase:authors:0> dct:title "Andrea Gioia" ;
     ga:url "https://www.linkedin.com/in/andreagioia/" .
@@ -1129,5 +1121,3 @@ doc:publisher a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 
 doc:scope a ga:Scope .
 
-
-doc:website ga:destination "website" ; dct:title "DPROD source documentation" .
