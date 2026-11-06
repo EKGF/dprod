@@ -641,3 +641,5 @@ doc:publisher a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 
 doc:scope a ga:Scope .
 
+
+doc:website ga:destination "website" ; dct:title "DPROD source documentation" .
