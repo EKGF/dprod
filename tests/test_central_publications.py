@@ -16,6 +16,17 @@ class CentralPublicationTests(unittest.TestCase):
     def settings(self):
         return json.loads((ROOT / 'publication/publications.json').read_text())
 
+    def test_generator_release_version_is_exact_and_binary_must_agree(self):
+        from unittest.mock import patch
+        import central_publications as central
+        config = self.settings()
+        for invalid in ('latest', 'v0.2.0', '', 2):
+            with self.subTest(version=invalid), self.assertRaises(ValueError):
+                manifest.validate(dict(config, generator_version=invalid))
+        with patch.object(central.subprocess, 'check_output', return_value='grapharch 0.1.0\n'), \
+             self.assertRaisesRegex(ValueError, 'binary version'):
+            central.build_all(ROOT, config, [], Path('/unused/grapharch'), Path('/unused/output'), 'a' * 40)
+
     def test_selection_uses_branch_heads_and_only_intentional_same_repo_prs(self):
         config = self.settings()
         heads = {'main': 'a' * 40, 'develop': 'b' * 40}

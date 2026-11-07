@@ -58,6 +58,9 @@ def sha256(path):
 
 def build_all(root, config, selected, engine, output, config_revision, hosting_profile=None):
     from publication_resources import retain_assets, serialize
+    actual = subprocess.check_output([str(engine), '--version'], text=True).strip()
+    if actual != f"grapharch {config['generator_version']}":
+        raise ValueError('generator binary version differs from the publication manifest')
     repository = 'https://github.com/' + config['repository'] + '.git'
     cache = root / 'output/central-git-cache'
     cache.mkdir(parents=True, exist_ok=True)
@@ -136,7 +139,7 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
         record = {'version': 1, 'repository': repository, 'leading_branch': config['leading_branch'],
                   'mount': config['mount'],
                   'config_commit': config_revision, 'generator_revision': config['generator_revision'],
-                  'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': selected}
+                  'generator_version': config['generator_version'], 'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': selected}
         if hosting_profile is not None:
             from pages_publication import prepare_artifact
             prepare_artifact(staging, config['mount'])

@@ -49,7 +49,9 @@ class PagesPublicationTests(unittest.TestCase):
     def test_pages_workflow_uses_grapharch_action_and_no_vercel_credentials(self):
         workflow = (ROOT / '.github/workflows/grapharch-pages.yml').read_text()
         self.assertIn('uses: ./.grapharch-tool', workflow)
-        self.assertIn('source-revision:', workflow)
+        self.assertIn('expected-revision: ${{ steps.config.outputs.generator }}', workflow)
+        self.assertIn('version: ${{ steps.config.outputs.version }}', workflow)
+        self.assertNotIn('source-revision:', workflow)
         self.assertIn('actions/upload-pages-artifact@', workflow)
         self.assertIn('actions/deploy-pages@', workflow)
         self.assertIn('static/dprod', workflow)

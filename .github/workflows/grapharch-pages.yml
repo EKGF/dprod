@@ -40,6 +40,8 @@ jobs:
           if printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
           if generator="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_revision"])')"; then :; else exit 1; fi
           if printf 'generator=%s\n' "$generator" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
+          if version="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_version"])')"; then :; else exit 1; fi
+          if printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
       - uses: actions/checkout@v7
         with:
           repository: EKGF/grapharch
@@ -51,7 +53,8 @@ jobs:
         uses: ./.grapharch-tool
         with:
           mode: install
-          source-revision: ${{ steps.config.outputs.generator }}
+          version: ${{ steps.config.outputs.version }}
+          expected-revision: ${{ steps.config.outputs.generator }}
       - name: Install trusted source serialization dependencies
         run: pip install -r requirements.txt
       - name: Verify publication and Pages boundaries

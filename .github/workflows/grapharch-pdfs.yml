@@ -41,6 +41,8 @@ jobs:
           if printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
           if generator="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_revision"])')"; then :; else exit 1; fi
           if printf 'generator=%s\n' "$generator" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
+          if version="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_version"])')"; then :; else exit 1; fi
+          if printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
       - name: Check out the one reviewed GraphArch generator
         uses: actions/checkout@v7
         with:
@@ -48,15 +50,13 @@ jobs:
           ref: ${{ steps.config.outputs.generator }}
           path: .grapharch-tool
           persist-credentials: false
-      - name: Set up Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v2
+      - name: Install the verified published generator
+        id: grapharch
+        uses: ./.grapharch-tool
         with:
-          rust-src-dir: .grapharch-tool
-      - name: Install native compiler dependencies
-        run: sudo apt-get update && sudo apt-get install -y clang libclang-dev pkg-config libssl-dev
-      - name: Build the pinned generator once
-        working-directory: .grapharch-tool
-        run: cargo build --locked --release --bin grapharch
+          mode: install
+          version: ${{ steps.config.outputs.version }}
+          expected-revision: ${{ steps.config.outputs.generator }}
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
@@ -73,7 +73,7 @@ jobs:
         run: >-
           python scripts/central_publications.py
           --manifest publication/publications.json
-          --grapharch .grapharch-tool/target/release/grapharch
+          --grapharch "${{ steps.grapharch.outputs.binary-path }}"
           --output output/central-publications
       - name: Retain the complete portable publication
         uses: actions/upload-artifact@v6

@@ -118,3 +118,12 @@ artifacts remain available through their explicit `.ttl`, `.jsonld`, and `.rdf`
 URLs. Canonical profile IRIs still identify the original published RDF resources.
 The workflow verifies the deployed configuration revision and all selected
 specification routes before succeeding.
+
+### Published generator binary
+
+`publications.json` selects one exact `generator_version` and its immutable
+`generator_revision`. Both publication workflows install that published binary
+through the GraphArch action. The action verifies the release checksum and
+source provenance before execution; it does not compile the generator or fall
+back to a source build. Update the version and commit together when upgrading.
+The public build record retains the version, source commit and executable hash.

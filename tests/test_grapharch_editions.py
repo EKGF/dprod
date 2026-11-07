@@ -13,13 +13,13 @@ class GrapharchEditionTests(unittest.TestCase):
     def setUp(self):
         self.graph = Graph().parse(ROOT / 'publication/standards.ttl')
 
-    def test_generator_build_uses_the_reviewed_toolchain_file(self):
+    def test_generator_installs_the_same_verified_release_without_a_compiler(self):
         workflow = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
-        setup = workflow.split('uses: actions-rust-lang/setup-rust-toolchain@v2', 1)[1]
-        setup = setup.split('      - name:', 1)[0]
-        self.assertIn('rust-src-dir: .grapharch-tool', setup)
-        self.assertNotIn('toolchain:', setup,
-                         'An explicit toolchain overrides the pinned generator toolchain file')
+        self.assertIn('uses: ./.grapharch-tool', workflow)
+        self.assertIn('version: ${{ steps.config.outputs.version }}', workflow)
+        self.assertIn('expected-revision: ${{ steps.config.outputs.generator }}', workflow)
+        self.assertNotIn('cargo build', workflow)
+        self.assertNotIn('setup-rust-toolchain', workflow)
 
     def test_active_editions_are_distinct_drafts_not_the_approved_release(self):
         graph = self.graph
