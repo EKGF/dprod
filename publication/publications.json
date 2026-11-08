@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "EKGF/dprod",
   "leading_branch": "develop",
-  "generator_revision": "bd57a3d0f5ab51946720f9372cd0908188b5f679",
+  "generator_revision": "d36f531ce91943d08ceed8f9eabd7d48877d21dd",
   "canonical_url": "https://ekgf.org/dprod/",
   "mount": "/dprod",
   "inventory": "urn:dprod:project-site:versions",
