@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "EKGF/dprod",
   "leading_branch": "develop",
-  "generator_revision": "937a134c8801fb62b5dcdb42f02611a38a6d0460",
+  "generator_revision": "bd57a3d0f5ab51946720f9372cd0908188b5f679",
   "canonical_url": "https://ekgf.org/dprod/",
   "mount": "/dprod",
   "inventory": "urn:dprod:project-site:versions",
@@ -49,5 +49,5 @@
     "definitions": "publication/standards.ttl"
   },
   "maximum_publications": 16,
-  "generator_version": "0.2.1"
+  "generator_version": "0.2.2"
 }
