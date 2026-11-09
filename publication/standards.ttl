@@ -376,7 +376,7 @@ doc:omg-pdf-profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "specification" .
+    ga:style "omg" .
 
 doc:profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
