@@ -38,6 +38,10 @@ class GrapharchEditionTests(unittest.TestCase):
         self.assertNotEqual(graph.value(DOC.pdf, GA.publisher),
                             graph.value(DOC['omg-pdf'], GA.publisher))
 
+    def test_omg_edition_selects_the_formal_typst_skin(self):
+        self.assertEqual(str(self.graph.value(DOC['omg-pdf-profile'], GA.style)), 'omg')
+        self.assertEqual(str(self.graph.value(DOC['pdf-profile'], GA.style)), 'specification')
+
     def test_technical_placements_are_shared_front_matter_is_distinct(self):
         graph = self.graph
         profiles = [graph.value(target, GA.profile) for target in (DOC.pdf, DOC['omg-pdf'])]
