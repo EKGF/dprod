@@ -12,7 +12,7 @@ class PreviewTests(unittest.TestCase):
         graph=Graph().parse(ROOT/"publication/grapharch.ttl")
         self.assertEqual(len(set(graph.objects(DOC.project,GA.target))),3)
         for collector in graph.objects(DOC.project,GA.collector):
-            self.assertIn((collector,RDF.type,GA.Collector),graph)
+            self.assertIn((collector,RDF.type,GA.CollectorUse),graph)
             self.assertIsNotNone(graph.value(collector,GA.source), "collector hints must retain their source identity")
             path=str(graph.value(collector,GA.sourcePath))
             self.assertTrue((ROOT/path).is_file(),path)
