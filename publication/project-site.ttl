@@ -21,8 +21,8 @@
 <urn:dprod:project-site:specification> dct:title "Specification" ;
     ga:url "spec-versions/" ; ga:order 1 .
 
-<urn:dprod:project-site:versions-page> a ga:Documentor ;
-    ga:project <urn:dprod:project-site> ; ga:kind "publication-inventory" ;
+<urn:dprod:project-site:versions-page> a ga:DocumentorUse ;
+    ga:project <urn:dprod:project-site> ; ga:documentorType ga:PublicationInventoryDocumentor ;
     ga:subject <urn:dprod:project-site:versions> ;
     ga:fragment <urn:dprod:project-site:page:versions> ;
     dct:title "Specification versions" ; ga:route "spec-versions/" ;

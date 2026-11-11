@@ -34,6 +34,25 @@ class ComponentIdentityTests(unittest.TestCase):
                         self.assertIsNone(graph.value(use, GA.kind))
                         self.assertIsNotNone(graph.value(use, GA.source))
 
+    def test_configured_documentors_reference_shared_definitions(self):
+        supported = {GA.PublicationInventoryDocumentor, GA.MaturityModelDocumentor,
+                     GA.MaturityOverviewDocumentor}
+        for path in sorted((ROOT / 'publication').glob('*.ttl')):
+            graph = Graph().parse(path)
+            self.assertFalse(list(graph.subjects(RDF.type, GA.Documentor)), path.name)
+            for use in graph.subjects(RDF.type, GA.DocumentorUse):
+                with self.subTest(configuration=path.name, documentor=use):
+                    definitions = list(graph.objects(use, GA.documentorType))
+                    self.assertEqual(len(definitions), 1)
+                    self.assertIn(definitions[0], supported)
+
+    def test_no_component_is_selected_by_a_string_key(self):
+        for path in sorted((ROOT / 'publication').glob('*.ttl')):
+            graph = Graph().parse(path)
+            for predicate in (GA.kind, GA.rendererExecutable):
+                with self.subTest(configuration=path.name, predicate=predicate):
+                    self.assertFalse(list(graph.subject_objects(predicate)))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -32,7 +32,7 @@ def prepare_registry(root: Path, revision: str) -> Path:
 <urn:dprod:ci> ga:showcase <urn:dprod:ci:showcase> .
 <urn:dprod:ci:showcase> a ga:Showcase ; ga:slug "dprod" ;
     dct:title "DPROD PDF editions" ; ga:order 1 ;
-    ga:kind "dprod" ; ga:source "dprod.json" ;
+    ga:showcaseRunner ga:DprodShowcaseRunner ; ga:source "dprod.json" ;
     ga:previewPath "specification/index.html" ;
     ga:pdfPath "pdf/ekgf/document.pdf" .
 ''', encoding='utf-8')

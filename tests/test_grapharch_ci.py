@@ -31,7 +31,7 @@ class GrapharchCITests(unittest.TestCase):
                                      'ref': revision, 'definitions': 'publication/standards.ttl'})
             graph = Graph().parse(registry)
             ga = Namespace('https://ekgf.org/ontology/grapharch#')
-            self.assertEqual(str(graph.value(URIRef('urn:dprod:ci:showcase'), ga.kind)), 'dprod')
+            self.assertEqual(graph.value(URIRef('urn:dprod:ci:showcase'), ga.showcaseRunner), ga.DprodShowcaseRunner)
             self.assertEqual(set(p.name for p in root.iterdir()), {'showcases.ttl', 'dprod.json'})
         for invalid in ('develop', 'main', 'abc', 'x' * 40, '0' * 40):
             with self.assertRaises(ValueError):
