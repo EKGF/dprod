@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 
 import publication_manifest as manifest
@@ -29,6 +30,24 @@ def committed_configuration(root, path):
     return manifest.require_sha(subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip())
 
 
+def omit_preview(publication, error, staging):
+    """Report a failed pull-request preview and remove anything it left in staging."""
+    tree = staging / 'publications' / publication['slug']
+    if tree.exists():
+        shutil.rmtree(tree)
+    source = f'{publication["branch"]} at {publication["source_commit"]}'
+    reason = f'{type(error).__name__}: {error}'
+    print(f'PR #{publication["pull_request"]} ({source}) preview omitted from the site and '
+          f'version inventory: {reason}', file=sys.stderr, flush=True)
+    summary = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary:
+        with open(summary, 'a', encoding='utf-8') as stream:
+            stream.write(f'### PR #{publication["pull_request"]} preview omitted\n\n'
+                         f'`{source}` failed to build. It is not deployed and not listed in the '
+                         f'version inventory; develop and release publications are unaffected.\n\n'
+                         f'~~~text\n{reason}\n~~~\n\n')
+
+
 def assemble_atomic(output, publications, build, package):
     if output.exists():
         raise ValueError('publication output must not already exist')
@@ -36,9 +55,21 @@ def assemble_atomic(output, publications, build, package):
     # The staging tree is never a deployed site. Failure leaves output absent.
     with tempfile.TemporaryDirectory(prefix='.publication-build-', dir=output.parent) as temporary:
         staging = Path(temporary)
+        published = []  # bounded: maximum_publications <= 32.
         for publication in publications:
-            build(publication, staging)
-        package(staging)
+            if 'pull_request' not in publication:
+                # Develop and release publications are all-or-nothing.
+                build(publication, staging)
+            else:
+                try:
+                    build(publication, staging)
+                except Exception as error:
+                    # A failing PR preview is reported and omitted; it never
+                    # blocks the develop and release deployment.
+                    omit_preview(publication, error, staging)
+                    continue
+            published.append(publication)
+        package(staging, published)
         staging.rename(output)
 
 
@@ -77,12 +108,11 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
     git = cache / 'sources.git'
     if not git.exists():
         subprocess.run(['git', 'init', '--bare', str(git)], check=True)
-    # Fetch source objects only; never check out or execute another branch.
-    for item in selected:
-        subprocess.run(['git', '-C', str(git), 'fetch', '--no-tags', repository, item['source_commit']], check=True)
     observed = datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')
 
     def build(item, staging):
+        # Fetch source objects only; never check out or execute another branch.
+        subprocess.run(['git', '-C', str(git), 'fetch', '--no-tags', repository, item['source_commit']], check=True)
         destination = staging / 'publications' / item['slug']
         run_engine(engine, ['build-dprod', '--git-repository', repository,
                    '--git-ref', item['source_commit'], '--definitions', item['definitions'],
@@ -113,7 +143,7 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
             shutil.copytree(specification / 'contracts', destination / 'contracts')
         retain_assets(git, item, destination)
 
-    def package(staging):
+    def package(staging, published):
         website = config['website']
         definition = staging / 'project-site.ttl'
         source_definitions = (root / website['definitions']).read_text()
@@ -121,22 +151,22 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
             from pages_publication import website_definitions
             source_definitions = website_definitions(source_definitions, website['target'], config['canonical_url'])
         definition.write_text(source_definitions + '\n' +
-                              manifest.inventory_turtle(config, selected, config_revision, observed))
+                              manifest.inventory_turtle(config, published, config_revision, observed))
         run_engine(engine, ['build-site', '--source', str(root / website['source']),
                            '--definitions', str(definition), '--project', website['project'],
                            '--target', website['target'], '--output-root', str(staging / 'website')])
         trees = [{'source': str(staging / 'publications' / p['slug']),
-                  'destination': 'spec/' + p['slug']} for p in selected]
+                  'destination': 'spec/' + p['slug']} for p in published]
         hosting = {'version': 1, 'mount': config['mount'], 'site': str(staging / 'website/site'),
                    'static_trees': trees, 'directory_aliases': [], 'file_aliases': [],
                    'inventory': str(staging / 'website/site/publication-versions.json'), 'version_path': 'spec'}
         # The longstanding /spec/ URL selects the leading branch; all versions
         # are actual local directories, never Vercel proxy routes.
-        leading = next(p for p in selected if p['branch'] == config['leading_branch'])
+        leading = next(p for p in published if p['branch'] == config['leading_branch'])
         hosting['directory_aliases'].append({'path': 'spec', 'target': 'spec/' + leading['slug']})
-        if any(p['slug'] == 'main' for p in selected):
+        if any(p['slug'] == 'main' for p in published):
             hosting['directory_aliases'].append({'path': 'spec/archive/1.0', 'target': 'spec/main'})
-        for item in selected:
+        for item in published:
             if (staging / 'publications' / item['slug'] / 'dprod-contracts-prof.ttl').is_file():
                 hosting['file_aliases'].append({'path': f'spec/{item["slug"]}/contracts/profile/',
                     'target': f'spec/{item["slug"]}/dprod-contracts-prof.ttl', 'content_type': 'text/turtle'})
@@ -149,7 +179,7 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
         record = {'version': 1, 'repository': repository, 'leading_branch': config['leading_branch'],
                   'mount': config['mount'],
                   'config_commit': config_revision, 'generator_revision': config['generator_revision'],
-                  'generator_version': config['generator_version'], 'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': selected}
+                  'generator_version': config['generator_version'], 'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': published}
         if hosting_profile is not None:
             from pages_publication import prepare_artifact
             prepare_artifact(staging, config['mount'])

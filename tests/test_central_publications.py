@@ -120,6 +120,121 @@ class CentralPublicationTests(unittest.TestCase):
             self.assertEqual(calls, ['main', 'develop'])
             self.assertFalse(output.exists())
 
+    def test_failed_pull_request_preview_is_reported_and_omitted(self):
+        import contextlib
+        import io
+        import os
+        from unittest.mock import patch
+        import central_publications as central
+        preview = {'slug': 'pr-42', 'branch': 'issue/schedule', 'source_commit': 'c' * 40,
+                   'pull_request': 42}
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'complete'
+            summary = Path(temp) / 'summary.md'
+            def build(publication, staging):
+                tree = staging / 'publications' / publication['slug']
+                tree.mkdir(parents=True)
+                (tree / 'partial.html').write_text('partial')
+                if publication['slug'] == 'pr-42':
+                    raise RuntimeError('configured DPROD collector must be typed CollectorUse')
+            packaged = []
+            def package(staging, published):
+                self.assertFalse((staging / 'publications/pr-42').exists())
+                packaged.extend(p['slug'] for p in published)
+            log = io.StringIO()
+            with patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}), \
+                 contextlib.redirect_stderr(log):
+                central.assemble_atomic(output, [{'slug': 'main'}, {'slug': 'develop'}, preview],
+                                        build, package)
+            self.assertEqual(packaged, ['main', 'develop'])
+            self.assertTrue((output / 'publications/develop/partial.html').is_file())
+            self.assertFalse((output / 'publications/pr-42').exists())
+            for report in (log.getvalue(), summary.read_text()):
+                self.assertIn('PR #42', report)
+                self.assertIn('issue/schedule', report)
+                self.assertIn('configured DPROD collector must be typed CollectorUse', report)
+
+    def test_release_failure_is_never_isolated_like_a_preview(self):
+        import contextlib
+        import io
+        import central_publications as central
+        preview = {'slug': 'pr-42', 'branch': 'issue/schedule', 'source_commit': 'c' * 40,
+                   'pull_request': 42}
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'complete'
+            def build(publication, staging):
+                raise RuntimeError(f'deliberate {publication["slug"]} error')
+            with contextlib.redirect_stderr(io.StringIO()), \
+                 self.assertRaisesRegex(RuntimeError, 'deliberate main error'):
+                central.assemble_atomic(output, [preview, {'slug': 'main'}, {'slug': 'develop'}], build,
+                                        lambda staging, published: self.fail('must not package partial output'))
+            self.assertFalse(output.exists())
+
+    def test_omitted_preview_leaves_no_route_inventory_or_record_entry(self):
+        import contextlib
+        import io
+        import os
+        import shutil
+        from unittest.mock import patch
+        import central_publications as central
+        import publication_resources
+        config = manifest.validate(self.settings())
+        selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [
+            {'number': 42, 'title': 'Schedule', 'head': {'ref': 'issue/schedule', 'sha': 'c' * 40,
+             'repo': {'full_name': 'EKGF/dprod'}}}])
+        self.assertEqual([p['slug'] for p in selected], ['main', 'develop', 'pr-42'])
+        captured = {}
+        def engine(binary, arguments):
+            options = {key: value for key, value in zip(arguments[1:], arguments[2:]) if key.startswith('--')}
+            if arguments[0] == 'build-dprod':
+                if options['--git-ref'] == 'c' * 40:
+                    raise subprocess.CalledProcessError(1, [str(binary), 'publication', 'build-dprod'])
+                specification = Path(options['--output-root']) / 'specification'
+                specification.mkdir(parents=True)
+                (specification / 'index.html').write_text('<!doctype html>')
+            elif arguments[0] == 'build-site':
+                captured['inventory'] = Path(options['--definitions']).read_text()
+                site = Path(options['--output-root']) / 'site'
+                site.mkdir(parents=True)
+                (site / 'publication-versions.json').write_text('{}')
+            else:
+                self.assertEqual(arguments[0], 'package-site')
+                captured['hosting'] = json.loads(Path(options['--config']).read_text())
+                (Path(options['--output-root']) / '.vercel/output/static/dprod').mkdir(parents=True)
+        def serialize(git, item, specification):
+            for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
+                         'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
+                         'dprod-simple.jsonld', 'source-resources.json'):
+                (specification / name).write_text(item['source_commit'])
+            return []
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / 'source'
+            (root / 'publication').mkdir(parents=True)
+            shutil.copyfile(ROOT / config['website']['definitions'], root / config['website']['definitions'])
+            binary = Path(temp) / 'grapharch'
+            binary.write_text('engine')
+            output = Path(temp) / 'complete'
+            summary = Path(temp) / 'summary.md'
+            with patch.object(central, 'verify_generator'), patch.object(central, 'run_engine', engine), \
+                 patch.object(central.subprocess, 'run'), \
+                 patch.object(publication_resources, 'serialize', serialize), \
+                 patch.object(publication_resources, 'retain_assets'), \
+                 patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}), \
+                 contextlib.redirect_stderr(io.StringIO()):
+                central.build_all(root, config, selected, binary, output, 'd' * 40)
+            record = json.loads((output / 'publication-build.json').read_text())
+            deployed = json.loads((output / 'deployment/.vercel/output/static/dprod/publication-build.json').read_text())
+            self.assertEqual([p['slug'] for p in record['publications']], ['main', 'develop'])
+            self.assertEqual(deployed, record)
+            self.assertEqual([tree['destination'] for tree in captured['hosting']['static_trees']],
+                             ['spec/main', 'spec/develop'])
+            self.assertNotIn('pr-42', json.dumps(captured['hosting']))
+            self.assertIn('ga:route "/dprod/spec/develop/"', captured['inventory'])
+            self.assertNotIn('pr-42', captured['inventory'])
+            self.assertNotIn('c' * 40, captured['inventory'])
+            self.assertFalse((output / 'publications/pr-42').exists())
+            self.assertIn('PR #42', summary.read_text())
+
     def test_context_serialization_uses_each_versions_ontology_namespace(self):
         sys.path.insert(0, str(ROOT / 'spec-generator'))
         from rdflib import Graph, URIRef, RDF, OWL
