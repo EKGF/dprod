@@ -96,4 +96,4 @@ Questions, feedback, or interested in contributing? Reach out to the EKGF commun
 
 A visual introduction to DPROD's purpose, model, worked example, and adoption path.
 
-[Download the overview PDF](https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/overview/document.pdf)
+[Download the overview PDF](https://ekgf.org/dprod/spec/develop/pdf/overview/document.pdf)
