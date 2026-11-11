@@ -14,7 +14,7 @@ class GrapharchEditionTests(unittest.TestCase):
         self.graph = Graph().parse(ROOT / 'publication/standards.ttl')
 
     def test_generator_installs_the_same_verified_release_without_a_compiler(self):
-        workflow = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
+        workflow = (ROOT / '.github/workflows/grapharch-pages.yml').read_text()
         self.assertIn('uses: ./.grapharch-tool', workflow)
         self.assertIn('version: ${{ steps.config.outputs.version }}', workflow)
         self.assertIn('expected-revision: ${{ steps.config.outputs.generator }}', workflow)

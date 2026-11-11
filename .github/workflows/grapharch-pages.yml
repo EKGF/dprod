@@ -1,7 +1,9 @@
 name: GraphArch GitHub Pages
 
-# Independent review publication. Existing ReSpec and Vercel workflows stay active.
-# Only trusted develop code executes; selected branch/PR sources are Git blobs.
+# GraphArch's only deployment: the complete review publication on the default
+# GitHub Pages domain, next to the unchanged production website, until it is a
+# verified like-for-like replacement. Only trusted develop code executes;
+# selected branch/PR sources are Git blobs.
 on:
   push:
     branches: [develop]
@@ -55,6 +57,10 @@ jobs:
           mode: install
           version: ${{ steps.config.outputs.version }}
           expected-revision: ${{ steps.config.outputs.generator }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          cache: pip
       - name: Install trusted source serialization dependencies
         run: pip install -r requirements.txt
       - name: Verify publication and Pages boundaries
@@ -74,12 +80,13 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: output/grapharch-pages/deployment/.vercel/output/static/dprod
-      - name: Retain source graphs, PDFs and provenance
+      - name: Retain source graphs, PDFs, website build and provenance
         uses: actions/upload-artifact@v6
         with:
           name: grapharch-pages-evidence-${{ github.run_id }}
           path: |
             output/grapharch-pages/publications/
+            output/grapharch-pages/website/
             output/grapharch-pages/publication-build.json
           include-hidden-files: true
           if-no-files-found: error

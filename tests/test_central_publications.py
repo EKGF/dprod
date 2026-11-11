@@ -308,16 +308,22 @@ class CentralPublicationTests(unittest.TestCase):
                 validate_asset('diagram.svg', unsafe)
 
     def test_workflow_executes_only_leading_branch_code_and_separates_deploy_credentials(self):
-        workflow = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
+        workflow = (ROOT / '.github/workflows/grapharch-pages.yml').read_text()
         self.assertIn('pull_request_target:', workflow)
         self.assertIn('ref: develop', workflow)
         self.assertNotIn('pull_request.head.sha', workflow)
         self.assertNotIn('spec-generator/main.py', workflow)
-        self.assertNotIn('VERCEL_TOKEN', workflow.split('  deploy:')[0])
         self.assertIn('workflow_run:', workflow)
         self.assertNotIn('set -e', workflow)
         self.assertNotIn('--token', workflow)
-
+        # Only the deploy job, which runs no repository code before publishing
+        # the finished artifact, may write Pages or mint a deployment token.
+        build, deploy = workflow.split('  deploy:')
+        self.assertIn('permissions:\n  contents: read\n  pull-requests: read\n', build)
+        for grant in ('pages: write', 'id-token: write'):
+            self.assertNotIn(grant, build)
+            self.assertIn(grant, deploy)
+        self.assertLess(deploy.index('actions/deploy-pages@'), deploy.index('actions/checkout@'))
 
 if __name__ == '__main__':
     unittest.main()

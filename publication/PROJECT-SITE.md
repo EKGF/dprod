@@ -15,8 +15,8 @@ python scripts/central_publications.py \
 `publications.json` on the leading branch owns the selected refs, labels,
 publication status, path prefixes and one exact GraphArch revision. The leading
 branch is `develop` here; the manifest can choose another branch for another
-project. GitHub discovery needs repository pull-request read access; it never
-queries Vercel. Rendering does not receive that credential.
+project. GitHub discovery needs repository pull-request read access; it queries
+no deployment platform. Rendering does not receive that credential.
 
 Every selected source is rebuilt using that one engine. The website, each
 specification, its PDFs and its native data artifacts are assembled into one
@@ -57,13 +57,15 @@ Preview deployments intentionally keep those production canonical URLs.
 
 ## Workflow and provenance
 
-`.github/workflows/grapharch-pdfs.yml` runs the orchestrator from trusted
-`develop`, including when another ref triggered it. It runs on develop pushes,
-PR lifecycle events, completion of existing source-validation workflows, manual
-requests and an hourly refresh. Selected source branches are read as Git blobs;
-their build scripts, Python, JavaScript and dependency manifests are never run.
-A separate deployment job receives Vercel credentials only after a complete
-assembly artifact exists. Fork PRs are not published by the current manifest.
+`.github/workflows/grapharch-pages.yml` is GraphArch's only deployment. It runs
+the orchestrator from trusted `develop`, including when another ref triggered
+it. It runs on develop pushes, PR lifecycle events, completion of existing
+source-validation workflows, manual requests and an hourly refresh. Selected
+source branches are read as Git blobs; their build scripts, Python, JavaScript
+and dependency manifests are never run. A separate deployment job receives the
+Pages write permission and deployment token only after a complete assembly
+artifact exists, and publishes it before checking out any code. Fork PRs are
+not published by the current manifest.
 
 The build retains each source's exported documentation KG and target manifests,
 plus a `publication-build.json` recording the source SHAs, leading configuration
@@ -79,9 +81,9 @@ that a freshly generated old-source publication is an approved new standard.
 
 ## Hosting and migration boundary
 
-The complete package is
-`output/central-publications/deployment/.vercel/output/`. Its `static/` tree is
-portable to static hosts; `config.json` holds Vercel routes and RDF media types.
+GraphArch's `package-site` writes the complete package in its fixed
+`deployment/.vercel/output/` layout. Its portable `static/` tree is what GitHub
+Pages serves; the route and media-type table in `config.json` is not deployed.
 Custom mounts belong in the manifest and must agree with the canonical base URL.
 
 The `/dprod/` mount matches the EKGF website proxy. `/dprod/spec/` selects develop;
@@ -93,19 +95,21 @@ a frozen approved release. The contracts profile IRIs return native Turtle.
 Selected PR directories are fully included locally, with no remote deployment
 redirects. Closing a PR removes it from the next assembled site's inventory.
 
-CI deploys a reviewable preview; it does not promote it to production. The
-existing production Next.js publication remains until a separately verified
-cutover. Its Git integration and legacy PR domain workflow must be retired when
-that cutover happens, so only one publisher owns production. Root-domain sitemap
-integration and the branded 404 page remain separate work.
+CI deploys only the GitHub Pages review site; GraphArch never deploys to the
+production host. The production Next.js publication (`site/`, its Vercel Git
+integration and `vercel-branch-domains.yml`) remains the production publisher
+until a separately verified like-for-like cutover, so only one publisher owns
+production. Root-domain sitemap integration and the branded 404 page remain
+separate work.
 
 ## Independent GitHub Pages review site
 
 `.github/workflows/grapharch-pages.yml` publishes the same complete selected-source
 assembly at <https://ekgf.github.io/dprod/>. It uses the GraphArch composite action
 in source-revision install mode, pinned by `publications.json`; no branch or PR
-build code runs. `github-pages.json` supplies only hosting metadata. The existing
-ReSpec and Vercel workflows remain active in parallel, with no production cutover.
+build code runs. `github-pages.json` supplies only hosting metadata. The ReSpec
+and production website workflows remain active in parallel, with no production
+cutover.
 
 The Pages upload contains the contents of the mounted `static/dprod` directory:
 GitHub supplies `/dprod/`, so it must not be nested a second time. The generated
@@ -113,7 +117,7 @@ website canonical URL and version inventory use the Pages hostname. Normative
 ontology IRIs and source specification identities remain unchanged. `.nojekyll`
 is present and `CNAME` is forbidden; this site uses the default Pages domain.
 
-Pages cannot apply Vercel's custom response headers or file-alias routing. RDF
+Pages cannot apply the package's route table (response headers, file aliases). RDF
 artifacts remain available through their explicit `.ttl`, `.jsonld`, and `.rdf`
 URLs. Canonical profile IRIs still identify the original published RDF resources.
 The workflow verifies the deployed configuration revision and all selected
@@ -122,7 +126,7 @@ specification routes before succeeding.
 ### Published generator binary
 
 `publications.json` selects one exact `generator_version` and its immutable
-`generator_revision`. Both publication workflows install that published binary
+`generator_revision`. The Pages workflow installs that published binary
 through the GraphArch action. The action verifies the release checksum and
 source provenance before execution; it does not compile the generator or fall
 back to a source build. Update the version and commit together when upgrading.
