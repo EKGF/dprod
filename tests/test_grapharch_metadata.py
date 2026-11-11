@@ -71,7 +71,32 @@ class GrapharchMetadataTests(unittest.TestCase):
         downloads = template.split('key: "Download as RDF:"', 1)[1].split('localBiblio:', 1)[0]
         for label, path in re.findall(r'value: "([^"]+)",\s*href: "([^"]+)"', downloads):
             self.assertIn(label, bodies)
-            self.assertIn('https://ekgf.org/dprod/spec/develop/' + path, bodies)
+            self.assertIn(f'href="../{path}"', bodies)
+
+    def test_rows_link_artifacts_of_the_same_build_relative_to_the_publication(self):
+        # Hosts are deployment configuration. A row link into the deployment
+        # stays relative, so it resolves wherever the bundle is published.
+        import subprocess
+        import sys
+        import tempfile
+        sys.path.insert(0, str(ROOT / 'scripts'))
+        from central_publications import DERIVED_RESOURCES
+        from publication_resources import serialize
+        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        revision = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        with tempfile.TemporaryDirectory() as temporary:
+            native = serialize(ROOT, {'source_commit': revision,
+                                      'definitions': 'publication/standards.ttl'}, Path(temporary))
+        bundle = set(native) | set(DERIVED_RESOURCES)
+        self.assertEqual(str(graph.value(DOC.specification, GA.destination)), 'specification')
+        downloads = 0
+        for row in graph.objects(DOC.specification, GA.metadataRow):
+            for href in re.findall(r'href="([^"]+)"', str(graph.value(row, GA.body) or '')):
+                self.assertNotRegex(href, r'^https://(ekgf\.org|ekgf\.github\.io)/dprod/', href)
+                if href.startswith('../') and href.endswith(('.ttl', '.jsonld', '.rdf')):
+                    self.assertIn(href[len('../'):], bundle, href)
+                    downloads += 1
+        self.assertEqual(downloads, 12)
 
     def test_product_logo_is_a_retained_source_asset_separate_from_authority(self):
         graph = Graph().parse(ROOT / 'publication/standards.ttl')

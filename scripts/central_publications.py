@@ -17,6 +17,11 @@ from rdflib import Graph, URIRef
 import publication_manifest as manifest
 
 THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
+# Serializations derived from each source's native RDF, published at the root of
+# its specification bundle next to the native files.
+DERIVED_RESOURCES = ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf',
+                     'dprod-all.jsonld', 'dprod-shapes.jsonld', 'dprod-shapes.rdf',
+                     'dprod-context.jsonld', 'dprod-simple.jsonld', 'source-resources.json')
 
 
 def committed_configuration(root, path):
@@ -167,9 +172,7 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
             '<script>location.replace("specification/"+location.search+location.hash)</script>'
             '<noscript><meta http-equiv="refresh" content="0;url=specification/"></noscript>'
             '<a href="specification/">Open specification</a></html>\n')
-        for name in resources + ['dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf',
-                                  'dprod-all.jsonld', 'dprod-shapes.jsonld', 'dprod-shapes.rdf',
-                                  'dprod-context.jsonld', 'dprod-simple.jsonld', 'source-resources.json']:
+        for name in resources + list(DERIVED_RESOURCES):
             shutil.copyfile(specification / name, destination / name)
         if (specification / 'contracts').exists():
             shutil.copytree(specification / 'contracts', destination / 'contracts')
