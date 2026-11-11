@@ -12,7 +12,11 @@ import subprocess
 import sys
 import tempfile
 
+from rdflib import Graph, URIRef
+
 import publication_manifest as manifest
+
+THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
 
 
 def committed_configuration(root, path):
@@ -29,6 +33,20 @@ def committed_configuration(root, path):
     if dirty or untracked:
         raise ValueError('central publication requires committed configuration, content and executable inputs')
     return manifest.require_sha(subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip())
+
+
+def website_definitions(source, target, publication_url):
+    """Supply the website target's publication URL from the hosting configuration."""
+    graph = Graph().parse(data=source, format='turtle')
+    subject = URIRef(target)
+    if (subject, None, None) not in graph:
+        raise ValueError(f'website target {target} is not defined')
+    if any(True for _ in graph.subject_objects(THIS_VERSION)):
+        # The deployment location is an input of each build, never source content.
+        raise ValueError('the website publication URL is hosting configuration; '
+                         'remove ga:thisVersion from the website definitions')
+    graph.add((subject, THIS_VERSION, URIRef(publication_url)))
+    return graph.serialize(format='turtle')
 
 
 def omit_preview(publication, error, staging):
@@ -160,10 +178,8 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
     def package(staging, published):
         website = config['website']
         definition = staging / 'project-site.ttl'
-        source_definitions = (root / website['definitions']).read_text()
-        if hosting_profile is not None:
-            from pages_publication import website_definitions
-            source_definitions = website_definitions(source_definitions, website['target'], config['canonical_url'])
+        source_definitions = website_definitions((root / website['definitions']).read_text(),
+                                                 website['target'], config['canonical_url'])
         definition.write_text(source_definitions + '\n' +
                               manifest.inventory_turtle(config, published, config_revision, observed))
         run_engine(engine, ['build-site', '--source', str(root / website['source']),

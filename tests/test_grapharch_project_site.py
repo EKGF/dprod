@@ -31,7 +31,8 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertNotIn('ga:kind', configuration)
         self.assertIn('ga:documentorType ga:PublicationInventoryDocumentor', configuration)
         self.assertIn('ga:url "spec-versions/"', configuration)
-        self.assertIn('ga:thisVersion <https://ekgf.org/dprod/>', configuration)
+        # The publication URL is hosting configuration, supplied per build.
+        self.assertNotIn('thisVersion', configuration)
         manifest = json.loads((ROOT / 'publication/publications.json').read_text())
         self.assertEqual(manifest['pull_requests']['exclude_branch_prefixes'], ['dependabot/'])
         self.assertEqual(manifest['publications'][0]['label'], 'DPROD 1.0 beta')

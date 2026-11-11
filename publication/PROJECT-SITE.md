@@ -51,9 +51,11 @@ can be added to `publications`; sources lacking publication definitions need
 tracked publication-only maintenance, not a fallback to develop content.
 
 Frontmatter descriptions retain the current project's search descriptions. The
-website target supplies the public canonical base, `https://ekgf.org/dprod/`;
-GraphArch generates canonical/Open Graph metadata, a sitemap and robots file.
-Preview deployments intentionally keep those production canonical URLs.
+website's public base URL is hosting configuration, not website source: the
+orchestrator supplies the target's `ga:thisVersion` from `canonical_url` in
+`publications.json` (`https://ekgf.org/dprod/`) or in the selected hosting profile,
+and rejects website definitions that declare one. GraphArch generates
+canonical/Open Graph metadata, a sitemap and robots file from it.
 
 ## Workflow and provenance
 

@@ -23,16 +23,6 @@ class PagesPublicationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             hosting_configuration(config, profile)
 
-    def test_pages_website_uses_host_metadata_without_rewriting_normative_inputs(self):
-        from pages_publication import website_definitions
-        from rdflib import Graph, URIRef
-        source = (ROOT / 'publication/project-site.ttl').read_text()
-        result = website_definitions(source, 'urn:dprod:project-site:website', 'https://ekgf.github.io/dprod/')
-        graph = Graph().parse(data=result, format='turtle')
-        values = list(graph.objects(URIRef('urn:dprod:project-site:website'), URIRef('https://ekgf.org/ontology/grapharch#thisVersion')))
-        self.assertEqual(values, [URIRef('https://ekgf.github.io/dprod/')])
-        self.assertIn('https://ekgf.org/dprod/', source)
-
     def test_pages_artifact_is_mounted_contents_not_a_second_dprod_directory(self):
         from pages_publication import prepare_artifact
         with tempfile.TemporaryDirectory() as temporary:

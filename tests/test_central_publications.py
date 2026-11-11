@@ -7,9 +7,13 @@ import subprocess
 import tempfile
 import unittest
 
+from rdflib import URIRef
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import publication_manifest as manifest
+
+THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
 
 
 class CentralPublicationTests(unittest.TestCase):
@@ -258,6 +262,76 @@ class CentralPublicationTests(unittest.TestCase):
             self.assertNotIn('c' * 40, captured['inventory'])
             self.assertFalse((output / 'publications/pr-42').exists())
             self.assertIn('PR #42', summary.read_text())
+
+    def test_website_publication_url_is_hosting_configuration_not_source_content(self):
+        import central_publications as central
+        from rdflib import Graph, URIRef
+        config = self.settings()
+        target = URIRef(config['website']['target'])
+        source = (ROOT / config['website']['definitions']).read_text()
+        self.assertEqual(list(Graph().parse(data=source, format='turtle').subject_objects(THIS_VERSION)), [])
+        for url in ('https://ekgf.org/dprod/', 'https://ekgf.github.io/dprod/'):
+            graph = Graph().parse(data=central.website_definitions(source, str(target), url), format='turtle')
+            self.assertEqual(list(graph.subject_objects(THIS_VERSION)), [(target, URIRef(url))])
+        declared = source + f'<{target}> <{THIS_VERSION}> <https://ekgf.org/dprod/> .\n'
+        with self.assertRaisesRegex(ValueError, 'hosting configuration'):
+            central.website_definitions(declared, str(target), 'https://ekgf.github.io/dprod/')
+        with self.assertRaisesRegex(ValueError, 'not defined'):
+            central.website_definitions(source, 'urn:dprod:project-site:missing', 'https://ekgf.github.io/dprod/')
+
+    def test_every_build_supplies_the_website_url_of_its_own_hosting(self):
+        import contextlib
+        import io
+        import shutil
+        from unittest.mock import patch
+        from rdflib import Graph, URIRef
+        import central_publications as central
+        import publication_resources
+        from pages_publication import hosting_configuration
+        production = manifest.validate(self.settings())
+        pages = hosting_configuration(production, json.loads((ROOT / 'publication/github-pages.json').read_text()))
+        for config, profile in ((production, None), (pages, ROOT / 'publication/github-pages.json')):
+            selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [])
+            captured = {}
+            def engine(binary, arguments):
+                options = {key: value for key, value in zip(arguments[1:], arguments[2:]) if key.startswith('--')}
+                if arguments[0] == 'build-dprod':
+                    specification = Path(options['--output-root']) / 'specification'
+                    specification.mkdir(parents=True)
+                    (specification / 'index.html').write_text('<!doctype html>')
+                elif arguments[0] == 'build-site':
+                    captured['definitions'] = Path(options['--definitions']).read_text()
+                    site = Path(options['--output-root']) / 'site'
+                    site.mkdir(parents=True)
+                    (site / 'publication-versions.json').write_text('{}')
+                else:
+                    stage = Path(options['--output-root']) / '.vercel/output/static/dprod'
+                    stage.mkdir(parents=True)
+                    (stage / 'index.html').write_text('site')
+            def serialize(git, item, specification):
+                for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
+                             'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
+                             'dprod-simple.jsonld', 'source-resources.json'):
+                    (specification / name).write_text(item['source_commit'])
+                return []
+            with self.subTest(url=config['canonical_url']), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp) / 'source'
+                (root / 'publication').mkdir(parents=True)
+                shutil.copyfile(ROOT / config['website']['definitions'], root / config['website']['definitions'])
+                if profile is not None:
+                    shutil.copyfile(profile, root / 'publication/github-pages.json')
+                    profile = root / 'publication/github-pages.json'
+                binary = Path(temp) / 'grapharch'
+                binary.write_text('engine')
+                with patch.object(central, 'verify_generator'), patch.object(central, 'run_engine', engine), \
+                     patch.object(central.subprocess, 'run'), \
+                     patch.object(publication_resources, 'serialize', serialize), \
+                     patch.object(publication_resources, 'retain_assets'), \
+                     contextlib.redirect_stderr(io.StringIO()):
+                    central.build_all(root, config, selected, binary, Path(temp) / 'complete', 'd' * 40, profile)
+                graph = Graph().parse(data=captured['definitions'], format='turtle')
+                self.assertEqual(list(graph.subject_objects(THIS_VERSION)),
+                                 [(URIRef(config['website']['target']), URIRef(config['canonical_url']))])
 
     def test_context_serialization_uses_each_versions_ontology_namespace(self):
         sys.path.insert(0, str(ROOT / 'spec-generator'))
