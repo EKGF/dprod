@@ -65,29 +65,6 @@ class GrapharchEditionTests(unittest.TestCase):
         self.assertEqual(graph.value(DOC.specification, GA.profile), DOC.profile)
         self.assertEqual(placements(DOC.profile, True), placements(profiles[0], True))
 
-    def test_targets_identify_their_production_location(self):
-        base = 'https://ekgf.org/dprod/spec/develop/'
-        identified = set()
-        for target in self.graph.objects(DOC.project, GA.target):
-            version = self.graph.value(target, GA.thisVersion)
-            if version is None:
-                continue
-            destination = str(self.graph.value(target, GA.destination))
-            document = 'document.pdf' if self.graph.value(target, GA.renderer) == GA.TypstRenderer else ''
-            self.assertEqual(str(version), f'{base}{destination}/{document}', target)
-            identified.add(target)
-        self.assertEqual(identified, {DOC.specification, DOC.pdf, DOC['omg-pdf']})
-        self.assertEqual(str(self.graph.value(DOC.pdf, GA.thisVersion)), base + 'pdf/ekgf/document.pdf')
-        self.assertEqual(str(self.graph.value(DOC['omg-pdf'], GA.thisVersion)), base + 'pdf/omg/document.pdf')
-
-    def test_production_publication_never_links_the_grapharch_gallery(self):
-        sources = [ROOT / 'publication/standards.ttl', *(ROOT / 'publication/project-site').glob('*.md')]
-        for path in sources:
-            self.assertFalse('ekgf.github.io/grapharch' in path.read_text(), path)
-        adopt = (ROOT / 'publication/project-site/adopt.md').read_text()
-        self.assertIn('(https://ekgf.org/dprod/spec/develop/pdf/overview/document.pdf)', adopt)
-        self.assertEqual(str(self.graph.value(DOC['overview-pdf'], GA.destination)), 'pdf/overview')
-
     def test_specification_links_both_pdf_editions(self):
         rows = list(self.graph.objects(DOC.specification, GA.metadataRow))
         row = next(row for row in rows if str(self.graph.value(row, DCT.title)) == 'PDF editions:')

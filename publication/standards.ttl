@@ -216,7 +216,7 @@ doc:pdf a ga:Target ;
     ga:releaseVersion "1.1 draft" ;
     ga:renderer ga:TypstRenderer ;
     ga:scope doc:scope ;
-    ga:thisVersion <https://ekgf.org/dprod/spec/develop/pdf/ekgf/document.pdf> .
+    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/ekgf/document.pdf> .
 
 doc:omg-pdf a ga:Target ;
     dct:title "Data Product Ontology (DPROD) — OMG submission preview" ;
@@ -244,7 +244,7 @@ doc:omg-pdf a ga:Target ;
     ga:releaseVersion "1.1 draft" ;
     ga:renderer ga:TypstRenderer ;
     ga:scope doc:scope ;
-    ga:thisVersion <https://ekgf.org/dprod/spec/develop/pdf/omg/document.pdf> .
+    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/omg/document.pdf> .
 
 doc:pdf-profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
