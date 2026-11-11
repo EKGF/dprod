@@ -53,7 +53,7 @@ doc:pdf a ga:Target ;
     ga:publicationStatus "1.0 beta" ;
     ga:publisher doc:publisher ;
     ga:releaseVersion "1.0 beta" ;
-    ga:renderer "typst" ;
+    ga:renderer ga:TypstRenderer ;
     ga:scope doc:scope ;
     ga:thisVersion <https://ekgf.org/dprod/spec/main/> .
 
@@ -315,140 +315,140 @@ doc:profile a ga:Profile ;
     ga:sectionKind "section" ;
     ga:sectionRole "terms" .
 
-<urn:dprod-showcase:source:abstract> a ga:Collector ;
+<urn:dprod-showcase:source:abstract> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:abstract> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/abstract.md" ;
     ga:sourcePath "publication/standards/abstract.md" ;
     ga:subject <urn:dprod:documentation:abstract> .
 
-<urn:dprod-showcase:source:acknowledgements> a ga:Collector ;
+<urn:dprod-showcase:source:acknowledgements> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:acknowledgements> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/acknowledgements.md" ;
     ga:sourcePath "publication/standards/acknowledgements.md" ;
     ga:subject <urn:dprod:documentation:acknowledgements> .
 
-<urn:dprod-showcase:source:conformance> a ga:Collector ;
+<urn:dprod-showcase:source:conformance> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:conformance> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/conformance.md" ;
     ga:sourcePath "publication/standards/conformance.md" ;
     ga:subject <urn:dprod:documentation:conformance> .
 
-<urn:dprod-showcase:source:example-core-data-product-extensions> a ga:Collector ;
+<urn:dprod-showcase:source:example-core-data-product-extensions> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-core-data-product-extensions> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/core-data-product-extensions/README.md" ;
     ga:sourcePath "examples/core-data-product-extensions/README.md" ;
     ga:subject <urn:dprod:documentation:example-core-data-product-extensions> .
 
-<urn:dprod-showcase:source:example-data-lineage> a ga:Collector ;
+<urn:dprod-showcase:source:example-data-lineage> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-data-lineage> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/data-lineage/README.md" ;
     ga:sourcePath "examples/data-lineage/README.md" ;
     ga:subject <urn:dprod:documentation:example-data-lineage> .
 
-<urn:dprod-showcase:source:example-data-quality> a ga:Collector ;
+<urn:dprod-showcase:source:example-data-quality> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-data-quality> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/data-quality/README.md" ;
     ga:sourcePath "examples/data-quality/README.md" ;
     ga:subject <urn:dprod:documentation:example-data-quality> .
 
-<urn:dprod-showcase:source:example-data-rights> a ga:Collector ;
+<urn:dprod-showcase:source:example-data-rights> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-data-rights> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/data-rights/README.md" ;
     ga:sourcePath "examples/data-rights/README.md" ;
     ga:subject <urn:dprod:documentation:example-data-rights> .
 
-<urn:dprod-showcase:source:example-data-schema> a ga:Collector ;
+<urn:dprod-showcase:source:example-data-schema> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-data-schema> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/data-schema/README.md" ;
     ga:sourcePath "examples/data-schema/README.md" ;
     ga:subject <urn:dprod:documentation:example-data-schema> .
 
-<urn:dprod-showcase:source:example-equity-trade> a ga:Collector ;
+<urn:dprod-showcase:source:example-equity-trade> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-equity-trade> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/equity-trade/README.md" ;
     ga:sourcePath "examples/equity-trade/README.md" ;
     ga:subject <urn:dprod:documentation:example-equity-trade> .
 
-<urn:dprod-showcase:source:example-observability-ports> a ga:Collector ;
+<urn:dprod-showcase:source:example-observability-ports> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-observability-ports> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/observability-ports/README.md" ;
     ga:sourcePath "examples/observability-ports/README.md" ;
     ga:subject <urn:dprod:documentation:example-observability-ports> .
 
-<urn:dprod-showcase:source:example-sba-pool-rates> a ga:Collector ;
+<urn:dprod-showcase:source:example-sba-pool-rates> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:example-sba-pool-rates> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "examples/sba-pool-rates/README.md" ;
     ga:sourcePath "examples/sba-pool-rates/README.md" ;
     ga:subject <urn:dprod:documentation:example-sba-pool-rates> .
 
-<urn:dprod-showcase:source:model> a ga:Collector ;
+<urn:dprod-showcase:source:model> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:model> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/model.md" ;
     ga:sourcePath "publication/standards/model.md" ;
     ga:subject <urn:dprod:documentation:model> .
 
-<urn:dprod-showcase:source:namespaces> a ga:Collector ;
+<urn:dprod-showcase:source:namespaces> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:namespaces> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/namespaces.md" ;
     ga:sourcePath "publication/standards/namespaces.md" ;
     ga:subject <urn:dprod:documentation:namespaces> .
 
-<urn:dprod-showcase:source:ontology> a ga:Collector ;
-    ga:kind "rdf" ;
+<urn:dprod-showcase:source:ontology> a ga:CollectorUse ;
+    ga:collectorType ga:RdfFileCollector ;
     ga:source "ontology/dprod/dprod-ontology.ttl" ;
     ga:sourcePath "ontology/dprod/dprod-ontology.ttl" ;
     ga:subject <https://www.omg.org/spec/DPROD/dprod/> .
 
-<urn:dprod-showcase:source:reference> a ga:Collector ;
+<urn:dprod-showcase:source:reference> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:reference> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/reference.md" ;
     ga:sourcePath "publication/standards/reference.md" ;
     ga:subject <urn:dprod:documentation:reference> .
 
-<urn:dprod-showcase:source:scope> a ga:Collector ;
+<urn:dprod-showcase:source:scope> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:scope> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/scope.md" ;
     ga:sourcePath "publication/standards/scope.md" ;
     ga:subject <urn:dprod:documentation:scope> .
 
-<urn:dprod-showcase:source:shapes> a ga:Collector ;
-    ga:kind "rdf" ;
+<urn:dprod-showcase:source:shapes> a ga:CollectorUse ;
+    ga:collectorType ga:RdfFileCollector ;
     ga:source "ontology/dprod/dprod-shapes.ttl" ;
     ga:sourcePath "ontology/dprod/dprod-shapes.ttl" ;
     ga:subject <https://www.omg.org/spec/DPROD/shapes/> .
 
-<urn:dprod-showcase:source:status> a ga:Collector ;
+<urn:dprod-showcase:source:status> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:status> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/status.md" ;
     ga:sourcePath "publication/standards/status.md" ;
     ga:subject <urn:dprod:documentation:status> .
 
-<urn:dprod-showcase:source:symbols> a ga:Collector ;
+<urn:dprod-showcase:source:symbols> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:symbols> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/symbols.md" ;
     ga:sourcePath "publication/standards/symbols.md" ;
     ga:subject <urn:dprod:documentation:symbols> .
 
-<urn:dprod-showcase:source:terms> a ga:Collector ;
+<urn:dprod-showcase:source:terms> a ga:CollectorUse ;
     ga:fragment <urn:dprod-showcase:fragment:terms> ;
-    ga:kind "markdown" ;
+    ga:collectorType ga:MarkdownFileCollector ;
     ga:source "publication/standards/terms.md" ;
     ga:sourcePath "publication/standards/terms.md" ;
     ga:subject <urn:dprod:documentation:terms> .
@@ -475,7 +475,7 @@ doc:specification a ga:Target ;
     ga:publicationStatus "1.0 beta" ;
     ga:publisher doc:publisher ;
     ga:releaseVersion "1.0 beta" ;
-    ga:renderer "specification" ;
+    ga:renderer ga:SpecificationRenderer ;
     ga:scope doc:scope ;
     ga:thisVersion <https://ekgf.org/dprod/spec/main/> .
 
