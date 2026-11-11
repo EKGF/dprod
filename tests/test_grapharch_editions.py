@@ -14,7 +14,7 @@ class GrapharchEditionTests(unittest.TestCase):
         self.graph = Graph().parse(ROOT / 'publication/standards.ttl')
 
     def test_generator_installs_the_same_verified_release_without_a_compiler(self):
-        workflow = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
+        workflow = (ROOT / '.github/workflows/grapharch-pages.yml').read_text()
         self.assertIn('uses: ./.grapharch-tool', workflow)
         self.assertIn('version: ${{ steps.config.outputs.version }}', workflow)
         self.assertIn('expected-revision: ${{ steps.config.outputs.generator }}', workflow)
@@ -31,7 +31,7 @@ class GrapharchEditionTests(unittest.TestCase):
         ):
             self.assertEqual(str(graph.value(target, GA.destination)), destination)
             self.assertEqual(str(graph.value(target, GA.publicationStatus)), status)
-            self.assertEqual(str(graph.value(target, GA.renderer)), 'typst')
+            self.assertEqual(graph.value(target, GA.renderer), GA.TypstRenderer)
             self.assertEqual(graph.value(target, GA.scope), DOC.scope)
             self.assertIsNone(graph.value(target, GA.documentIdentifier))
             self.assertIsNone(graph.value(target, GA.approvalStatus))
@@ -57,7 +57,7 @@ class GrapharchEditionTests(unittest.TestCase):
                 component = graph.value(placement, GA.component)
                 fragment = graph.value(component, GA.fragment)
                 collector = next(node for node in graph.subjects(GA.fragment, fragment)
-                                 if (node, RDF.type, GA.Collector) in graph)
+                                 if (node, RDF.type, GA.CollectorUse) in graph)
                 self.assertIn(collector, graph.objects(DOC.project, GA.collector))
                 text = (ROOT / str(graph.value(collector, GA.source))).read_text()
                 if str(graph.value(placement, GA.sectionRole)) == 'status':

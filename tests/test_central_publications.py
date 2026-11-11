@@ -7,9 +7,13 @@ import subprocess
 import tempfile
 import unittest
 
+from rdflib import URIRef
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import publication_manifest as manifest
+
+THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
 
 
 class CentralPublicationTests(unittest.TestCase):
@@ -26,6 +30,38 @@ class CentralPublicationTests(unittest.TestCase):
         with patch.object(central.subprocess, 'check_output', return_value='grapharch 0.1.0\n'), \
              self.assertRaisesRegex(ValueError, 'binary version'):
             central.build_all(ROOT, config, [], Path('/unused/grapharch'), Path('/unused/output'), 'a' * 40)
+
+    def test_published_generator_identity_must_match_version_and_revision(self):
+        from unittest.mock import patch
+        import central_publications as central
+        config = dict(self.settings(), generator_version='0.2.4',
+                      generator_revision='2a065f7603dbcee13ad7f3bbb150c72be170515d')
+        release = ('grapharch 0.2.4 (build 5)\nBuild 5; producer attempt 1; source commit '
+                   '2a065f7603dbcee13ad7f3bbb150c72be170515d; workflow '
+                   'EKGF/grapharch/.github/workflows/automatic-release.yml@refs/heads/main; '
+                   'https://github.com/EKGF/grapharch/actions/runs/42707507721/attempts/1\n')
+        with patch.object(central.subprocess, 'check_output', return_value=release):
+            central.verify_generator(Path('/unused/grapharch'), config)
+        for output in (release.replace('2a065f76', 'ffffffff'),
+                       release.replace('0.2.4 (build 5)', '0.2.5 (build 5)'),
+                       'grapharch 0.2.4 (build 5)\n',
+                       'grapharch 0.2.4\n'):
+            with self.subTest(output=output), \
+                 patch.object(central.subprocess, 'check_output', return_value=output), \
+                 self.assertRaisesRegex(ValueError, 'binary'):
+                central.verify_generator(Path('/unused/grapharch'), config)
+
+    def test_pinned_generator_accepts_the_published_release_binary(self):
+        from unittest.mock import patch
+        import central_publications as central
+        # Exact `grapharch --version` output of the v0.2.8 release asset
+        # grapharch-aarch64-apple-darwin.zip (tag commit 595e559).
+        release = ('grapharch 0.2.8 (build 17)\nBuild 17; producer attempt 1; source commit '
+                   '595e55913096cb7f39633189ef67f5d916ef4dcc; workflow '
+                   'EKGF/grapharch/.github/workflows/automatic-release.yml@refs/heads/main; '
+                   'https://github.com/EKGF/grapharch/actions/runs/43024114387/attempts/1\n')
+        with patch.object(central.subprocess, 'check_output', return_value=release):
+            central.verify_generator(Path('/unused/grapharch'), manifest.validate(self.settings()))
 
     def test_selection_uses_branch_heads_and_only_intentional_same_repo_prs(self):
         config = self.settings()
@@ -88,6 +124,215 @@ class CentralPublicationTests(unittest.TestCase):
             self.assertEqual(calls, ['main', 'develop'])
             self.assertFalse(output.exists())
 
+    def test_failed_pull_request_preview_is_reported_and_omitted(self):
+        import contextlib
+        import io
+        import os
+        from unittest.mock import patch
+        import central_publications as central
+        preview = {'slug': 'pr-42', 'branch': 'issue/schedule', 'source_commit': 'c' * 40,
+                   'pull_request': 42}
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'complete'
+            summary = Path(temp) / 'summary.md'
+            def build(publication, staging):
+                tree = staging / 'publications' / publication['slug']
+                tree.mkdir(parents=True)
+                (tree / 'partial.html').write_text('partial')
+                if publication['slug'] == 'pr-42':
+                    raise RuntimeError('configured DPROD collector must be typed CollectorUse')
+            packaged = []
+            def package(staging, published):
+                self.assertFalse((staging / 'publications/pr-42').exists())
+                packaged.extend(p['slug'] for p in published)
+            log = io.StringIO()
+            with patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}), \
+                 contextlib.redirect_stderr(log):
+                central.assemble_atomic(output, [{'slug': 'main'}, {'slug': 'develop'}, preview],
+                                        build, package)
+            self.assertEqual(packaged, ['main', 'develop'])
+            self.assertTrue((output / 'publications/develop/partial.html').is_file())
+            self.assertFalse((output / 'publications/pr-42').exists())
+            for report in (log.getvalue(), summary.read_text()):
+                self.assertIn('PR #42', report)
+                self.assertIn('issue/schedule', report)
+                self.assertIn('configured DPROD collector must be typed CollectorUse', report)
+
+    def test_preview_report_carries_the_engines_diagnostics(self):
+        import contextlib
+        import io
+        import os
+        from unittest.mock import patch
+        import central_publications as central
+        with tempfile.TemporaryDirectory() as temp:
+            engine = Path(temp) / 'grapharch'
+            engine.write_text('#!/bin/sh\nprintf "error: configured DPROD collector must be typed CollectorUse\\n" >&2\n'
+                              'exit 1\n')
+            engine.chmod(0o755)
+            log = io.StringIO()
+            with contextlib.redirect_stderr(log), \
+                 self.assertRaises(subprocess.CalledProcessError) as failure:
+                central.run_engine(engine, ['build-dprod'])
+            self.assertIn('must be typed CollectorUse', log.getvalue())
+            summary = Path(temp) / 'summary.md'
+            preview = {'slug': 'pr-42', 'branch': 'issue/schedule', 'source_commit': 'c' * 40,
+                       'pull_request': 42}
+            with patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}), \
+                 contextlib.redirect_stderr(io.StringIO()):
+                central.omit_preview(preview, failure.exception, Path(temp))
+            self.assertIn('error: configured DPROD collector must be typed CollectorUse', summary.read_text())
+
+    def test_release_failure_is_never_isolated_like_a_preview(self):
+        import contextlib
+        import io
+        import central_publications as central
+        preview = {'slug': 'pr-42', 'branch': 'issue/schedule', 'source_commit': 'c' * 40,
+                   'pull_request': 42}
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'complete'
+            def build(publication, staging):
+                raise RuntimeError(f'deliberate {publication["slug"]} error')
+            with contextlib.redirect_stderr(io.StringIO()), \
+                 self.assertRaisesRegex(RuntimeError, 'deliberate main error'):
+                central.assemble_atomic(output, [preview, {'slug': 'main'}, {'slug': 'develop'}], build,
+                                        lambda staging, published: self.fail('must not package partial output'))
+            self.assertFalse(output.exists())
+
+    def test_omitted_preview_leaves_no_route_inventory_or_record_entry(self):
+        import contextlib
+        import io
+        import os
+        import shutil
+        from unittest.mock import patch
+        import central_publications as central
+        import publication_resources
+        config = manifest.validate(self.settings())
+        selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [
+            {'number': 42, 'title': 'Schedule', 'head': {'ref': 'issue/schedule', 'sha': 'c' * 40,
+             'repo': {'full_name': 'EKGF/dprod'}}}])
+        self.assertEqual([p['slug'] for p in selected], ['main', 'develop', 'pr-42'])
+        captured = {}
+        def engine(binary, arguments):
+            options = {key: value for key, value in zip(arguments[1:], arguments[2:]) if key.startswith('--')}
+            if arguments[0] == 'build-dprod':
+                if options['--git-ref'] == 'c' * 40:
+                    raise subprocess.CalledProcessError(1, [str(binary), 'publication', 'build-dprod'])
+                specification = Path(options['--output-root']) / 'specification'
+                specification.mkdir(parents=True)
+                (specification / 'index.html').write_text('<!doctype html>')
+            elif arguments[0] == 'build-site':
+                captured['inventory'] = Path(options['--definitions']).read_text()
+                site = Path(options['--output-root']) / 'site'
+                site.mkdir(parents=True)
+                (site / 'publication-versions.json').write_text('{}')
+            else:
+                self.assertEqual(arguments[0], 'package-site')
+                captured['hosting'] = json.loads(Path(options['--config']).read_text())
+                (Path(options['--output-root']) / '.vercel/output/static/dprod').mkdir(parents=True)
+        def serialize(git, item, specification):
+            for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
+                         'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
+                         'dprod-simple.jsonld', 'source-resources.json'):
+                (specification / name).write_text(item['source_commit'])
+            return []
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / 'source'
+            (root / 'publication').mkdir(parents=True)
+            shutil.copyfile(ROOT / config['website']['definitions'], root / config['website']['definitions'])
+            binary = Path(temp) / 'grapharch'
+            binary.write_text('engine')
+            output = Path(temp) / 'complete'
+            summary = Path(temp) / 'summary.md'
+            with patch.object(central, 'verify_generator'), patch.object(central, 'run_engine', engine), \
+                 patch.object(central.subprocess, 'run'), \
+                 patch.object(publication_resources, 'serialize', serialize), \
+                 patch.object(publication_resources, 'retain_assets'), \
+                 patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}), \
+                 contextlib.redirect_stderr(io.StringIO()):
+                central.build_all(root, config, selected, binary, output, 'd' * 40)
+            record = json.loads((output / 'publication-build.json').read_text())
+            deployed = json.loads((output / 'deployment/.vercel/output/static/dprod/publication-build.json').read_text())
+            self.assertEqual([p['slug'] for p in record['publications']], ['main', 'develop'])
+            self.assertEqual(deployed, record)
+            self.assertEqual([tree['destination'] for tree in captured['hosting']['static_trees']],
+                             ['spec/main', 'spec/develop'])
+            self.assertNotIn('pr-42', json.dumps(captured['hosting']))
+            self.assertIn('ga:route "/dprod/spec/develop/"', captured['inventory'])
+            self.assertNotIn('pr-42', captured['inventory'])
+            self.assertNotIn('c' * 40, captured['inventory'])
+            self.assertFalse((output / 'publications/pr-42').exists())
+            self.assertIn('PR #42', summary.read_text())
+
+    def test_website_publication_url_is_hosting_configuration_not_source_content(self):
+        import central_publications as central
+        from rdflib import Graph, URIRef
+        config = self.settings()
+        target = URIRef(config['website']['target'])
+        source = (ROOT / config['website']['definitions']).read_text()
+        self.assertEqual(list(Graph().parse(data=source, format='turtle').subject_objects(THIS_VERSION)), [])
+        for url in ('https://ekgf.org/dprod/', 'https://ekgf.github.io/dprod/'):
+            graph = Graph().parse(data=central.website_definitions(source, str(target), url), format='turtle')
+            self.assertEqual(list(graph.subject_objects(THIS_VERSION)), [(target, URIRef(url))])
+        declared = source + f'<{target}> <{THIS_VERSION}> <https://ekgf.org/dprod/> .\n'
+        with self.assertRaisesRegex(ValueError, 'hosting configuration'):
+            central.website_definitions(declared, str(target), 'https://ekgf.github.io/dprod/')
+        with self.assertRaisesRegex(ValueError, 'not defined'):
+            central.website_definitions(source, 'urn:dprod:project-site:missing', 'https://ekgf.github.io/dprod/')
+
+    def test_every_build_supplies_the_website_url_of_its_own_hosting(self):
+        import contextlib
+        import io
+        import shutil
+        from unittest.mock import patch
+        from rdflib import Graph, URIRef
+        import central_publications as central
+        import publication_resources
+        from pages_publication import hosting_configuration
+        production = manifest.validate(self.settings())
+        pages = hosting_configuration(production, json.loads((ROOT / 'publication/github-pages.json').read_text()))
+        for config, profile in ((production, None), (pages, ROOT / 'publication/github-pages.json')):
+            selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [])
+            captured = {}
+            def engine(binary, arguments):
+                options = {key: value for key, value in zip(arguments[1:], arguments[2:]) if key.startswith('--')}
+                if arguments[0] == 'build-dprod':
+                    specification = Path(options['--output-root']) / 'specification'
+                    specification.mkdir(parents=True)
+                    (specification / 'index.html').write_text('<!doctype html>')
+                elif arguments[0] == 'build-site':
+                    captured['definitions'] = Path(options['--definitions']).read_text()
+                    site = Path(options['--output-root']) / 'site'
+                    site.mkdir(parents=True)
+                    (site / 'publication-versions.json').write_text('{}')
+                else:
+                    stage = Path(options['--output-root']) / '.vercel/output/static/dprod'
+                    stage.mkdir(parents=True)
+                    (stage / 'index.html').write_text('site')
+            def serialize(git, item, specification):
+                for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
+                             'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
+                             'dprod-simple.jsonld', 'source-resources.json'):
+                    (specification / name).write_text(item['source_commit'])
+                return []
+            with self.subTest(url=config['canonical_url']), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp) / 'source'
+                (root / 'publication').mkdir(parents=True)
+                shutil.copyfile(ROOT / config['website']['definitions'], root / config['website']['definitions'])
+                if profile is not None:
+                    shutil.copyfile(profile, root / 'publication/github-pages.json')
+                    profile = root / 'publication/github-pages.json'
+                binary = Path(temp) / 'grapharch'
+                binary.write_text('engine')
+                with patch.object(central, 'verify_generator'), patch.object(central, 'run_engine', engine), \
+                     patch.object(central.subprocess, 'run'), \
+                     patch.object(publication_resources, 'serialize', serialize), \
+                     patch.object(publication_resources, 'retain_assets'), \
+                     contextlib.redirect_stderr(io.StringIO()):
+                    central.build_all(root, config, selected, binary, Path(temp) / 'complete', 'd' * 40, profile)
+                graph = Graph().parse(data=captured['definitions'], format='turtle')
+                self.assertEqual(list(graph.subject_objects(THIS_VERSION)),
+                                 [(URIRef(config['website']['target']), URIRef(config['canonical_url']))])
+
     def test_context_serialization_uses_each_versions_ontology_namespace(self):
         sys.path.insert(0, str(ROOT / 'spec-generator'))
         from rdflib import Graph, URIRef, RDF, OWL
@@ -100,6 +345,15 @@ class CentralPublicationTests(unittest.TestCase):
         self.assertEqual(prefixed['dprod'], namespace)
         self.assertEqual(prefixed['dprod:outputPort']['@type'], '@id')
         self.assertEqual(simple['outputPort']['@id'], 'dprod:outputPort')
+
+    def test_serializer_selects_rdf_collectors_by_their_collector_definition(self):
+        from publication_resources import serialize
+        revision = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        with tempfile.TemporaryDirectory() as temporary:
+            published = serialize(ROOT, {'source_commit': revision,
+                                         'definitions': 'publication/standards.ttl'}, Path(temporary))
+        self.assertIn('dprod.ttl', published)
+        self.assertIn('dprod-shapes.ttl', published)
 
     def test_false_committed_configuration_provenance_is_rejected(self):
         import central_publications as central
@@ -128,16 +382,22 @@ class CentralPublicationTests(unittest.TestCase):
                 validate_asset('diagram.svg', unsafe)
 
     def test_workflow_executes_only_leading_branch_code_and_separates_deploy_credentials(self):
-        workflow = (ROOT / '.github/workflows/grapharch-pdfs.yml').read_text()
+        workflow = (ROOT / '.github/workflows/grapharch-pages.yml').read_text()
         self.assertIn('pull_request_target:', workflow)
         self.assertIn('ref: develop', workflow)
         self.assertNotIn('pull_request.head.sha', workflow)
         self.assertNotIn('spec-generator/main.py', workflow)
-        self.assertNotIn('VERCEL_TOKEN', workflow.split('  deploy:')[0])
         self.assertIn('workflow_run:', workflow)
         self.assertNotIn('set -e', workflow)
         self.assertNotIn('--token', workflow)
-
+        # Only the deploy job, which runs no repository code before publishing
+        # the finished artifact, may write Pages or mint a deployment token.
+        build, deploy = workflow.split('  deploy:')
+        self.assertIn('permissions:\n  contents: read\n  pull-requests: read\n', build)
+        for grant in ('pages: write', 'id-token: write'):
+            self.assertNotIn(grant, build)
+            self.assertIn(grant, deploy)
+        self.assertLess(deploy.index('actions/deploy-pages@'), deploy.index('actions/checkout@'))
 
 if __name__ == '__main__':
     unittest.main()

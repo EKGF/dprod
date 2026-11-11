@@ -28,19 +28,20 @@ class ProjectSiteTests(unittest.TestCase):
         self.assertIn("https://ekgf.org/dprod/spec-versions/", home)
         self.assertFalse((CONTENT / "spec-versions.md").exists())
         configuration = (ROOT / "publication" / "project-site.ttl").read_text()
-        self.assertNotIn('ga:kind "repository-publications"', configuration)
-        self.assertIn('ga:kind "publication-inventory"', configuration)
+        self.assertNotIn('ga:kind', configuration)
+        self.assertIn('ga:documentorType ga:PublicationInventoryDocumentor', configuration)
         self.assertIn('ga:url "spec-versions/"', configuration)
-        self.assertIn('ga:thisVersion <https://ekgf.org/dprod/>', configuration)
+        # The publication URL is hosting configuration, supplied per build.
+        self.assertNotIn('thisVersion', configuration)
         manifest = json.loads((ROOT / 'publication/publications.json').read_text())
         self.assertEqual(manifest['pull_requests']['exclude_branch_prefixes'], ['dependabot/'])
         self.assertEqual(manifest['publications'][0]['label'], 'DPROD 1.0 beta')
 
     def test_ci_retains_a_static_project_preview(self):
-        workflow = (ROOT / ".github" / "workflows" / "grapharch-pdfs.yml").read_text()
-        self.assertIn("Rebuild every selected publication", workflow)
+        workflow = (ROOT / ".github" / "workflows" / "grapharch-pages.yml").read_text()
+        self.assertIn("Rebuild every selected source", workflow)
         self.assertIn("--manifest publication/publications.json", workflow)
-        self.assertIn("output/central-publications/website/", workflow)
+        self.assertIn("output/grapharch-pages/website/", workflow)
         self.assertIn("include-hidden-files: true", workflow)
 
     def test_home_overview_panel_is_selected_in_source_content(self):

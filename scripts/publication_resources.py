@@ -81,7 +81,7 @@ def serialize(repository, item, destination):
     if len(collectors) > 64:
         raise ValueError('too many source collectors')
     for collector in collectors:
-        if str(definitions.value(collector, GA.kind)) != 'rdf':
+        if definitions.value(collector, GA.collectorType) != GA.RdfFileCollector:
             continue
         path = str(definitions.value(collector, GA.sourcePath))
         data = blob(repository, revision, path)
