@@ -13,9 +13,9 @@ ROOT = Path(__file__).resolve().parents[1]
 class GrapharchCITests(unittest.TestCase):
     def test_formal_omg_profile_uses_the_verified_native_release(self):
         config = json.loads((ROOT / 'publication/publications.json').read_text())
-        self.assertEqual(config['generator_version'], '0.2.4')
+        self.assertEqual(config['generator_version'], '0.2.8')
         self.assertEqual(config['generator_revision'],
-                         '2a065f7603dbcee13ad7f3bbb150c72be170515d')
+                         '595e55913096cb7f39633189ef67f5d916ef4dcc')
 
     def test_registry_fetches_exact_revision_without_copying_source_content(self):
         path = ROOT / 'scripts/grapharch_editions.py'
