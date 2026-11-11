@@ -101,6 +101,15 @@ class CentralPublicationTests(unittest.TestCase):
         self.assertEqual(prefixed['dprod:outputPort']['@type'], '@id')
         self.assertEqual(simple['outputPort']['@id'], 'dprod:outputPort')
 
+    def test_serializer_selects_rdf_collectors_by_their_collector_definition(self):
+        from publication_resources import serialize
+        revision = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        with tempfile.TemporaryDirectory() as temporary:
+            published = serialize(ROOT, {'source_commit': revision,
+                                         'definitions': 'publication/standards.ttl'}, Path(temporary))
+        self.assertIn('dprod.ttl', published)
+        self.assertIn('dprod-shapes.ttl', published)
+
     def test_false_committed_configuration_provenance_is_rejected(self):
         import central_publications as central
         with tempfile.TemporaryDirectory() as temp:
