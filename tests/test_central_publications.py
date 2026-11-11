@@ -27,6 +27,26 @@ class CentralPublicationTests(unittest.TestCase):
              self.assertRaisesRegex(ValueError, 'binary version'):
             central.build_all(ROOT, config, [], Path('/unused/grapharch'), Path('/unused/output'), 'a' * 40)
 
+    def test_published_generator_identity_must_match_version_and_revision(self):
+        from unittest.mock import patch
+        import central_publications as central
+        config = dict(self.settings(), generator_version='0.2.4',
+                      generator_revision='2a065f7603dbcee13ad7f3bbb150c72be170515d')
+        release = ('grapharch 0.2.4 (build 5)\nBuild 5; producer attempt 1; source commit '
+                   '2a065f7603dbcee13ad7f3bbb150c72be170515d; workflow '
+                   'EKGF/grapharch/.github/workflows/automatic-release.yml@refs/heads/main; '
+                   'https://github.com/EKGF/grapharch/actions/runs/42707507721/attempts/1\n')
+        with patch.object(central.subprocess, 'check_output', return_value=release):
+            central.verify_generator(Path('/unused/grapharch'), config)
+        for output in (release.replace('2a065f76', 'ffffffff'),
+                       release.replace('0.2.4 (build 5)', '0.2.5 (build 5)'),
+                       'grapharch 0.2.4 (build 5)\n',
+                       'grapharch 0.2.4\n'):
+            with self.subTest(output=output), \
+                 patch.object(central.subprocess, 'check_output', return_value=output), \
+                 self.assertRaisesRegex(ValueError, 'binary'):
+                central.verify_generator(Path('/unused/grapharch'), config)
+
     def test_selection_uses_branch_heads_and_only_intentional_same_repo_prs(self):
         config = self.settings()
         heads = {'main': 'a' * 40, 'develop': 'b' * 40}

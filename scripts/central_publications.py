@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -56,11 +57,20 @@ def sha256(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def verify_generator(engine, config):
+    """Require the installed binary to identify the pinned release and source commit."""
+    lines = subprocess.check_output([str(engine), '--version'], text=True).splitlines()
+    version = re.fullmatch(r'grapharch (\d+\.\d+\.\d+)(?: \(build \d+\))?', lines[0] if lines else '')
+    if version is None or version[1] != config['generator_version']:
+        raise ValueError('generator binary version differs from the publication manifest')
+    sources = {match for line in lines[1:] for match in re.findall(r'source commit ([0-9a-f]{40})\b', line)}
+    if sources != {config['generator_revision']}:
+        raise ValueError('generator binary source commit differs from the publication manifest')
+
+
 def build_all(root, config, selected, engine, output, config_revision, hosting_profile=None):
     from publication_resources import retain_assets, serialize
-    actual = subprocess.check_output([str(engine), '--version'], text=True).strip()
-    if actual != f"grapharch {config['generator_version']}":
-        raise ValueError('generator binary version differs from the publication manifest')
+    verify_generator(engine, config)
     repository = 'https://github.com/' + config['repository'] + '.git'
     cache = root / 'output/central-git-cache'
     cache.mkdir(parents=True, exist_ok=True)
