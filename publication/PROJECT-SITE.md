@@ -125,6 +125,13 @@ URLs. Canonical profile IRIs still identify the original published RDF resources
 The workflow verifies the deployed configuration revision and all selected
 specification routes before succeeding.
 
+GraphArch 0.2.8 takes no deployment location for specification and PDF targets.
+`build-dprod` reads their required `ga:thisVersion` only from each source's
+definitions, and resolves relative metadata-row links (RDF downloads, PDF
+editions) against it. On Pages, those links therefore name the host the source
+declares. Project pages are also collected from Git into the overview PDF, so
+their links to the versions page, specifications and PDFs must be absolute.
+
 ### Published generator binary
 
 `publications.json` selects one exact `generator_version` and its immutable
