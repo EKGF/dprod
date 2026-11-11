@@ -154,6 +154,30 @@ class CentralPublicationTests(unittest.TestCase):
                 self.assertIn('issue/schedule', report)
                 self.assertIn('configured DPROD collector must be typed CollectorUse', report)
 
+    def test_preview_report_carries_the_engines_diagnostics(self):
+        import contextlib
+        import io
+        import os
+        from unittest.mock import patch
+        import central_publications as central
+        with tempfile.TemporaryDirectory() as temp:
+            engine = Path(temp) / 'grapharch'
+            engine.write_text('#!/bin/sh\nprintf "error: configured DPROD collector must be typed CollectorUse\\n" >&2\n'
+                              'exit 1\n')
+            engine.chmod(0o755)
+            log = io.StringIO()
+            with contextlib.redirect_stderr(log), \
+                 self.assertRaises(subprocess.CalledProcessError) as failure:
+                central.run_engine(engine, ['build-dprod'])
+            self.assertIn('must be typed CollectorUse', log.getvalue())
+            summary = Path(temp) / 'summary.md'
+            preview = {'slug': 'pr-42', 'branch': 'issue/schedule', 'source_commit': 'c' * 40,
+                       'pull_request': 42}
+            with patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}), \
+                 contextlib.redirect_stderr(io.StringIO()):
+                central.omit_preview(preview, failure.exception, Path(temp))
+            self.assertIn('error: configured DPROD collector must be typed CollectorUse', summary.read_text())
+
     def test_release_failure_is_never_isolated_like_a_preview(self):
         import contextlib
         import io

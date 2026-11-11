@@ -1,5 +1,6 @@
 """Build all selected Git publications with one engine, then assemble one site."""
 import argparse
+import collections
 import datetime
 import hashlib
 import json
@@ -37,6 +38,8 @@ def omit_preview(publication, error, staging):
         shutil.rmtree(tree)
     source = f'{publication["branch"]} at {publication["source_commit"]}'
     reason = f'{type(error).__name__}: {error}'
+    if getattr(error, 'stderr', None):
+        reason += '\n' + error.stderr
     print(f'PR #{publication["pull_request"]} ({source}) preview omitted from the site and '
           f'version inventory: {reason}', file=sys.stderr, flush=True)
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
@@ -80,7 +83,18 @@ def run_engine(engine, arguments):
         'PATH', 'HOME', 'TMPDIR', 'TEMP', 'LANG', 'LC_ALL', 'SYSTEMROOT',
         'SSL_CERT_FILE', 'SSL_CERT_DIR', 'HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY',
     }}
-    subprocess.run([str(engine), 'publication', *arguments], check=True, env=environment)
+    command = [str(engine), 'publication', *arguments]
+    # Diagnostics stream to the log as they arrive; the tail is kept so a
+    # failure report states the engine's reason, not only its exit status.
+    diagnostics = collections.deque(maxlen=20)  # bounded: last 20 lines.
+    with subprocess.Popen(command, env=environment, stderr=subprocess.PIPE,
+                          encoding='utf-8', errors='replace') as process:
+        for line in process.stderr:
+            sys.stderr.write(line)
+            diagnostics.append(line.rstrip('\n'))
+    sys.stderr.flush()
+    if process.returncode != 0:
+        raise subprocess.CalledProcessError(process.returncode, command, stderr='\n'.join(diagnostics))
 
 
 def sha256(path):
