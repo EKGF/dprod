@@ -13,7 +13,7 @@ class OverviewPublication(unittest.TestCase):
         target = DOC['overview-pdf']
         self.assertIn((DOC.project, GA.target, target), graph)
         profile = graph.value(target, GA.profile)
-        self.assertEqual(str(graph.value(profile, GA.style)), 'overview')
+        self.assertEqual(graph.value(profile, GA.theme), GA.OverviewTheme)
         self.assertEqual(str(graph.value(target, GA.destination)), 'pdf/overview')
         placements = list(graph.objects(profile, GA.placement))
         self.assertGreaterEqual(len(placements), 7)
