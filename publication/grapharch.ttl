@@ -13,7 +13,7 @@ doc:project a ga:Project ;
         doc:source:status, doc:source:overview, doc:source:example .
 
 doc:scope a ga:Scope .
-doc:profile a ga:Profile ; ga:style "reader" .
+doc:profile a ga:Profile ; ga:theme ga:ReaderTheme .
 doc:specification a ga:Target ;
     ga:scope doc:scope ; ga:profile doc:profile ;
     ga:renderer ga:SpecificationRenderer ; ga:destination "specification" ;

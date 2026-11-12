@@ -280,7 +280,7 @@ doc:pdf-profile a ga:Profile ;
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher ;
@@ -313,7 +313,7 @@ doc:pdf-profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "specification" .
+    ga:theme ga:SpecificationTheme .
 
 doc:omg-pdf-profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
@@ -346,7 +346,7 @@ doc:omg-pdf-profile a ga:Profile ;
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher ;
@@ -379,7 +379,7 @@ doc:omg-pdf-profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "omg" .
+    ga:theme doc:submission-theme .
 
 doc:profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
@@ -412,7 +412,7 @@ doc:profile a ga:Profile ;
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher ;
@@ -445,7 +445,7 @@ doc:profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "specification" .
+    ga:theme ga:SpecificationTheme .
 
 doc:release a ga:Target ;
     dct:title "Data Product Ontology (DPROD)" ;
@@ -492,7 +492,7 @@ doc:release-profile a ga:Profile ;
         ga:documentNumber,
         ga:latestVersion,
         ga:license,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher,
@@ -527,7 +527,7 @@ doc:release-profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "specification" .
+    ga:theme ga:SpecificationTheme .
 
 <urn:dprod-showcase:source:abstract> a ga:CollectorUse ;
     dct:identifier "abstract" ;
@@ -1395,7 +1395,7 @@ doc:overview-pdf a ga:Target ; dct:title "DPROD: the bigger picture" ;
     ga:scope doc:overview-scope ; ga:profile doc:overview-profile ;
     ga:renderer ga:TypstRenderer ; ga:destination "pdf/overview" ;
     ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> .
-doc:overview-profile a ga:Profile ; ga:style "overview" ; ga:tocDepth 1 ;
+doc:overview-profile a ga:Profile ; ga:theme ga:OverviewTheme ; ga:tocDepth 1 ;
     ga:qualityScope "selected" ; ga:showProvenance false .
 doc:overview-scope a ga:Scope ; ga:traverse ga:topic ; ga:maxDepth 1 .
 doc:project ga:collector <urn:dprod-showcase:source:shared:index> .
@@ -1503,9 +1503,10 @@ doc:project ga:collector <urn:dprod-showcase:source:legal-preamble> .
     ga:source "respec/template.html" ; ga:sourcePath "respec/template.html" ;
     ga:fragment <urn:dprod-showcase:legal-preamble> ;
     ga:includedIn doc:scope .
-doc:specification ga:preamble <urn:dprod-showcase:legal-preamble> .
-doc:pdf ga:preamble <urn:dprod-showcase:legal-preamble> .
-doc:omg-pdf ga:preamble <urn:dprod-showcase:legal-preamble> .
+doc:specification ga:notice doc:legal-notice .
+doc:pdf ga:notice doc:legal-notice .
+doc:omg-pdf ga:notice doc:legal-notice .
+doc:legal-notice ga:order 1 ; ga:fragment <urn:dprod-showcase:legal-preamble> .
 
 # Header metadata derived from the ontology collector's own contribution.
 doc:project ga:metadataSource <urn:dprod-showcase:source:ontology> ; ga:derivedMetadata dct:title .
@@ -1685,3 +1686,35 @@ doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:n
 doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:property-shapes> .
 <urn:dprod-showcase:omg-pdf-profile:generated:property-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:property-shapes> ;
     ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 108 ; ga:sectionKind "section" .
+
+
+# A consumer-defined restrained submission theme: US Letter, serif body,
+# black sans headings, a plain ruled cover and Roman then Arabic numbering.
+doc:submission-theme a ga:Theme ;
+    ga:baseTheme ga:SpecificationTheme ;
+    ga:paper "us-letter" ; ga:marginTop "1in" ; ga:marginBottom "1in" ;
+    ga:marginLeft "1in" ; ga:marginRight "1in" ;
+    ga:coverBands false ; ga:statusRibbon false ; ga:runningHeader false ;
+    ga:accent "#000000" ; ga:authorityAccent false ;
+    ga:inkColor "#000000" ; ga:mutedColor "#000000" ; ga:ruleColor "#999999" ;
+    ga:panelColor "#f4f4f4" ; ga:headingColor "#000000" ; ga:linkColor "#000000" ;
+    ga:bodyFont "Liberation Serif" ; ga:bodySize "10pt" ; ga:leading "0.55em" ;
+    ga:paragraphSpacing "0.8em" ; ga:headingFont "Liberation Sans" ;
+    ga:heading1Size "18pt" ; ga:heading1Weight "bold" ; ga:heading2Size "14pt" ;
+    ga:heading3Size "12pt" ; ga:heading4Size "11pt" ;
+    ga:tableHeaderFill "#f4f4f4" ; ga:tableRuleColor "#999999" ;
+    ga:codeHighlight false ; ga:tintedCallouts false ;
+    ga:footerFont "Liberation Sans" ; ga:footerSize "9pt" ; ga:footerColor "#000000" ;
+    ga:footerRule false ; ga:footerShowsText true ; ga:pageNumberColor "#000000" ;
+    ga:pageNumberBold false ; ga:pageOfTotal false ;
+    ga:frontNumbering "i" ; ga:bodyNumbering "1" ;
+    ga:noticeFont "Liberation Serif" ; ga:tocTitleSize "18pt" ;
+    ga:coverBlock doc:st-publisher, doc:st-gap, doc:st-title, doc:st-subtitle, doc:st-rule-gap, doc:st-rule, doc:st-summary-gap, doc:st-summary .
+doc:st-publisher a ga:CoverBlock ; ga:order 1 ; ga:coverElement ga:CoverPublisher ; ga:fontSize "12pt" .
+doc:st-gap a ga:CoverBlock ; ga:order 2 ; ga:coverElement ga:CoverSpace ; ga:space "30mm" .
+doc:st-title a ga:CoverBlock ; ga:order 3 ; ga:coverElement ga:CoverTitle ; ga:fontSize "26pt" ; ga:fontWeight "bold" .
+doc:st-subtitle a ga:CoverBlock ; ga:order 4 ; ga:coverElement ga:CoverSubtitle ; ga:fontSize "16pt" .
+doc:st-rule-gap a ga:CoverBlock ; ga:order 5 ; ga:coverElement ga:CoverSpace ; ga:space "10mm" .
+doc:st-rule a ga:CoverBlock ; ga:order 6 ; ga:coverElement ga:CoverRule ; ga:stroke "0.6pt" ; ga:color "#000000" .
+doc:st-summary-gap a ga:CoverBlock ; ga:order 7 ; ga:coverElement ga:CoverSpace ; ga:space "7mm" .
+doc:st-summary a ga:CoverBlock ; ga:order 8 ; ga:coverElement ga:CoverSummary ; ga:fontSize "10pt" .

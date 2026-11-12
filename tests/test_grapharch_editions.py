@@ -39,8 +39,9 @@ class GrapharchEditionTests(unittest.TestCase):
                             graph.value(DOC['omg-pdf'], GA.publisher))
 
     def test_omg_edition_selects_the_formal_typst_skin(self):
-        self.assertEqual(str(self.graph.value(DOC['omg-pdf-profile'], GA.style)), 'omg')
-        self.assertEqual(str(self.graph.value(DOC['pdf-profile'], GA.style)), 'specification')
+        self.assertEqual(self.graph.value(DOC['omg-pdf-profile'], GA.theme), DOC['submission-theme'])
+        self.assertEqual(self.graph.value(DOC['submission-theme'], GA.baseTheme), GA.SpecificationTheme)
+        self.assertEqual(self.graph.value(DOC['pdf-profile'], GA.theme), GA.SpecificationTheme)
 
     def test_technical_placements_are_shared_front_matter_is_distinct(self):
         graph = self.graph
@@ -52,7 +53,7 @@ class GrapharchEditionTests(unittest.TestCase):
         self.assertEqual(placements(profiles[0], False), placements(profiles[1], False))
         self.assertTrue(placements(profiles[0], True).isdisjoint(placements(profiles[1], True)))
         for profile in profiles:
-            self.assertIn(GA.preamble, graph.objects(profile, GA.requiredMetadata))
+            self.assertIn(GA.notice, graph.objects(profile, GA.requiredMetadata))
             for placement in placements(profile, True):
                 component = graph.value(placement, GA.component)
                 fragment = graph.value(component, GA.fragment)
