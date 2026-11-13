@@ -206,7 +206,7 @@ doc:pdf a ga:Target ;
         <urn:dprod:documentation:author:6>,
         <urn:dprod:documentation:author:7>,
         <urn:dprod:documentation:author:8> ;
-    ga:destination "pdf/ekgf" ;
+    ga:destination "pdf" ;
     ga:editor <urn:dprod:documentation:editor:0>,
         <urn:dprod:documentation:editor:1>,
         <urn:dprod:documentation:editor:2>,
@@ -233,7 +233,7 @@ doc:omg-pdf a ga:Target ;
         <urn:dprod:documentation:author:6>,
         <urn:dprod:documentation:author:7>,
         <urn:dprod:documentation:author:8> ;
-    ga:destination "pdf/omg" ;
+    ga:destination "pdf" ;
     ga:editor <urn:dprod:documentation:editor:0>,
         <urn:dprod:documentation:editor:1>,
         <urn:dprod:documentation:editor:2>,
@@ -1348,7 +1348,7 @@ doc:omg-authority a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 doc:specification ga:metadataRow doc:metadata-pdfs .
 doc:metadata-pdfs a ga:MetadataRow ; ga:order 9 ; ga:field "custom" ;
     dct:title "PDF editions:" ;
-    ga:body """<a href="../pdf/ekgf/document.pdf">EKGF community draft</a><br><a href="../pdf/omg/document.pdf">OMG submission preview</a>""" .
+    ga:body """<a href="../pdf/ekgf-spec-dprod.pdf">EKGF community draft</a><br><a href="../pdf/omg-submission-dprod.pdf">OMG submission preview</a>""" .
 
 doc:project ga:collector <urn:dprod-showcase:source:community-status> .
 <urn:dprod-showcase:source:community-status> a ga:CollectorUse ;
@@ -1393,7 +1393,7 @@ doc:overview-pdf a ga:Target ; dct:title "DPROD: the bigger picture" ;
     ga:publicationDate "2026-11-04"^^xsd:date ;
     dct:description "A practical introduction to DPROD, its core model, examples, and adoption path."@en ;
     ga:scope doc:overview-scope ; ga:profile doc:overview-profile ;
-    ga:renderer ga:TypstRenderer ; ga:destination "pdf/overview" ;
+    ga:renderer ga:TypstRenderer ; ga:destination "pdf" ;
     ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> .
 doc:overview-profile a ga:Profile ; ga:theme ga:OverviewTheme ; ga:tocDepth 1 ;
     ga:qualityScope "selected" ; ga:showProvenance false .
@@ -1718,3 +1718,12 @@ doc:st-rule-gap a ga:CoverBlock ; ga:order 5 ; ga:coverElement ga:CoverSpace ; g
 doc:st-rule a ga:CoverBlock ; ga:order 6 ; ga:coverElement ga:CoverRule ; ga:stroke "0.6pt" ; ga:color "#000000" .
 doc:st-summary-gap a ga:CoverBlock ; ga:order 7 ; ga:coverElement ga:CoverSpace ; ga:space "7mm" .
 doc:st-summary a ga:CoverBlock ; ga:order 8 ; ga:coverElement ga:CoverSummary ; ga:fontSize "10pt" .
+
+# PDF edition names (GraphArch #94): <authority>-<document type>-<document>.pdf.
+<urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> ga:slug "ekgf" .
+doc:omg-authority ga:slug "omg" .
+doc:specification ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
+doc:release ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
+doc:pdf ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
+doc:omg-pdf ga:documentType ga:SubmissionDocument ; ga:slug "dprod" .
+doc:overview-pdf ga:documentType ga:OverviewDocument ; ga:slug "dprod" .
