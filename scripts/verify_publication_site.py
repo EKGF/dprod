@@ -14,9 +14,15 @@ def verify(base_url, record_path):
         routes += [root + path for path in ['/', '/specification/', '/dprod.ttl', '/dprod-simple.jsonld', '/build-provenance.json']]
         with urllib.request.urlopen(base_url.rstrip('/') + root + '/build-provenance.json', timeout=60) as response:
             provenance = json.load(response)
-        if provenance['source_commit'] != item['source_commit']:
+        # GraphArch build-revision provenance (version 2): content from the
+        # designated commit, definitions from this build's controlling commit.
+        if provenance.get('version') != 2:
+            raise ValueError(f'unsupported build provenance at {root}')
+        if provenance['content']['commit'] != item['source_commit']:
             raise ValueError(f'wrong source revision at {root}')
-        if provenance['generator_revision'] != record['generator_revision']:
+        if provenance['definitions']['commit'] != record['config_commit']:
+            raise ValueError(f'wrong definitions revision at {root}')
+        if provenance['generator']['revision'] != record['generator_revision']:
             raise ValueError(f'wrong generator revision at {root}')
     for route in routes:
         with urllib.request.urlopen(base_url.rstrip('/') + route, timeout=60) as response:
