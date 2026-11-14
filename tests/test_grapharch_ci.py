@@ -54,7 +54,8 @@ class GrapharchCITests(unittest.TestCase):
         self.assertIn('scripts/verify_publication_site.py --base-url https://ekgf.github.io', smoke)
         verifier = (ROOT / 'scripts/verify_publication_site.py').read_text()
         self.assertIn('response.status != 200', verifier)
-        self.assertIn("provenance['source_commit']", verifier)
+        self.assertIn("provenance['content']['commit']", verifier)
+        self.assertIn("provenance['definitions']['commit'] != record['config_commit']", verifier)
 
     def test_workflow_rebuilds_with_the_pinned_generator_and_retains_evidence(self):
         text = PAGES.read_text()
