@@ -14,54 +14,61 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 import publication_manifest as manifest
 
 THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
+GENERATOR = {'version': '0.2.10', 'revision': 'c3ad8918a3916df53b306b639a519254fdf082bd'}
 
 
 class CentralPublicationTests(unittest.TestCase):
     def settings(self):
         return json.loads((ROOT / 'publication/publications.json').read_text())
 
-    def test_generator_release_version_is_exact_and_binary_must_agree(self):
+    def test_manifest_carries_no_engine_pin(self):
+        # The workflow's GraphArch action step pins the engine so that
+        # Dependabot can bump it; the manifest has no second copy.
+        config = self.settings()
+        self.assertNotIn('generator_version', config)
+        self.assertNotIn('generator_revision', config)
+        for stale in ('generator_version', 'generator_revision'):
+            with self.subTest(field=stale), self.assertRaises(ValueError):
+                manifest.validate(dict(config, **{stale: '0.2.10'}))
+
+    def test_generator_binary_must_identify_the_pinned_release(self):
         from unittest.mock import patch
         import central_publications as central
-        config = self.settings()
-        for invalid in ('latest', 'v0.2.0', '', 2):
-            with self.subTest(version=invalid), self.assertRaises(ValueError):
-                manifest.validate(dict(config, generator_version=invalid))
+        generator = {'version': '0.2.10', 'revision': 'c3ad8918a3916df53b306b639a519254fdf082bd'}
         with patch.object(central.subprocess, 'check_output', return_value='grapharch 0.1.0\n'), \
              self.assertRaisesRegex(ValueError, 'binary version'):
-            central.build_all(ROOT, config, [], Path('/unused/grapharch'), Path('/unused/output'), 'a' * 40)
+            central.build_all(ROOT, self.settings(), [], Path('/unused/grapharch'), generator,
+                              Path('/unused/output'), 'a' * 40)
 
     def test_published_generator_identity_must_match_version_and_revision(self):
         from unittest.mock import patch
         import central_publications as central
-        config = dict(self.settings(), generator_version='0.2.4',
-                      generator_revision='2a065f7603dbcee13ad7f3bbb150c72be170515d')
-        release = ('grapharch 0.2.4 (build 5)\nBuild 5; producer attempt 1; source commit '
-                   '2a065f7603dbcee13ad7f3bbb150c72be170515d; workflow '
+        # Exact `grapharch --version` output of the v0.2.10 release asset
+        # grapharch-aarch64-apple-darwin.zip (tag commit c3ad891).
+        release = ('grapharch 0.2.10 (build 40)\nBuild 40; producer attempt 1; source commit '
+                   'c3ad8918a3916df53b306b639a519254fdf082bd; workflow '
                    'EKGF/grapharch/.github/workflows/automatic-release.yml@refs/heads/main; '
-                   'https://github.com/EKGF/grapharch/actions/runs/42707507721/attempts/1\n')
+                   'https://github.com/EKGF/grapharch/actions/runs/43468417370/attempts/1\n')
+        version, revision = '0.2.10', 'c3ad8918a3916df53b306b639a519254fdf082bd'
         with patch.object(central.subprocess, 'check_output', return_value=release):
-            central.verify_generator(Path('/unused/grapharch'), config)
-        for output in (release.replace('2a065f76', 'ffffffff'),
-                       release.replace('0.2.4 (build 5)', '0.2.5 (build 5)'),
-                       'grapharch 0.2.4 (build 5)\n',
-                       'grapharch 0.2.4\n'):
+            central.verify_generator(Path('/unused/grapharch'), version, revision)
+        for output in (release.replace('c3ad8918', 'ffffffff'),
+                       release.replace('0.2.10 (build 40)', '0.2.11 (build 40)'),
+                       'grapharch 0.2.10 (build 40)\n',
+                       'grapharch 0.2.10\n'):
             with self.subTest(output=output), \
                  patch.object(central.subprocess, 'check_output', return_value=output), \
                  self.assertRaisesRegex(ValueError, 'binary'):
-                central.verify_generator(Path('/unused/grapharch'), config)
+                central.verify_generator(Path('/unused/grapharch'), version, revision)
 
-    def test_pinned_generator_accepts_the_published_release_binary(self):
-        from unittest.mock import patch
+    def test_editions_follow_the_default_branch_designated_branches_and_previews(self):
         import central_publications as central
-        # Exact `grapharch --version` output of the v0.2.8 release asset
-        # grapharch-aarch64-apple-darwin.zip (tag commit 595e559).
-        release = ('grapharch 0.2.8 (build 17)\nBuild 17; producer attempt 1; source commit '
-                   '595e55913096cb7f39633189ef67f5d916ef4dcc; workflow '
-                   'EKGF/grapharch/.github/workflows/automatic-release.yml@refs/heads/main; '
-                   'https://github.com/EKGF/grapharch/actions/runs/43024114387/attempts/1\n')
-        with patch.object(central.subprocess, 'check_output', return_value=release):
-            central.verify_generator(Path('/unused/grapharch'), manifest.validate(self.settings()))
+        config = self.settings()
+        selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [
+            {'number': 42, 'title': 'Schedule', 'head': {'ref': 'issue/schedule', 'sha': 'c' * 40,
+             'repo': {'full_name': 'EKGF/dprod'}}}])
+        self.assertEqual([central.edition(config, item) for item in selected],
+                         ['main', 'default', 'pr-42'])
 
     def test_selection_uses_branch_heads_and_only_intentional_same_repo_prs(self):
         config = self.settings()
@@ -214,9 +221,9 @@ class CentralPublicationTests(unittest.TestCase):
         captured = {}
         def engine(binary, arguments):
             options = {key: value for key, value in zip(arguments[1:], arguments[2:]) if key.startswith('--')}
-            if arguments[0] == 'build-dprod':
-                if options['--git-ref'] == 'c' * 40:
-                    raise subprocess.CalledProcessError(1, [str(binary), 'publication', 'build-dprod'])
+            if arguments[0] == 'build-revision':
+                if options['--git-commit'] == 'c' * 40:
+                    raise subprocess.CalledProcessError(1, [str(binary), 'publication', 'build-revision'])
                 specification = Path(options['--output-root']) / 'specification'
                 specification.mkdir(parents=True)
                 (specification / 'index.html').write_text('<!doctype html>')
@@ -228,8 +235,8 @@ class CentralPublicationTests(unittest.TestCase):
             else:
                 self.assertEqual(arguments[0], 'package-site')
                 captured['hosting'] = json.loads(Path(options['--config']).read_text())
-                (Path(options['--output-root']) / '.vercel/output/static/dprod').mkdir(parents=True)
-        def serialize(git, item, specification):
+                (Path(options['--output-root']) / 'static/dprod').mkdir(parents=True)
+        def serialize(git, item, specification, definitions):
             for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
                          'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
                          'dprod-simple.jsonld', 'source-resources.json'):
@@ -239,6 +246,7 @@ class CentralPublicationTests(unittest.TestCase):
             root = Path(temp) / 'source'
             (root / 'publication').mkdir(parents=True)
             shutil.copyfile(ROOT / config['website']['definitions'], root / config['website']['definitions'])
+            shutil.copytree(ROOT / 'publication/definitions', root / 'publication/definitions')
             binary = Path(temp) / 'grapharch'
             binary.write_text('engine')
             output = Path(temp) / 'complete'
@@ -249,9 +257,9 @@ class CentralPublicationTests(unittest.TestCase):
                  patch.object(publication_resources, 'retain_assets'), \
                  patch.dict(os.environ, {'GITHUB_STEP_SUMMARY': str(summary)}), \
                  contextlib.redirect_stderr(io.StringIO()):
-                central.build_all(root, config, selected, binary, output, 'd' * 40)
+                central.build_all(root, config, selected, binary, GENERATOR, output, 'd' * 40)
             record = json.loads((output / 'publication-build.json').read_text())
-            deployed = json.loads((output / 'deployment/.vercel/output/static/dprod/publication-build.json').read_text())
+            deployed = json.loads((output / 'deployment/static/dprod/publication-build.json').read_text())
             self.assertEqual([p['slug'] for p in record['publications']], ['main', 'develop'])
             self.assertEqual(deployed, record)
             self.assertEqual([tree['destination'] for tree in captured['hosting']['static_trees']],
@@ -295,7 +303,7 @@ class CentralPublicationTests(unittest.TestCase):
             captured = {}
             def engine(binary, arguments):
                 options = {key: value for key, value in zip(arguments[1:], arguments[2:]) if key.startswith('--')}
-                if arguments[0] == 'build-dprod':
+                if arguments[0] == 'build-revision':
                     specification = Path(options['--output-root']) / 'specification'
                     specification.mkdir(parents=True)
                     (specification / 'index.html').write_text('<!doctype html>')
@@ -305,10 +313,10 @@ class CentralPublicationTests(unittest.TestCase):
                     site.mkdir(parents=True)
                     (site / 'publication-versions.json').write_text('{}')
                 else:
-                    stage = Path(options['--output-root']) / '.vercel/output/static/dprod'
+                    stage = Path(options['--output-root']) / 'static/dprod'
                     stage.mkdir(parents=True)
                     (stage / 'index.html').write_text('site')
-            def serialize(git, item, specification):
+            def serialize(git, item, specification, definitions):
                 for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
                              'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
                              'dprod-simple.jsonld', 'source-resources.json'):
@@ -318,6 +326,7 @@ class CentralPublicationTests(unittest.TestCase):
                 root = Path(temp) / 'source'
                 (root / 'publication').mkdir(parents=True)
                 shutil.copyfile(ROOT / config['website']['definitions'], root / config['website']['definitions'])
+                shutil.copytree(ROOT / 'publication/definitions', root / 'publication/definitions')
                 if profile is not None:
                     shutil.copyfile(profile, root / 'publication/github-pages.json')
                     profile = root / 'publication/github-pages.json'
@@ -328,7 +337,7 @@ class CentralPublicationTests(unittest.TestCase):
                      patch.object(publication_resources, 'serialize', serialize), \
                      patch.object(publication_resources, 'retain_assets'), \
                      contextlib.redirect_stderr(io.StringIO()):
-                    central.build_all(root, config, selected, binary, Path(temp) / 'complete', 'd' * 40, profile)
+                    central.build_all(root, config, selected, binary, GENERATOR, Path(temp) / 'complete', 'd' * 40, profile)
                 graph = Graph().parse(data=captured['definitions'], format='turtle')
                 self.assertEqual(list(graph.subject_objects(THIS_VERSION)),
                                  [(URIRef(config['website']['target']), URIRef(config['canonical_url']))])
@@ -350,8 +359,8 @@ class CentralPublicationTests(unittest.TestCase):
         from publication_resources import serialize
         revision = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
         with tempfile.TemporaryDirectory() as temporary:
-            published = serialize(ROOT, {'source_commit': revision,
-                                         'definitions': 'publication/standards.ttl'}, Path(temporary))
+            published = serialize(ROOT, {'source_commit': revision}, Path(temporary),
+                                  (ROOT / 'publication/definitions/develop.ttl').read_bytes())
         self.assertIn('dprod.ttl', published)
         self.assertIn('dprod-shapes.ttl', published)
 

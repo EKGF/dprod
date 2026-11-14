@@ -28,7 +28,7 @@ This document is a vocabulary reference for implementers. It defines every class
 ```turtle
 @prefix odrl:        <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
-@prefix dprod-shapes: <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
+@prefix dprod-contracts-shapes: <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
 @prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:         <http://www.w3.org/2002/07/owl#> .
@@ -418,77 +418,77 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PolicyShape` | `odrl:Policy` | Must declare `odrl:profile` (for engines with RDFS inference) |
-| `dprod-shapes:SetShape` | `odrl:Set` | Must declare `odrl:profile`; may declare `odrl:target`; at least one clause |
-| `dprod-shapes:OfferShape` | `odrl:Offer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause |
-| `dprod-shapes:AgreementShape` | `odrl:Agreement` | Must declare `odrl:profile`; exactly one `odrl:assigner` and one `odrl:assignee`; at least one clause |
+| `dprod-contracts-shapes:PolicyShape` | `odrl:Policy` | Must declare `odrl:profile` (for engines with RDFS inference) |
+| `dprod-contracts-shapes:SetShape` | `odrl:Set` | Must declare `odrl:profile`; may declare `odrl:target`; at least one clause |
+| `dprod-contracts-shapes:OfferShape` | `odrl:Offer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause |
+| `dprod-contracts-shapes:AgreementShape` | `odrl:Agreement` | Must declare `odrl:profile`; exactly one `odrl:assigner` and one `odrl:assignee`; at least one clause |
 
 ### Rule-level shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
+| `dprod-contracts-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-contracts-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-contracts-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
 
 ### Schedule shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:ScheduleReferenceShape` | Subjects using `dprod:schedule` | Values are IRIs identifying `dprod:Schedule` resources |
-| `dprod-shapes:ScheduleShape` | `dprod:Schedule` | IRI identifier; one exact format; one string expression; built-in format requirements |
+| `dprod-contracts-shapes:ScheduleReferenceShape` | Subjects using `dprod:schedule` | Values are IRIs identifying `dprod:Schedule` resources |
+| `dprod-contracts-shapes:ScheduleShape` | `dprod:Schedule` | IRI identifier; one exact format; one string expression; built-in format requirements |
 
 ### Constraint-level shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:ConstraintShape` | `odrl:Constraint` | Exactly one `leftOperand`, `operator`, and at least one `rightOperand` |
-| `dprod-shapes:LogicalConstraintShape` | `odrl:LogicalConstraint` | Exactly one of: `odrl:and`, `odrl:or`, or `dprod:not` |
+| `dprod-contracts-shapes:ConstraintShape` | `odrl:Constraint` | Exactly one `leftOperand`, `operator`, and at least one `rightOperand` |
+| `dprod-contracts-shapes:LogicalConstraintShape` | `odrl:LogicalConstraint` | Exactly one of: `odrl:and`, `odrl:or`, or `dprod:not` |
 
 ### Contract-level shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:DataOfferShape` | `dprod:DataOffer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause; `state` 0..1; effective/expiration dates 0..1 |
-| `dprod-shapes:DataContractShape` | `dprod:DataContract` | Must declare `odrl:profile`; exactly one `dprod:acceptsOffer` (must be `dprod:DataOffer`); at least one clause; `state` 0..1; effective/expiration dates 0..1 |
+| `dprod-contracts-shapes:DataOfferShape` | `dprod:DataOffer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause; `state` 0..1; effective/expiration dates 0..1 |
+| `dprod-contracts-shapes:DataContractShape` | `dprod:DataContract` | Must declare `odrl:profile`; exactly one `dprod:acceptsOffer` (must be `dprod:DataOffer`); at least one clause; `state` 0..1; effective/expiration dates 0..1 |
 
 ### Operand shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` and objects of `odrl:leftOperand` | Exactly one closed `dprod:operandSource` and one IRI-valued `dprod:operandProperty` |
-| `dprod-shapes:EvaluationContextShape` | `dprod:EvaluationContext` | Exactly one request, immutable state snapshot, requesting agent, and clock |
+| `dprod-contracts-shapes:LeftOperandShape` | `odrl:LeftOperand` and objects of `odrl:leftOperand` | Exactly one closed `dprod:operandSource` and one IRI-valued `dprod:operandProperty` |
+| `dprod-contracts-shapes:EvaluationContextShape` | `dprod:EvaluationContext` | Exactly one request, immutable state snapshot, requesting agent, and clock |
 
 ### Collection shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PartOfShape` | Subjects of `odrl:partOf` | Asset membership must end in an `odrl:AssetCollection`; party membership must end in an `odrl:PartyCollection`; collection nesting must remain within the same kind |
-| `dprod-shapes:AssetCollectionShape` | `odrl:AssetCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
-| `dprod-shapes:PartyCollectionShape` | `odrl:PartyCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
+| `dprod-contracts-shapes:PartOfShape` | Subjects of `odrl:partOf` | Asset membership must end in an `odrl:AssetCollection`; party membership must end in an `odrl:PartyCollection`; collection nesting must remain within the same kind |
+| `dprod-contracts-shapes:AssetCollectionShape` | `odrl:AssetCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
+| `dprod-contracts-shapes:PartyCollectionShape` | `odrl:PartyCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
 
 ### Rejection shapes
 
 | Shape | Rejects | Message |
 |-------|---------|---------|
-| `dprod-shapes:RejectXoneShape` | `odrl:xone` | Not supported in DPROD Contracts |
-| `dprod-shapes:RejectRemedyShape` | `odrl:remedy` | Noted as future extension |
-| `dprod-shapes:RejectConsequenceShape` | `odrl:consequence` | Noted as future extension |
-| `dprod-shapes:RejectTicketShape` | `odrl:Ticket` | Not supported |
-| `dprod-shapes:RejectRequestShape` | `odrl:Request` | DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. |
-| `dprod-shapes:RejectRuntimeReferenceShape` | `dprod:RuntimeReference` | Declare a normal `odrl:LeftOperand` with one source/property binding |
-| `dprod-shapes:RejectOperandPathShape` | `dprod:path` | Normalize the input and use `dprod:operandSource` plus `dprod:operandProperty` |
-| `dprod-shapes:RejectObsoleteDprodPartOfShape` | `dprod:partOf` | Use `odrl:partOf` |
-| `dprod-shapes:RejectObsoleteDprodMemberOfShape` | `dprod:memberOf` | Use `odrl:partOf` |
-| `dprod-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
-| `dprod-shapes:RejectInheritFromShape` | `odrl:inheritFrom` | Not supported |
-| `dprod-shapes:RejectMixedLifecycleStatusOnDataOfferShape` | Non-offer lifecycle properties on `dprod:DataOffer` | Use `dprod:offerLifecycleStatus` |
-| `dprod-shapes:RejectMixedLifecycleStatusOnDataContractShape` | Non-contract lifecycle properties on `dprod:DataContract` | Use `dprod:contractLifecycleStatus` |
-| `dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape` | Contract lifecycle properties on `dprod:DataProduct` | Use `dprod:dataProductLifecycleStatus` |
-| `dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
-| `dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
-| `dprod-shapes:RejectObsoleteRecurrenceShape` | Legacy `dprod:recurrence` property | Use `dprod:schedule` and an identified Schedule |
-| `dprod-shapes:RejectAnonymousScheduleShape` | A `dprod:Schedule` that is a blank node | A Schedule must have an IRI identifier |
+| `dprod-contracts-shapes:RejectXoneShape` | `odrl:xone` | Not supported in DPROD Contracts |
+| `dprod-contracts-shapes:RejectRemedyShape` | `odrl:remedy` | Noted as future extension |
+| `dprod-contracts-shapes:RejectConsequenceShape` | `odrl:consequence` | Noted as future extension |
+| `dprod-contracts-shapes:RejectTicketShape` | `odrl:Ticket` | Not supported |
+| `dprod-contracts-shapes:RejectRequestShape` | `odrl:Request` | DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. |
+| `dprod-contracts-shapes:RejectRuntimeReferenceShape` | `dprod:RuntimeReference` | Declare a normal `odrl:LeftOperand` with one source/property binding |
+| `dprod-contracts-shapes:RejectOperandPathShape` | `dprod:path` | Normalize the input and use `dprod:operandSource` plus `dprod:operandProperty` |
+| `dprod-contracts-shapes:RejectObsoleteDprodPartOfShape` | `dprod:partOf` | Use `odrl:partOf` |
+| `dprod-contracts-shapes:RejectObsoleteDprodMemberOfShape` | `dprod:memberOf` | Use `odrl:partOf` |
+| `dprod-contracts-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
+| `dprod-contracts-shapes:RejectInheritFromShape` | `odrl:inheritFrom` | Not supported |
+| `dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataOfferShape` | Non-offer lifecycle properties on `dprod:DataOffer` | Use `dprod:offerLifecycleStatus` |
+| `dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataContractShape` | Non-contract lifecycle properties on `dprod:DataContract` | Use `dprod:contractLifecycleStatus` |
+| `dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataProductShape` | Contract lifecycle properties on `dprod:DataProduct` | Use `dprod:dataProductLifecycleStatus` |
+| `dprod-contracts-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
+| `dprod-contracts-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
+| `dprod-contracts-shapes:RejectObsoleteRecurrenceShape` | Legacy `dprod:recurrence` property | Use `dprod:schedule` and an identified Schedule |
+| `dprod-contracts-shapes:RejectAnonymousScheduleShape` | A `dprod:Schedule` that is a blank node | A Schedule must have an IRI identifier |
 
 ---
 

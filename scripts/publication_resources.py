@@ -71,9 +71,10 @@ def blob(repository, revision, path):
     return subprocess.check_output(['git', '-C', str(repository), 'show', f'{revision}:{path}'])
 
 
-def serialize(repository, item, destination):
+def serialize(repository, item, destination, definitions):
+    """Publish the RDF sources that the controlling definitions collect."""
     revision = item['source_commit']
-    definitions = Graph().parse(data=blob(repository, revision, item['definitions']), format='turtle')
+    definitions = Graph().parse(data=definitions, format='turtle')
     ontology = Graph()
     shapes = Graph()
     evidence = []

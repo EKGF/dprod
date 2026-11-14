@@ -11,13 +11,14 @@ DCT = Namespace('http://purl.org/dc/terms/')
 
 class GrapharchEditionTests(unittest.TestCase):
     def setUp(self):
-        self.graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        self.graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
 
     def test_generator_installs_the_same_verified_release_without_a_compiler(self):
         workflow = (ROOT / '.github/workflows/grapharch-pages.yml').read_text()
-        self.assertIn('uses: ./.grapharch-tool', workflow)
-        self.assertIn('version: ${{ steps.config.outputs.version }}', workflow)
-        self.assertIn('expected-revision: ${{ steps.config.outputs.generator }}', workflow)
+        # One pinned release action step that Dependabot can bump.
+        self.assertRegex(workflow, r'uses: EKGF/grapharch@[0-9a-f]{40} # v\d+\.\d+\.\d+\n\s+with:\n\s+mode: install')
+        self.assertNotIn('.grapharch-tool', workflow)
+        self.assertNotIn('generator_revision', workflow)
         self.assertNotIn('cargo build', workflow)
         self.assertNotIn('setup-rust-toolchain', workflow)
 
@@ -26,8 +27,8 @@ class GrapharchEditionTests(unittest.TestCase):
         self.assertEqual(set(graph.objects(DOC.project, GA.target)),
                          {DOC.specification, DOC.website, DOC.pdf, DOC['omg-pdf'], DOC['overview-pdf']})
         for target, destination, status in (
-            (DOC.pdf, 'pdf/ekgf', 'Community Draft'),
-            (DOC['omg-pdf'], 'pdf/omg', 'Submission Preview'),
+            (DOC.pdf, 'pdf', 'Community Draft'),
+            (DOC['omg-pdf'], 'pdf', 'Submission Preview'),
         ):
             self.assertEqual(str(graph.value(target, GA.destination)), destination)
             self.assertEqual(str(graph.value(target, GA.publicationStatus)), status)
@@ -39,20 +40,24 @@ class GrapharchEditionTests(unittest.TestCase):
                             graph.value(DOC['omg-pdf'], GA.publisher))
 
     def test_omg_edition_selects_the_formal_typst_skin(self):
-        self.assertEqual(str(self.graph.value(DOC['omg-pdf-profile'], GA.style)), 'omg')
-        self.assertEqual(str(self.graph.value(DOC['pdf-profile'], GA.style)), 'specification')
+        self.assertEqual(self.graph.value(DOC['omg-pdf-profile'], GA.theme), DOC['submission-theme'])
+        self.assertEqual(self.graph.value(DOC['submission-theme'], GA.baseTheme), GA.SpecificationTheme)
+        self.assertEqual(self.graph.value(DOC['pdf-profile'], GA.theme), GA.SpecificationTheme)
 
     def test_technical_placements_are_shared_front_matter_is_distinct(self):
         graph = self.graph
         profiles = [graph.value(target, GA.profile) for target in (DOC.pdf, DOC['omg-pdf'])]
         def placements(profile, front):
-            return {placement for placement in graph.objects(profile, GA.placement)
+            # Generated reference placements are per profile; their components
+            # are shared.
+            return {graph.value(placement, GA.component) if ':generated:' in str(placement) else placement
+                    for placement in graph.objects(profile, GA.placement)
                     if (str(graph.value(placement, GA.sectionRole)) in {'preface', 'status'}) == front}
         self.assertTrue(placements(profiles[0], False))
         self.assertEqual(placements(profiles[0], False), placements(profiles[1], False))
         self.assertTrue(placements(profiles[0], True).isdisjoint(placements(profiles[1], True)))
         for profile in profiles:
-            self.assertIn(GA.preamble, graph.objects(profile, GA.requiredMetadata))
+            self.assertIn(GA.notice, graph.objects(profile, GA.requiredMetadata))
             for placement in placements(profile, True):
                 component = graph.value(placement, GA.component)
                 fragment = graph.value(component, GA.fragment)
@@ -69,8 +74,9 @@ class GrapharchEditionTests(unittest.TestCase):
         rows = list(self.graph.objects(DOC.specification, GA.metadataRow))
         row = next(row for row in rows if str(self.graph.value(row, DCT.title)) == 'PDF editions:')
         body = str(self.graph.value(row, GA.body))
-        self.assertIn('../pdf/ekgf/document.pdf', body)
-        self.assertIn('../pdf/omg/document.pdf', body)
+        # Target IRIs resolve to each PDF's edition-specific file name.
+        self.assertIn('href="urn:dprod-showcase:pdf"', body)
+        self.assertIn('href="urn:dprod-showcase:omg-pdf"', body)
         self.assertIn('EKGF community draft', body)
         self.assertIn('OMG submission preview', body)
 

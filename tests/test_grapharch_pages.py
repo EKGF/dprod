@@ -27,7 +27,7 @@ class PagesPublicationTests(unittest.TestCase):
         from pages_publication import prepare_artifact
         with tempfile.TemporaryDirectory() as temporary:
             stage = Path(temporary)
-            root = stage / 'deployment/.vercel/output/static/dprod'
+            root = stage / 'deployment/static/dprod'
             root.mkdir(parents=True)
             (root / 'index.html').write_text('site')
             self.assertEqual(prepare_artifact(stage, '/dprod'), root)
@@ -38,9 +38,10 @@ class PagesPublicationTests(unittest.TestCase):
 
     def test_pages_workflow_uses_grapharch_action_and_no_vercel_credentials(self):
         workflow = (ROOT / '.github/workflows/grapharch-pages.yml').read_text()
-        self.assertIn('uses: ./.grapharch-tool', workflow)
-        self.assertIn('expected-revision: ${{ steps.config.outputs.generator }}', workflow)
-        self.assertIn('version: ${{ steps.config.outputs.version }}', workflow)
+        self.assertRegex(workflow, r'uses: EKGF/grapharch@[0-9a-f]{40} # v\d+\.\d+\.\d+')
+        self.assertIn('--generator-revision "${{ steps.grapharch.outputs.revision }}"', workflow)
+        self.assertIn('--generator-version "${{ steps.grapharch.outputs.version }}"', workflow)
+        self.assertNotIn('.vercel', workflow)
         self.assertNotIn('source-revision:', workflow)
         self.assertIn('actions/upload-pages-artifact@', workflow)
         self.assertIn('actions/deploy-pages@', workflow)

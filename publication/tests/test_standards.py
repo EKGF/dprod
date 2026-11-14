@@ -12,7 +12,7 @@ DCT = Namespace('http://purl.org/dc/terms/')
 
 class StandardsTests(unittest.TestCase):
     def setUp(self):
-        self.graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        self.graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
 
     def test_every_declared_collector_has_an_existing_source(self):
         collectors = list(self.graph.objects(DOC.project, GA.collector))
@@ -36,7 +36,9 @@ class StandardsTests(unittest.TestCase):
         for profile in (DOC.profile, DOC['pdf-profile'], DOC['release-profile']):
             roles = set(map(str, self.graph.objects(profile, GA.requiredSectionRole)))
             self.assertTrue({'abstract','status','scope','conformance','references','terms','symbols','namespaces','model','contracts','contracts-model','reference','acknowledgements'} <= roles)
-            placements = list(self.graph.objects(profile, GA.placement))
+            # Generated vocabulary-reference placements carry no section role;
+            # their content comes from the documentor, not an authored fragment.
+            placements = [p for p in self.graph.objects(profile, GA.placement) if ':generated:' not in str(p)]
             orders = []
             for placement in placements:
                 self.assertIn(str(self.graph.value(placement, GA.sectionRole)), roles)

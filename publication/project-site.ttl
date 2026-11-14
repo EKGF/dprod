@@ -15,7 +15,7 @@
     ga:profile <urn:dprod:project-site:profile> ;
     ga:renderer ga:WebsiteRenderer ; ga:destination "site" .
 <urn:dprod:project-site:profile> a ga:Profile ;
-    ga:style "ekgf-project" ;
+    ga:theme ga:EkgfProjectTheme ;
     ga:headerLink <urn:dprod:project-site:specification> .
 <urn:dprod:project-site:specification> dct:title "Specification" ;
     ga:url "spec-versions/" ; ga:order 1 .

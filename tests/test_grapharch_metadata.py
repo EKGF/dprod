@@ -19,7 +19,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         self.assertIn('> The following sections are driven by the Shapes', model)
 
     def test_publication_json_examples_declare_their_language(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         paths = sorted({str(path) for path in graph.objects(None, GA.sourcePath)
                         if str(path).endswith('.md')})
         checked = 0
@@ -43,7 +43,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         self.assertIn('```json example\n', contracts)
 
     def test_contributors_have_explicit_family_names(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         schema = Namespace('https://schema.org/')
         people = set(graph.objects(DOC.specification, GA.editor)) | set(graph.objects(DOC.specification, GA.author))
         self.assertEqual(len(people), 15)
@@ -52,7 +52,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         self.assertEqual(str(graph.value(Namespace('urn:dprod:documentation:author:')['1'], schema.familyName)), 'Whittam Smith')
 
     def test_ordered_header_preserves_people_and_publication_links(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         target = DOC.specification
         self.assertEqual(len(list(graph.objects(target, GA.editor))), 6)
         self.assertEqual(len(list(graph.objects(target, GA.author))), 9)
@@ -82,11 +82,11 @@ class GrapharchMetadataTests(unittest.TestCase):
         sys.path.insert(0, str(ROOT / 'scripts'))
         from central_publications import DERIVED_RESOURCES
         from publication_resources import serialize
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         revision = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
         with tempfile.TemporaryDirectory() as temporary:
-            native = serialize(ROOT, {'source_commit': revision,
-                                      'definitions': 'publication/standards.ttl'}, Path(temporary))
+            native = serialize(ROOT, {'source_commit': revision}, Path(temporary),
+                               (ROOT / 'publication/definitions/develop.ttl').read_bytes())
         bundle = set(native) | set(DERIVED_RESOURCES)
         self.assertEqual(str(graph.value(DOC.specification, GA.destination)), 'specification')
         downloads = 0
@@ -99,7 +99,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         self.assertEqual(downloads, 12)
 
     def test_product_logo_is_a_retained_source_asset_separate_from_authority(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         asset = DOC['product-logo']
         collector = DOC['source:product-logo']
         self.assertEqual(graph.value(DOC.specification, GA.productLogo), asset)
@@ -117,7 +117,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         from rdflib import RDF, URIRef
         canonical = URIRef('https://ekgf.org/ontology/artifact-governance#Authority')
         removed = GA.Authority
-        for name in ('standards.ttl', 'grapharch.ttl'):
+        for name in ('definitions/develop.ttl', 'definitions/main.ttl', 'grapharch.ttl'):
             graph = Graph().parse(ROOT / 'publication' / name)
             publishers = list(graph.objects(None, GA.publisher))
             self.assertTrue(publishers, name)

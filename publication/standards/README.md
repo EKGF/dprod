@@ -1,7 +1,7 @@
 # DPROD standards publication sources
 
-`../standards.ttl` describes a source-owned **1.1 draft**, collected from the
-`develop` branch. The community publication is
+`../definitions/develop.ttl` describes a source-owned **1.1 draft**, collected
+from the `develop` branch; `../definitions/main.ttl` describes 1.0 beta from `main`. The community publication is
 <https://ekgf.org/dprod/spec/develop/>. The official baseline remains OMG
 [DPROD 1.0 beta 2](https://www.omg.org/spec/DPROD/1.0/Beta2/PDF), document
 ptc/26-05-40. Neither this configuration nor its generated outputs establish
@@ -28,8 +28,8 @@ own content selection. Marketing README material is not implicitly included in
 the formal specification.
 
 Four draft outputs are selected by the GraphArch showcase: the specification,
-companion website, **EKGF community PDF** (`doc:pdf`, `pdf/ekgf/document.pdf`)
-and **OMG submission preview PDF** (`doc:omg-pdf`, `pdf/omg/document.pdf`).
+companion website, **EKGF community PDF** (`doc:pdf`, `pdf/ekgf-spec-dprod.pdf`)
+and **OMG submission preview PDF** (`doc:omg-pdf`, `pdf/omg-submission-dprod.pdf`).
 Both PDFs share the same scope, technical placements, ontology, shapes and
 examples. Their source-owned status, preface and publishing authority differ;
 community HTML uses the EKGF front matter. Both retain the existing legal text

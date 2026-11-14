@@ -1,3 +1,7 @@
+# GraphArch controlling definitions for DPROD develop publications.
+# GraphArch's exact-revision build reads these definitions from the controlling
+# commit and only content from the designated commit. The deployment URL is a
+# build input (--publication-url): it derives every target's ga:thisVersion.
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix doc: <urn:dprod-showcase:> .
 @prefix ga: <https://ekgf.org/ontology/grapharch#> .
@@ -201,7 +205,7 @@ doc:pdf a ga:Target ;
         <urn:dprod:documentation:author:6>,
         <urn:dprod:documentation:author:7>,
         <urn:dprod:documentation:author:8> ;
-    ga:destination "pdf/ekgf" ;
+    ga:destination "pdf" ;
     ga:editor <urn:dprod:documentation:editor:0>,
         <urn:dprod:documentation:editor:1>,
         <urn:dprod:documentation:editor:2>,
@@ -215,8 +219,7 @@ doc:pdf a ga:Target ;
     ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> ;
     ga:releaseVersion "1.1 draft" ;
     ga:renderer ga:TypstRenderer ;
-    ga:scope doc:scope ;
-    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/ekgf/document.pdf> .
+    ga:scope doc:scope .
 
 doc:omg-pdf a ga:Target ;
     dct:title "Data Product Ontology (DPROD) — OMG submission preview" ;
@@ -229,7 +232,7 @@ doc:omg-pdf a ga:Target ;
         <urn:dprod:documentation:author:6>,
         <urn:dprod:documentation:author:7>,
         <urn:dprod:documentation:author:8> ;
-    ga:destination "pdf/omg" ;
+    ga:destination "pdf" ;
     ga:editor <urn:dprod:documentation:editor:0>,
         <urn:dprod:documentation:editor:1>,
         <urn:dprod:documentation:editor:2>,
@@ -243,8 +246,7 @@ doc:omg-pdf a ga:Target ;
     ga:publisher doc:omg-authority ;
     ga:releaseVersion "1.1 draft" ;
     ga:renderer ga:TypstRenderer ;
-    ga:scope doc:scope ;
-    ga:thisVersion <https://ekgf.github.io/grapharch/showcases/artifacts/dprod/pdf/omg/document.pdf> .
+    ga:scope doc:scope .
 
 doc:pdf-profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
@@ -277,7 +279,7 @@ doc:pdf-profile a ga:Profile ;
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher ;
@@ -310,7 +312,7 @@ doc:pdf-profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "specification" .
+    ga:theme ga:SpecificationTheme .
 
 doc:omg-pdf-profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
@@ -343,7 +345,7 @@ doc:omg-pdf-profile a ga:Profile ;
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher ;
@@ -376,7 +378,7 @@ doc:omg-pdf-profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "omg" .
+    ga:theme doc:submission-theme .
 
 doc:profile a ga:Profile ;
     ga:placement <urn:dprod-showcase:placement:abstract>,
@@ -409,7 +411,7 @@ doc:profile a ga:Profile ;
         <urn:dprod-showcase:placement:symbols>,
         <urn:dprod-showcase:placement:terms> ;
     ga:requiredMetadata dct:title,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher ;
@@ -442,7 +444,7 @@ doc:profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "specification" .
+    ga:theme ga:SpecificationTheme .
 
 doc:release a ga:Target ;
     dct:title "Data Product Ontology (DPROD)" ;
@@ -489,7 +491,7 @@ doc:release-profile a ga:Profile ;
         ga:documentNumber,
         ga:latestVersion,
         ga:license,
-        ga:preamble,
+        ga:notice,
         ga:publicationDate,
         ga:publicationStatus,
         ga:publisher,
@@ -524,7 +526,7 @@ doc:release-profile a ga:Profile ;
         "status",
         "symbols",
         "terms" ;
-    ga:style "specification" .
+    ga:theme ga:SpecificationTheme .
 
 <urn:dprod-showcase:source:abstract> a ga:CollectorUse ;
     dct:identifier "abstract" ;
@@ -926,8 +928,7 @@ doc:specification a ga:Target ;
     ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> ;
     ga:releaseVersion "1.1 draft" ;
     ga:renderer ga:SpecificationRenderer ;
-    ga:scope doc:scope ;
-    ga:thisVersion <https://ekgf.org/dprod/spec/develop/specification/> .
+    ga:scope doc:scope .
 
 doc:website a ga:Target ;
     dct:title "DPROD: ideas and guides" ;
@@ -1346,7 +1347,7 @@ doc:omg-authority a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 doc:specification ga:metadataRow doc:metadata-pdfs .
 doc:metadata-pdfs a ga:MetadataRow ; ga:order 9 ; ga:field "custom" ;
     dct:title "PDF editions:" ;
-    ga:body """<a href="../pdf/ekgf/document.pdf">EKGF community draft</a><br><a href="../pdf/omg/document.pdf">OMG submission preview</a>""" .
+    ga:body """<a href="urn:dprod-showcase:pdf">EKGF community draft</a><br><a href="urn:dprod-showcase:omg-pdf">OMG submission preview</a>""" .
 
 doc:project ga:collector <urn:dprod-showcase:source:community-status> .
 <urn:dprod-showcase:source:community-status> a ga:CollectorUse ;
@@ -1391,9 +1392,9 @@ doc:overview-pdf a ga:Target ; dct:title "DPROD: the bigger picture" ;
     ga:publicationDate "2026-11-04"^^xsd:date ;
     dct:description "A practical introduction to DPROD, its core model, examples, and adoption path."@en ;
     ga:scope doc:overview-scope ; ga:profile doc:overview-profile ;
-    ga:renderer ga:TypstRenderer ; ga:destination "pdf/overview" ;
+    ga:renderer ga:TypstRenderer ; ga:destination "pdf" ;
     ga:publisher <urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> .
-doc:overview-profile a ga:Profile ; ga:style "overview" ; ga:tocDepth 1 ;
+doc:overview-profile a ga:Profile ; ga:theme ga:OverviewTheme ; ga:tocDepth 1 ;
     ga:qualityScope "selected" ; ga:showProvenance false .
 doc:overview-scope a ga:Scope ; ga:traverse ga:topic ; ga:maxDepth 1 .
 doc:project ga:collector <urn:dprod-showcase:source:shared:index> .
@@ -1485,3 +1486,243 @@ doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:standar
     ga:fragment <urn:dprod:content:why:built-on-w3c-standards>, <urn:dprod:content:why:dcat>, <urn:dprod:content:why:rdf>, <urn:dprod:content:why:owl>, <urn:dprod:content:why:shacl>, <urn:dprod:content:why:prov> .
 
 <urn:dprod-showcase:fragment:overview:01-brief> ga:order 0 .
+
+# ---------------------------------------------------------------------------
+# GraphArch exact-revision definitions (publication build-revision). These
+# statements replace behavior that the removed GraphArch DPROD adapter
+# hard-coded; content commits carry no GraphArch configuration.
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# Legal notices from the content commit's ReSpec template.
+doc:project ga:collector <urn:dprod-showcase:source:legal-preamble> .
+<urn:dprod-showcase:source:legal-preamble> a ga:CollectorUse ;
+    ga:collectorType ga:HtmlPreambleCollector ;
+    ga:source "respec/template.html" ; ga:sourcePath "respec/template.html" ;
+    ga:fragment <urn:dprod-showcase:legal-preamble> ;
+    ga:includedIn doc:scope .
+doc:specification ga:notice doc:legal-notice .
+doc:pdf ga:notice doc:legal-notice .
+doc:omg-pdf ga:notice doc:legal-notice .
+doc:legal-notice ga:order 1 ; ga:fragment <urn:dprod-showcase:legal-preamble> .
+
+# Header metadata derived from the ontology collector's own contribution.
+doc:project ga:metadataSource <urn:dprod-showcase:source:ontology> ; ga:derivedMetadata dct:title .
+doc:specification ga:metadataSource <urn:dprod-showcase:source:ontology> ;
+    ga:derivedMetadata dct:title, dct:description, ga:license, ga:publicationDate .
+doc:pdf ga:metadataSource <urn:dprod-showcase:source:ontology> ; ga:derivedMetadata ga:license, ga:publicationDate .
+doc:omg-pdf ga:metadataSource <urn:dprod-showcase:source:ontology> ; ga:derivedMetadata ga:license, ga:publicationDate .
+doc:overview-pdf ga:metadataSource <urn:dprod-showcase:source:ontology> ; ga:derivedMetadata ga:license .
+
+# Authored fragments and code examples join the reference scope.
+<urn:dprod-showcase:source:abstract> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:acknowledgements> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:contracts:collections-and-target-inheritance> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:contracts:data-offer-and-contract> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:contracts:data-use-policy> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:contracts:evaluation-context> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:contracts:lifecycle-and-versioning> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:contracts:odcs-mapping> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:contracts:provider-duties> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:core:data-quality> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:core:data-rights> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:core:data-schema> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:core:equity-trade> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:code:example:core:sba-pool-rates> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:community-preface> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:community-status> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:conformance> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:contracts> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:contracts-model> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:contracts:collections-and-target-inheritance> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:contracts:data-offer-and-contract> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:contracts:data-use-policy> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:contracts:evaluation-context> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:contracts:lifecycle-and-versioning> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:contracts:odcs-mapping> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:contracts:provider-duties> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:core-data-product-extensions> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:data-lineage> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:data-quality> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:data-rights> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:data-schema> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:equity-trade> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:observability-ports> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:example:core:sba-pool-rates> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:model> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:namespaces> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:omg-status> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:overview> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:overview:01-brief> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:overview:09-reading> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:preface> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:reference> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:references> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:scope> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:shared:adopt> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:shared:concepts> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:shared:index> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:shared:roadmap> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:shared:why> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:status> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:symbols> ga:includedIn doc:scope .
+<urn:dprod-showcase:source:terms> ga:includedIn doc:scope .
+
+# Generated vocabulary reference: the documentor fills authored components;
+# each reference profile places them beneath its reference section.
+doc:project ga:documentor <urn:dprod-showcase:documentor:vocabulary-reference> .
+<urn:dprod-showcase:documentor:vocabulary-reference> a ga:DocumentorUse ;
+    ga:documentorType ga:VocabularyReferenceDocumentor ;
+    ga:subject <https://ekgf.org/dprod/spec/develop/> ; ga:includedIn doc:scope ;
+    ga:referenceSection <urn:dprod-showcase:reference-section:classes>, <urn:dprod-showcase:reference-section:object-properties>, <urn:dprod-showcase:reference-section:datatype-properties>, <urn:dprod-showcase:reference-section:annotation-properties>, <urn:dprod-showcase:reference-section:named-individuals>, <urn:dprod-showcase:reference-section:concepts>, <urn:dprod-showcase:reference-section:concept-schemes>, <urn:dprod-showcase:reference-section:node-shapes>, <urn:dprod-showcase:reference-section:property-shapes> .
+<urn:dprod-showcase:reference-section:classes> a ga:ReferenceSection ; ga:termType owl:Class ;
+    ga:order 1 ; ga:component <urn:dprod-showcase:component:classes> .
+<urn:dprod-showcase:reference-section:object-properties> a ga:ReferenceSection ; ga:termType owl:ObjectProperty ;
+    ga:order 2 ; ga:component <urn:dprod-showcase:component:object-properties> .
+<urn:dprod-showcase:reference-section:datatype-properties> a ga:ReferenceSection ; ga:termType owl:DatatypeProperty ;
+    ga:order 3 ; ga:component <urn:dprod-showcase:component:datatype-properties> .
+<urn:dprod-showcase:reference-section:annotation-properties> a ga:ReferenceSection ; ga:termType owl:AnnotationProperty ;
+    ga:order 4 ; ga:component <urn:dprod-showcase:component:annotation-properties> ; ga:definedTermsOnly true .
+<urn:dprod-showcase:reference-section:named-individuals> a ga:ReferenceSection ; ga:termType owl:NamedIndividual ;
+    ga:order 5 ; ga:component <urn:dprod-showcase:component:named-individuals> ; ga:definedTermsOnly true .
+<urn:dprod-showcase:reference-section:concepts> a ga:ReferenceSection ; ga:termType skos:Concept ;
+    ga:order 6 ; ga:component <urn:dprod-showcase:component:concepts> ; ga:definedTermsOnly true .
+<urn:dprod-showcase:reference-section:concept-schemes> a ga:ReferenceSection ; ga:termType skos:ConceptScheme ;
+    ga:order 7 ; ga:component <urn:dprod-showcase:component:concept-schemes> .
+<urn:dprod-showcase:reference-section:node-shapes> a ga:ReferenceSection ; ga:termType sh:NodeShape ;
+    ga:order 8 ; ga:component <urn:dprod-showcase:component:node-shapes> .
+<urn:dprod-showcase:reference-section:property-shapes> a ga:ReferenceSection ; ga:termType sh:PropertyShape ;
+    ga:order 9 ; ga:component <urn:dprod-showcase:component:property-shapes> .
+<urn:dprod-showcase:component:classes> a ga:Component ; dct:title "OWL classes" .
+<urn:dprod-showcase:component:object-properties> a ga:Component ; dct:title "Object properties" .
+<urn:dprod-showcase:component:datatype-properties> a ga:Component ; dct:title "Datatype properties" .
+<urn:dprod-showcase:component:annotation-properties> a ga:Component ; dct:title "Annotation properties" .
+<urn:dprod-showcase:component:named-individuals> a ga:Component ; dct:title "Named individuals" .
+<urn:dprod-showcase:component:concepts> a ga:Component ; dct:title "Concepts without a documented scheme" .
+<urn:dprod-showcase:component:concept-schemes> a ga:Component ; dct:title "Concept schemes" .
+<urn:dprod-showcase:component:node-shapes> a ga:Component ; dct:title "SHACL node shapes" .
+<urn:dprod-showcase:component:property-shapes> a ga:Component ; dct:title "SHACL property shapes" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:classes> .
+<urn:dprod-showcase:profile:generated:classes> a ga:Placement ; ga:component <urn:dprod-showcase:component:classes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 101 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:object-properties> .
+<urn:dprod-showcase:profile:generated:object-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:object-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 102 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:datatype-properties> .
+<urn:dprod-showcase:profile:generated:datatype-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:datatype-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 103 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:annotation-properties> .
+<urn:dprod-showcase:profile:generated:annotation-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:annotation-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 104 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:named-individuals> .
+<urn:dprod-showcase:profile:generated:named-individuals> a ga:Placement ; ga:component <urn:dprod-showcase:component:named-individuals> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 105 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:concepts> .
+<urn:dprod-showcase:profile:generated:concepts> a ga:Placement ; ga:component <urn:dprod-showcase:component:concepts> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 109 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:concept-schemes> .
+<urn:dprod-showcase:profile:generated:concept-schemes> a ga:Placement ; ga:component <urn:dprod-showcase:component:concept-schemes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 106 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:node-shapes> .
+<urn:dprod-showcase:profile:generated:node-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:node-shapes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 107 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:property-shapes> .
+<urn:dprod-showcase:profile:generated:property-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:property-shapes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 108 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:classes> .
+<urn:dprod-showcase:pdf-profile:generated:classes> a ga:Placement ; ga:component <urn:dprod-showcase:component:classes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 101 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:object-properties> .
+<urn:dprod-showcase:pdf-profile:generated:object-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:object-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 102 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:datatype-properties> .
+<urn:dprod-showcase:pdf-profile:generated:datatype-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:datatype-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 103 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:annotation-properties> .
+<urn:dprod-showcase:pdf-profile:generated:annotation-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:annotation-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 104 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:named-individuals> .
+<urn:dprod-showcase:pdf-profile:generated:named-individuals> a ga:Placement ; ga:component <urn:dprod-showcase:component:named-individuals> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 105 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:concepts> .
+<urn:dprod-showcase:pdf-profile:generated:concepts> a ga:Placement ; ga:component <urn:dprod-showcase:component:concepts> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 109 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:concept-schemes> .
+<urn:dprod-showcase:pdf-profile:generated:concept-schemes> a ga:Placement ; ga:component <urn:dprod-showcase:component:concept-schemes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 106 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:node-shapes> .
+<urn:dprod-showcase:pdf-profile:generated:node-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:node-shapes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 107 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:property-shapes> .
+<urn:dprod-showcase:pdf-profile:generated:property-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:property-shapes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 108 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:classes> .
+<urn:dprod-showcase:omg-pdf-profile:generated:classes> a ga:Placement ; ga:component <urn:dprod-showcase:component:classes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 101 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:object-properties> .
+<urn:dprod-showcase:omg-pdf-profile:generated:object-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:object-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 102 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:datatype-properties> .
+<urn:dprod-showcase:omg-pdf-profile:generated:datatype-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:datatype-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 103 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:annotation-properties> .
+<urn:dprod-showcase:omg-pdf-profile:generated:annotation-properties> a ga:Placement ; ga:component <urn:dprod-showcase:component:annotation-properties> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 104 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:named-individuals> .
+<urn:dprod-showcase:omg-pdf-profile:generated:named-individuals> a ga:Placement ; ga:component <urn:dprod-showcase:component:named-individuals> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 105 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:concepts> .
+<urn:dprod-showcase:omg-pdf-profile:generated:concepts> a ga:Placement ; ga:component <urn:dprod-showcase:component:concepts> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 109 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:concept-schemes> .
+<urn:dprod-showcase:omg-pdf-profile:generated:concept-schemes> a ga:Placement ; ga:component <urn:dprod-showcase:component:concept-schemes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 106 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:node-shapes> .
+<urn:dprod-showcase:omg-pdf-profile:generated:node-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:node-shapes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 107 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:property-shapes> .
+<urn:dprod-showcase:omg-pdf-profile:generated:property-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:property-shapes> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 108 ; ga:sectionKind "section" .
+
+
+# A consumer-defined restrained submission theme: US Letter, serif body,
+# black sans headings, a plain ruled cover and Roman then Arabic numbering.
+doc:submission-theme a ga:Theme ;
+    ga:baseTheme ga:SpecificationTheme ;
+    ga:paper "us-letter" ; ga:marginTop "1in" ; ga:marginBottom "1in" ;
+    ga:marginLeft "1in" ; ga:marginRight "1in" ;
+    ga:coverBands false ; ga:statusRibbon false ; ga:runningHeader false ;
+    ga:accent "#000000" ; ga:authorityAccent false ;
+    ga:inkColor "#000000" ; ga:mutedColor "#000000" ; ga:ruleColor "#999999" ;
+    ga:panelColor "#f4f4f4" ; ga:headingColor "#000000" ; ga:linkColor "#000000" ;
+    ga:bodyFont "Liberation Serif" ; ga:bodySize "10pt" ; ga:leading "0.55em" ;
+    ga:paragraphSpacing "0.8em" ; ga:headingFont "Liberation Sans" ;
+    ga:heading1Size "18pt" ; ga:heading1Weight "bold" ; ga:heading2Size "14pt" ;
+    ga:heading3Size "12pt" ; ga:heading4Size "11pt" ;
+    ga:tableHeaderFill "#f4f4f4" ; ga:tableRuleColor "#999999" ;
+    ga:codeHighlight false ; ga:tintedCallouts false ;
+    ga:footerFont "Liberation Sans" ; ga:footerSize "9pt" ; ga:footerColor "#000000" ;
+    ga:footerRule false ; ga:footerShowsText true ; ga:pageNumberColor "#000000" ;
+    ga:pageNumberBold false ; ga:pageOfTotal false ;
+    ga:frontNumbering "i" ; ga:bodyNumbering "1" ;
+    ga:noticeFont "Liberation Serif" ; ga:tocTitleSize "18pt" ;
+    ga:coverBlock doc:st-publisher, doc:st-gap, doc:st-title, doc:st-subtitle, doc:st-rule-gap, doc:st-rule, doc:st-summary-gap, doc:st-summary .
+doc:st-publisher a ga:CoverBlock ; ga:order 1 ; ga:coverElement ga:CoverPublisher ; ga:fontSize "12pt" .
+doc:st-gap a ga:CoverBlock ; ga:order 2 ; ga:coverElement ga:CoverSpace ; ga:space "30mm" .
+doc:st-title a ga:CoverBlock ; ga:order 3 ; ga:coverElement ga:CoverTitle ; ga:fontSize "26pt" ; ga:fontWeight "bold" .
+doc:st-subtitle a ga:CoverBlock ; ga:order 4 ; ga:coverElement ga:CoverSubtitle ; ga:fontSize "16pt" .
+doc:st-rule-gap a ga:CoverBlock ; ga:order 5 ; ga:coverElement ga:CoverSpace ; ga:space "10mm" .
+doc:st-rule a ga:CoverBlock ; ga:order 6 ; ga:coverElement ga:CoverRule ; ga:stroke "0.6pt" ; ga:color "#000000" .
+doc:st-summary-gap a ga:CoverBlock ; ga:order 7 ; ga:coverElement ga:CoverSpace ; ga:space "7mm" .
+doc:st-summary a ga:CoverBlock ; ga:order 8 ; ga:coverElement ga:CoverSummary ; ga:fontSize "10pt" .
+
+# PDF edition names (GraphArch #94): <authority>-<document type>-<document>.pdf.
+<urn:uuid:6c1408aa-039c-42f9-8dee-9c3f0009d61a> ga:slug "ekgf" .
+doc:omg-authority ga:slug "omg" .
+doc:specification ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
+doc:release ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
+doc:pdf ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
+doc:omg-pdf ga:documentType ga:SubmissionDocument ; ga:slug "dprod" .
+doc:overview-pdf ga:documentType ga:OverviewDocument ; ga:slug "dprod" .
