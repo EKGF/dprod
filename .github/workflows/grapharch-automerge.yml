@@ -1,0 +1,23 @@
+name: Auto-merge GraphArch updates
+# Any Dependabot bump of EKGF/grapharch merges as soon as its required checks
+# pass, whatever its semver level: the GraphArch gallery, which builds DPROD,
+# is the compatibility gate, so major and minor releases get no special
+# treatment.
+on: pull_request
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    steps:
+      - name: Read the Dependabot update
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+      - name: Enable auto-merge for a GraphArch update
+        if: contains(steps.metadata.outputs.dependency-names, 'EKGF/grapharch')
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
