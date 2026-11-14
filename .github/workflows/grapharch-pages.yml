@@ -72,7 +72,7 @@ jobs:
         with:
           path: output/grapharch-pages/deployment/static/dprod
       - name: Retain source graphs, PDFs, website build and provenance
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: grapharch-pages-evidence-${{ github.run_id }}
           path: |
