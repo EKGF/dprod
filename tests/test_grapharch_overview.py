@@ -9,12 +9,13 @@ DOC = Namespace('urn:dprod-showcase:')
 
 class OverviewPublication(unittest.TestCase):
     def test_overview_has_its_own_scope_and_no_reference_catalogue(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         target = DOC['overview-pdf']
         self.assertIn((DOC.project, GA.target, target), graph)
         profile = graph.value(target, GA.profile)
         self.assertEqual(graph.value(profile, GA.theme), GA.OverviewTheme)
-        self.assertEqual(str(graph.value(target, GA.destination)), 'pdf/overview')
+        self.assertEqual(str(graph.value(target, GA.destination)), 'pdf')
+        self.assertEqual(graph.value(target, GA.documentType), GA.OverviewDocument)
         placements = list(graph.objects(profile, GA.placement))
         self.assertGreaterEqual(len(placements), 7)
         for placement in placements:
@@ -31,7 +32,7 @@ class OverviewPublication(unittest.TestCase):
         import re
         directory = ROOT / 'publication/overview'
         self.assertEqual({p.name for p in directory.glob('*.md')}, {'01-brief.md', '09-reading.md'})
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         profile = graph.value(DOC['overview-pdf'], GA.profile)
         selected = {fragment for placement in graph.objects(profile, GA.placement)
                     for component in graph.objects(placement, GA.component)
@@ -50,7 +51,7 @@ class OverviewPublication(unittest.TestCase):
         self.assertIn('assets/dprod-overview-model.svg', (ROOT / 'publication/project-site/concepts.md').read_text())
 
     def test_overview_credits_the_collective_team_without_a_git_appendix(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         profile = graph.value(DOC['overview-pdf'], GA.profile)
         self.assertEqual(str(graph.value(profile, GA.showProvenance)), 'false')
         self.assertIsNone(graph.value(DOC['pdf-profile'], GA.showProvenance))
@@ -69,7 +70,7 @@ class OverviewPublication(unittest.TestCase):
         self.assertIn('https://ekgf.org/dprod/spec-versions/', content)
 
     def test_unselected_conformance_passage_has_an_explicit_public_reference(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         subject = URIRef('urn:dprod:documentation:conformance')
         self.assertEqual(str(graph.value(subject, GA.url)), 'https://ekgf.org/dprod/spec/develop/#conformance')
 
@@ -80,6 +81,6 @@ class OverviewPublication(unittest.TestCase):
             self.assertNotIn('[' + name + '\n\n', content)
 
     def test_editorial_intro_has_an_explicit_order_when_composed_with_shared_content(self):
-        graph = Graph().parse(ROOT / 'publication/standards.ttl')
+        graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
         fragment = URIRef('urn:dprod-showcase:fragment:overview:01-brief')
         self.assertEqual(str(graph.value(fragment, GA.order)), '0')

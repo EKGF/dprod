@@ -35,14 +35,13 @@ def keys(value, expected):
 
 
 def validate(config):
-    keys(config, 'version repository leading_branch generator_revision generator_version canonical_url mount inventory website publications pull_requests maximum_publications')
+    keys(config, 'version repository leading_branch project canonical_url mount inventory website publications pull_requests maximum_publications')
     if config['version'] != 1:
         raise ValueError('unsupported manifest version')
     if not re.fullmatch(r'[\w.-]+/[\w.-]+', config['repository']):
         raise ValueError('repository must be a GitHub owner/name')
-    require_sha(config['generator_revision'])
-    if not isinstance(config['generator_version'], str) or not re.fullmatch(r'\d+\.\d+\.\d+', config['generator_version']):
-        raise ValueError('generator_version must be an exact published release')
+    if not re.fullmatch(r'urn:[A-Za-z0-9:._-]+', config['project']):
+        raise ValueError('project must be the definitions project URN')
     if not config['leading_branch'] or any(c in config['leading_branch'] for c in '\n\r\x00'):
         raise ValueError('invalid leading branch')
     url = urllib.parse.urlsplit(config['canonical_url'])

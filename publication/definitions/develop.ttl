@@ -2,7 +2,6 @@
 # GraphArch's exact-revision build reads these definitions from the controlling
 # commit and only content from the designated commit. The deployment URL is a
 # build input (--publication-url): it derives every target's ga:thisVersion.
-# publication/standards.ttl remains for the 0.2.8 central build.
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix doc: <urn:dprod-showcase:> .
 @prefix ga: <https://ekgf.org/ontology/grapharch#> .
@@ -1322,7 +1321,7 @@ doc:metadata-downloads a ga:MetadataRow ;
     ga:order 8 ;
     ga:field "custom" ;
     dct:title "Download as RDF:" ;
-    ga:body """<a href="https://ekgf.org/dprod/spec/develop/dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="https://ekgf.org/dprod/spec/develop/dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
+    ga:body """<a href="../dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="../dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="../dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="../dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="../dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="../dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="../dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="../dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
 
 
 # The DPROD product identity is independent of the publishing authority logo.
@@ -1348,7 +1347,7 @@ doc:omg-authority a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 doc:specification ga:metadataRow doc:metadata-pdfs .
 doc:metadata-pdfs a ga:MetadataRow ; ga:order 9 ; ga:field "custom" ;
     dct:title "PDF editions:" ;
-    ga:body """<a href="../pdf/ekgf-spec-dprod.pdf">EKGF community draft</a><br><a href="../pdf/omg-submission-dprod.pdf">OMG submission preview</a>""" .
+    ga:body """<a href="urn:dprod-showcase:pdf">EKGF community draft</a><br><a href="urn:dprod-showcase:omg-pdf">OMG submission preview</a>""" .
 
 doc:project ga:collector <urn:dprod-showcase:source:community-status> .
 <urn:dprod-showcase:source:community-status> a ga:CollectorUse ;
