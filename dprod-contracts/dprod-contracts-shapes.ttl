@@ -1,10 +1,10 @@
 # baseURI: https://ekgf.org/dprod/spec/develop/contracts/shapes/
 # imports: https://ekgf.org/dprod/spec/develop/contracts/
 # imports: http://www.w3.org/ns/shacl#
-# prefix: dprod-shapes
+# prefix: dprod-contracts-shapes
 
 @base <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
-@prefix dprod-shapes: <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
+@prefix dprod-contracts-shapes: <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
 @prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix odrl: <http://www.w3.org/ns/odrl/2/> .
@@ -16,7 +16,7 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-dprod-shapes:
+dprod-contracts-shapes:
   a owl:Ontology ;
   dct:title "Shapes for DPROD Data Contracts"@en ;
   rdfs:label "DPROD contracts shapes"@en ;
@@ -33,7 +33,7 @@ dprod-shapes:
     sh:namespace "https://ekgf.org/dprod/spec/develop/" ;
   ] ;
   sh:declare [
-    sh:prefix "dprod-shapes" ;
+    sh:prefix "dprod-contracts-shapes" ;
     sh:namespace "https://ekgf.org/dprod/spec/develop/contracts/shapes/" ;
   ] ;
   sh:declare [
@@ -46,7 +46,7 @@ dprod-shapes:
 ############################# Reusable Property Groups #########################
 
 
-dprod-shapes:OfferLifecycleStatusPropertyGroup
+dprod-contracts-shapes:OfferLifecycleStatusPropertyGroup
   a sh:PropertyShape ;
   sh:name "offer lifecycle status" ;
   sh:description "Optional authored lifecycle status for a DataOffer. The value must be a skos:Concept; DPROD's scheme is optional and profiles may use an enterprise taxonomy."@en ;
@@ -57,7 +57,7 @@ dprod-shapes:OfferLifecycleStatusPropertyGroup
   sh:message "offerLifecycleStatus, if present, must be a single skos:Concept value." ;
 .
 
-dprod-shapes:ContractLifecycleStatusPropertyGroup
+dprod-contracts-shapes:ContractLifecycleStatusPropertyGroup
   a sh:PropertyShape ;
   sh:name "contract lifecycle status" ;
   sh:description "Optional authored lifecycle status for a DataContract. The value must be a skos:Concept; DPROD's scheme is optional and profiles may use an enterprise taxonomy."@en ;
@@ -68,7 +68,7 @@ dprod-shapes:ContractLifecycleStatusPropertyGroup
   sh:message "contractLifecycleStatus, if present, must be a single skos:Concept value." ;
 .
 
-dprod-shapes:DutyStatePropertyGroup
+dprod-contracts-shapes:DutyStatePropertyGroup
   a sh:PropertyShape ;
   sh:name "duty state" ;
   sh:description "Optional evaluated state for a Duty. Value must be a skos:Concept; the four DPROD-defined concepts (Pending, Active, Fulfilled, Violated) are the canonical vocabulary that the standard evaluation algorithm transitions between."@en ;
@@ -79,7 +79,7 @@ dprod-shapes:DutyStatePropertyGroup
   sh:message "dutyState, if present, must be a single skos:Concept value." ;
 .
 
-dprod-shapes:ProfilePropertyGroup
+dprod-contracts-shapes:ProfilePropertyGroup
   a sh:PropertyShape ;
   sh:name "profile" ;
   sh:description "The ODRL profile IRI a policy must declare to be recognised as DPROD. Reused by Set, Offer, Agreement, DataOffer, and DataContract shapes."@en ;
@@ -89,7 +89,7 @@ dprod-shapes:ProfilePropertyGroup
   sh:message "DPROD policies must declare odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/>." ;
 .
 
-dprod-shapes:NonEmptyClausesConstraint
+dprod-contracts-shapes:NonEmptyClausesConstraint
   a sh:NodeShape ;
   sh:or (
     [ sh:property [ sh:path odrl:permission ; sh:minCount 1 ] ]
@@ -103,9 +103,9 @@ dprod-shapes:NonEmptyClausesConstraint
 ############################# Policy Shapes #########################
 
 
-dprod-shapes:PolicyShape
+dprod-contracts-shapes:PolicyShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "policy shape" ;
   sh:targetClass odrl:Policy ;
   sh:name "Policy Shape" ;
@@ -117,28 +117,28 @@ dprod-shapes:PolicyShape
   ] ;
 .
 
-dprod-shapes:SetShape
+dprod-contracts-shapes:SetShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "set shape" ;
   sh:targetClass odrl:Set ;
   sh:name "Set Shape" ;
-  sh:property dprod-shapes:ProfilePropertyGroup ;
-  sh:node dprod-shapes:NonEmptyClausesConstraint ;
+  sh:property dprod-contracts-shapes:ProfilePropertyGroup ;
+  sh:node dprod-contracts-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:target ;
     sh:message "Set policy may declare a policy-level target (inherited by rules)."
   ] ;
 .
 
-dprod-shapes:OfferShape
+dprod-contracts-shapes:OfferShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "offer shape" ;
   sh:targetClass odrl:Offer ;
   sh:name "Offer Shape" ;
-  sh:property dprod-shapes:ProfilePropertyGroup ;
-  sh:node dprod-shapes:NonEmptyClausesConstraint ;
+  sh:property dprod-contracts-shapes:ProfilePropertyGroup ;
+  sh:node dprod-contracts-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:assigner ;
     sh:minCount 1 ;
@@ -147,14 +147,14 @@ dprod-shapes:OfferShape
   ] ;
 .
 
-dprod-shapes:AgreementShape
+dprod-contracts-shapes:AgreementShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "agreement shape" ;
   sh:targetClass odrl:Agreement ;
   sh:name "Agreement Shape" ;
-  sh:property dprod-shapes:ProfilePropertyGroup ;
-  sh:node dprod-shapes:NonEmptyClausesConstraint ;
+  sh:property dprod-contracts-shapes:ProfilePropertyGroup ;
+  sh:node dprod-contracts-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:assigner ;
     sh:minCount 1 ;
@@ -173,9 +173,9 @@ dprod-shapes:AgreementShape
 ############################# Rule Shapes #########################
 
 
-dprod-shapes:PermissionShape
+dprod-contracts-shapes:PermissionShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "permission shape" ;
   sh:targetClass odrl:Permission ;
   sh:name "Permission Shape" ;
@@ -192,9 +192,9 @@ dprod-shapes:PermissionShape
   ] ;
 .
 
-dprod-shapes:ProhibitionShape
+dprod-contracts-shapes:ProhibitionShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "prohibition shape" ;
   sh:targetClass odrl:Prohibition ;
   sh:name "Prohibition Shape" ;
@@ -211,9 +211,9 @@ dprod-shapes:ProhibitionShape
   ] ;
 .
 
-dprod-shapes:DutyShape
+dprod-contracts-shapes:DutyShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "duty shape" ;
   sh:targetClass odrl:Duty ;
   sh:name "Duty Shape" ;
@@ -251,7 +251,7 @@ dprod-shapes:DutyShape
     sh:class odrl:Party ;
     sh:message "Duty object must be a single odrl:Party."
   ] ;
-  sh:property dprod-shapes:DutyStatePropertyGroup ;
+  sh:property dprod-contracts-shapes:DutyStatePropertyGroup ;
 .
 
 # Duty-only properties (#239). Their OWL domains infer odrl:Duty rather than
@@ -260,9 +260,9 @@ dprod-shapes:DutyShape
 # a Duty and must not be a Permission or Prohibition, whatever inference says.
 # dprod:schedule is not duty-only (it has no domain), and the obsolete
 # dprod:recurrence is rejected on every subject by RejectObsoleteRecurrenceShape.
-dprod-shapes:DutyOnlyPropertiesShape
+dprod-contracts-shapes:DutyOnlyPropertiesShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "duty-only properties shape" ;
   sh:name "Duty-Only Properties Shape" ;
   sh:targetSubjectsOf dprod:deadline, dprod:subjectOfDuty, dprod:objectOfDuty ;
@@ -276,9 +276,9 @@ dprod-shapes:DutyOnlyPropertiesShape
 ############################# Schedule Shapes #########################
 
 
-dprod-shapes:ScheduleReferenceShape
+dprod-contracts-shapes:ScheduleReferenceShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "schedule reference shape" ;
   sh:targetSubjectsOf dprod:schedule ;
   sh:property [
@@ -293,9 +293,9 @@ dprod-shapes:ScheduleReferenceShape
 # attached only to nodeKind violations, not to every ScheduleShape result.
 # It is named Reject* so the spec generator does not render it as a second
 # Schedule class.
-dprod-shapes:RejectAnonymousScheduleShape
+dprod-contracts-shapes:RejectAnonymousScheduleShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "reject anonymous schedule" ;
   sh:targetClass dprod:Schedule ;
   sh:nodeKind sh:IRI ;
@@ -304,9 +304,9 @@ dprod-shapes:RejectAnonymousScheduleShape
 
 # Every ScheduleFormat, including third-party extensions, must state whether
 # its expressions embed a timezone; the ScheduleShape timezone rule keys on it.
-dprod-shapes:ScheduleFormatShape
+dprod-contracts-shapes:ScheduleFormatShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "schedule format shape" ;
   sh:targetClass dprod:ScheduleFormat ;
   sh:property [
@@ -318,9 +318,9 @@ dprod-shapes:ScheduleFormatShape
   ] ;
 .
 
-dprod-shapes:ScheduleShape
+dprod-contracts-shapes:ScheduleShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "schedule shape" ;
   sh:targetClass dprod:Schedule ;
   sh:property [
@@ -412,9 +412,9 @@ dprod-shapes:ScheduleShape
   ] ;
 .
 
-dprod-shapes:RejectObsoleteRecurrenceShape
+dprod-contracts-shapes:RejectObsoleteRecurrenceShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "reject obsolete recurrence property" ;
   sh:targetSubjectsOf dprod:recurrence ;
   sh:property [
@@ -430,9 +430,9 @@ dprod-shapes:RejectObsoleteRecurrenceShape
 ############################# Constraint Shapes #########################
 
 
-dprod-shapes:ConstraintShape
+dprod-contracts-shapes:ConstraintShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "constraint shape" ;
   sh:targetClass odrl:Constraint ;
   sh:name "Constraint Shape" ;
@@ -455,9 +455,9 @@ dprod-shapes:ConstraintShape
   ] ;
 .
 
-dprod-shapes:LogicalConstraintShape
+dprod-contracts-shapes:LogicalConstraintShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "logical constraint shape" ;
   sh:targetClass odrl:LogicalConstraint ;
   sh:name "Logical Constraint Shape" ;
@@ -473,21 +473,21 @@ dprod-shapes:LogicalConstraintShape
 ############################# Contract Shapes #########################
 
 
-dprod-shapes:DataOfferShape
+dprod-contracts-shapes:DataOfferShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "data offer shape" ;
   sh:targetClass dprod:DataOffer ;
   sh:name "Data Offer Shape" ;
-  sh:property dprod-shapes:ProfilePropertyGroup ;
-  sh:node dprod-shapes:NonEmptyClausesConstraint ;
+  sh:property dprod-contracts-shapes:ProfilePropertyGroup ;
+  sh:node dprod-contracts-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:assigner ;
     sh:minCount 1 ;
     sh:maxCount 1 ;
     sh:message "DataOffer must have exactly one assigner."
   ] ;
-  sh:property dprod-shapes:OfferLifecycleStatusPropertyGroup ;
+  sh:property dprod-contracts-shapes:OfferLifecycleStatusPropertyGroup ;
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
@@ -502,14 +502,14 @@ dprod-shapes:DataOfferShape
   ] ;
 .
 
-dprod-shapes:DataContractShape
+dprod-contracts-shapes:DataContractShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "data contract shape" ;
   sh:targetClass dprod:DataContract ;
   sh:name "Data Contract Shape" ;
-  sh:property dprod-shapes:ProfilePropertyGroup ;
-  sh:node dprod-shapes:NonEmptyClausesConstraint ;
+  sh:property dprod-contracts-shapes:ProfilePropertyGroup ;
+  sh:node dprod-contracts-shapes:NonEmptyClausesConstraint ;
   sh:property [
     sh:path odrl:assigner ;
     sh:minCount 1 ;
@@ -529,7 +529,7 @@ dprod-shapes:DataContractShape
     sh:class dprod:DataOffer ;
     sh:message "DataContract must reference exactly one DataOffer."
   ] ;
-  sh:property dprod-shapes:ContractLifecycleStatusPropertyGroup ;
+  sh:property dprod-contracts-shapes:ContractLifecycleStatusPropertyGroup ;
   sh:property [
     sh:path dprod:effectiveDate ;
     sh:maxCount 1 ;
@@ -544,9 +544,9 @@ dprod-shapes:DataContractShape
   ] ;
 .
 
-dprod-shapes:RejectMixedLifecycleStatusOnDataOfferShape
+dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataOfferShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "reject mixed lifecycle status on data offer shape" ;
   sh:targetClass dprod:DataOffer ;
   sh:property [
@@ -561,9 +561,9 @@ dprod-shapes:RejectMixedLifecycleStatusOnDataOfferShape
   ] ;
 .
 
-dprod-shapes:RejectMixedLifecycleStatusOnDataContractShape
+dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataContractShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "reject mixed lifecycle status on data contract shape" ;
   sh:targetClass dprod:DataContract ;
   sh:property [
@@ -578,9 +578,9 @@ dprod-shapes:RejectMixedLifecycleStatusOnDataContractShape
   ] ;
 .
 
-dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape
+dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataProductShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "data product lifecycle status separation shape" ;
   sh:targetClass dprod:DataProduct ;
   sh:property [
@@ -599,9 +599,9 @@ dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape
 ############################# Operand Shapes #########################
 
 
-dprod-shapes:EvaluationContextShape
+dprod-contracts-shapes:EvaluationContextShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "evaluation context shape" ;
   sh:targetClass dprod:EvaluationContext ;
   sh:property [
@@ -637,9 +637,9 @@ dprod-shapes:EvaluationContextShape
 .
 
 
-dprod-shapes:LeftOperandShape
+dprod-contracts-shapes:LeftOperandShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "left operand shape" ;
   sh:targetClass odrl:LeftOperand ;
   sh:targetObjectsOf odrl:leftOperand ;
@@ -676,9 +676,9 @@ dprod-shapes:LeftOperandShape
 # Reject unsupported ODRL constructs
 
 
-dprod-shapes:RejectRuntimeReferenceShape
+dprod-contracts-shapes:RejectRuntimeReferenceShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "obsolete runtime reference rejection shape" ;
   sh:targetClass dprod:RuntimeReference ;
   sh:property [
@@ -689,9 +689,9 @@ dprod-shapes:RejectRuntimeReferenceShape
   ] ;
 .
 
-dprod-shapes:RejectOperandPathShape
+dprod-contracts-shapes:RejectOperandPathShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "obsolete operand path rejection shape" ;
   sh:targetSubjectsOf dprod:path ;
   sh:property [
@@ -703,7 +703,7 @@ dprod-shapes:RejectOperandPathShape
 .
 
 
-dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape
+dprod-contracts-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape
   a sh:NodeShape ;
   sh:targetSubjectsOf dprod:offerLifeCycleStatus ;
   sh:property [
@@ -714,7 +714,7 @@ dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape
   ] ;
 .
 
-dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape
+dprod-contracts-shapes:RejectObsoleteContractLifecycleStatusSpellingShape
   a sh:NodeShape ;
   sh:targetSubjectsOf dprod:contractLifeCycleStatus ;
   sh:property [
@@ -726,7 +726,7 @@ dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape
 .
 
 
-dprod-shapes:RejectXoneShape
+dprod-contracts-shapes:RejectXoneShape
   a sh:NodeShape ;
   sh:targetSubjectOf odrl:xone ;
   sh:property [
@@ -737,7 +737,7 @@ dprod-shapes:RejectXoneShape
   ] ;
 .
 
-dprod-shapes:RejectRemedyShape
+dprod-contracts-shapes:RejectRemedyShape
   a sh:NodeShape ;
   sh:targetSubjectOf odrl:remedy ;
   sh:property [
@@ -748,7 +748,7 @@ dprod-shapes:RejectRemedyShape
   ] ;
 .
 
-dprod-shapes:RejectConsequenceShape
+dprod-contracts-shapes:RejectConsequenceShape
   a sh:NodeShape ;
   sh:targetSubjectOf odrl:consequence ;
   sh:property [
@@ -759,7 +759,7 @@ dprod-shapes:RejectConsequenceShape
   ] ;
 .
 
-dprod-shapes:RejectTicketShape
+dprod-contracts-shapes:RejectTicketShape
   a sh:NodeShape ;
   sh:targetClass odrl:Ticket ;
   sh:sparql [
@@ -771,7 +771,7 @@ dprod-shapes:RejectTicketShape
   ] ;
 .
 
-dprod-shapes:RejectRequestShape
+dprod-contracts-shapes:RejectRequestShape
   a sh:NodeShape ;
   sh:targetClass odrl:Request ;
   sh:sparql [
@@ -783,9 +783,9 @@ dprod-shapes:RejectRequestShape
   ] ;
 .
 
-dprod-shapes:PartOfShape
+dprod-contracts-shapes:PartOfShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "ODRL collection membership shape" ;
   sh:targetSubjectsOf odrl:partOf ;
   sh:or (
@@ -809,9 +809,9 @@ dprod-shapes:PartOfShape
   sh:message "odrl:partOf must link an odrl:Asset to an odrl:AssetCollection or an odrl:Party to an odrl:PartyCollection." ;
 .
 
-dprod-shapes:AssetCollectionShape
+dprod-contracts-shapes:AssetCollectionShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "explicit asset collection shape" ;
   sh:targetClass odrl:AssetCollection ;
   sh:property [
@@ -826,9 +826,9 @@ dprod-shapes:AssetCollectionShape
   ] ;
 .
 
-dprod-shapes:PartyCollectionShape
+dprod-contracts-shapes:PartyCollectionShape
   a sh:NodeShape ;
-  rdfs:isDefinedBy dprod-shapes: ;
+  rdfs:isDefinedBy dprod-contracts-shapes: ;
   rdfs:label "explicit party collection shape" ;
   sh:targetClass odrl:PartyCollection ;
   sh:property [
@@ -843,7 +843,7 @@ dprod-shapes:PartyCollectionShape
   ] ;
 .
 
-dprod-shapes:RejectObsoleteDprodPartOfShape
+dprod-contracts-shapes:RejectObsoleteDprodPartOfShape
   a sh:NodeShape ;
   sh:targetSubjectsOf dprod:partOf ;
   sh:property [
@@ -854,7 +854,7 @@ dprod-shapes:RejectObsoleteDprodPartOfShape
   ] ;
 .
 
-dprod-shapes:RejectObsoleteDprodMemberOfShape
+dprod-contracts-shapes:RejectObsoleteDprodMemberOfShape
   a sh:NodeShape ;
   sh:targetSubjectsOf dprod:memberOf ;
   sh:property [
@@ -865,7 +865,7 @@ dprod-shapes:RejectObsoleteDprodMemberOfShape
   ] ;
 .
 
-dprod-shapes:RejectInheritAllowedShape
+dprod-contracts-shapes:RejectInheritAllowedShape
   a sh:NodeShape ;
   sh:targetSubjectOf odrl:inheritAllowed ;
   sh:property [
@@ -876,7 +876,7 @@ dprod-shapes:RejectInheritAllowedShape
   ] ;
 .
 
-dprod-shapes:RejectInheritFromShape
+dprod-contracts-shapes:RejectInheritFromShape
   a sh:NodeShape ;
   sh:targetSubjectOf odrl:inheritFrom ;
   sh:property [

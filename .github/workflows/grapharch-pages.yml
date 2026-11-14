@@ -35,28 +35,17 @@ jobs:
         with:
           ref: develop
           persist-credentials: false
-      - name: Read the central engine and configuration pins
+      - name: Read the controlling configuration revision
         id: config
         run: |
           if revision="$(git rev-parse HEAD)"; then :; else exit 1; fi
           if printf 'revision=%s\n' "$revision" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
-          if generator="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_revision"])')"; then :; else exit 1; fi
-          if printf 'generator=%s\n' "$generator" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
-          if version="$(python3 -c 'import json; print(json.load(open("publication/publications.json"))["generator_version"])')"; then :; else exit 1; fi
-          if printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"; then :; else exit 1; fi
-      - uses: actions/checkout@v7
-        with:
-          repository: EKGF/grapharch
-          ref: ${{ steps.config.outputs.generator }}
-          path: .grapharch-tool
-          persist-credentials: false
-      - name: Install the one pinned engine through the GraphArch action
+      # The engine pin lives in this step so that Dependabot can bump it.
+      - name: Install the pinned GraphArch release
         id: grapharch
-        uses: ./.grapharch-tool
+        uses: EKGF/grapharch@c3ad8918a3916df53b306b639a519254fdf082bd # v0.2.10
         with:
           mode: install
-          version: ${{ steps.config.outputs.version }}
-          expected-revision: ${{ steps.config.outputs.generator }}
       - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
@@ -75,11 +64,13 @@ jobs:
           --manifest publication/publications.json
           --hosting-profile publication/github-pages.json
           --grapharch "${{ steps.grapharch.outputs.binary-path }}"
+          --generator-version "${{ steps.grapharch.outputs.version }}"
+          --generator-revision "${{ steps.grapharch.outputs.revision }}"
           --output output/grapharch-pages
       - name: Upload site contents under the host-owned /dprod/ prefix
         uses: actions/upload-pages-artifact@v4
         with:
-          path: output/grapharch-pages/deployment/.vercel/output/static/dprod
+          path: output/grapharch-pages/deployment/static/dprod
       - name: Retain source graphs, PDFs, website build and provenance
         uses: actions/upload-artifact@v6
         with:

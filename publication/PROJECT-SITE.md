@@ -83,17 +83,19 @@ that a freshly generated old-source publication is an approved new standard.
 
 ## Hosting and migration boundary
 
-GraphArch's `package-site` writes the complete package in its fixed
-`deployment/.vercel/output/` layout. Its portable `static/` tree is what GitHub
-Pages serves; the route and media-type table in `config.json` is not deployed.
-Custom mounts belong in the manifest and must agree with the canonical base URL.
+GraphArch's `package-site` (hosting configuration version 2, platform
+`github-pages`) writes the package to `deployment/static/`, the tree that GitHub
+Pages serves. Pages serves files only, so the package has no route table or file
+aliases. Custom mounts belong in the manifest and must agree with the canonical
+base URL.
 
 The `/dprod/` mount matches the EKGF website proxy. `/dprod/spec/` selects develop;
 `/dprod/spec/main/` selects 1.0 beta and `/dprod/spec/develop/` selects the current
 working draft. Stable entry URLs open each bundle's `specification/` target,
 keeping target-relative PDF and asset links intact. `/dprod/spec/archive/1.0/`
 is retained as an alias for the main-source build; it is no longer described as
-a frozen approved release. The contracts profile IRIs return native Turtle.
+a frozen approved release. Each contracts profile is published as
+`contracts/profile/index.ttl` in its specification bundle.
 Selected PR directories are fully included locally, with no remote deployment
 redirects. Closing a PR removes it from the next assembled site's inventory.
 
@@ -107,9 +109,9 @@ separate work.
 ## Independent GitHub Pages review site
 
 `.github/workflows/grapharch-pages.yml` publishes the same complete selected-source
-assembly at <https://ekgf.github.io/dprod/>. It uses the GraphArch composite action
-in source-revision install mode, pinned by `publications.json`; no branch or PR
-build code runs. `github-pages.json` supplies only hosting metadata. The ReSpec
+assembly at <https://ekgf.github.io/dprod/>. It installs GraphArch with the
+GraphArch action step `uses: EKGF/grapharch@<release commit> # v<version>`
+(`mode: install`); no branch or PR build code runs. `github-pages.json` supplies only hosting metadata. The ReSpec
 and production website workflows remain active in parallel, with no production
 cutover.
 
@@ -125,18 +127,27 @@ URLs. Canonical profile IRIs still identify the original published RDF resources
 The workflow verifies the deployed configuration revision and all selected
 specification routes before succeeding.
 
-GraphArch 0.2.8 takes no deployment location for specification and PDF targets.
-`build-dprod` reads their required `ga:thisVersion` only from each source's
-definitions, and resolves relative metadata-row links (RDF downloads, PDF
-editions) against it. On Pages, those links therefore name the host the source
-declares. Project pages are also collected from Git into the overview PDF, so
-their links to the versions page, specifications and PDFs must be absolute.
+Every publication is built with `publication build-revision`. Its GraphArch
+definitions come from this controlling develop checkout:
+`publication/definitions/develop.ttl` for develop and pull-request previews,
+`publication/definitions/main.ttl` for main (1.0 beta). The designated branch or
+pull-request commit supplies only content. The build supplies each bundle's
+deployment URL (`--publication-url`), from which every target's
+`ga:thisVersion` derives, and its edition (`--edition`): `default` for develop,
+the repository's default branch, the branch slug for other designated branches
+such as `main`, and `pr-<number>` for previews. PDF editions are named
+`<authority>-<document type>-<document>[-<edition>].pdf`, for example
+`pdf/ekgf-spec-dprod.pdf` on develop and `pdf/ekgf-spec-dprod-main.pdf` on main.
+Metadata rows link the PDF editions by target IRI, so the links follow the
+edition's file names.
 
 ### Published generator binary
 
-`publications.json` selects one exact `generator_version` and its immutable
-`generator_revision`. The Pages workflow installs that published binary
-through the GraphArch action. The action verifies the release checksum and
-source provenance before execution; it does not compile the generator or fall
-back to a source build. Update the version and commit together when upgrading.
+The GraphArch action step in `grapharch-pages.yml` pins one exact release by its
+commit, with the version as a comment, so that Dependabot can bump it. The
+action verifies the release checksum and source provenance before execution; it
+does not compile the generator or fall back to a source build. The build script
+requires the installed binary to report the action's version and source commit.
 The public build record retains the version, source commit and executable hash.
+Dependabot checks GitHub Actions daily; `grapharch-automerge.yml` enables
+auto-merge for its GraphArch updates, which merge once the branch rules are met.

@@ -15,7 +15,7 @@ def hosting_configuration(config, profile):
 
 
 def prepare_artifact(staging, mount):
-    root = staging / 'deployment/.vercel/output/static' / mount.lstrip('/')
+    root = staging / 'deployment/static' / mount.lstrip('/')
     if not (root / 'index.html').is_file():
         raise ValueError('Pages artifact has no site index')
     if (root / 'CNAME').exists():

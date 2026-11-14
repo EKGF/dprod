@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "EKGF/dprod",
   "leading_branch": "develop",
-  "generator_revision": "595e55913096cb7f39633189ef67f5d916ef4dcc",
+  "project": "urn:dprod-showcase:project",
   "canonical_url": "https://ekgf.org/dprod/",
   "mount": "/dprod",
   "inventory": "urn:dprod:project-site:versions",
@@ -18,7 +18,7 @@
       "slug": "main",
       "label": "DPROD 1.0 beta",
       "status": "1.0 beta",
-      "definitions": "publication/standards.ttl",
+      "definitions": "publication/definitions/main.ttl",
       "assets": [
         "assets/DPROD.drawio.svg",
         "assets/dprod.jpg",
@@ -29,9 +29,9 @@
     {
       "branch": "develop",
       "slug": "develop",
-      "label": "Develop \u2014 latest working draft",
-      "status": "Working draft \u2014 not standardized",
-      "definitions": "publication/standards.ttl",
+      "label": "Develop — latest working draft",
+      "status": "Working draft — not standardized",
+      "definitions": "publication/definitions/develop.ttl",
       "assets": [
         "assets/DPROD.drawio.svg",
         "assets/dprod.jpg",
@@ -46,8 +46,7 @@
     "exclude_branch_prefixes": [
       "dependabot/"
     ],
-    "definitions": "publication/standards.ttl"
+    "definitions": "publication/definitions/develop.ttl"
   },
-  "maximum_publications": 16,
-  "generator_version": "0.2.8"
+  "maximum_publications": 16
 }

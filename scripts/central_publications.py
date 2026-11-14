@@ -16,6 +16,8 @@ from rdflib import Graph, URIRef
 
 import publication_manifest as manifest
 
+# GitHub Pages is the only deployment of this publication.
+PLATFORM = 'github-pages'
 THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
 # Serializations derived from each source's native RDF, published at the root of
 # its specification bundle next to the native files.
@@ -125,20 +127,25 @@ def sha256(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def verify_generator(engine, config):
-    """Require the installed binary to identify the pinned release and source commit."""
+def verify_generator(engine, version, revision):
+    """Require the installed binary to identify the release the workflow pinned."""
     lines = subprocess.check_output([str(engine), '--version'], text=True).splitlines()
-    version = re.fullmatch(r'grapharch (\d+\.\d+\.\d+)(?: \(build \d+\))?', lines[0] if lines else '')
-    if version is None or version[1] != config['generator_version']:
-        raise ValueError('generator binary version differs from the publication manifest')
+    found = re.fullmatch(r'grapharch (\d+\.\d+\.\d+)(?: \(build \d+\))?', lines[0] if lines else '')
+    if found is None or found[1] != version:
+        raise ValueError('generator binary version differs from the pinned release')
     sources = {match for line in lines[1:] for match in re.findall(r'source commit ([0-9a-f]{40})\b', line)}
-    if sources != {config['generator_revision']}:
-        raise ValueError('generator binary source commit differs from the publication manifest')
+    if sources != {revision}:
+        raise ValueError('generator binary source commit differs from the pinned release')
 
 
-def build_all(root, config, selected, engine, output, config_revision, hosting_profile=None):
+def edition(config, item):
+    """The PDF edition suffix: none for the default branch, else the slug."""
+    return 'default' if item['branch'] == config['leading_branch'] else item['slug']
+
+
+def build_all(root, config, selected, engine, generator, output, config_revision, hosting_profile=None):
     from publication_resources import retain_assets, serialize
-    verify_generator(engine, config)
+    verify_generator(engine, generator['version'], generator['revision'])
     repository = 'https://github.com/' + config['repository'] + '.git'
     cache = root / 'output/central-git-cache'
     cache.mkdir(parents=True, exist_ok=True)
@@ -151,14 +158,20 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
         # Fetch source objects only; never check out or execute another branch.
         subprocess.run(['git', '-C', str(git), 'fetch', '--no-tags', repository, item['source_commit']], check=True)
         destination = staging / 'publications' / item['slug']
-        run_engine(engine, ['build-dprod', '--git-repository', repository,
-                   '--git-ref', item['source_commit'], '--definitions', item['definitions'],
-                   '--generator-revision', config['generator_revision'],
+        # Definitions come from this controlling checkout; the designated
+        # commit supplies only content.
+        run_engine(engine, ['build-revision', '--git-repository', repository,
+                   '--git-commit', item['source_commit'],
+                   '--definitions', str(root / item['definitions']),
+                   '--definitions-commit', config_revision, '--project', config['project'],
+                   '--all-targets', '--edition', edition(config, item),
+                   '--generator-revision', generator['revision'],
+                   '--publication-url', config['canonical_url'] + 'spec/' + item['slug'] + '/',
                    '--git-cache', str(cache / 'grapharch'), '--output-root', str(destination), '--json'])
         specification = destination / 'specification'
         if not (specification / 'index.html').is_file():
             raise ValueError(f'{item["slug"]}: no specification/index.html target')
-        resources = serialize(git, item, specification)
+        resources = serialize(git, item, specification, (root / item['definitions']).read_bytes())
         if 'dprod-contracts-prof.ttl' in resources:
             profile = specification / 'contracts/profile'
             profile.mkdir(parents=True)
@@ -190,8 +203,8 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
                            '--target', website['target'], '--output-root', str(staging / 'website')])
         trees = [{'source': str(staging / 'publications' / p['slug']),
                   'destination': 'spec/' + p['slug']} for p in published]
-        hosting = {'version': 1, 'mount': config['mount'], 'site': str(staging / 'website/site'),
-                   'static_trees': trees, 'directory_aliases': [], 'file_aliases': [],
+        hosting = {'version': 2, 'platform': PLATFORM, 'mount': config['mount'], 'site': str(staging / 'website/site'),
+                   'static_trees': trees, 'directory_aliases': [],
                    'inventory': str(staging / 'website/site/publication-versions.json'), 'version_path': 'spec'}
         # The longstanding /spec/ URL selects the leading branch; all versions
         # are actual local directories, never Vercel proxy routes.
@@ -199,26 +212,21 @@ def build_all(root, config, selected, engine, output, config_revision, hosting_p
         hosting['directory_aliases'].append({'path': 'spec', 'target': 'spec/' + leading['slug']})
         if any(p['slug'] == 'main' for p in published):
             hosting['directory_aliases'].append({'path': 'spec/archive/1.0', 'target': 'spec/main'})
-        for item in published:
-            if (staging / 'publications' / item['slug'] / 'dprod-contracts-prof.ttl').is_file():
-                hosting['file_aliases'].append({'path': f'spec/{item["slug"]}/contracts/profile/',
-                    'target': f'spec/{item["slug"]}/dprod-contracts-prof.ttl', 'content_type': 'text/turtle'})
-        if (staging / 'publications' / leading['slug'] / 'dprod-contracts-prof.ttl').is_file():
-            hosting['file_aliases'].append({'path': 'spec/contracts/profile/',
-                'target': f'spec/{leading["slug"]}/dprod-contracts-prof.ttl', 'content_type': 'text/turtle'})
+        # GitHub Pages serves files only: each profile is published as
+        # contracts/profile/index.ttl inside its specification bundle.
         configuration = staging / 'hosting.json'
         configuration.write_text(json.dumps(hosting, indent=2) + '\n')
         run_engine(engine, ['package-site', '--config', str(configuration), '--output-root', str(staging / 'deployment')])
         record = {'version': 1, 'repository': repository, 'leading_branch': config['leading_branch'],
                   'mount': config['mount'],
-                  'config_commit': config_revision, 'generator_revision': config['generator_revision'],
-                  'generator_version': config['generator_version'], 'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': published}
+                  'config_commit': config_revision, 'generator_revision': generator['revision'],
+                  'generator_version': generator['version'], 'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': published}
         if hosting_profile is not None:
             from pages_publication import prepare_artifact
             prepare_artifact(staging, config['mount'])
             record['hosting_profile'] = str(hosting_profile.relative_to(root))
             record['publication_url'] = config['canonical_url']
-        record_path = staging / 'deployment/.vercel/output/static' / config['mount'][1:] / 'publication-build.json'
+        record_path = staging / 'deployment/static' / config['mount'][1:] / 'publication-build.json'
         record_path.write_text(json.dumps(record, indent=2) + '\n')
         (staging / 'publication-build.json').write_text(json.dumps(record, indent=2) + '\n')
 
@@ -230,6 +238,10 @@ def main():
     parser.add_argument('--manifest', type=Path, default=Path('publication/publications.json'))
     parser.add_argument('--hosting-profile', type=Path)
     parser.add_argument('--grapharch', type=Path, required=True)
+    parser.add_argument('--generator-version', required=True,
+                        help='release version the workflow pinned in its GraphArch action step')
+    parser.add_argument('--generator-revision', required=True,
+                        help='release commit of that version')
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
@@ -242,7 +254,9 @@ def main():
         config = hosting_configuration(config, json.loads(args.hosting_profile.read_text()))
     selected = manifest.discover(config, revision)
     print(json.dumps({'config_commit': revision, 'selected': selected}, indent=2), flush=True)
-    build_all(root, config, selected, args.grapharch.resolve(), args.output.resolve(), revision, args.hosting_profile)
+    generator = {'version': args.generator_version, 'revision': manifest.require_sha(args.generator_revision)}
+    build_all(root, config, selected, args.grapharch.resolve(), generator, args.output.resolve(), revision,
+              args.hosting_profile)
 
 
 if __name__ == '__main__':
