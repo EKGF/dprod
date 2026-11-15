@@ -24,6 +24,8 @@ THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
 DERIVED_RESOURCES = ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf',
                      'dprod-all.jsonld', 'dprod-shapes.jsonld', 'dprod-shapes.rdf',
                      'dprod-context.jsonld', 'dprod-simple.jsonld', 'source-resources.json')
+# GraphArch writes the RDF downloads beside the specification; the JSON-LD
+# contexts and source evidence come from publication_resources.serialize.
 
 
 def committed_configuration(root, path):

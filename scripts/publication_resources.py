@@ -92,10 +92,8 @@ def serialize(repository, item, destination, definitions):
         name = Path(path).name
         if name == 'dprod-ontology.ttl':
             name = 'dprod.ttl'
-        target_path = destination / name
-        if target_path.exists():
-            raise ValueError(f'publication resource collision: {name}')
-        target_path.write_bytes(data)
+        # GraphArch publishes this file and its serializations as declared
+        # ga:Download files; only the evidence is recorded here.
         evidence.append({'path': path, 'sha256': hashlib.sha256(data).hexdigest(), 'published': name})
     core_path = 'ontology/dprod/dprod-ontology.ttl'
     core = Graph().parse(data=blob(repository, revision, core_path), format='turtle')
@@ -103,15 +101,8 @@ def serialize(repository, item, destination, definitions):
     if len(namespaces) != 1:
         raise ValueError('core source must declare exactly one ontology identity')
     namespace = str(namespaces[0])
-    prefixes = dict(ontology.namespaces())
-    prefixes['dprod'] = namespace
-    context = {key: str(value) for key, value in prefixes.items()}
-    # These are derived representations of this source graph, not old dist/ files.
-    for name, graph in [('dprod', ontology), ('dprod-shapes', shapes), ('dprod-all', ontology + shapes)]:
-        for suffix, format_name in [('jsonld', 'json-ld'), ('rdf', 'xml')]:
-            options = {'context': context, 'auto_compact': True, 'indent': 2} if suffix == 'jsonld' else {}
-            graph.serialize(destination=destination / f'{name}.{suffix}', format=format_name, **options)
-    (ontology + shapes).serialize(destination=destination / 'dprod-all.ttl', format='turtle')
+    # Only DPROD's own JSON-LD contexts are derived here; GraphArch publishes
+    # the RDF downloads that the definitions declare.
     for name, factory in [('dprod-context', ApplicationContext), ('dprod-simple', SimpleContext)]:
         (destination / f'{name}.jsonld').write_text(
             json.dumps(factory(ontology, namespace=namespace).as_document(), indent=2) + '\n')
