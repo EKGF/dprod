@@ -760,7 +760,7 @@ dprod-contracts-shapes:RejectXoneShape
   a sh:NodeShape ;
   rdfs:label "reject xone operator" ;
   dct:description "Rejects the ODRL exclusive-or logical operator odrl:xone, which DPROD contracts do not support. A logical constraint uses odrl:and, odrl:or or dprod:not."@en ;
-  sh:targetSubjectOf odrl:xone ;
+  sh:targetSubjectsOf odrl:xone ;
   sh:property [
     sh:path odrl:xone ;
     sh:maxCount 0 ;
@@ -773,7 +773,7 @@ dprod-contracts-shapes:RejectRemedyShape
   a sh:NodeShape ;
   rdfs:label "reject remedy" ;
   dct:description "Rejects odrl:remedy, which DPROD contracts do not support: DPROD defines no remedy semantics for violated prohibitions."@en ;
-  sh:targetSubjectOf odrl:remedy ;
+  sh:targetSubjectsOf odrl:remedy ;
   sh:property [
     sh:path odrl:remedy ;
     sh:maxCount 0 ;
@@ -786,7 +786,7 @@ dprod-contracts-shapes:RejectConsequenceShape
   a sh:NodeShape ;
   rdfs:label "reject consequence" ;
   dct:description "Rejects odrl:consequence, which DPROD contracts do not support: DPROD defines no consequence semantics for unfulfilled duties."@en ;
-  sh:targetSubjectOf odrl:consequence ;
+  sh:targetSubjectsOf odrl:consequence ;
   sh:property [
     sh:path odrl:consequence ;
     sh:maxCount 0 ;
@@ -916,7 +916,7 @@ dprod-contracts-shapes:RejectInheritAllowedShape
   a sh:NodeShape ;
   rdfs:label "reject inheritAllowed" ;
   dct:description "Rejects odrl:inheritAllowed, which DPROD contracts do not support: DPROD defines no policy inheritance."@en ;
-  sh:targetSubjectOf odrl:inheritAllowed ;
+  sh:targetSubjectsOf odrl:inheritAllowed ;
   sh:property [
     sh:path odrl:inheritAllowed ;
     sh:maxCount 0 ;
@@ -929,7 +929,7 @@ dprod-contracts-shapes:RejectInheritFromShape
   a sh:NodeShape ;
   rdfs:label "reject inheritFrom" ;
   dct:description "Rejects odrl:inheritFrom, which DPROD contracts do not support: DPROD defines no policy inheritance."@en ;
-  sh:targetSubjectOf odrl:inheritFrom ;
+  sh:targetSubjectsOf odrl:inheritFrom ;
   sh:property [
     sh:path odrl:inheritFrom ;
     sh:maxCount 0 ;
