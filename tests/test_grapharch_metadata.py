@@ -71,7 +71,7 @@ class GrapharchMetadataTests(unittest.TestCase):
         downloads = template.split('key: "Download as RDF:"', 1)[1].split('localBiblio:', 1)[0]
         for label, path in re.findall(r'value: "([^"]+)",\s*href: "([^"]+)"', downloads):
             self.assertIn(label, bodies)
-            self.assertIn(f'href="{path}"', bodies)
+            self.assertIn(f'href="../rdf/{path}"', bodies)
 
     def test_rows_link_artifacts_of_the_same_build_relative_to_the_publication(self):
         # Hosts are deployment configuration. A row link into the deployment
@@ -89,20 +89,31 @@ class GrapharchMetadataTests(unittest.TestCase):
                                (ROOT / 'publication/definitions/develop.ttl').read_bytes())
         bundle = set(native) | set(DERIVED_RESOURCES)
         self.assertEqual(str(graph.value(DOC.specification, GA.destination)), 'specification')
-        declared = {str(graph.value(download, GA.fileName))
-                    for download in graph.objects(DOC.specification, GA.download)}
+        extensions = {GA.SourceTextFormat: 'ttl', GA.TurtleFormat: 'ttl',
+                      GA.JsonLdFormat: 'jsonld', GA.RdfXmlFormat: 'rdf'}
+        declared = set()
+        for target in graph.objects(DOC.project, GA.target):
+            if graph.value(target, GA.renderer) != GA.RdfRenderer:
+                continue
+            self.assertEqual(str(graph.value(target, GA.destination)), 'rdf')
+            slug = str(graph.value(target, GA.slug))
+            declared |= {f'{slug}.{extensions[f]}' for f in graph.objects(target, GA.rdfFormat)}
         downloads = 0
         for row in graph.objects(DOC.specification, GA.metadataRow):
             for href in re.findall(r'href="([^"]+)"', str(graph.value(row, GA.body) or '')):
                 self.assertNotRegex(href, r'^https://(ekgf\.org|ekgf\.github\.io)/dprod/', href)
                 if href.endswith(('.ttl', '.jsonld', '.rdf')):
-                    # GraphArch publishes each declared download beside the
-                    # specification page; the build copies it to the bundle.
-                    self.assertNotIn('/', href, href)
-                    self.assertIn(href, declared, href)
-                    self.assertIn(href, bundle, href)
+                    # GraphArch RDF renderer targets publish each file in the
+                    # rdf/ sibling of the specification; the build copies it
+                    # to the bundle root.
+                    self.assertTrue(href.startswith('../rdf/'), href)
+                    name = href[len('../rdf/'):]
+                    self.assertNotIn('/', name, href)
+                    self.assertIn(name, declared, href)
+                    self.assertIn(name, bundle, href)
                     downloads += 1
         self.assertEqual(downloads, 12)
+        self.assertEqual(len(declared), 12)
 
     def test_product_logo_is_a_retained_source_asset_separate_from_authority(self):
         graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')

@@ -19,13 +19,15 @@ import publication_manifest as manifest
 # GitHub Pages is the only deployment of this publication.
 PLATFORM = 'github-pages'
 THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
-# Serializations derived from each source's native RDF, published at the root of
-# its specification bundle next to the native files.
-DERIVED_RESOURCES = ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf',
-                     'dprod-all.jsonld', 'dprod-shapes.jsonld', 'dprod-shapes.rdf',
-                     'dprod-context.jsonld', 'dprod-simple.jsonld', 'source-resources.json')
-# GraphArch writes the RDF downloads beside the specification; the JSON-LD
-# contexts and source evidence come from publication_resources.serialize.
+# Serializations of each source's native RDF that GraphArch RDF renderer
+# targets publish in rdf/, beside the native source files.
+RDF_RESOURCES = ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf',
+                 'dprod-all.jsonld', 'dprod-shapes.jsonld', 'dprod-shapes.rdf')
+# The JSON-LD contexts and source evidence from publication_resources.serialize.
+CONTEXT_RESOURCES = ('dprod-context.jsonld', 'dprod-simple.jsonld', 'source-resources.json')
+# Every derived file, published at the root of its specification bundle next
+# to the native files.
+DERIVED_RESOURCES = RDF_RESOURCES + CONTEXT_RESOURCES
 
 
 def committed_configuration(root, path):
@@ -173,11 +175,12 @@ def build_all(root, config, selected, engine, generator, output, config_revision
         specification = destination / 'specification'
         if not (specification / 'index.html').is_file():
             raise ValueError(f'{item["slug"]}: no specification/index.html target')
+        rdf = destination / 'rdf'
         resources = serialize(git, item, specification, (root / item['definitions']).read_bytes())
         if 'dprod-contracts-prof.ttl' in resources:
             profile = specification / 'contracts/profile'
             profile.mkdir(parents=True)
-            shutil.copyfile(specification / 'dprod-contracts-prof.ttl', profile / 'index.ttl')
+            shutil.copyfile(rdf / 'dprod-contracts-prof.ttl', profile / 'index.ttl')
         # Keep target-relative links intact. The old entry URL redirects into
         # the specification target; sibling PDFs and website pages retain their
         # original relative relationship instead of rewriting rendered HTML.
@@ -187,7 +190,10 @@ def build_all(root, config, selected, engine, generator, output, config_revision
             '<script>location.replace("specification/"+location.search+location.hash)</script>'
             '<noscript><meta http-equiv="refresh" content="0;url=specification/"></noscript>'
             '<a href="specification/">Open specification</a></html>\n')
-        for name in resources + list(DERIVED_RESOURCES):
+        # GraphArch publishes the native files and their serializations in rdf/.
+        for name in resources + list(RDF_RESOURCES):
+            shutil.copyfile(rdf / name, destination / name)
+        for name in CONTEXT_RESOURCES:
             shutil.copyfile(specification / name, destination / name)
         if (specification / 'contracts').exists():
             shutil.copytree(specification / 'contracts', destination / 'contracts')

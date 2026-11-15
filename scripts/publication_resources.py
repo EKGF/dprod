@@ -92,8 +92,8 @@ def serialize(repository, item, destination, definitions):
         name = Path(path).name
         if name == 'dprod-ontology.ttl':
             name = 'dprod.ttl'
-        # GraphArch publishes this file and its serializations as declared
-        # ga:Download files; only the evidence is recorded here.
+        # GraphArch RDF renderer targets publish this file and its
+        # serializations in rdf/; only the evidence is recorded here.
         evidence.append({'path': path, 'sha256': hashlib.sha256(data).hexdigest(), 'published': name})
     core_path = 'ontology/dprod/dprod-ontology.ttl'
     core = Graph().parse(data=blob(repository, revision, core_path), format='turtle')
@@ -102,7 +102,7 @@ def serialize(repository, item, destination, definitions):
         raise ValueError('core source must declare exactly one ontology identity')
     namespace = str(namespaces[0])
     # Only DPROD's own JSON-LD contexts are derived here; GraphArch publishes
-    # the RDF downloads that the definitions declare.
+    # the RDF files of the RDF renderer targets the definitions declare.
     for name, factory in [('dprod-context', ApplicationContext), ('dprod-simple', SimpleContext)]:
         (destination / f'{name}.jsonld').write_text(
             json.dumps(factory(ontology, namespace=namespace).as_document(), indent=2) + '\n')
