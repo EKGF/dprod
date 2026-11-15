@@ -16,7 +16,7 @@ class GrapharchCITests(unittest.TestCase):
     def test_engine_pin_is_the_dependabot_managed_action_step(self):
         text = PAGES.read_text()
         pins = re.findall(r'uses: EKGF/grapharch@([0-9a-f]{40}) # v(\d+\.\d+\.\d+)', text)
-        self.assertEqual(pins, [('c3ad8918a3916df53b306b639a519254fdf082bd', '0.2.10')])
+        self.assertEqual(pins, [('3250fdc2b1813b4af03d46259952884467e158be', '0.2.12')])
         config = json.loads((ROOT / 'publication/publications.json').read_text())
         self.assertFalse({'generator_version', 'generator_revision'} & set(config))
         dependabot = (ROOT / '.github/dependabot.yml').read_text()
