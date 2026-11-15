@@ -776,33 +776,32 @@ doc:publisher ga:slug "ekgf" .
 doc:specification ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
 doc:pdf ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
 
-# RDF downloads beside the specification (GraphArch ga:Download). The
-# source files are published as collected; the others serialize the merged
-# ontology (with the contracts vocabulary and profile), shapes, or both.
-doc:specification ga:download <urn:dprod-showcase:download:dprod.ttl>,
-    <urn:dprod-showcase:download:dprod-shapes.ttl>,
-    <urn:dprod-showcase:download:dprod.jsonld>,
-    <urn:dprod-showcase:download:dprod.rdf>,
-    <urn:dprod-showcase:download:dprod-shapes.jsonld>,
-    <urn:dprod-showcase:download:dprod-shapes.rdf>,
-    <urn:dprod-showcase:download:dprod-all.ttl>,
-    <urn:dprod-showcase:download:dprod-all.jsonld>,
-    <urn:dprod-showcase:download:dprod-all.rdf> .
-<urn:dprod-showcase:download:dprod.ttl> a ga:Download ; ga:fileName "dprod.ttl" ;
-    ga:downloadFormat ga:SourceFileFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology> .
-<urn:dprod-showcase:download:dprod-shapes.ttl> a ga:Download ; ga:fileName "dprod-shapes.ttl" ;
-    ga:downloadFormat ga:SourceFileFormat ; ga:downloadSource <urn:dprod-showcase:source:shapes> .
-<urn:dprod-showcase:download:dprod.jsonld> a ga:Download ; ga:fileName "dprod.jsonld" ;
-    ga:downloadFormat ga:JsonLdFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology> .
-<urn:dprod-showcase:download:dprod.rdf> a ga:Download ; ga:fileName "dprod.rdf" ;
-    ga:downloadFormat ga:RdfXmlFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology> .
-<urn:dprod-showcase:download:dprod-shapes.jsonld> a ga:Download ; ga:fileName "dprod-shapes.jsonld" ;
-    ga:downloadFormat ga:JsonLdFormat ; ga:downloadSource <urn:dprod-showcase:source:shapes> .
-<urn:dprod-showcase:download:dprod-shapes.rdf> a ga:Download ; ga:fileName "dprod-shapes.rdf" ;
-    ga:downloadFormat ga:RdfXmlFormat ; ga:downloadSource <urn:dprod-showcase:source:shapes> .
-<urn:dprod-showcase:download:dprod-all.ttl> a ga:Download ; ga:fileName "dprod-all.ttl" ;
-    ga:downloadFormat ga:TurtleFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:shapes> .
-<urn:dprod-showcase:download:dprod-all.jsonld> a ga:Download ; ga:fileName "dprod-all.jsonld" ;
-    ga:downloadFormat ga:JsonLdFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:shapes> .
-<urn:dprod-showcase:download:dprod-all.rdf> a ga:Download ; ga:fileName "dprod-all.rdf" ;
-    ga:downloadFormat ga:RdfXmlFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:shapes> .
+# RDF files (GraphArch ga:RdfRenderer), published in rdf/ beside the
+# specification. The source files are published as collected; the others
+# serialize the merged ontology (with the contracts vocabulary and
+# profile), shapes, or both.
+doc:project ga:target doc:rdf-ontology-source,
+    doc:rdf-shapes-source,
+    doc:rdf-ontology,
+    doc:rdf-shapes,
+    doc:rdf-all .
+doc:rdf-ontology-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod" ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-shapes-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-shapes" ;
+    ga:rdfSource <urn:dprod-showcase:source:shapes> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-ontology a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod" ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology> ;
+    ga:rdfFormat ga:JsonLdFormat, ga:RdfXmlFormat .
+doc:rdf-shapes a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-shapes" ;
+    ga:rdfSource <urn:dprod-showcase:source:shapes> ;
+    ga:rdfFormat ga:JsonLdFormat, ga:RdfXmlFormat .
+doc:rdf-all a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-all" ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:shapes> ;
+    ga:rdfFormat ga:TurtleFormat, ga:JsonLdFormat, ga:RdfXmlFormat .

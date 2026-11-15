@@ -24,7 +24,10 @@ class GrapharchEditionTests(unittest.TestCase):
 
     def test_active_editions_are_distinct_drafts_not_the_approved_release(self):
         graph = self.graph
-        self.assertEqual(set(graph.objects(DOC.project, GA.target)),
+        # The RDF renderer targets publish the RDF files, not editions.
+        editions = {target for target in graph.objects(DOC.project, GA.target)
+                    if graph.value(target, GA.renderer) != GA.RdfRenderer}
+        self.assertEqual(editions,
                          {DOC.specification, DOC.website, DOC.pdf, DOC['omg-pdf'], DOC['overview-pdf']})
         for target, destination, status in (
             (DOC.pdf, 'pdf', 'Community Draft'),

@@ -1321,7 +1321,7 @@ doc:metadata-downloads a ga:MetadataRow ;
     ga:order 8 ;
     ga:field "custom" ;
     dct:title "Download as RDF:" ;
-    ga:body """<a href="dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
+    ga:body """<a href="../rdf/dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="../rdf/dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="../rdf/dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="../rdf/dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="../rdf/dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="../rdf/dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="../rdf/dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="../rdf/dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
 
 
 # The DPROD product identity is independent of the publishing authority logo.
@@ -1727,42 +1727,47 @@ doc:pdf ga:documentType ga:SpecificationDocument ; ga:slug "dprod" .
 doc:omg-pdf ga:documentType ga:SubmissionDocument ; ga:slug "dprod" .
 doc:overview-pdf ga:documentType ga:OverviewDocument ; ga:slug "dprod" .
 
-# RDF downloads beside the specification (GraphArch ga:Download). The
-# source files are published as collected; the others serialize the merged
-# ontology (with the contracts vocabulary and profile), shapes, or both.
-doc:specification ga:download <urn:dprod-showcase:download:dprod.ttl>,
-    <urn:dprod-showcase:download:dprod-shapes.ttl>,
-    <urn:dprod-showcase:download:dprod-contracts.ttl>,
-    <urn:dprod-showcase:download:dprod-contracts-shapes.ttl>,
-    <urn:dprod-showcase:download:dprod-contracts-prof.ttl>,
-    <urn:dprod-showcase:download:dprod.jsonld>,
-    <urn:dprod-showcase:download:dprod.rdf>,
-    <urn:dprod-showcase:download:dprod-shapes.jsonld>,
-    <urn:dprod-showcase:download:dprod-shapes.rdf>,
-    <urn:dprod-showcase:download:dprod-all.ttl>,
-    <urn:dprod-showcase:download:dprod-all.jsonld>,
-    <urn:dprod-showcase:download:dprod-all.rdf> .
-<urn:dprod-showcase:download:dprod.ttl> a ga:Download ; ga:fileName "dprod.ttl" ;
-    ga:downloadFormat ga:SourceFileFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology> .
-<urn:dprod-showcase:download:dprod-shapes.ttl> a ga:Download ; ga:fileName "dprod-shapes.ttl" ;
-    ga:downloadFormat ga:SourceFileFormat ; ga:downloadSource <urn:dprod-showcase:source:shapes> .
-<urn:dprod-showcase:download:dprod-contracts.ttl> a ga:Download ; ga:fileName "dprod-contracts.ttl" ;
-    ga:downloadFormat ga:SourceFileFormat ; ga:downloadSource <urn:dprod-showcase:source:contracts:rdf> .
-<urn:dprod-showcase:download:dprod-contracts-shapes.ttl> a ga:Download ; ga:fileName "dprod-contracts-shapes.ttl" ;
-    ga:downloadFormat ga:SourceFileFormat ; ga:downloadSource <urn:dprod-showcase:source:contracts-shapes:rdf> .
-<urn:dprod-showcase:download:dprod-contracts-prof.ttl> a ga:Download ; ga:fileName "dprod-contracts-prof.ttl" ;
-    ga:downloadFormat ga:SourceFileFormat ; ga:downloadSource <urn:dprod-showcase:source:contracts-profile:rdf> .
-<urn:dprod-showcase:download:dprod.jsonld> a ga:Download ; ga:fileName "dprod.jsonld" ;
-    ga:downloadFormat ga:JsonLdFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf> .
-<urn:dprod-showcase:download:dprod.rdf> a ga:Download ; ga:fileName "dprod.rdf" ;
-    ga:downloadFormat ga:RdfXmlFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf> .
-<urn:dprod-showcase:download:dprod-shapes.jsonld> a ga:Download ; ga:fileName "dprod-shapes.jsonld" ;
-    ga:downloadFormat ga:JsonLdFormat ; ga:downloadSource <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> .
-<urn:dprod-showcase:download:dprod-shapes.rdf> a ga:Download ; ga:fileName "dprod-shapes.rdf" ;
-    ga:downloadFormat ga:RdfXmlFormat ; ga:downloadSource <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> .
-<urn:dprod-showcase:download:dprod-all.ttl> a ga:Download ; ga:fileName "dprod-all.ttl" ;
-    ga:downloadFormat ga:TurtleFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf>, <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> .
-<urn:dprod-showcase:download:dprod-all.jsonld> a ga:Download ; ga:fileName "dprod-all.jsonld" ;
-    ga:downloadFormat ga:JsonLdFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf>, <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> .
-<urn:dprod-showcase:download:dprod-all.rdf> a ga:Download ; ga:fileName "dprod-all.rdf" ;
-    ga:downloadFormat ga:RdfXmlFormat ; ga:downloadSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf>, <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> .
+# RDF files (GraphArch ga:RdfRenderer), published in rdf/ beside the
+# specification. The source files are published as collected; the others
+# serialize the merged ontology (with the contracts vocabulary and
+# profile), shapes, or both.
+doc:project ga:target doc:rdf-ontology-source,
+    doc:rdf-shapes-source,
+    doc:rdf-contracts-source,
+    doc:rdf-contracts-shapes-source,
+    doc:rdf-contracts-profile-source,
+    doc:rdf-ontology,
+    doc:rdf-shapes,
+    doc:rdf-all .
+doc:rdf-ontology-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod" ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-shapes-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-shapes" ;
+    ga:rdfSource <urn:dprod-showcase:source:shapes> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-contracts-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-contracts" ;
+    ga:rdfSource <urn:dprod-showcase:source:contracts:rdf> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-contracts-shapes-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-contracts-shapes" ;
+    ga:rdfSource <urn:dprod-showcase:source:contracts-shapes:rdf> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-contracts-profile-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-contracts-prof" ;
+    ga:rdfSource <urn:dprod-showcase:source:contracts-profile:rdf> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-ontology a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod" ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf> ;
+    ga:rdfFormat ga:JsonLdFormat, ga:RdfXmlFormat .
+doc:rdf-shapes a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-shapes" ;
+    ga:rdfSource <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> ;
+    ga:rdfFormat ga:JsonLdFormat, ga:RdfXmlFormat .
+doc:rdf-all a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-all" ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf>, <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> ;
+    ga:rdfFormat ga:TurtleFormat, ga:JsonLdFormat, ga:RdfXmlFormat .

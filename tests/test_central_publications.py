@@ -227,6 +227,10 @@ class CentralPublicationTests(unittest.TestCase):
                 specification = Path(options['--output-root']) / 'specification'
                 specification.mkdir(parents=True)
                 (specification / 'index.html').write_text('<!doctype html>')
+                rdf = Path(options['--output-root']) / 'rdf'
+                rdf.mkdir()
+                for name in central.RDF_RESOURCES:
+                    (rdf / name).write_text(options['--git-commit'])
             elif arguments[0] == 'build-site':
                 captured['inventory'] = Path(options['--definitions']).read_text()
                 site = Path(options['--output-root']) / 'site'
@@ -237,9 +241,7 @@ class CentralPublicationTests(unittest.TestCase):
                 captured['hosting'] = json.loads(Path(options['--config']).read_text())
                 (Path(options['--output-root']) / 'static/dprod').mkdir(parents=True)
         def serialize(git, item, specification, definitions):
-            for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
-                         'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
-                         'dprod-simple.jsonld', 'source-resources.json'):
+            for name in central.CONTEXT_RESOURCES:
                 (specification / name).write_text(item['source_commit'])
             return []
         with tempfile.TemporaryDirectory() as temp:
@@ -307,6 +309,10 @@ class CentralPublicationTests(unittest.TestCase):
                     specification = Path(options['--output-root']) / 'specification'
                     specification.mkdir(parents=True)
                     (specification / 'index.html').write_text('<!doctype html>')
+                    rdf = Path(options['--output-root']) / 'rdf'
+                    rdf.mkdir()
+                    for name in central.RDF_RESOURCES:
+                        (rdf / name).write_text(options['--git-commit'])
                 elif arguments[0] == 'build-site':
                     captured['definitions'] = Path(options['--definitions']).read_text()
                     site = Path(options['--output-root']) / 'site'
@@ -317,9 +323,7 @@ class CentralPublicationTests(unittest.TestCase):
                     stage.mkdir(parents=True)
                     (stage / 'index.html').write_text('site')
             def serialize(git, item, specification, definitions):
-                for name in ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf', 'dprod-all.jsonld',
-                             'dprod-shapes.jsonld', 'dprod-shapes.rdf', 'dprod-context.jsonld',
-                             'dprod-simple.jsonld', 'source-resources.json'):
+                for name in central.CONTEXT_RESOURCES:
                     (specification / name).write_text(item['source_commit'])
                 return []
             with self.subTest(url=config['canonical_url']), tempfile.TemporaryDirectory() as temp:
