@@ -16,12 +16,16 @@ class GrapharchCITests(unittest.TestCase):
     def test_engine_pin_is_the_dependabot_managed_action_step(self):
         text = PAGES.read_text()
         pins = re.findall(r'uses: EKGF/grapharch@([0-9a-f]{40}) # v(\d+\.\d+\.\d+)', text)
-        self.assertEqual(pins, [('3250fdc2b1813b4af03d46259952884467e158be', '0.2.12')])
+        # Dependabot moves the pin; the test fixes its shape, not its value.
+        self.assertEqual(len(pins), 1, pins)
         config = json.loads((ROOT / 'publication/publications.json').read_text())
         self.assertFalse({'generator_version', 'generator_revision'} & set(config))
         dependabot = (ROOT / '.github/dependabot.yml').read_text()
         self.assertIn('package-ecosystem: "github-actions"', dependabot)
         self.assertIn('interval: "daily"', dependabot)
+        # GraphArch releases several times a day; Dependabot's default cooldown
+        # would hold every bump back, so the action is exempt from it.
+        self.assertRegex(dependabot, r'(?s)cooldown:.*exclude:\s*- "EKGF/grapharch"')
 
     def test_every_publication_is_defined_by_controlling_definitions(self):
         config = json.loads((ROOT / 'publication/publications.json').read_text())
