@@ -22,7 +22,11 @@ permissions:
 
 concurrency:
   group: grapharch-pages-${{ github.event_name == 'workflow_run' && (github.event.workflow_run.event != 'push' || github.event.workflow_run.head_branch == 'develop') && github.run_id || 'publication' }}
-  cancel-in-progress: true
+  # Never cancel a running deploy: every run rebuilds develop HEAD, so a queued
+  # run supersedes nothing that must be interrupted, and a PR event (opened,
+  # synchronize, closed, Dependabot) must not abort a push-to-develop deployment.
+  # One deployer at a time; GitHub keeps only the newest pending run.
+  cancel-in-progress: false
 
 jobs:
   build:
