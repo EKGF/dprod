@@ -51,6 +51,7 @@ doc:project a ga:Project ;
         <urn:dprod-showcase:source:namespaces>,
         <urn:dprod-showcase:source:ontology>,
         <urn:dprod-showcase:source:overview>,
+        <urn:dprod-showcase:source:profile:rdf>,
         <urn:dprod-showcase:source:preface>,
         <urn:dprod-showcase:source:reference>,
         <urn:dprod-showcase:source:references>,
@@ -833,6 +834,12 @@ doc:release-profile a ga:Profile ;
     ga:sourcePath "ontology/dprod/dprod-ontology.ttl" ;
     ga:subject <https://ekgf.org/dprod/spec/develop/> .
 
+<urn:dprod-showcase:source:profile:rdf> a ga:CollectorUse ;
+    ga:collectorType ga:RdfFileCollector ;
+    ga:source "ontology/dprod/dprod-prof.ttl" ;
+    ga:sourcePath "ontology/dprod/dprod-prof.ttl" ;
+    ga:subject <https://ekgf.org/dprod/spec/develop/profile/> .
+
 <urn:dprod-showcase:source:overview> a ga:CollectorUse ;
     dct:identifier "overview" ;
     dct:title "DPROD Ontology" ;
@@ -1321,7 +1328,7 @@ doc:metadata-downloads a ga:MetadataRow ;
     ga:order 8 ;
     ga:field "custom" ;
     dct:title "Download as RDF:" ;
-    ga:body """<a href="../rdf/dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="../rdf/dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="../rdf/dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="../rdf/dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="../rdf/dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="../rdf/dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="../rdf/dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="../rdf/dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
+    ga:body """<a href="../rdf/dprod.ttl">DPROD Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod.jsonld">DPROD Ontology --- JSON-LD</a><br><a href="../rdf/dprod.rdf">DPROD Ontology --- RDF/XML</a><br><a href="../rdf/dprod-all.jsonld">DPROD Ontology --- JSON-LD --- Everything included</a><br><a href="../rdf/dprod-all.ttl">DPROD Ontology --- RDF Turtle --- Everything included</a><br><a href="../rdf/dprod-all.rdf">DPROD Ontology --- RDF/XML --- Everything included</a><br><a href="../rdf/dprod-shapes.ttl">DPROD Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-shapes.jsonld">DPROD Shapes --- JSON-LD</a><br><a href="../rdf/dprod-shapes.rdf">DPROD Shapes --- RDF/XML</a><br><a href="../rdf/dprod-prof.ttl">DPROD Core Profile --- RDF Turtle</a><br><a href="../rdf/dprod-contracts.ttl">DPROD Data Contracts Ontology --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-contracts-shapes.ttl">DPROD Data Contracts Shapes --- RDF Turtle --- (authoritative file)</a><br><a href="../rdf/dprod-contracts-prof.ttl">DPROD Data Contracts Profile --- RDF Turtle</a>""" .
 
 
 # The DPROD product identity is independent of the publishing authority logo.
@@ -1494,6 +1501,7 @@ doc:overview-profile ga:placement <urn:dprod-showcase:placement:overview:standar
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix prof: <http://www.w3.org/ns/dx/prof/> .
 
 # Legal notices from the content commit's ReSpec template.
 doc:project ga:collector <urn:dprod-showcase:source:legal-preamble> .
@@ -1576,7 +1584,7 @@ doc:project ga:documentor <urn:dprod-showcase:documentor:vocabulary-reference> .
 <urn:dprod-showcase:documentor:vocabulary-reference> a ga:DocumentorUse ;
     ga:documentorType ga:VocabularyReferenceDocumentor ;
     ga:subject <https://ekgf.org/dprod/spec/develop/> ; ga:includedIn doc:scope ;
-    ga:referenceSection <urn:dprod-showcase:reference-section:classes>, <urn:dprod-showcase:reference-section:object-properties>, <urn:dprod-showcase:reference-section:datatype-properties>, <urn:dprod-showcase:reference-section:annotation-properties>, <urn:dprod-showcase:reference-section:named-individuals>, <urn:dprod-showcase:reference-section:concepts>, <urn:dprod-showcase:reference-section:concept-schemes>, <urn:dprod-showcase:reference-section:node-shapes>, <urn:dprod-showcase:reference-section:property-shapes> .
+    ga:referenceSection <urn:dprod-showcase:reference-section:classes>, <urn:dprod-showcase:reference-section:object-properties>, <urn:dprod-showcase:reference-section:datatype-properties>, <urn:dprod-showcase:reference-section:annotation-properties>, <urn:dprod-showcase:reference-section:named-individuals>, <urn:dprod-showcase:reference-section:concepts>, <urn:dprod-showcase:reference-section:concept-schemes>, <urn:dprod-showcase:reference-section:node-shapes>, <urn:dprod-showcase:reference-section:property-shapes>, <urn:dprod-showcase:reference-section:profiles> .
 <urn:dprod-showcase:reference-section:classes> a ga:ReferenceSection ; ga:termType owl:Class ;
     ga:order 1 ; ga:component <urn:dprod-showcase:component:classes> .
 <urn:dprod-showcase:reference-section:object-properties> a ga:ReferenceSection ; ga:termType owl:ObjectProperty ;
@@ -1604,6 +1612,10 @@ doc:project ga:documentor <urn:dprod-showcase:documentor:vocabulary-reference> .
 <urn:dprod-showcase:component:concept-schemes> a ga:Component ; dct:title "Concept schemes" .
 <urn:dprod-showcase:component:node-shapes> a ga:Component ; dct:title "SHACL node shapes" .
 <urn:dprod-showcase:component:property-shapes> a ga:Component ; dct:title "SHACL property shapes" .
+# The W3C PROF profiles: DPROD core (of DCAT 3) and Data Contracts (of ODRL 2.2).
+<urn:dprod-showcase:reference-section:profiles> a ga:ReferenceSection ; ga:termType prof:Profile ;
+    ga:order 10 ; ga:component <urn:dprod-showcase:component:profiles> .
+<urn:dprod-showcase:component:profiles> a ga:Component ; dct:title "Profiles" .
 doc:profile ga:placement <urn:dprod-showcase:profile:generated:classes> .
 <urn:dprod-showcase:profile:generated:classes> a ga:Placement ; ga:component <urn:dprod-showcase:component:classes> ;
     ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 101 ; ga:sectionKind "section" .
@@ -1631,6 +1643,9 @@ doc:profile ga:placement <urn:dprod-showcase:profile:generated:node-shapes> .
 doc:profile ga:placement <urn:dprod-showcase:profile:generated:property-shapes> .
 <urn:dprod-showcase:profile:generated:property-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:property-shapes> ;
     ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 108 ; ga:sectionKind "section" .
+doc:profile ga:placement <urn:dprod-showcase:profile:generated:profiles> .
+<urn:dprod-showcase:profile:generated:profiles> a ga:Placement ; ga:component <urn:dprod-showcase:component:profiles> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 110 ; ga:sectionKind "section" .
 doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:classes> .
 <urn:dprod-showcase:pdf-profile:generated:classes> a ga:Placement ; ga:component <urn:dprod-showcase:component:classes> ;
     ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 101 ; ga:sectionKind "section" .
@@ -1658,6 +1673,9 @@ doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:node-shap
 doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:property-shapes> .
 <urn:dprod-showcase:pdf-profile:generated:property-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:property-shapes> ;
     ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 108 ; ga:sectionKind "section" .
+doc:pdf-profile ga:placement <urn:dprod-showcase:pdf-profile:generated:profiles> .
+<urn:dprod-showcase:pdf-profile:generated:profiles> a ga:Placement ; ga:component <urn:dprod-showcase:component:profiles> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 110 ; ga:sectionKind "section" .
 doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:classes> .
 <urn:dprod-showcase:omg-pdf-profile:generated:classes> a ga:Placement ; ga:component <urn:dprod-showcase:component:classes> ;
     ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 101 ; ga:sectionKind "section" .
@@ -1685,6 +1703,9 @@ doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:n
 doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:property-shapes> .
 <urn:dprod-showcase:omg-pdf-profile:generated:property-shapes> a ga:Placement ; ga:component <urn:dprod-showcase:component:property-shapes> ;
     ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 108 ; ga:sectionKind "section" .
+doc:omg-pdf-profile ga:placement <urn:dprod-showcase:omg-pdf-profile:generated:profiles> .
+<urn:dprod-showcase:omg-pdf-profile:generated:profiles> a ga:Placement ; ga:component <urn:dprod-showcase:component:profiles> ;
+    ga:parentPlacement <urn:dprod-showcase:placement:reference> ; ga:order 110 ; ga:sectionKind "section" .
 
 
 # A consumer-defined restrained submission theme: US Letter, serif body,
@@ -1729,10 +1750,11 @@ doc:overview-pdf ga:documentType ga:OverviewDocument ; ga:slug "dprod" .
 
 # RDF files (GraphArch ga:RdfRenderer), published in rdf/ beside the
 # specification. The source files are published as collected; the others
-# serialize the merged ontology (with the contracts vocabulary and
-# profile), shapes, or both.
+# serialize the merged ontology (with the core profile, the contracts
+# vocabulary and its profile), shapes, or both.
 doc:project ga:target doc:rdf-ontology-source,
     doc:rdf-shapes-source,
+    doc:rdf-profile-source,
     doc:rdf-contracts-source,
     doc:rdf-contracts-shapes-source,
     doc:rdf-contracts-profile-source,
@@ -1746,6 +1768,10 @@ doc:rdf-ontology-source a ga:Target ; ga:renderer ga:RdfRenderer ;
 doc:rdf-shapes-source a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:destination "rdf" ; ga:slug "dprod-shapes" ;
     ga:rdfSource <urn:dprod-showcase:source:shapes> ;
+    ga:rdfFormat ga:SourceTextFormat .
+doc:rdf-profile-source a ga:Target ; ga:renderer ga:RdfRenderer ;
+    ga:destination "rdf" ; ga:slug "dprod-prof" ;
+    ga:rdfSource <urn:dprod-showcase:source:profile:rdf> ;
     ga:rdfFormat ga:SourceTextFormat .
 doc:rdf-contracts-source a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:destination "rdf" ; ga:slug "dprod-contracts" ;
@@ -1761,7 +1787,7 @@ doc:rdf-contracts-profile-source a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:rdfFormat ga:SourceTextFormat .
 doc:rdf-ontology a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:destination "rdf" ; ga:slug "dprod" ;
-    ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf> ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:profile:rdf>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf> ;
     ga:rdfFormat ga:JsonLdFormat, ga:RdfXmlFormat .
 doc:rdf-shapes a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:destination "rdf" ; ga:slug "dprod-shapes" ;
@@ -1769,7 +1795,7 @@ doc:rdf-shapes a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:rdfFormat ga:JsonLdFormat, ga:RdfXmlFormat .
 doc:rdf-all a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:destination "rdf" ; ga:slug "dprod-all" ;
-    ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf>, <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> ;
+    ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:profile:rdf>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf>, <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> ;
     ga:rdfFormat ga:TurtleFormat, ga:JsonLdFormat, ga:RdfXmlFormat .
 
 # The normative editions state requirements in BCP 14 conformance language

@@ -41,7 +41,7 @@ allows different organizations to share data securely and in a standardized way.
 
 Overview of the DPROD model and its relationship with DCAT classes
 
-The Profile consists of the following classes:
+[The Profile](../../ontology/dprod/dprod-prof.ttl) consists of the following classes:
 
 - Data Mesh (`dcat:Catalog`) - The collection of Data Products
 - Data Product (`dprod:DataProduct`) - A data product may have input and output ports, code and
