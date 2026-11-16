@@ -1771,3 +1771,9 @@ doc:rdf-all a ga:Target ; ga:renderer ga:RdfRenderer ;
     ga:destination "rdf" ; ga:slug "dprod-all" ;
     ga:rdfSource <urn:dprod-showcase:source:ontology>, <urn:dprod-showcase:source:contracts:rdf>, <urn:dprod-showcase:source:contracts-profile:rdf>, <urn:dprod-showcase:source:shapes>, <urn:dprod-showcase:source:contracts-shapes:rdf> ;
     ga:rdfFormat ga:TurtleFormat, ga:JsonLdFormat, ga:RdfXmlFormat .
+
+# The normative editions state requirements in BCP 14 conformance language
+# (RFC 2119, RFC 8174); GraphArch styles their uppercase keywords.
+doc:specification ga:conformanceLanguage ga:Bcp14 .
+doc:pdf ga:conformanceLanguage ga:Bcp14 .
+doc:omg-pdf ga:conformanceLanguage ga:Bcp14 .
