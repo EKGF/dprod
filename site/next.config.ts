@@ -1,34 +1,14 @@
 import type { NextConfig } from "next";
 
 /**
- * Multi-zone configuration.
- *
- * The dprod site is served as a Next.js zone under the /dprod path prefix.
- * The primary zone (ekgf-website) rewrites /dprod/:path* to whichever
- * deployment of this project it's targeting. When that happens the HTML
- * has absolute asset URLs back to this deployment's origin so CSS and JS
- * resolve across the zone boundary.
- *
- * basePath:   all routes, rewrites, middleware matcher paths are served
- *             under /dprod.
- * assetPrefix: every /_next/static/... URL in the generated HTML is
- *             absolute to this deployment's own origin. We read
- *             VERCEL_URL at build time (unique per deployment, always
- *             reachable) and prepend https://. On local dev VERCEL_URL
- *             is undefined and assetPrefix falls back to relative paths
- *             so localhost:3000 still works.
+ * The primary zone proxies /dprod/:path* to this deployment, including
+ * /dprod/_next/static/*. Keep browser assets on the requesting origin:
+ * enterprise networks may block generated *.vercel.app deployment hosts.
+ * Next.js applies basePath to asset URLs when assetPrefix is omitted, so
+ * the same build works through ekgf.org and on its direct preview origin.
  */
-const vercelUrl = process.env.VERCEL_URL;
-// IMPORTANT: include the /dprod basePath in the assetPrefix. With basePath
-// set, Next.js serves _next/* assets at /dprod/_next/*, but assetPrefix is
-// written to the HTML as-is without the basePath being re-appended, so we
-// have to include it ourselves or every asset 404s across the zone
-// boundary.
-const assetPrefix = vercelUrl ? `https://${vercelUrl}/dprod` : undefined;
-
 const nextConfig: NextConfig = {
   basePath: "/dprod",
-  assetPrefix,
   // The spec HTML references sibling assets (images, downloads) with
   // relative URLs like `./assets/dprod.jpg` and `dprod.ttl`. Without a
   // trailing slash on the spec URL, the browser strips the last segment
@@ -46,6 +26,12 @@ const nextConfig: NextConfig = {
       // (basePath is automatically prepended, so this resolves to
       // /dprod/spec/ → /dprod/spec/index.html under the zone.)
       { source: "/spec/", destination: "/spec/index.html" },
+      // The contracts profile is distinct from the ontology/term namespace.
+      // Serve its RDF description at the profile identifier itself.
+      {
+        source: "/spec/contracts/profile/",
+        destination: "/spec/dprod-contracts-prof.ttl",
+      },
       // /spec/main/ → frozen OMG 1.0 archive
       { source: "/spec/main/", destination: "/spec/archive/1.0/index.html" },
       {

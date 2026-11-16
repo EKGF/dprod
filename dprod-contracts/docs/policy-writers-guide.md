@@ -35,7 +35,7 @@ A minimal data use policy:
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:target ex:customerData ;
 
     odrl:permission [
@@ -204,11 +204,11 @@ odrl:prohibition [
 
 Constraints restrict when rules apply. An `odrl:Constraint` has three parts:
 
-| Part | Property | Description |
-|------|----------|-------------|
-| Left operand | `odrl:leftOperand` | What to check |
-| Operator | `odrl:operator` | How to compare (`eq`, `neq`, `lt`, `gt`, `lteq`, `gteq`, `isAnyOf`, `isNoneOf`, `isAllOf`) |
-| Right operand | `odrl:rightOperand` | Expected value(s) |
+| Part | Property | Description                                                                                   |
+|------|----------|-----------------------------------------------------------------------------------------------|
+| Left operand | `odrl:leftOperand` | What to check                                                                                 |
+| Operator | `odrl:operator` | How to compare |
+| Right operand | `odrl:rightOperand` | Expected value(s)                                                                             |
 
 ### Purpose Constraint
 
@@ -270,9 +270,9 @@ odrl:constraint [
 ## 6. Operands Quick Reference
 
 All operands are `odrl:LeftOperand` values with exactly one
-`dprod:operandSource` and one IRI-valued `dprod:operandProperty`. Request and
-state producers normalize policy-relevant facts onto their source node before
-evaluation. Policies never traverse nested RDF.
+`dprod:operandSource` and one IRI-valued `dprod:operandProperty`. The calling
+system that asks an evaluator for a decision normalizes policy-relevant facts
+onto the request or state node before evaluation. Policies never traverse nested RDF.
 
 ### Request Operands
 
@@ -450,7 +450,7 @@ A `LogicalConstraint` must have exactly one of `odrl:and`, `odrl:or`, or `dprod:
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:target ex:data ;
 
     odrl:permission [
@@ -536,7 +536,7 @@ odrl:obligation [
 
 ## 10. Policy Review Checklist
 
-1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/>`
+1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/>`
 2. Conflict strategy defaults to `odrl:conflict odrl:prohibit`, inherited from the profile; declare `odrl:conflict` on a policy only to override that default
 3. A policy-level `odrl:target` is optional; when present it supplies the inherited target for rules that omit one
 4. Each permission and prohibition has exactly one `odrl:action` and at most one rule-level `odrl:target`; a rule with neither its own nor an inherited target applies to any asset

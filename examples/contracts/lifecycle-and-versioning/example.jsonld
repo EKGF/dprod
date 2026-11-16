@@ -5,7 +5,7 @@
   ],
   "id": "ex:analyticsCustomerData2026",
   "type": "DataContract",
-  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
   "assigner": "ex:dataPlatformTeam",
   "assignee": "ex:analyticsTeam",
   "contractLifecycleStatus": "Active",
@@ -14,7 +14,7 @@
   "acceptsOffer": {
     "id": "ex:customerApiV2",
     "type": "DataOffer",
-    "profile": "https://ekgf.org/dprod/spec/develop/",
+    "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
     "assigner": "ex:dataPlatformTeam",
     "target": "ex:customerData",
     "offerLifecycleStatus": "Active",
@@ -23,13 +23,18 @@
       "type": "Duty",
       "subjectOfDuty": "ex:dataPlatformTeam",
       "action": "ex:deliver",
-      "recurrence": "FREQ=DAILY;BYHOUR=7;BYMINUTE=0",
+      "schedule": {
+        "id": "ex:dailyAt0700",
+        "type": "Schedule",
+        "conformsTo": "dprod:Rfc5545ScheduleFormat",
+        "scheduleExpression": "DTSTART;TZID=Europe/London:20260101T070000\nRRULE:FREQ=DAILY"
+      },
       "deadline": { "@value": "PT30M", "type": "xsd:duration" }
     },
     "wasRevisionOf": {
       "id": "ex:customerApiV1",
       "type": "DataOffer",
-      "profile": "https://ekgf.org/dprod/spec/develop/",
+      "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
       "assigner": "ex:dataPlatformTeam",
       "target": "ex:customerData",
       "offerLifecycleStatus": "Fulfilled",

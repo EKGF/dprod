@@ -14,8 +14,8 @@
 <text x="478" y="190.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:permission</text>
 <text x="72" y="224.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Prohibitions</text>
 <text x="478" y="224.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#666666" text-anchor="end" dominant-baseline="central">odrl:prohibition</text>
-<text x="72" y="258.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Recurrence rules</text>
-<text x="478" y="258.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="end" dominant-baseline="central">dprod:recurrence</text>
+<text x="72" y="258.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Schedules</text>
+<text x="478" y="258.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="end" dominant-baseline="central">dprod:schedule</text>
 <text x="72" y="292.0" font-family="Arial" font-size="16px" font-weight="normal" font-style="normal" fill="#000000" text-anchor="start" dominant-baseline="central">Offer status</text>
 <text x="478" y="292.0" font-family="Arial" font-size="14px" font-weight="normal" font-style="normal" fill="#0044CC" text-anchor="end" dominant-baseline="central">dprod:offerLifecycleStatus</text>
 <rect x="690" y="80" width="430" height="268" fill="#ffffff" stroke="#000000"/>

@@ -67,7 +67,7 @@ offer_h = policy_box(OFFER_X, BOX_Y, BOX_W, "DataOffer", "odrl:Offer", [
     ("Provider duties", "odrl:obligation"),
     ("Consumer rights", "odrl:permission"),
     ("Prohibitions", "odrl:prohibition"),
-    ("Recurrence rules", "dprod:recurrence"),
+    ("Schedules", "dprod:schedule"),
     ("Offer status", "dprod:offerLifecycleStatus"),
 ])
 contract_h = policy_box(CONTRACT_X, BOX_Y, BOX_W, "DataContract", "odrl:Agreement", [
