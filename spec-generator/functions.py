@@ -28,6 +28,7 @@ def load_ontologies():
     nm.bind("linkedin", globals.LINKEDIN)
     g.parse('./ontology/dprod/dprod-ontology.ttl', format='ttl')
     g.parse('./ontology/dprod/dprod-shapes.ttl', format='ttl')
+    g.parse('./ontology/dprod/dprod-prof.ttl', format='ttl')
     g.parse('./dprod-contracts/dprod-contracts.ttl', format='ttl')
     g.parse('./dprod-contracts/dprod-contracts-shapes.ttl', format='ttl')
     g.parse('./dprod-contracts/dprod-contracts-prof.ttl', format='ttl')

@@ -25,6 +25,9 @@ RDF_RESOURCES = ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf',
                  'dprod-all.jsonld', 'dprod-shapes.jsonld', 'dprod-shapes.rdf')
 # The JSON-LD contexts and source evidence from publication_resources.serialize.
 CONTEXT_RESOURCES = ('dprod-context.jsonld', 'dprod-simple.jsonld', 'source-resources.json')
+# Native W3C PROF profile declarations and the directory of the profile IRI
+# (profile/ for DPROD core, contracts/profile/ for Data Contracts).
+PROFILE_RESOURCES = (('dprod-prof.ttl', 'profile'), ('dprod-contracts-prof.ttl', 'contracts/profile'))
 # Every derived file, published at the root of its specification bundle next
 # to the native files.
 DERIVED_RESOURCES = RDF_RESOURCES + CONTEXT_RESOURCES
@@ -177,10 +180,12 @@ def build_all(root, config, selected, engine, generator, output, config_revision
             raise ValueError(f'{item["slug"]}: no specification/index.html target')
         rdf = destination / 'rdf'
         resources = serialize(git, item, specification, (root / item['definitions']).read_bytes())
-        if 'dprod-contracts-prof.ttl' in resources:
-            profile = specification / 'contracts/profile'
-            profile.mkdir(parents=True)
-            shutil.copyfile(rdf / 'dprod-contracts-prof.ttl', profile / 'index.ttl')
+        # Each W3C PROF profile IRI resolves to its declaration.
+        for name, directory in PROFILE_RESOURCES:
+            if name in resources:
+                profile = specification / directory
+                profile.mkdir(parents=True)
+                shutil.copyfile(rdf / name, profile / 'index.ttl')
         # Keep target-relative links intact. The old entry URL redirects into
         # the specification target; sibling PDFs and website pages retain their
         # original relative relationship instead of rewriting rendered HTML.
@@ -195,8 +200,9 @@ def build_all(root, config, selected, engine, generator, output, config_revision
             shutil.copyfile(rdf / name, destination / name)
         for name in CONTEXT_RESOURCES:
             shutil.copyfile(specification / name, destination / name)
-        if (specification / 'contracts').exists():
-            shutil.copytree(specification / 'contracts', destination / 'contracts')
+        for directory in dict.fromkeys(path.split('/')[0] for _, path in PROFILE_RESOURCES):
+            if (specification / directory).exists():
+                shutil.copytree(specification / directory, destination / directory)
         retain_assets(git, item, destination)
 
     def package(staging, published):
@@ -221,7 +227,8 @@ def build_all(root, config, selected, engine, generator, output, config_revision
         if any(p['slug'] == 'main' for p in published):
             hosting['directory_aliases'].append({'path': 'spec/archive/1.0', 'target': 'spec/main'})
         # GitHub Pages serves files only: each profile is published as
-        # contracts/profile/index.ttl inside its specification bundle.
+        # profile/index.ttl and contracts/profile/index.ttl inside its
+        # specification bundle.
         configuration = staging / 'hosting.json'
         configuration.write_text(json.dumps(hosting, indent=2) + '\n')
         run_engine(engine, ['package-site', '--config', str(configuration), '--output-root', str(staging / 'deployment')])

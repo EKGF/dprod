@@ -30,7 +30,9 @@ odrl:core
     Uses ODRL terms for standard constructs; adds lifecycle state,
     deadline, reusable schedules, data contracts, transitive ODRL collection matching,
     one-hop operand bindings over normalized immutable input nodes, and logical negation."""@en ;
-  prof:isProfileOf odrl:core ;
+  # Data Contracts extends DPROD core as well as ODRL: its vocabulary imports
+  # the DPROD ontology and adds optional policies to DPROD data products.
+  prof:isProfileOf odrl:core , <https://ekgf.org/dprod/spec/develop/profile/> ;
   prof:hasToken "dprod"^^xsd:token ;
   # Default conflict strategy: if a permission and a prohibition both match,
   # the prohibition wins. A policy may declare its own odrl:conflict to
