@@ -49,6 +49,12 @@ class GrapharchCITests(unittest.TestCase):
         self.assertNotIn('secrets.', text)
         self.assertNotIn('npx', text)
 
+    def test_publication_runs_queue_and_never_cancel_a_deploy(self):
+        workflow = PAGES.read_text(encoding='utf-8')
+        self.assertRegex(workflow, r"(?m)^concurrency:\n(?:  .*\n)*?  group: grapharch-pages-.*'publication'")
+        self.assertRegex(workflow, r'(?m)^  cancel-in-progress: false$')
+        self.assertNotIn('cancel-in-progress: true', workflow)
+
     def test_deployed_site_checks_establish_public_reader_access(self):
         text = PAGES.read_text()
         smoke = text.split('- name: Verify the public specifications and provenance', 1)[1]
