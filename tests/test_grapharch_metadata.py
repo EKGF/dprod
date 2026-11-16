@@ -112,8 +112,8 @@ class GrapharchMetadataTests(unittest.TestCase):
                     self.assertIn(name, declared, href)
                     self.assertIn(name, bundle, href)
                     downloads += 1
-        self.assertEqual(downloads, 12)
-        self.assertEqual(len(declared), 12)
+        self.assertEqual(downloads, 13)
+        self.assertEqual(len(declared), 13)
 
     def test_product_logo_is_a_retained_source_asset_separate_from_authority(self):
         graph = Graph().parse(ROOT / 'publication/definitions/develop.ttl')
