@@ -50,7 +50,7 @@ jobs:
         uses: EKGF/grapharch@0353fb1bc0c41298ff37d1244b48a6826c85794d # v0.2.18
         with:
           mode: install
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.13'
           cache: pip
