@@ -51,7 +51,7 @@ class ContractSectionsTest(unittest.TestCase):
 
     def test_contract_classes_are_exactly_the_dprod_contract_terms(self) -> None:
         self.assertEqual(
-            {"DataOffer", "DataContract", "EvaluationContext"},
+            {"DataOffer", "DataContract", "EvaluationContext", "Schedule", "ScheduleFormat"},
             {shape.name for shape in self.contracts},
         )
 
@@ -79,7 +79,6 @@ class ContractSectionsTest(unittest.TestCase):
         names = {prop.name for prop in contract_extension_properties(self.graph)}
         for expected in (
             "dprod:deadline",
-            "dprod:recurrence",
             "dprod:subjectOfDuty",
             "dprod:objectOfDuty",
             "dprod:dutyState",

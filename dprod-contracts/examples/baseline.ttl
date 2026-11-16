@@ -27,6 +27,34 @@
 @prefix ex:       <https://example.org/> .
 
 
+############################# Reusable Schedules #############################
+
+ex:daily-0700-london a dprod:Schedule ;
+    rdfs:label "Daily at 07:00 Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T070000\nRRULE:FREQ=DAILY" .
+
+ex:every-minute-london a dprod:Schedule ;
+    rdfs:label "Every minute in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MINUTELY;INTERVAL=1" .
+
+ex:every-15-minutes-london a dprod:Schedule ;
+    rdfs:label "Every 15 minutes in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MINUTELY;INTERVAL=15" .
+
+ex:monthly-day-1-london a dprod:Schedule ;
+    rdfs:label "Monthly on day 1 in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=1" .
+
+ex:monthly-day-15-london a dprod:Schedule ;
+    rdfs:label "Monthly on day 15 in Europe/London" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260115T000000\nRRULE:FREQ=MONTHLY;BYMONTHDAY=15" .
+
+
 ############################# Inline Domain Vocabulary #########################
 # Only the operands, actions, and concept values used in this file.
 
@@ -279,11 +307,11 @@ ex:compliance
 
 
 ############################# Contract 1: Customer API v2 #########################
-# Daily delivery + recurrence + deadline + schema
+# Daily delivery + schedule + deadline + schema
 
 <https://example.org/offers/customer-api-v1> a dprod:DataOffer ;
     rdfs:label "Customer API v1 (retired)" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:offerLifecycleStatus dprod:Fulfilled ;
@@ -294,7 +322,7 @@ ex:compliance
 
 <https://example.org/offers/customer-api-v2> a dprod:DataOffer ;
     rdfs:label "Customer API v2" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/customer-data> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -306,7 +334,7 @@ ex:compliance
         rdfs:label "Daily customer data delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+        dprod:schedule ex:daily-0700-london ;
         dprod:deadline "PT30M"^^xsd:duration
     ] ;
 
@@ -352,7 +380,7 @@ ex:compliance
 
 <https://example.org/offers/market-data-feed> a dprod:DataOffer ;
     rdfs:label "Market Data Feed" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -364,7 +392,7 @@ ex:compliance
         rdfs:label "15-minute market data delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+        dprod:schedule ex:every-15-minutes-london ;
         dprod:deadline "PT5M"^^xsd:duration
     ] ;
 
@@ -401,11 +429,11 @@ ex:compliance
 
 
 ############################# Contract 3: Country Reference SQL #########################
-# Simple read-only, no recurrence
+# Simple read-only, no schedule
 
 <https://example.org/offers/country-ref> a dprod:DataOffer ;
     rdfs:label "Country Reference Data" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/country-codes> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -431,7 +459,7 @@ ex:compliance
 
 <https://example.org/offers/transaction-files> a dprod:DataOffer ;
     rdfs:label "Transaction Files" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/finance> ;
     odrl:target <https://example.org/assets/transaction-files> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -442,7 +470,7 @@ ex:compliance
         rdfs:label "Monthly transaction file delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/finance> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=1" ;
+        dprod:schedule ex:monthly-day-1-london ;
         dprod:deadline "P3D"^^xsd:duration
     ] ;
 
@@ -456,7 +484,7 @@ ex:compliance
         rdfs:label "Monthly reconciliation report" ;
         odrl:action ex:report ;
         odrl:target <https://example.org/assets/monthly-report> ;
-        dprod:recurrence "FREQ=MONTHLY;BYMONTHDAY=15" ;
+        dprod:schedule ex:monthly-day-15-london ;
         dprod:deadline "P5D"^^xsd:duration
     ] ;
 
@@ -471,7 +499,7 @@ ex:compliance
 
 <https://example.org/offers/employee-directory> a dprod:DataOffer ;
     rdfs:label "Employee Directory" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/hr> ;
     odrl:target <https://example.org/assets/employee-directory> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -518,7 +546,7 @@ ex:compliance
 
 <https://example.org/offers/risk-metrics> a dprod:DataOffer ;
     rdfs:label "Risk Metrics" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/risk-metrics> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -528,7 +556,7 @@ ex:compliance
         rdfs:label "Real-time risk metrics delivery" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:deliver ;
-        dprod:recurrence "FREQ=MINUTELY;INTERVAL=1" ;
+        dprod:schedule ex:every-minute-london ;
         dprod:deadline "PT30S"^^xsd:duration
     ] ;
 
@@ -571,7 +599,7 @@ ex:compliance
 
 <https://example.org/offers/audit-logs> a dprod:DataOffer ;
     rdfs:label "Audit Log Archive" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/audit-logs> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -615,7 +643,7 @@ ex:compliance
 
 <https://example.org/offers/multi-asset> a dprod:DataOffer ;
     rdfs:label "Multi-Asset Data Bundle" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:target <https://example.org/assets/market-prices> ,
                <https://example.org/assets/reference-data> ,
@@ -689,7 +717,7 @@ ex:compliance
 
 <https://example.org/agreements/analytics-customer-2026> a dprod:DataContract ;
     rdfs:label "Analytics Customer Data 2026" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer <https://example.org/offers/customer-api-v2> ;
     odrl:assigner <https://example.org/agents/data-platform> ;
     odrl:assignee <https://example.org/agents/analytics> ;
@@ -731,7 +759,7 @@ ex:compliance
 
 <https://example.org/agreements/trading-market-data-2026> a dprod:DataContract ;
     rdfs:label "Trading Market Data 2026" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer <https://example.org/offers/market-data-feed> ;
     odrl:assigner <https://example.org/agents/trading-data> ;
     odrl:assignee <https://example.org/agents/analytics> ;
@@ -775,7 +803,7 @@ ex:compliance
     dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/customer-data> ;
-    dprod:recurrence "FREQ=DAILY;BYHOUR=7;BYMINUTE=0" ;
+    dprod:schedule ex:daily-0700-london ;
     dprod:deadline "PT30M"^^xsd:duration ;
     dprod:dutyState dprod:Fulfilled .
 
@@ -802,7 +830,7 @@ ex:compliance
     dprod:objectOfDuty <https://example.org/agents/analytics> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    dprod:schedule ex:every-15-minutes-london ;
     dprod:deadline "PT5M"^^xsd:duration ;
     dprod:dutyState dprod:Fulfilled .
 
@@ -819,6 +847,6 @@ ex:compliance
     dprod:subjectOfDuty <https://example.org/agents/trading-data> ;
     odrl:action ex:deliver ;
     odrl:target <https://example.org/assets/market-prices> ;
-    dprod:recurrence "FREQ=MINUTELY;INTERVAL=15" ;
+    dprod:schedule ex:every-15-minutes-london ;
     dprod:deadline "PT5M"^^xsd:duration ;
     dprod:dutyState dprod:Violated .

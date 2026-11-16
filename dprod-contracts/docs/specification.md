@@ -1,5 +1,9 @@
 # DPROD Contracts Technical Specification
 
+The contracts profile identifier is [`https://ekgf.org/dprod/spec/develop/contracts/profile/`](https://ekgf.org/dprod/spec/develop/contracts/profile/).
+Policies declare this IRI with `odrl:profile`. It identifies the contracts profile;
+the DPROD ontology and term namespace remain `https://ekgf.org/dprod/spec/develop/`.
+
 RDF/OWL vocabulary reference for the DPROD Contracts ODRL 2.2 profile.
 
 ---
@@ -24,7 +28,7 @@ This document is a vocabulary reference for implementers. It defines every class
 ```turtle
 @prefix odrl:        <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
-@prefix dprod-shapes: <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
+@prefix dprod-contracts-shapes: <https://ekgf.org/dprod/spec/develop/contracts/shapes/> .
 @prefix rdf:         <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl:         <http://www.w3.org/2002/07/owl#> .
@@ -97,7 +101,7 @@ The formal evaluator may also use these concept IRIs as `dprod:dutyState` values
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -134,7 +138,7 @@ ex:contract a dprod:DataOffer ;
 
 ```turtle
 ex:subscription a dprod:DataContract ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;
@@ -150,9 +154,19 @@ ex:subscription a dprod:DataContract ;
 | **Label** | Evaluation Context |
 | **Definition** | Immutable, provenance-bearing input graph for one policy evaluation |
 
-The evaluator constructs one context per evaluation. It is a `prov:Entity` and
-retains the exact request and state snapshot provenance required to reproduce a
-decision. It has four normative roots:
+DPROD does not evaluate policies. An evaluator is an external program that
+implements this specification. It is invoked by a calling system (for example an
+application, an API gateway or a data platform) that needs an access decision.
+
+The calling system constructs one context per evaluation and passes it, with the
+policies, to the evaluator. Building the context is where facts are gathered:
+the calling system describes what is being asked for, flattens every
+policy-relevant fact onto the request or state node, and freezes the result. The
+evaluator reads only the context it is given and MUST NOT query live data while
+resolving operands (see formal-semantics.md §4.2).
+
+The context is a `prov:Entity` and retains the exact request and state snapshot
+provenance required to reproduce a decision. It has four normative roots:
 
 | Property | Range | Definition |
 |----------|-------|------------|
@@ -165,13 +179,42 @@ Operand bindings select one of three closed sources:
 
 | Source | Node selected |
 |--------|---------------|
-| `dprod:requestSource` | Normalized authorization request |
-| `dprod:stateSource` | Immutable normalized world snapshot |
-| `dprod:contextSource` | Evaluation context itself |
+| `dprod:requestSource` | The request node: what is being asked for (agent, action, asset) plus any request facts the policies need, built by the calling system. It is plain RDF, not an `odrl:Request`. |
+| `dprod:stateSource` | The state snapshot node: facts about the world at the time of the request, frozen by the calling system |
+| `dprod:contextSource` | The evaluation context itself, which carries the built-in agent and clock |
 
 `dprod:currentAgent` binds `contextSource` to property `dprod:agent`. Standard
 `odrl:dateTime` binds `contextSource` to `dprod:clock`; DPROD does not define a
 duplicate clock operand.
+
+### 3.5 dprod:Schedule
+
+| Property | Value |
+|----------|-------|
+| **Type** | `owl:Class` |
+| **Label** | Schedule |
+| **Definition** | Reusable, identified definition of scheduled occurrences |
+
+A Schedule determines **when**, without determining **what** happens. Any DPROD
+or ODRL resource may refer to it through `dprod:schedule`; that resource retains
+the business meaning of the occurrences. Every Schedule has an IRI, exactly one
+`dct:conformsTo` format, and exactly one `dprod:scheduleExpression`.
+
+### 3.6 dprod:ScheduleFormat
+
+| Property | Value |
+|----------|-------|
+| **Type** | `owl:Class` |
+| **Label** | Schedule Format |
+| **Definition** | Exact grammar and interpretation rules for schedule expressions |
+
+Built-in individuals are `dprod:Rfc5545ScheduleFormat` and
+`dprod:PosixCrontabScheduleFormat`. Every ScheduleFormat declares
+`dprod:carriesTimeZone`: whether its expressions embed their own timezone
+(true for RFC 5545, false for POSIX crontab). Extensions may define additional
+identified formats, but must declare `dprod:carriesTimeZone` and provide
+matching validation rules and a processor. A general label such as “cron” is
+not an exact format.
 
 ---
 
@@ -208,18 +251,42 @@ Two forms:
 | Absolute | `xsd:dateTime` | Fixed deadline | `"2026-12-31T23:59:59Z"^^xsd:dateTime` |
 | Relative | `xsd:duration` | Offset from activation | `"P30D"^^xsd:duration` |
 
-### 4.3 dprod:recurrence
+### 4.3 Scheduling
 
 | Property | Value |
 |----------|-------|
-| **Type** | `owl:DatatypeProperty` |
-| **Domain** | `odrl:Duty` |
-| **Range** | `xsd:string` |
-| **Cardinality** | 0..1 |
-| **Pattern** | `^FREQ=(SECONDLY|MINUTELY|HOURLY|DAILY|WEEKLY|MONTHLY|YEARLY)` |
-| **Definition** | RFC 5545 RRULE defining when duty instances are generated |
+| **Property** | `dprod:schedule` |
+| **Type** | `owl:ObjectProperty` |
+| **Domain** | None; reusable across DPROD and ODRL resources |
+| **Range** | `dprod:Schedule` |
+| **Duty cardinality** | 0..1 |
+| **Definition** | Link to an identified reusable Schedule |
 
-Each generated instance follows the standard duty lifecycle independently (Pending -> Active -> Fulfilled/Violated). The `deadline` property defines the per-instance fulfillment window. Any iCal-compliant library can parse the value.
+| Schedule property | Type | Cardinality | Definition |
+|-------------------|------|-------------|------------|
+| `dct:conformsTo` | IRI of `dprod:ScheduleFormat` | 1 | Exact grammar/dialect |
+| `dprod:scheduleExpression` | `xsd:string` | 1 | Authoritative expression |
+| `dprod:scheduleTimeZone` | IANA timezone string | 0..1 | Required when the format carries no timezone (`dprod:carriesTimeZone false`); when the format embeds a timezone, must match the embedded value if present |
+
+```turtle
+ex:daily-delivery a dprod:Schedule ;
+    rdfs:label "Daily delivery at 06:00 London time" ;
+    dct:conformsTo dprod:Rfc5545ScheduleFormat ;
+    dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
+
+ex:delivery-duty a odrl:Duty ;
+    odrl:action ex:deliver ;
+    dprod:schedule ex:daily-delivery .
+```
+
+An RFC 5545 schedule must contain anchored `DTSTART` (with `TZID`) and `RRULE`
+content, optionally followed by `EXDATE`/`RDATE` lines; the embedded `TZID` is
+the timezone authority. A POSIX crontab schedule contains exactly five time
+fields, separated by spaces or tabs, and
+declares `dprod:scheduleTimeZone`. Unknown formats, malformed expressions, and
+missing context are errors, not empty schedules. Bare frequency vocabulary
+entries such as `dct:accrualPeriodicity` remain descriptive catalog metadata and
+are not executable schedules.
 
 ### 4.4 dprod:acceptsOffer
 
@@ -239,7 +306,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
-| **Definition** | When the contract/subscription becomes effective |
+| **Definition** | When the contract/subscription becomes effective. Before this instant the policy is not applicable (formal semantics §7.3). |
 
 ### 4.6 dprod:expirationDate
 
@@ -249,7 +316,7 @@ Each generated instance follows the standard duty lifecycle independently (Pendi
 | **Domain** | `dprod:DataOffer` | `dprod:DataContract` |
 | **Range** | `xsd:dateTime` |
 | **Cardinality** | 0..1 |
-| **Definition** | When the contract/subscription expires |
+| **Definition** | When the contract/subscription expires. After this instant the policy is not applicable (formal semantics §7.3); the instant itself is included. |
 
 ### 4.7 odrl:partOf Collection Membership
 
@@ -282,10 +349,13 @@ The evaluator performs one lookup:
 | `ex:marketOpen` | `stateSource` | `ex:marketOpen` | `?state ex:marketOpen ?value` |
 | `odrl:dateTime` | `contextSource` | `dprod:clock` | `?context dprod:clock ?value` |
 
-Request and state producers MUST flatten policy-relevant facts onto their source
-nodes before evaluation. RDF lists, traversal through `odrl:target` or party
+The calling system MUST flatten policy-relevant facts onto the request and state
+nodes before evaluation. A fact that sits more than one hop away in the source
+data, such as the jurisdiction of the requesting agent's organisation, is
+resolved by the calling system and written onto the request as one property. RDF lists, traversal through `odrl:target` or party
 nodes, and extension sources are rejected. Missing bindings, missing or multiple
-values, and type mismatches are hard evaluation errors.
+values, and type mismatches are evaluation errors, never `false`; evaluation
+fails unless its outcome is decided without them (formal semantics §7.2).
 
 ### 4.9 dprod:not
 
@@ -311,6 +381,8 @@ ODRL defines `odrl:and` and `odrl:or` but lacks negation. DPROD Contracts adds `
 | **Definition** | Party bearing the duty (must perform the action) |
 
 The duty bearer. Replaces `odrl:assignee` on duties to avoid role overloading -- in a bilateral agreement, the data provider is `odrl:assigner` at the policy level but would also need to be `odrl:assignee` on their own delivery duty. `dprod:subjectOfDuty` removes this confusion. Bridges to ODRL via `rdfs:subPropertyOf odrl:function` (the abstract umbrella for party-roles in a Rule), so ODRL processors retain a generic role link without inheriting the contested `odrl:assignee` semantics. Aligns with `md:subject` (W3C Market Data), which likewise scopes the property to `odrl:Duty`.
+
+When `dprod:subjectOfDuty` is omitted, the bearer is the policy's `odrl:assignee`, or the requesting agent in a policy without one (formal semantics §3.2). Provider duties therefore name the provider explicitly.
 
 ### 4.11 dprod:objectOfDuty
 
@@ -346,68 +418,77 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PolicyShape` | `odrl:Policy` | Must declare `odrl:profile` (for engines with RDFS inference) |
-| `dprod-shapes:SetShape` | `odrl:Set` | Must declare `odrl:profile`; may declare `odrl:target`; at least one clause |
-| `dprod-shapes:OfferShape` | `odrl:Offer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause |
-| `dprod-shapes:AgreementShape` | `odrl:Agreement` | Must declare `odrl:profile`; exactly one `odrl:assigner` and one `odrl:assignee`; at least one clause |
+| `dprod-contracts-shapes:PolicyShape` | `odrl:Policy` | Must declare `odrl:profile` (for engines with RDFS inference) |
+| `dprod-contracts-shapes:SetShape` | `odrl:Set` | Must declare `odrl:profile`; may declare `odrl:target`; at least one clause |
+| `dprod-contracts-shapes:OfferShape` | `odrl:Offer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause |
+| `dprod-contracts-shapes:AgreementShape` | `odrl:Agreement` | Must declare `odrl:profile`; exactly one `odrl:assigner` and one `odrl:assignee`; at least one clause |
 
 ### Rule-level shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `recurrence` 0..1 (RRULE pattern); `state` 0..1 |
+| `dprod-contracts-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-contracts-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-contracts-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
+
+### Schedule shapes
+
+| Shape | Target | Key Constraints |
+|-------|--------|-----------------|
+| `dprod-contracts-shapes:ScheduleReferenceShape` | Subjects using `dprod:schedule` | Values are IRIs identifying `dprod:Schedule` resources |
+| `dprod-contracts-shapes:ScheduleShape` | `dprod:Schedule` | IRI identifier; one exact format; one string expression; built-in format requirements |
 
 ### Constraint-level shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:ConstraintShape` | `odrl:Constraint` | Exactly one `leftOperand`, `operator`, and at least one `rightOperand` |
-| `dprod-shapes:LogicalConstraintShape` | `odrl:LogicalConstraint` | Exactly one of: `odrl:and`, `odrl:or`, or `dprod:not` |
+| `dprod-contracts-shapes:ConstraintShape` | `odrl:Constraint` | Exactly one `leftOperand`, `operator`, and at least one `rightOperand` |
+| `dprod-contracts-shapes:LogicalConstraintShape` | `odrl:LogicalConstraint` | Exactly one of: `odrl:and`, `odrl:or`, or `dprod:not` |
 
 ### Contract-level shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:DataOfferShape` | `dprod:DataOffer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause; `state` 0..1; effective/expiration dates 0..1 |
-| `dprod-shapes:DataContractShape` | `dprod:DataContract` | Must declare `odrl:profile`; exactly one `dprod:acceptsOffer` (must be `dprod:DataOffer`); at least one clause; `state` 0..1; effective/expiration dates 0..1 |
+| `dprod-contracts-shapes:DataOfferShape` | `dprod:DataOffer` | Must declare `odrl:profile`; exactly one `odrl:assigner`; at least one clause; `state` 0..1; effective/expiration dates 0..1 |
+| `dprod-contracts-shapes:DataContractShape` | `dprod:DataContract` | Must declare `odrl:profile`; exactly one `dprod:acceptsOffer` (must be `dprod:DataOffer`); at least one clause; `state` 0..1; effective/expiration dates 0..1 |
 
 ### Operand shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:LeftOperandShape` | `odrl:LeftOperand` and objects of `odrl:leftOperand` | Exactly one closed `dprod:operandSource` and one IRI-valued `dprod:operandProperty` |
-| `dprod-shapes:EvaluationContextShape` | `dprod:EvaluationContext` | Exactly one request, immutable state snapshot, requesting agent, and clock |
+| `dprod-contracts-shapes:LeftOperandShape` | `odrl:LeftOperand` and objects of `odrl:leftOperand` | Exactly one closed `dprod:operandSource` and one IRI-valued `dprod:operandProperty` |
+| `dprod-contracts-shapes:EvaluationContextShape` | `dprod:EvaluationContext` | Exactly one request, immutable state snapshot, requesting agent, and clock |
 
 ### Collection shapes
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-shapes:PartOfShape` | Subjects of `odrl:partOf` | Asset membership must end in an `odrl:AssetCollection`; party membership must end in an `odrl:PartyCollection`; collection nesting must remain within the same kind |
-| `dprod-shapes:AssetCollectionShape` | `odrl:AssetCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
-| `dprod-shapes:PartyCollectionShape` | `odrl:PartyCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
+| `dprod-contracts-shapes:PartOfShape` | Subjects of `odrl:partOf` | Asset membership must end in an `odrl:AssetCollection`; party membership must end in an `odrl:PartyCollection`; collection nesting must remain within the same kind |
+| `dprod-contracts-shapes:AssetCollectionShape` | `odrl:AssetCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
+| `dprod-contracts-shapes:PartyCollectionShape` | `odrl:PartyCollection` | Explicit membership only; rejects `odrl:source` and `odrl:refinement` |
 
 ### Rejection shapes
 
 | Shape | Rejects | Message |
 |-------|---------|---------|
-| `dprod-shapes:RejectXoneShape` | `odrl:xone` | Not supported in DPROD Contracts |
-| `dprod-shapes:RejectRemedyShape` | `odrl:remedy` | Noted as future extension |
-| `dprod-shapes:RejectConsequenceShape` | `odrl:consequence` | Noted as future extension |
-| `dprod-shapes:RejectTicketShape` | `odrl:Ticket` | Not supported |
-| `dprod-shapes:RejectRequestShape` | `odrl:Request` | DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. |
-| `dprod-shapes:RejectRuntimeReferenceShape` | `dprod:RuntimeReference` | Declare a normal `odrl:LeftOperand` with one source/property binding |
-| `dprod-shapes:RejectOperandPathShape` | `dprod:path` | Normalize the input and use `dprod:operandSource` plus `dprod:operandProperty` |
-| `dprod-shapes:RejectObsoleteDprodPartOfShape` | `dprod:partOf` | Use `odrl:partOf` |
-| `dprod-shapes:RejectObsoleteDprodMemberOfShape` | `dprod:memberOf` | Use `odrl:partOf` |
-| `dprod-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
-| `dprod-shapes:RejectInheritFromShape` | `odrl:inheritFrom` | Not supported |
-| `dprod-shapes:RejectMixedLifecycleStatusOnDataOfferShape` | Non-offer lifecycle properties on `dprod:DataOffer` | Use `dprod:offerLifecycleStatus` |
-| `dprod-shapes:RejectMixedLifecycleStatusOnDataContractShape` | Non-contract lifecycle properties on `dprod:DataContract` | Use `dprod:contractLifecycleStatus` |
-| `dprod-shapes:RejectMixedLifecycleStatusOnDataProductShape` | Contract lifecycle properties on `dprod:DataProduct` | Use `dprod:dataProductLifecycleStatus` |
-| `dprod-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
-| `dprod-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
+| `dprod-contracts-shapes:RejectXoneShape` | `odrl:xone` | Not supported in DPROD Contracts |
+| `dprod-contracts-shapes:RejectRemedyShape` | `odrl:remedy` | Noted as future extension |
+| `dprod-contracts-shapes:RejectConsequenceShape` | `odrl:consequence` | Noted as future extension |
+| `dprod-contracts-shapes:RejectTicketShape` | `odrl:Ticket` | Not supported |
+| `dprod-contracts-shapes:RejectRequestShape` | `odrl:Request` | DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics are undefined; support is deferred. |
+| `dprod-contracts-shapes:RejectRuntimeReferenceShape` | `dprod:RuntimeReference` | Declare a normal `odrl:LeftOperand` with one source/property binding |
+| `dprod-contracts-shapes:RejectOperandPathShape` | `dprod:path` | Normalize the input and use `dprod:operandSource` plus `dprod:operandProperty` |
+| `dprod-contracts-shapes:RejectObsoleteDprodPartOfShape` | `dprod:partOf` | Use `odrl:partOf` |
+| `dprod-contracts-shapes:RejectObsoleteDprodMemberOfShape` | `dprod:memberOf` | Use `odrl:partOf` |
+| `dprod-contracts-shapes:RejectInheritAllowedShape` | `odrl:inheritAllowed` | Not supported |
+| `dprod-contracts-shapes:RejectInheritFromShape` | `odrl:inheritFrom` | Not supported |
+| `dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataOfferShape` | Non-offer lifecycle properties on `dprod:DataOffer` | Use `dprod:offerLifecycleStatus` |
+| `dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataContractShape` | Non-contract lifecycle properties on `dprod:DataContract` | Use `dprod:contractLifecycleStatus` |
+| `dprod-contracts-shapes:RejectMixedLifecycleStatusOnDataProductShape` | Contract lifecycle properties on `dprod:DataProduct` | Use `dprod:dataProductLifecycleStatus` |
+| `dprod-contracts-shapes:RejectObsoleteOfferLifecycleStatusSpellingShape` | Legacy mixed-capitalization offer status property | Use the canonical offer lifecycle property |
+| `dprod-contracts-shapes:RejectObsoleteContractLifecycleStatusSpellingShape` | Legacy mixed-capitalization contract status property | Use the canonical contract lifecycle property |
+| `dprod-contracts-shapes:RejectObsoleteRecurrenceShape` | Legacy `dprod:recurrence` property | Use `dprod:schedule` and an identified Schedule |
+| `dprod-contracts-shapes:RejectAnonymousScheduleShape` | A `dprod:Schedule` that is a blank node | A Schedule must have an IRI identifier |
 
 ---
 
@@ -417,22 +498,27 @@ Which concrete authoring properties are valid on which policy classes
 (`dprod:lifecycleStatus` is abstract; runtime-only EvaluationContext roots are
 documented in §3.4 and omitted):
 
-| Property | Duty | DataProduct | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
-|----------|------|-------------|-----------|--------------|-------------|-------------------|-------|-------|
-| `dprod:dutyState` | Yes | | | | | | | |
-| `dprod:dataProductLifecycleStatus` | | Yes | | | | | | |
-| `dprod:offerLifecycleStatus` | | | Yes | | | | | |
-| `dprod:contractLifecycleStatus` | | | | Yes | | | | |
-| `dprod:deadline` | Yes | | | | | | | |
-| `dprod:recurrence` | Yes | | | | | | | |
-| `dprod:subjectOfDuty` | Yes | | | | | | | |
-| `dprod:objectOfDuty` | Yes | | | | | | | |
-| `dprod:acceptsOffer` | | | | Yes | | | | |
-| `dprod:effectiveDate` | | | Yes | Yes | | | | |
-| `dprod:expirationDate` | | | Yes | Yes | | | | |
-| `dprod:operandSource` | | | | | Yes | | | |
-| `dprod:operandProperty` | | | | | Yes | | | |
-| `dprod:not` | | | | | | Yes | | |
+| Property | Duty | Schedule | DataProduct | DataOffer | DataContract | LeftOperand | LogicalConstraint | Asset | Party |
+|----------|------|----------|-------------|-----------|--------------|-------------|-------------------|-------|-------|
+| `dprod:dutyState` | Yes | | | | | | | | |
+| `dprod:dataProductLifecycleStatus` | | | Yes | | | | | | |
+| `dprod:offerLifecycleStatus` | | | | Yes | | | | | |
+| `dprod:contractLifecycleStatus` | | | | | Yes | | | | |
+| `dprod:deadline` | Yes | | | | | | | | |
+| `dprod:schedule` | Yes* | | | | | | | | |
+| `dprod:scheduleExpression` | | Yes | | | | | | | |
+| `dprod:scheduleTimeZone` | | Yes | | | | | | | |
+| `dprod:subjectOfDuty` | Yes | | | | | | | | |
+| `dprod:objectOfDuty` | Yes | | | | | | | | |
+| `dprod:acceptsOffer` | | | | | Yes | | | | |
+| `dprod:effectiveDate` | | | | Yes | Yes | | | | |
+| `dprod:expirationDate` | | | | Yes | Yes | | | | |
+| `dprod:operandSource` | | | | | | Yes | | | |
+| `dprod:operandProperty` | | | | | | Yes | | | |
+| `dprod:not` | | | | | | | Yes | | |
+
+\* `dprod:schedule` has no OWL domain and may be used by other resources. The
+table shows the duty use whose operational semantics are defined by this profile.
 
 ---
 
@@ -456,4 +542,4 @@ DPROD contracts reject odrl:Request because Offer-Request-Agreement semantics ar
 
 ---
 
-**Version**: 0.7 | **Date**: 2026-08-19
+**Version**: 0.7 | **Date**: 2026-10-13
