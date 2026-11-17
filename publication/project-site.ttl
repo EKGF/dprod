@@ -1,0 +1,74 @@
+@prefix ga: <https://ekgf.org/ontology/grapharch#> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+
+<urn:dprod:project-site> a ga:Project ;
+    dct:title "DPROD" ;
+    ga:repository <https://github.com/EKGF/dprod> ;
+    ga:scope <urn:dprod:project-site:scope> ;
+    ga:target <urn:dprod:project-site:website> .
+<urn:dprod:project-site:scope> a ga:Scope .
+<urn:dprod:project-site:website> a ga:Target ;
+    dct:title "DPROD project website" ;
+    ga:scope <urn:dprod:project-site:scope> ;
+    ga:profile <urn:dprod:project-site:profile> ;
+    ga:renderer ga:WebsiteRenderer ; ga:destination "site" .
+<urn:dprod:project-site:profile> a ga:Profile ;
+    ga:theme <urn:dprod:project-site:theme> ;
+    ga:projectNavigation false ;
+    ga:siteSearch false ;
+    ga:siteFooter <urn:dprod:project-site:footer> ;
+    ga:headerLink <urn:dprod:project-site:specification> .
+
+# DPROD identity over the EKGF project theme: the ekgf.org/dprod palette
+# (site/src/app/globals.css: primary hsl(233 48% 48%), foreground rgba(1,1,1,.8)).
+<urn:dprod:project-site:theme> a ga:Theme ;
+    rdfs:label "DPROD project website" ;
+    ga:baseTheme ga:EkgfProjectTheme ;
+    ga:accent "#4051b5" ;
+    ga:inkColor "#343434" ;
+    ga:mutedColor "#71717a" ;
+    ga:ruleColor "#e4e4e7" .
+
+# Footer of ekgf.org/dprod (site/src/components/Footer.tsx).
+<urn:dprod:project-site:footer> a ga:SiteFooter ;
+    ga:footerGroup <urn:dprod:project-site:footer:about>,
+        <urn:dprod:project-site:footer:navigate>,
+        <urn:dprod:project-site:footer:links> ;
+    ga:footerNote <urn:dprod:project-site:footer:copyright>,
+        <urn:dprod:project-site:footer:standard> .
+<urn:dprod:project-site:footer:about> dct:title "DPROD" ; ga:order 1 ;
+    dct:description "The Data Product Ontology — an OMG standard for describing Data Products using W3C Linked Data technologies." .
+<urn:dprod:project-site:footer:navigate> dct:title "Navigate" ; ga:order 2 ;
+    ga:footerLink <urn:dprod:project-site:footer:about-ekgf>, <urn:dprod:project-site:footer:quadrants>,
+        <urn:dprod:project-site:footer:resources>, <urn:dprod:project-site:footer:membership>,
+        <urn:dprod:project-site:footer:contact>, <urn:dprod:project-site:footer:specification> .
+<urn:dprod:project-site:footer:about-ekgf> dct:title "About" ; ga:url "https://ekgf.org/about/" ; ga:order 1 .
+<urn:dprod:project-site:footer:quadrants> dct:title "Quadrants" ; ga:url "https://ekgf.org/quadrants/" ; ga:order 2 .
+<urn:dprod:project-site:footer:resources> dct:title "Resources" ; ga:url "https://ekgf.org/resources/" ; ga:order 3 .
+<urn:dprod:project-site:footer:membership> dct:title "Membership" ; ga:url "https://ekgf.org/membership/" ; ga:order 4 .
+<urn:dprod:project-site:footer:contact> dct:title "Contact" ; ga:url "https://ekgf.org/contact/" ; ga:order 5 .
+<urn:dprod:project-site:footer:specification> dct:title "Specification" ; ga:url "spec-versions/" ; ga:order 6 .
+<urn:dprod:project-site:footer:links> dct:title "Links" ; ga:order 3 ;
+    ga:footerLink <urn:dprod:project-site:footer:github>, <urn:dprod:project-site:footer:ekgf>,
+        <urn:dprod:project-site:footer:omg> .
+<urn:dprod:project-site:footer:github> dct:title "GitHub" ; ga:url "https://github.com/EKGF/dprod" ; ga:order 1 .
+<urn:dprod:project-site:footer:ekgf> dct:title "EKGF" ; ga:url "https://ekgf.org" ; ga:order 2 .
+<urn:dprod:project-site:footer:omg> dct:title "OMG" ; ga:url "https://omg.org" ; ga:order 3 .
+<urn:dprod:project-site:footer:copyright> ga:order 1 ;
+    dct:description "Copyright © 2026 EDM Council, Inc." .
+<urn:dprod:project-site:footer:standard> ga:order 2 ;
+    dct:description "A standard of the [Object Management Group (OMG)](https://omg.org) · Developed by the [Enterprise Knowledge Graph Forum (EKGF)](https://ekgf.org)" .
+<urn:dprod:project-site:specification> dct:title "Specification" ;
+    ga:url "spec-versions/" ; ga:order 1 .
+
+<urn:dprod:project-site:versions-page> a ga:DocumentorUse ;
+    ga:project <urn:dprod:project-site> ; ga:documentorType ga:PublicationInventoryDocumentor ;
+    ga:subject <urn:dprod:project-site:versions> ;
+    ga:fragment <urn:dprod:project-site:page:versions> ;
+    dct:title "Specification versions" ; ga:route "spec-versions/" ;
+    ga:sourcePath "spec-versions.md" ; ga:navigationOrder 6 .
+<urn:dprod:project-site:page:versions> dct:description
+    "Specifications rebuilt together from selected Git revisions: DPROD 1.0 beta, the latest working draft, and selected review branches. Draft previews are not standardized versions." .

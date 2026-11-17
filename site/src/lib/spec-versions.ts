@@ -220,7 +220,11 @@ async function fetchOpenPullRequestBranches(): Promise<Set<string> | null> {
  * /spec/main keeps working.
  */
 export async function getSpecVersions(): Promise<SpecVersion[]> {
-  const currentBranch = process.env.VERCEL_GIT_COMMIT_REF;
+  // Production serves the working draft, including CLI releases made from
+  // a feature checkout. Git provenance does not identify the release target.
+  const currentBranch = process.env.VERCEL_ENV === "production"
+    ? "develop"
+    : process.env.VERCEL_GIT_COMMIT_REF;
   const versions: SpecVersion[] = [ARCHIVE_1_0];
 
   const [deployments, openPullRequestBranches] = await Promise.all([
@@ -249,7 +253,11 @@ export async function getSpecVersions(): Promise<SpecVersion[]> {
       label: labelForBranch(branch),
       description: descriptionForBranch(branch),
       branch,
-      origin: `https://${slug}.dprod-preview.ekgf.org/dprod`,
+      // Develop has no preview domain: the domain workflow explicitly skips
+      // the production branch. Previews must link to its public origin.
+      origin: branch === "develop"
+        ? "https://ekgf.org/dprod"
+        : `https://${slug}.dprod-preview.ekgf.org/dprod`,
       isCurrent: branch === currentBranch,
       isProduction: branch === "develop",
       hasOpenPullRequest: openPullRequestBranches

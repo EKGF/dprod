@@ -271,6 +271,8 @@ def main():
     shutil.copy2('ontology/dprod/dprod-ontology.ttl', 'dist/dprod.ttl')
     print("Copying dprod-shapes.ttl")
     shutil.copy2('ontology/dprod/dprod-shapes.ttl', 'dist/dprod-shapes.ttl')
+    print("Copying dprod-prof.ttl")
+    shutil.copy2('ontology/dprod/dprod-prof.ttl', 'dist/dprod-prof.ttl')
     print("Copying dprod-contracts.ttl")
     shutil.copy2('dprod-contracts/dprod-contracts.ttl', 'dist/dprod-contracts.ttl')
     print("Copying dprod-contracts-shapes.ttl")

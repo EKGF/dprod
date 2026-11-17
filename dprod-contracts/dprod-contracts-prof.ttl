@@ -1,4 +1,4 @@
-# baseURI: https://ekgf.org/dprod/spec/develop/
+# baseURI: https://ekgf.org/dprod/spec/develop/contracts/profile/
 # prefix: dprod
 
 @prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
@@ -21,7 +21,7 @@ odrl:core
 
 ############################# DPROD Profile (ODRL 2.2) #########################
 
-<https://ekgf.org/dprod/spec/develop/>
+<https://ekgf.org/dprod/spec/develop/contracts/profile/>
   a prof:Profile ;
   dct:title "DPROD Data Contracts — ODRL 2.2 Profile Extension"@en ;
   dct:modified "2026-10-13"^^xsd:date ;
@@ -30,7 +30,9 @@ odrl:core
     Uses ODRL terms for standard constructs; adds lifecycle state,
     deadline, reusable schedules, data contracts, transitive ODRL collection matching,
     one-hop operand bindings over normalized immutable input nodes, and logical negation."""@en ;
-  prof:isProfileOf odrl:core ;
+  # Data Contracts extends DPROD core as well as ODRL: its vocabulary imports
+  # the DPROD ontology and adds optional policies to DPROD data products.
+  prof:isProfileOf odrl:core , <https://ekgf.org/dprod/spec/develop/profile/> ;
   prof:hasToken "dprod"^^xsd:token ;
   # Default conflict strategy: if a permission and a prohibition both match,
   # the prohibition wins. A policy may declare its own odrl:conflict to
@@ -41,12 +43,12 @@ odrl:core
     dct:title "DPROD Contracts Ontology"@en ;
     prof:hasRole role:vocabulary ;
     dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
-    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/contracts/dprod-contracts.ttl>
+    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/dprod-contracts.ttl>
   ] , [
     a prof:ResourceDescriptor ;
     dct:title "DPROD Contracts SHACL Shapes"@en ;
     prof:hasRole role:validation ;
     dct:conformsTo <http://www.w3.org/ns/shacl#> ;
-    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/contracts/dprod-contracts-shapes.ttl>
+    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/dprod-contracts-shapes.ttl>
   ] ;
 .

@@ -1,0 +1,278 @@
+"""Build all selected Git publications with one engine, then assemble one site."""
+import argparse
+import collections
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+
+from rdflib import Graph, URIRef
+
+import publication_manifest as manifest
+
+# GitHub Pages is the only deployment of this publication.
+PLATFORM = 'github-pages'
+THIS_VERSION = URIRef('https://ekgf.org/ontology/grapharch#thisVersion')
+# Serializations of each source's native RDF that GraphArch RDF renderer
+# targets publish in rdf/, beside the native source files.
+RDF_RESOURCES = ('dprod.jsonld', 'dprod.rdf', 'dprod-all.ttl', 'dprod-all.rdf',
+                 'dprod-all.jsonld', 'dprod-shapes.jsonld', 'dprod-shapes.rdf')
+# The JSON-LD contexts and source evidence from publication_resources.serialize.
+CONTEXT_RESOURCES = ('dprod-context.jsonld', 'dprod-simple.jsonld', 'source-resources.json')
+# Native W3C PROF profile declarations and the directory of the profile IRI
+# (profile/ for DPROD core, contracts/profile/ for Data Contracts).
+PROFILE_RESOURCES = (('dprod-prof.ttl', 'profile'), ('dprod-contracts-prof.ttl', 'contracts/profile'))
+# Every derived file, published at the root of its specification bundle next
+# to the native files.
+DERIVED_RESOURCES = RDF_RESOURCES + CONTEXT_RESOURCES
+
+
+def committed_configuration(root, path):
+    root = root.resolve()
+    try:
+        relative = path.resolve().relative_to(root)
+    except ValueError as error:
+        raise ValueError('publication manifest must belong to the trusted source checkout') from error
+    subprocess.run(['git', '-C', str(root), 'ls-files', '--error-unmatch', str(relative)],
+                   check=True, stdout=subprocess.DEVNULL)
+    dirty = subprocess.check_output(['git', '-C', str(root), 'status', '--porcelain', '--untracked-files=no'], text=True)
+    untracked = subprocess.check_output(['git', '-C', str(root), 'ls-files', '--others', '--exclude-standard', '--',
+                                        'publication', 'scripts', 'spec-generator'], text=True)
+    if dirty or untracked:
+        raise ValueError('central publication requires committed configuration, content and executable inputs')
+    return manifest.require_sha(subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip())
+
+
+def website_definitions(source, target, publication_url):
+    """Supply the website target's publication URL from the hosting configuration."""
+    graph = Graph().parse(data=source, format='turtle')
+    subject = URIRef(target)
+    if (subject, None, None) not in graph:
+        raise ValueError(f'website target {target} is not defined')
+    if any(True for _ in graph.subject_objects(THIS_VERSION)):
+        # The deployment location is an input of each build, never source content.
+        raise ValueError('the website publication URL is hosting configuration; '
+                         'remove ga:thisVersion from the website definitions')
+    graph.add((subject, THIS_VERSION, URIRef(publication_url)))
+    return graph.serialize(format='turtle')
+
+
+def omit_preview(publication, error, staging):
+    """Report a failed pull-request preview and remove anything it left in staging."""
+    tree = staging / 'publications' / publication['slug']
+    if tree.exists():
+        shutil.rmtree(tree)
+    source = f'{publication["branch"]} at {publication["source_commit"]}'
+    reason = f'{type(error).__name__}: {error}'
+    if getattr(error, 'stderr', None):
+        reason += '\n' + error.stderr
+    print(f'PR #{publication["pull_request"]} ({source}) preview omitted from the site and '
+          f'version inventory: {reason}', file=sys.stderr, flush=True)
+    summary = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary:
+        with open(summary, 'a', encoding='utf-8') as stream:
+            stream.write(f'### PR #{publication["pull_request"]} preview omitted\n\n'
+                         f'`{source}` failed to build. It is not deployed and not listed in the '
+                         f'version inventory; develop and release publications are unaffected.\n\n'
+                         f'~~~text\n{reason}\n~~~\n\n')
+
+
+def assemble_atomic(output, publications, build, package):
+    if output.exists():
+        raise ValueError('publication output must not already exist')
+    output.parent.mkdir(parents=True, exist_ok=True)
+    # The staging tree is never a deployed site. Failure leaves output absent.
+    with tempfile.TemporaryDirectory(prefix='.publication-build-', dir=output.parent) as temporary:
+        staging = Path(temporary)
+        published = []  # bounded: maximum_publications <= 32.
+        for publication in publications:
+            if 'pull_request' not in publication:
+                # Develop and release publications are all-or-nothing.
+                build(publication, staging)
+            else:
+                try:
+                    build(publication, staging)
+                except Exception as error:
+                    # A failing PR preview is reported and omitted; it never
+                    # blocks the develop and release deployment.
+                    omit_preview(publication, error, staging)
+                    continue
+            published.append(publication)
+        package(staging, published)
+        staging.rename(output)
+
+
+def run_engine(engine, arguments):
+    # Selected Git sources are data. No deployment/discovery credential enters
+    # the document processor's environment, including subprocesses it launches.
+    environment = {key: value for key, value in os.environ.items() if key in {
+        'PATH', 'HOME', 'TMPDIR', 'TEMP', 'LANG', 'LC_ALL', 'SYSTEMROOT',
+        'SSL_CERT_FILE', 'SSL_CERT_DIR', 'HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY',
+    }}
+    command = [str(engine), 'publication', *arguments]
+    # Diagnostics stream to the log as they arrive; the tail is kept so a
+    # failure report states the engine's reason, not only its exit status.
+    diagnostics = collections.deque(maxlen=20)  # bounded: last 20 lines.
+    with subprocess.Popen(command, env=environment, stderr=subprocess.PIPE,
+                          encoding='utf-8', errors='replace') as process:
+        for line in process.stderr:
+            sys.stderr.write(line)
+            diagnostics.append(line.rstrip('\n'))
+    sys.stderr.flush()
+    if process.returncode != 0:
+        raise subprocess.CalledProcessError(process.returncode, command, stderr='\n'.join(diagnostics))
+
+
+def sha256(path):
+    with path.open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def verify_generator(engine, version, revision):
+    """Require the installed binary to identify the release the workflow pinned."""
+    lines = subprocess.check_output([str(engine), '--version'], text=True).splitlines()
+    found = re.fullmatch(r'grapharch (\d+\.\d+\.\d+)(?: \(build \d+\))?', lines[0] if lines else '')
+    if found is None or found[1] != version:
+        raise ValueError('generator binary version differs from the pinned release')
+    sources = {match for line in lines[1:] for match in re.findall(r'source commit ([0-9a-f]{40})\b', line)}
+    if sources != {revision}:
+        raise ValueError('generator binary source commit differs from the pinned release')
+
+
+def edition(config, item):
+    """The PDF edition suffix: none for the default branch, else the slug."""
+    return 'default' if item['branch'] == config['leading_branch'] else item['slug']
+
+
+def build_all(root, config, selected, engine, generator, output, config_revision, hosting_profile=None):
+    from publication_resources import retain_assets, serialize
+    verify_generator(engine, generator['version'], generator['revision'])
+    repository = 'https://github.com/' + config['repository'] + '.git'
+    cache = root / 'output/central-git-cache'
+    cache.mkdir(parents=True, exist_ok=True)
+    git = cache / 'sources.git'
+    if not git.exists():
+        subprocess.run(['git', 'init', '--bare', str(git)], check=True)
+    observed = datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')
+
+    def build(item, staging):
+        # Fetch source objects only; never check out or execute another branch.
+        subprocess.run(['git', '-C', str(git), 'fetch', '--no-tags', repository, item['source_commit']], check=True)
+        destination = staging / 'publications' / item['slug']
+        # Definitions come from this controlling checkout; the designated
+        # commit supplies only content.
+        run_engine(engine, ['build-revision', '--git-repository', repository,
+                   '--git-commit', item['source_commit'],
+                   '--definitions', str(root / item['definitions']),
+                   '--definitions-commit', config_revision, '--project', config['project'],
+                   '--all-targets', '--edition', edition(config, item),
+                   '--generator-revision', generator['revision'],
+                   '--publication-url', config['canonical_url'] + 'spec/' + item['slug'] + '/',
+                   '--git-cache', str(cache / 'grapharch'), '--output-root', str(destination), '--json'])
+        specification = destination / 'specification'
+        if not (specification / 'index.html').is_file():
+            raise ValueError(f'{item["slug"]}: no specification/index.html target')
+        rdf = destination / 'rdf'
+        resources = serialize(git, item, specification, (root / item['definitions']).read_bytes())
+        # Each W3C PROF profile IRI resolves to its declaration.
+        for name, directory in PROFILE_RESOURCES:
+            if name in resources:
+                profile = specification / directory
+                profile.mkdir(parents=True)
+                shutil.copyfile(rdf / name, profile / 'index.ttl')
+        # Keep target-relative links intact. The old entry URL redirects into
+        # the specification target; sibling PDFs and website pages retain their
+        # original relative relationship instead of rewriting rendered HTML.
+        (destination / 'index.html').write_text(
+            '<!doctype html><html lang="en"><meta charset="utf-8">'
+            '<title>Open specification</title>'
+            '<script>location.replace("specification/"+location.search+location.hash)</script>'
+            '<noscript><meta http-equiv="refresh" content="0;url=specification/"></noscript>'
+            '<a href="specification/">Open specification</a></html>\n')
+        # GraphArch publishes the native files and their serializations in rdf/.
+        for name in resources + list(RDF_RESOURCES):
+            shutil.copyfile(rdf / name, destination / name)
+        for name in CONTEXT_RESOURCES:
+            shutil.copyfile(specification / name, destination / name)
+        for directory in dict.fromkeys(path.split('/')[0] for _, path in PROFILE_RESOURCES):
+            if (specification / directory).exists():
+                shutil.copytree(specification / directory, destination / directory)
+        retain_assets(git, item, destination)
+
+    def package(staging, published):
+        website = config['website']
+        definition = staging / 'project-site.ttl'
+        source_definitions = website_definitions((root / website['definitions']).read_text(),
+                                                 website['target'], config['canonical_url'])
+        definition.write_text(source_definitions + '\n' +
+                              manifest.inventory_turtle(config, published, config_revision, observed))
+        run_engine(engine, ['build-site', '--source', str(root / website['source']),
+                           '--definitions', str(definition), '--project', website['project'],
+                           '--target', website['target'], '--output-root', str(staging / 'website')])
+        trees = [{'source': str(staging / 'publications' / p['slug']),
+                  'destination': 'spec/' + p['slug']} for p in published]
+        hosting = {'version': 2, 'platform': PLATFORM, 'mount': config['mount'], 'site': str(staging / 'website/site'),
+                   'static_trees': trees, 'directory_aliases': [],
+                   'inventory': str(staging / 'website/site/publication-versions.json'), 'version_path': 'spec'}
+        # The longstanding /spec/ URL selects the leading branch; all versions
+        # are actual local directories, never Vercel proxy routes.
+        leading = next(p for p in published if p['branch'] == config['leading_branch'])
+        hosting['directory_aliases'].append({'path': 'spec', 'target': 'spec/' + leading['slug']})
+        if any(p['slug'] == 'main' for p in published):
+            hosting['directory_aliases'].append({'path': 'spec/archive/1.0', 'target': 'spec/main'})
+        # GitHub Pages serves files only: each profile is published as
+        # profile/index.ttl and contracts/profile/index.ttl inside its
+        # specification bundle.
+        configuration = staging / 'hosting.json'
+        configuration.write_text(json.dumps(hosting, indent=2) + '\n')
+        run_engine(engine, ['package-site', '--config', str(configuration), '--output-root', str(staging / 'deployment')])
+        record = {'version': 1, 'repository': repository, 'leading_branch': config['leading_branch'],
+                  'mount': config['mount'],
+                  'config_commit': config_revision, 'generator_revision': generator['revision'],
+                  'generator_version': generator['version'], 'generator_sha256': sha256(engine), 'observed_at': observed, 'publications': published}
+        if hosting_profile is not None:
+            from pages_publication import prepare_artifact
+            prepare_artifact(staging, config['mount'])
+            record['hosting_profile'] = str(hosting_profile.relative_to(root))
+            record['publication_url'] = config['canonical_url']
+        record_path = staging / 'deployment/static' / config['mount'][1:] / 'publication-build.json'
+        record_path.write_text(json.dumps(record, indent=2) + '\n')
+        (staging / 'publication-build.json').write_text(json.dumps(record, indent=2) + '\n')
+
+    assemble_atomic(output, selected, build, package)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--manifest', type=Path, default=Path('publication/publications.json'))
+    parser.add_argument('--hosting-profile', type=Path)
+    parser.add_argument('--grapharch', type=Path, required=True)
+    parser.add_argument('--generator-version', required=True,
+                        help='release version the workflow pinned in its GraphArch action step')
+    parser.add_argument('--generator-revision', required=True,
+                        help='release commit of that version')
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parents[1]
+    revision = committed_configuration(root, args.manifest)
+    config = manifest.validate(json.loads(args.manifest.read_text()))
+    if args.hosting_profile is not None:
+        from pages_publication import hosting_configuration
+        committed_configuration(root, args.hosting_profile)
+        args.hosting_profile = args.hosting_profile.resolve()
+        config = hosting_configuration(config, json.loads(args.hosting_profile.read_text()))
+    selected = manifest.discover(config, revision)
+    print(json.dumps({'config_commit': revision, 'selected': selected}, indent=2), flush=True)
+    generator = {'version': args.generator_version, 'revision': manifest.require_sha(args.generator_revision)}
+    build_all(root, config, selected, args.grapharch.resolve(), generator, args.output.resolve(), revision,
+              args.hosting_profile)
+
+
+if __name__ == '__main__':
+    main()

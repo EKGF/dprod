@@ -1,0 +1,60 @@
+# baseURI: https://ekgf.org/dprod/spec/develop/profile/
+# prefix: dprod
+
+@prefix dprod: <https://ekgf.org/dprod/spec/develop/> .
+@prefix prof: <http://www.w3.org/ns/dx/prof/> .
+@prefix role: <http://www.w3.org/ns/dx/prof/role/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+############################# Base Specification #########################
+
+<https://www.w3.org/TR/vocab-dcat-3/>
+  a dct:Standard ;
+  dct:title "Data Catalog Vocabulary (DCAT) - Version 3"@en ;
+  dct:identifier <https://www.w3.org/TR/vocab-dcat-3/> ;
+.
+
+
+############################# DPROD Core Profile (DCAT 3) #########################
+
+<https://ekgf.org/dprod/spec/develop/profile/>
+  a prof:Profile ;
+  dct:title "DPROD Core — DCAT 3 Application Profile"@en ;
+  dct:modified "2026-11-16"^^xsd:date ;
+  dct:description
+    """DPROD core is an application profile of DCAT 3. It reuses dcat:Catalog,
+    dcat:DataService, dcat:Distribution and dcat:Dataset, and adds dprod:DataProduct
+    with its input and output ports to describe data products in a decentralized way."""@en ;
+  prof:isProfileOf <https://www.w3.org/TR/vocab-dcat-3/> ;
+  prof:hasToken "dprod-core"^^xsd:token ;
+  prof:hasResource [
+    a prof:ResourceDescriptor ;
+    dct:title "DPROD Ontology"@en ;
+    prof:hasRole role:vocabulary ;
+    dct:conformsTo <http://www.w3.org/TR/owl2-overview/> ;
+    dct:format "text/turtle" ;
+    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/dprod.ttl>
+  ] , [
+    a prof:ResourceDescriptor ;
+    dct:title "DPROD SHACL Shapes"@en ;
+    prof:hasRole role:validation ;
+    dct:conformsTo <http://www.w3.org/ns/shacl#> ;
+    dct:format "text/turtle" ;
+    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/dprod-shapes.ttl>
+  ] , [
+    a prof:ResourceDescriptor ;
+    dct:title "DPROD JSON-LD Context"@en ;
+    prof:hasRole role:schema ;
+    dct:conformsTo <https://www.w3.org/TR/json-ld11/> ;
+    dct:format "application/ld+json" ;
+    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/dprod-context.jsonld>
+  ] , [
+    a prof:ResourceDescriptor ;
+    dct:title "DPROD Specification"@en ;
+    prof:hasRole role:specification ;
+    dct:format "text/html" ;
+    prof:hasArtifact <https://ekgf.org/dprod/spec/develop/specification/>
+  ] ;
+.

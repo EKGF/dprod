@@ -116,8 +116,9 @@ class ApplicationContext:
     function of the ontology rather than a hand-maintained list.
     """
 
-    def __init__(self, ontology_graph: Graph) -> None:
+    def __init__(self, ontology_graph: Graph, *, namespace: str = globals.ontology_namespace_iri) -> None:
         self._graph = ontology_graph
+        self._namespace = namespace
 
     def dprod_object_properties(self) -> list[str]:
         """The DPROD properties whose values are resources, not literals.
@@ -126,7 +127,7 @@ class ApplicationContext:
         the ontology is coerced automatically and one that is removed stops
         being coerced.
         """
-        namespace = globals.ontology_namespace_iri
+        namespace = self._namespace
         return sorted(
             f"dprod:{str(subject)[len(namespace):]}"
             for subject in self._graph.subjects(RDF.type, OWL.ObjectProperty)
@@ -137,7 +138,9 @@ class ApplicationContext:
         """Every term that must carry ``"@type": "@id"``, in a stable order."""
         return (
             self.dprod_object_properties()
-            + list(DPROD_IRI_VALUED_RDF_PROPERTIES)
+            + [term for term in DPROD_IRI_VALUED_RDF_PROPERTIES
+               if (URIRef(self._namespace + term.removeprefix('dprod:')),
+                   RDF.type, RDF.Property) in self._graph]
             + list(EXTERNAL_IRI_VALUED_TERMS)
         )
 
@@ -150,7 +153,7 @@ class ApplicationContext:
         declared range (``dprod:deadline`` accepts a dateTime or a duration)
         is left alone and its values carry an explicit ``@type``.
         """
-        namespace = globals.ontology_namespace_iri
+        namespace = self._namespace
         typed: dict[str, str] = {}
         for subject in self._graph.subjects(RDF.type, OWL.DatatypeProperty):
             if not str(subject).startswith(namespace):
@@ -165,6 +168,7 @@ class ApplicationContext:
         """The context object, ready to be serialised."""
         context: dict = {"@version": 1.1}
         context.update(PREFIXES)
+        context['dprod'] = self._namespace
         for term in self.coerced_terms():
             context[term] = {"@id": term, "@type": "@id"}
         for term, datatype in self.dprod_typed_literal_properties().items():
@@ -225,13 +229,14 @@ class SimpleContext:
     a misspelt term is dropped visibly rather than coined in the DPROD namespace.
     """
 
-    def __init__(self, ontology_graph: Graph) -> None:
+    def __init__(self, ontology_graph: Graph, *, namespace: str = globals.ontology_namespace_iri) -> None:
         self._graph = ontology_graph
-        self._prefixed = ApplicationContext(ontology_graph).as_dict()
+        self._namespace = namespace
+        self._prefixed = ApplicationContext(ontology_graph, namespace=namespace).as_dict()
 
     def dprod_terms(self) -> list[str]:
         """Every class, property and individual in the DPROD namespace."""
-        namespace = globals.ontology_namespace_iri
+        namespace = self._namespace
         locals_ = {
             str(subject)[len(namespace):]
             for subject in self._graph.subjects()
