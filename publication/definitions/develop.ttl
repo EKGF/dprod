@@ -1806,3 +1806,8 @@ doc:rdf-all a ga:Target ; ga:renderer ga:RdfRenderer ;
 doc:specification ga:conformanceLanguage ga:Bcp14 .
 doc:pdf ga:conformanceLanguage ga:Bcp14 .
 doc:omg-pdf ga:conformanceLanguage ga:Bcp14 .
+
+# The overview PDF reuses the project-site pages, which link the versions page
+# by its inventory IRI; outside the website that page is its published URL.
+<urn:dprod:project-site:versions> a ga:ExternalReference ;
+    ga:url "https://ekgf.org/dprod/spec-versions/" .
