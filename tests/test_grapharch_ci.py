@@ -10,6 +10,8 @@ from rdflib import Graph, Namespace, URIRef
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = ROOT / '.github/workflows'
 PAGES = WORKFLOWS / 'grapharch-pages.yml'
+BUILD = WORKFLOWS / 'grapharch-publication-build.yml'
+PIN = r'uses: (EKGF/grapharch@[0-9a-f]{40} # v\d+\.\d+\.\d+)'
 
 
 class GrapharchCITests(unittest.TestCase):
@@ -41,7 +43,9 @@ class GrapharchCITests(unittest.TestCase):
         # platform; those keep their own workflows until a verified cutover.
         publishers = {path.name for path in WORKFLOWS.glob('*.yml')
                       if 'scripts/central_publications.py' in path.read_text()}
-        self.assertEqual(publishers, {'grapharch-pages.yml'})
+        # The pull request gate builds with the same script but never deploys.
+        self.assertEqual(publishers, {'grapharch-pages.yml', 'grapharch-publication-build.yml'})
+        self.assertNotIn('deploy-pages', BUILD.read_text())
         text = PAGES.read_text()
         self.assertIn('--hosting-profile publication/github-pages.json', text)
         self.assertIn('actions/deploy-pages@', text)
@@ -77,6 +81,30 @@ class GrapharchCITests(unittest.TestCase):
         self.assertNotIn('pages: write', build)
         self.assertNotIn('id-token: write', build)
         self.assertNotIn('pull_request:', text)
+        self.assertNotIn('set -e', text)
+
+    def test_pull_request_gate_builds_with_the_pin_of_its_own_head(self):
+        text = BUILD.read_text()
+        self.assertRegex(text, r'(?m)^  pull_request:$')
+        self.assertNotIn('pull_request_target', text)
+        self.assertRegex(text, r'(?m)^  publication-build:$')
+        self.assertRegex(text, r'(?m)^    name: publication-build$')
+        self.assertIn('ref: ${{ github.event.pull_request.head.sha }}', text)
+        self.assertIn('--skip-pull-request-previews', text)
+        # Same pin line as the deploy workflow, so the PR is judged by the
+        # GraphArch version that will deploy it.
+        self.assertEqual(re.findall(PIN, text), re.findall(PIN, PAGES.read_text()))
+        self.assertEqual(len(re.findall(PIN, text)), 1)
+
+    def test_pull_request_gate_is_read_only_and_secretless(self):
+        text = BUILD.read_text()
+        self.assertRegex(text, r'(?ms)^permissions:\n  contents: read\n(?!  )')
+        self.assertNotRegex(text, r'(?m):\s*write\b')
+        self.assertNotIn('secrets.', text)
+        self.assertNotIn('pages:', text)
+        self.assertNotIn('id-token', text)
+        self.assertNotIn('persist-credentials: true', text)
+        self.assertIn('persist-credentials: false', text)
         self.assertNotIn('set -e', text)
 
 if __name__ == '__main__':

@@ -1,0 +1,62 @@
+name: GraphArch publication build
+
+# Pull request gate: the publication definitions in a PR must build with the
+# GraphArch release pinned by that same PR. The deploy workflow
+# (grapharch-pages.yml) runs the trusted base-branch workflow and therefore always uses
+# develop's pin, so a PR that needs a newer GraphArch than develop pins would
+# merge green and break the Pages build afterwards. This workflow builds the
+# PR head with its own pin, exactly as the deploy does, but never deploys.
+#
+# Security: a plain pull_request run with read-only permissions and no
+# secrets, so untrusted (fork) PR code never sees a write token. Mark the
+# `publication-build` job as a required status check on develop.
+on:
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grapharch-publication-build-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  publication-build:
+    name: publication-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      # Keep this pin identical to grapharch-pages.yml (tests/test_grapharch_ci.py
+      # asserts it); Dependabot bumps both lines in one PR.
+      - name: Install the pinned GraphArch release
+        id: grapharch
+        uses: EKGF/grapharch@01eb307e6c4b384782237c3fe58ba04cb624474a # v0.2.22
+        with:
+          mode: install
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+          cache: pip
+      - name: Install trusted source serialization dependencies
+        run: pip install -r requirements.txt
+      - name: Verify publication and Pages boundaries
+        run: python -m unittest discover -s tests -p 'test_*grapharch*.py'
+      - name: Verify central assembly
+        run: python -m unittest discover -s tests -p test_central_publications.py
+      - name: Build the website and specifications with the pinned GraphArch
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          python scripts/central_publications.py
+          --manifest publication/publications.json
+          --hosting-profile publication/github-pages.json
+          --grapharch "${{ steps.grapharch.outputs.binary-path }}"
+          --generator-version "${{ steps.grapharch.outputs.version }}"
+          --generator-revision "${{ steps.grapharch.outputs.revision }}"
+          --skip-pull-request-previews
+          --output output/publication-build
