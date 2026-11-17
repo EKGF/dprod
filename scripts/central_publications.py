@@ -258,6 +258,8 @@ def main():
     parser.add_argument('--generator-revision', required=True,
                         help='release commit of that version')
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--skip-pull-request-previews', action='store_true',
+                        help='build only the configured publications (pull request validation)')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     revision = committed_configuration(root, args.manifest)
@@ -267,6 +269,8 @@ def main():
         committed_configuration(root, args.hosting_profile)
         args.hosting_profile = args.hosting_profile.resolve()
         config = hosting_configuration(config, json.loads(args.hosting_profile.read_text()))
+    if args.skip_pull_request_previews:
+        config['pull_requests']['enabled'] = False
     selected = manifest.discover(config, revision)
     print(json.dumps({'config_commit': revision, 'selected': selected}, indent=2), flush=True)
     generator = {'version': args.generator_version, 'revision': manifest.require_sha(args.generator_revision)}
