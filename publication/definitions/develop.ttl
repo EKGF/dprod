@@ -1351,7 +1351,10 @@ doc:omg-authority a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 <https://www.omg.org/> a <https://www.omg.org/spec/Commons/Organizations/Organization> ;
     rdfs:label "Object Management Group"@en .
 
-doc:specification ga:metadataRow doc:metadata-pdfs .
+# The named PDF editions are the specification's PDFs; a paired PDF of the
+# page would duplicate the EKGF community draft (same scope and placements).
+doc:specification ga:metadataRow doc:metadata-pdfs ;
+    ga:pairedPdf false .
 doc:metadata-pdfs a ga:MetadataRow ; ga:order 9 ; ga:field "custom" ;
     dct:title "PDF editions:" ;
     ga:body """<a href="urn:dprod-showcase:pdf">EKGF community draft</a><br><a href="urn:dprod-showcase:omg-pdf">OMG submission preview</a>""" .
@@ -1803,3 +1806,8 @@ doc:rdf-all a ga:Target ; ga:renderer ga:RdfRenderer ;
 doc:specification ga:conformanceLanguage ga:Bcp14 .
 doc:pdf ga:conformanceLanguage ga:Bcp14 .
 doc:omg-pdf ga:conformanceLanguage ga:Bcp14 .
+
+# The overview PDF reuses the project-site pages, which link the versions page
+# by its page IRI; outside the website that page is its published URL.
+<urn:dprod:project-site:page:versions> a ga:ExternalReference ;
+    ga:url "https://ekgf.org/dprod/spec-versions/" .

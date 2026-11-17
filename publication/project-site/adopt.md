@@ -60,7 +60,7 @@ The specification includes worked examples covering common patterns: SBA pool ra
 
 DPROD ships SHACL shapes that any conforming RDF tool can use to validate your data product descriptions. Use the shapes for the version you are implementing. They check the constraints encoded in those shapes; operational and business requirements may require additional checks.
 
-[Browse the shapes in the spec](https://ekgf.org/dprod/spec-versions/) [Raw SHACL file](https://github.com/EKGF/dprod/blob/develop/ontology/dprod/dprod-shapes.ttl)
+[Browse the shapes in the spec](urn:dprod:project-site:page:versions) [Raw SHACL file](https://github.com/EKGF/dprod/blob/develop/ontology/dprod/dprod-shapes.ttl)
 
 ## 4. Cite the OMG standard
 
@@ -78,7 +78,7 @@ https://ekgf.org/dprod/spec/develop/
 
 The complete, normative DPROD specification with classes, properties, and shapes.
 
-[Open the spec](https://ekgf.org/dprod/spec-versions/)
+[Open the spec](urn:dprod:project-site:page:versions)
 
 ### Core concepts
 
