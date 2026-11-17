@@ -1351,7 +1351,10 @@ doc:omg-authority a <https://ekgf.org/ontology/artifact-governance#Authority> ;
 <https://www.omg.org/> a <https://www.omg.org/spec/Commons/Organizations/Organization> ;
     rdfs:label "Object Management Group"@en .
 
-doc:specification ga:metadataRow doc:metadata-pdfs .
+# The named PDF editions are the specification's PDFs; a paired PDF of the
+# page would duplicate the EKGF community draft (same scope and placements).
+doc:specification ga:metadataRow doc:metadata-pdfs ;
+    ga:pairedPdf false .
 doc:metadata-pdfs a ga:MetadataRow ; ga:order 9 ; ga:field "custom" ;
     dct:title "PDF editions:" ;
     ga:body """<a href="urn:dprod-showcase:pdf">EKGF community draft</a><br><a href="urn:dprod-showcase:omg-pdf">OMG submission preview</a>""" .
