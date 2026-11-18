@@ -12,7 +12,7 @@ grapharch:
     ports-data-services: urn:dprod:content:concepts:ports-data-services
     distributions: urn:dprod:content:concepts:distributions
     datasets: urn:dprod:content:concepts:datasets
-  panel_sections: [data-product, ports-data-services, distributions, datasets]
+  resource_sections: [core-concepts]
   card_icons:
     data-product: {name: package, tone: primary}
     ports-data-services: {name: plug, tone: accent}
@@ -32,25 +32,25 @@ The building blocks of every DPROD description. Each concept links to its normat
 
 ![The DPROD model connects products, services, datasets, and distributions.](assets/dprod-overview-model.svg)
 
-## Data Product
+### Data Product
 
 A rational, managed, and governed collection of data with purpose, value, and ownership, meeting consumer needs over a planned lifecycle. Data products have input and output ports, code, and metadata.
 
 [Normative definition in the spec](https://ekgf.org/dprod/spec/#dataproductshape)
 
-## Ports (Data Services)
+### Ports (Data Services)
 
 Digital interfaces that provide access to datasets. Input ports bring data into the product, while output ports share generated data. Ports specify connection details, formats, and link to datasets with shared schemas.
 
 [Normative definition in the spec](https://ekgf.org/dprod/spec/#dataserviceshape)
 
-## Distributions
+### Distributions
 
 Physical representations of data — CSV, JSON, Parquet, and access methods. A single dataset may have multiple distributions to serve different consumer needs without duplicating the underlying information.
 
 [Normative definition in the spec](https://ekgf.org/dprod/spec/#distributionshape)
 
-## Datasets
+### Datasets
 
 Logical models of the data that can conform to shared standards like FIBO, CDM, or custom ontologies using SHACL or OWL. The schema lives with the data, not in out-of-band documentation.
 

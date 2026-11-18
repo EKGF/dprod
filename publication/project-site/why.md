@@ -18,7 +18,7 @@ grapharch:
     owl: urn:dprod:content:why:owl
     shacl: urn:dprod:content:why:shacl
     prov: urn:dprod:content:why:prov
-  resource_sections: [origins-standardisation, built-on-w3c-standards]
+  resource_sections: [built-on-w3c-standards]
   card_icons:
     inconsistent-metadata: {name: triangle-alert, tone: accent}
     limited-discoverability: {name: search, tone: primary}

@@ -16,8 +16,11 @@
     {
       "branch": "main",
       "slug": "main",
-      "label": "DPROD 1.0 beta",
-      "status": "1.0 beta",
+      "label": "DPROD 1.0 (Beta)",
+      "status": "Frozen · Normative",
+      "description": "The frozen DPROD 1.0 beta baseline published by OMG. Never rebuilt.",
+      "icon": "archive",
+      "tone": "accent",
       "definitions": "publication/definitions/main.ttl",
       "assets": [
         "assets/DPROD.drawio.svg",
@@ -29,8 +32,11 @@
     {
       "branch": "develop",
       "slug": "develop",
-      "label": "Develop — latest working draft",
-      "status": "Working draft — not standardized",
+      "label": "Develop (latest)",
+      "status": "Production",
+      "description": "The current working draft on the develop branch.",
+      "icon": "circle-check",
+      "tone": "primary",
       "definitions": "publication/definitions/develop.ttl",
       "assets": [
         "assets/DPROD.drawio.svg",
@@ -46,7 +52,11 @@
     "exclude_branch_prefixes": [
       "dependabot/"
     ],
-    "definitions": "publication/definitions/develop.ttl"
+    "definitions": "publication/definitions/develop.ttl",
+    "status": "Preview",
+    "description": "Preview build of the {branch} branch.",
+    "icon": "clock",
+    "tone": "muted"
   },
   "maximum_publications": 16
 }
