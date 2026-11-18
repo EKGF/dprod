@@ -18,13 +18,14 @@ grapharch:
     owl: urn:dprod:content:why:owl
     shacl: urn:dprod:content:why:shacl
     prov: urn:dprod:content:why:prov
-  resource_sections: [built-on-w3c-standards]
+  term_sections: [built-on-w3c-standards]
   card_icons:
     inconsistent-metadata: {name: triangle-alert, tone: accent}
     limited-discoverability: {name: search, tone: primary}
     interoperability-friction: {name: plug, tone: accent}
     working-group-leadership: {name: users, tone: primary}
     omg-request-for-comments: {name: megaphone, tone: accent}
+    built-on-w3c-standards: {name: layers, tone: primary}
     dcat: {name: layers, tone: primary}
     rdf: {name: layers, tone: accent}
     owl: {name: layers, tone: primary}

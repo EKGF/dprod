@@ -134,6 +134,8 @@ class CentralPublicationTests(unittest.TestCase):
         selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [])
         ttl = manifest.inventory_turtle(config, selected, 'c' * 40, '2026-11-06T00:00:00Z')
         self.assertIn('ga:route "/dprod/spec/main/"', ttl)
+        # The website root, so version paths display relative to it.
+        self.assertIn(f'dcat:landingPage <{config["canonical_url"]}>', ttl)
         self.assertIn('DPROD 1.0 (Beta)', ttl)
         self.assertIn('ga:publicationStatus "Frozen · Normative"', ttl)
         self.assertIn('ga:iconName "archive" ; ga:iconTone "accent"', ttl)
