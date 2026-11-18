@@ -207,6 +207,7 @@ def inventory_turtle(config, selected, config_revision, observed_at):
              '@prefix dcat: <http://www.w3.org/ns/dcat#> .',
              '@prefix prov: <http://www.w3.org/ns/prov#> .',
              f'<{config["inventory"]}> dct:modified {quote(observed_at)} ;',
+             f' dcat:landingPage <{config["canonical_url"]}> ;',
              f' prov:wasDerivedFrom <https://github.com/{config["repository"]}/commit/{config_revision}> .']
     for order, item in enumerate(selected):
         identity = config['inventory'] + ':' + slug(item['slug'])

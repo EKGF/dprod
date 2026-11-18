@@ -12,6 +12,7 @@ grapharch:
   panel_sections: [what-is-dprod]
   feature_sections: [key-benefits]
   resource_sections: [articles-talks]
+  callout_sections: [omg-standard-with-w3c-technologies]
   card_icons:
     decentralized-architecture: {name: network, tone: primary}
     standardized-metadata: {name: file-json, tone: accent}

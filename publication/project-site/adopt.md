@@ -11,6 +11,11 @@ grapharch:
     2-study-the-worked-examples: urn:dprod:content:adopt:2-study-the-worked-examples
     3-validate-with-the-shacl-shapes: urn:dprod:content:adopt:3-validate-with-the-shacl-shapes
     4-cite-the-omg-standard: urn:dprod:content:adopt:4-cite-the-omg-standard
+  compact_sections:
+    - 1-reference-the-json-ld-context
+    - 2-study-the-worked-examples
+    - 3-validate-with-the-shacl-shapes
+    - 4-cite-the-omg-standard
   card_icons:
     1-reference-the-json-ld-context: {name: file-json, tone: primary}
     2-study-the-worked-examples: {name: folder-open, tone: accent}
