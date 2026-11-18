@@ -47,7 +47,7 @@ jobs:
       # The engine pin lives in this step so that Dependabot can bump it.
       - name: Install the pinned GraphArch release
         id: grapharch
-        uses: EKGF/grapharch@01eb307e6c4b384782237c3fe58ba04cb624474a # v0.2.22
+        uses: EKGF/grapharch@615760949a54246d2cb29b1b164478fa3ed0ccdf # v0.2.26
         with:
           mode: install
       - uses: actions/setup-python@v7
