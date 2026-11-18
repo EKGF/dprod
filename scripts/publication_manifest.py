@@ -34,6 +34,34 @@ def keys(value, expected):
         raise ValueError(f'configuration requires exactly: {expected}')
 
 
+TONES = ('primary', 'accent', 'muted')
+
+
+def text(value, name, limit=512):
+    if not isinstance(value, str) or not value.strip() or len(value) > limit or any(ord(c) < 32 for c in value):
+        raise ValueError(f'invalid publication {name}')
+    return value
+
+
+def presentation(item):
+    """A version's reader-facing status badge, description, icon and tone."""
+    text(item['status'], 'status', 48)
+    text(item['description'], 'description', 1024)
+    if not isinstance(item['icon'], str) or not re.fullmatch(r'[a-z][a-z-]{0,63}', item['icon']):
+        raise ValueError('invalid publication icon')
+    if item['tone'] not in TONES:
+        raise ValueError(f'publication tone must be one of {", ".join(TONES)}')
+
+
+def preview_description(policy, branch, number, title):
+    """Fill the preview description template with one pull request's facts."""
+    try:
+        value = policy['description'].format(branch=branch, number=number, title=title)
+    except (KeyError, IndexError, ValueError) as error:
+        raise ValueError('preview description template may use only {branch}, {number} and {title}') from error
+    return text(value, 'description', 1024)
+
+
 def validate(config):
     keys(config, 'version repository leading_branch project canonical_url mount inventory website publications pull_requests maximum_publications')
     if config['version'] != 1:
@@ -64,7 +92,8 @@ def validate(config):
     seen = set()
     branches = set()
     for item in config['publications']:
-        keys(item, 'branch slug label status definitions assets')
+        keys(item, 'branch slug label status description icon tone definitions assets')
+        presentation(item)
         slug(item['slug'])
         source_path(item['definitions'])
         if not isinstance(item['assets'], list) or len(item['assets']) > 32:
@@ -82,8 +111,11 @@ def validate(config):
         branches.add(item['branch'])
     if config['leading_branch'] not in branches:
         raise ValueError('the leading branch must be an explicit publication')
-    keys(config['pull_requests'], 'enabled same_repository_only exclude_branch_prefixes definitions')
+    keys(config['pull_requests'], 'enabled same_repository_only exclude_branch_prefixes definitions '
+                                  'status description icon tone')
     policy = config['pull_requests']
+    presentation(policy)
+    preview_description(policy, 'example/branch', 1, 'Example')
     if type(policy['enabled']) is not bool or policy['same_repository_only'] is not True:
         raise ValueError('this publisher accepts only explicitly enabled same-repository PRs')
     source_path(policy['definitions'])
@@ -118,7 +150,9 @@ def select(config, heads, pull_requests):
                 raise ValueError('selected publication budget exceeded')
             selected.append({'branch': branch, 'slug': f'pr-{pr["number"]}',
                              'label': f'PR #{pr["number"]}: {pr["title"]}',
-                             'status': 'Pull request preview — not standardized',
+                             'status': policy['status'],
+                             'description': preview_description(policy, branch, pr['number'], pr['title']),
+                             'icon': policy['icon'], 'tone': policy['tone'],
                              'assets': [],
                              'definitions': policy['definitions'], 'source_commit': require_sha(head['sha']),
                              'pull_request': pr['number']})
@@ -183,6 +217,8 @@ def inventory_turtle(config, selected, config_revision, observed_at):
                       f' dct:title {quote(item["label"])} ; dct:identifier {quote(item["slug"])} ;',
                       f' doap:branch {quote(item["branch"])} ; ga:advertised true ;',
                       f' ga:publicationStatus {quote(item["status"])} ; ga:route {quote(route)} ;',
+                      f' dct:description {quote(item["description"])} ;',
+                      f' ga:iconName {quote(item["icon"])} ; ga:iconTone {quote(item["tone"])} ;',
                       f' dcat:accessURL <{canonical}> ;',
                       f' prov:wasDerivedFrom <https://github.com/{config["repository"]}/commit/{require_sha(item["source_commit"])}> .'])
     return '\n'.join(lines) + '\n'

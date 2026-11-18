@@ -84,9 +84,11 @@ class CentralPublicationTests(unittest.TestCase):
         selected = manifest.select(config, heads, prs)
         self.assertEqual([p['slug'] for p in selected], ['main', 'develop', 'pr-42'])
         self.assertEqual([p['source_commit'] for p in selected], ['a' * 40, 'b' * 40, 'c' * 40])
-        self.assertEqual(selected[0]['label'], 'DPROD 1.0 beta')
+        self.assertEqual(selected[0]['label'], 'DPROD 1.0 (Beta)')
         self.assertEqual(selected[2]['branch'], 'issue/schedule')
-        self.assertEqual(selected[2]['status'], 'Pull request preview — not standardized')
+        self.assertEqual(selected[2]['status'], 'Preview')
+        self.assertEqual(selected[2]['description'], 'Preview build of the issue/schedule branch.')
+        self.assertEqual((selected[2]['icon'], selected[2]['tone']), ('clock', 'muted'))
 
     def test_missing_source_or_ambiguous_path_is_a_hard_error(self):
         config = self.settings()
@@ -100,6 +102,27 @@ class CentralPublicationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             manifest.validate(config)
 
+    def test_version_presentation_is_validated_source_data(self):
+        for change in ({'tone': 'loud'}, {'icon': 'Archive!'}, {'status': ''}):
+            config = self.settings()
+            config['publications'][0].update(change)
+            with self.assertRaises(ValueError, msg=change):
+                manifest.validate(config)
+        config = self.settings()
+        config['pull_requests']['description'] = 'Preview of {secret}'
+        with self.assertRaisesRegex(ValueError, 'template'):
+            manifest.validate(config)
+
+    def test_site_verifier_rejects_absolute_links_to_the_site_itself(self):
+        import verify_publication_site as verifier
+        html = ('<link rel="canonical" href="https://ekgf.org/dprod/why/">'
+                '<a href="../spec/main/">ok</a><a href="https://ekgf.org/about/">ok</a>'
+                '<a href="https://ekgf.org/dprod/spec-versions/">bad</a><a href="/dprod/spec/">bad</a>'
+                '<a href="https://ekgf.github.io/dprod/">bad</a>')
+        self.assertEqual(verifier.absolute_internal_links(
+            html, '/dprod', {'https://ekgf.org/dprod/', 'https://ekgf.github.io/dprod/'}),
+            ['https://ekgf.org/dprod/spec-versions/', '/dprod/spec/', 'https://ekgf.github.io/dprod/'])
+
     def test_leading_branch_must_be_selected_before_building(self):
         config = self.settings()
         config['publications'] = config['publications'][:1]
@@ -111,7 +134,10 @@ class CentralPublicationTests(unittest.TestCase):
         selected = manifest.select(config, {'main': 'a' * 40, 'develop': 'b' * 40}, [])
         ttl = manifest.inventory_turtle(config, selected, 'c' * 40, '2026-11-06T00:00:00Z')
         self.assertIn('ga:route "/dprod/spec/main/"', ttl)
-        self.assertIn('DPROD 1.0 beta', ttl)
+        self.assertIn('DPROD 1.0 (Beta)', ttl)
+        self.assertIn('ga:publicationStatus "Frozen · Normative"', ttl)
+        self.assertIn('ga:iconName "archive" ; ga:iconTone "accent"', ttl)
+        self.assertIn('dct:description "The current working draft on the develop branch."', ttl)
         self.assertIn('a' * 40, ttl)
         self.assertNotIn('vercel', ttl)
         self.assertNotIn('approved', ttl.lower())
