@@ -14,7 +14,11 @@
     dct:title "DPROD project website" ;
     ga:scope <urn:dprod:project-site:scope> ;
     ga:profile <urn:dprod:project-site:profile> ;
-    ga:renderer ga:WebsiteRenderer ; ga:destination "site" .
+    ga:renderer ga:WebsiteRenderer ; ga:destination "site" ;
+    # The stable production location. Links beneath it, and beneath the
+    # build's own publication URL that the hosting configuration supplies,
+    # render relative, so a preview or the Pages mirror links its own pages.
+    ga:latestVersion <https://ekgf.org/dprod/> .
 <urn:dprod:project-site:profile> a ga:Profile ;
     ga:theme <urn:dprod:project-site:theme> ;
     ga:projectNavigation false ;
@@ -54,7 +58,8 @@
 <urn:dprod:project-site:footer:links> dct:title "Links" ; ga:order 3 ;
     ga:footerLink <urn:dprod:project-site:footer:github>, <urn:dprod:project-site:footer:ekgf>,
         <urn:dprod:project-site:footer:omg> .
-<urn:dprod:project-site:footer:github> dct:title "GitHub" ; ga:url "https://github.com/EKGF/dprod" ; ga:order 1 .
+<urn:dprod:project-site:footer:github> dct:title "GitHub" ; ga:url "https://github.com/EKGF/dprod" ; ga:order 1 ;
+    ga:iconName "github" .
 <urn:dprod:project-site:footer:ekgf> dct:title "EKGF" ; ga:url "https://ekgf.org" ; ga:order 2 .
 <urn:dprod:project-site:footer:omg> dct:title "OMG" ; ga:url "https://omg.org" ; ga:order 3 .
 <urn:dprod:project-site:footer:copyright> ga:order 1 ;
@@ -68,7 +73,7 @@
     ga:project <urn:dprod:project-site> ; ga:documentorType ga:PublicationInventoryDocumentor ;
     ga:subject <urn:dprod:project-site:versions> ;
     ga:fragment <urn:dprod:project-site:page:versions> ;
-    dct:title "Specification versions" ; ga:route "spec-versions/" ;
+    dct:title "Spec versions" ; ga:eyebrow "Specification" ; ga:route "spec-versions/" ;
     ga:sourcePath "spec-versions.md" ; ga:navigationOrder 6 .
 <urn:dprod:project-site:page:versions> dct:description
-    "Specifications rebuilt together from selected Git revisions: DPROD 1.0 beta, the latest working draft, and selected review branches. Draft previews are not standardized versions." .
+    "The frozen OMG 1.0, the current working draft, and every in-flight ballot preview — all at stable URLs." .

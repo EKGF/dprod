@@ -10,6 +10,11 @@ grapharch:
     roadmap: urn:dprod:content:roadmap:introduction
     timeline: urn:dprod:content:roadmap:timeline
   resource_sections: [how-the-omg-ballot-process-works]
+  timeline_sections: [timeline]
+  timeline_statuses:
+    Done: {name: circle-check, tone: primary}
+    In progress: {name: clock, tone: accent}
+    Planned: {name: circle, tone: muted}
   card_icons:
     issues-become-branches: {name: git-branch, tone: primary}
     issue-branches-land-on-develop: {name: sparkles, tone: accent}
@@ -64,4 +69,6 @@ When enough issues are ready, a ballot branch (e.g. `ballot/4`) gathers them for
 
 A passing ballot merges into the canonical branch and the bundled changes become part of the next official version of DPROD.
 
-This page is intentionally a placeholder for the phase-1 site. A more detailed roadmap, with linked issues and target versions, will replace it once the working group signs off on the public milestones.
+---
+
+> This page is intentionally a placeholder for the phase-1 site. A more detailed roadmap, with linked issues and target versions, will replace it once the working group signs off on the public milestones.
