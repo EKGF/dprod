@@ -113,6 +113,16 @@ class CentralPublicationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'template'):
             manifest.validate(config)
 
+    def test_site_verifier_rejects_absolute_links_to_the_site_itself(self):
+        import verify_publication_site as verifier
+        html = ('<link rel="canonical" href="https://ekgf.org/dprod/why/">'
+                '<a href="../spec/main/">ok</a><a href="https://ekgf.org/about/">ok</a>'
+                '<a href="https://ekgf.org/dprod/spec-versions/">bad</a><a href="/dprod/spec/">bad</a>'
+                '<a href="https://ekgf.github.io/dprod/">bad</a>')
+        self.assertEqual(verifier.absolute_internal_links(
+            html, '/dprod', {'https://ekgf.org/dprod/', 'https://ekgf.github.io/dprod/'}),
+            ['https://ekgf.org/dprod/spec-versions/', '/dprod/spec/', 'https://ekgf.github.io/dprod/'])
+
     def test_leading_branch_must_be_selected_before_building(self):
         config = self.settings()
         config['publications'] = config['publications'][:1]

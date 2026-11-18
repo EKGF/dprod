@@ -56,6 +56,16 @@ orchestrator supplies the target's `ga:thisVersion` from `canonical_url` in
 `publications.json` (`https://ekgf.org/dprod/`) or in the selected hosting profile,
 and rejects website definitions that declare one. GraphArch generates
 canonical/Open Graph metadata, a sitemap and robots file from it.
+The website definitions also declare the stable production location,
+`https://ekgf.org/dprod/`, as `ga:latestVersion`. GraphArch renders every link
+beneath either location relative to its page, so the Pages mirror and previews
+never send readers to ekgf.org; `scripts/verify_publication_site.py` rejects a
+deployed page that links its own site absolutely.
+
+Each version's label, status badge, description, icon and tone come from
+`publications.json`; pull-request previews take theirs from the `pull_requests`
+template, which may use `{branch}`, `{number}` and `{title}`. GraphArch holds no
+status vocabulary.
 
 ## Workflow and provenance
 
