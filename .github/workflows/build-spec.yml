@@ -20,7 +20,10 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-latest    
+    # A unique check name, so branch protection can require it: the Pages
+    # workflow also has a job named build, which builds develop on PR events.
+    name: spec-build
+    runs-on: macos-latest
     permissions:
       contents: read
     steps:
@@ -30,8 +33,8 @@ jobs:
           echo "Ref: ${{ github.ref }}"
           echo "SHA: ${{ github.sha }}"
           echo "Actor: ${{ github.actor }}"
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.13'
           cache: 'pip' # caching pip dependencies

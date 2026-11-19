@@ -123,7 +123,7 @@ ex:internal
 
 <https://example.org/offers/market-prices-v2> a dprod:DataOffer ;
     rdfs:label "Market Price Data Contract v2" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
     odrl:target <https://example.org/assets/market-prices> ;
     dprod:offerLifecycleStatus dprod:Active ;
@@ -210,7 +210,7 @@ ex:internal
 
 <https://example.org/agreements/quant-market-data-2026> a dprod:DataContract ;
     rdfs:label "Quant Research Market Data 2026" ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer <https://example.org/offers/market-prices-v2> ;
     odrl:assigner <https://example.org/agents/data-platform-team> ;
     odrl:assignee <https://example.org/agents/quant-research> ;

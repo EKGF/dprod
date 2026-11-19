@@ -17,10 +17,11 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+# dct:modified is deliberately not declared an AnnotationProperty: DCAT uses it
+# as a date on dcat:Resource, so it stays rdf:Property as Dublin Core defines it (#276).
 dct:description a owl:AnnotationProperty .
 dct:contributor a owl:AnnotationProperty .
 dct:license a owl:AnnotationProperty .
-dct:modified a owl:AnnotationProperty .
 
 <https://ekgf.org/dprod/spec/develop/contracts/>
   a owl:Ontology ;
@@ -493,9 +494,9 @@ dprod:not
   dct:description "Logical negation on a constraint."@en ;
   rdfs:comment
     """ODRL defines odrl:and and odrl:or on LogicalConstraint but lacks
-    negation. DPROD adds dprod:not following the same pattern:
-      _:lc a odrl:LogicalConstraint ;
-          dprod:not _:c1 ."""@en ;
+    negation. DPROD adds dprod:not following the same pattern."""@en ;
+  skos:example """_:lc a odrl:LogicalConstraint ;
+    dprod:not _:c1 .""" ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain odrl:LogicalConstraint ;
   rdfs:range [ owl:unionOf (odrl:Constraint odrl:LogicalConstraint) ] ;

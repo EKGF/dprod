@@ -1,0 +1,90 @@
+{
+  "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+  "template_sha256": "d81b42658d46e2135d5d6baa5b966150bbe48e1a813877bccf3f2f5e3af8194c",
+  "files": [
+    {
+      "file": "publication/standards/abstract.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "b79d78429bf0f456126ecdc782b1b89aefdc9bb6b9da33a7a8846d2930c06663"
+    },
+    {
+      "file": "publication/standards/scope.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "22a96ec3ac127b0a96b6af08baebe397f7baf91be150177af52e6379525f0f8f"
+    },
+    {
+      "file": "publication/standards/conformance.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "e50f9f584bd71678a801e039f081d45216031f55d6d2e712c313c4c33bfc646a"
+    },
+    {
+      "file": "publication/standards/terms.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "63caeca628580f83d0b04fe3bf039db5d3af259a1bad61a1141027f42e4f2f46"
+    },
+    {
+      "file": "publication/standards/symbols.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "85d614dad9b8d5cf105bdcb829d3376961ce73c5fcd9b293a062badeb5e5e23d"
+    },
+    {
+      "file": "publication/standards/namespaces.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "36a49514b97fc64e03eb35de0b9c2c41e660e5b1fb2820bdcd52d5f94996f6c1"
+    },
+    {
+      "file": "publication/standards/acknowledgements.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "460a85edc75ee680079e32b523fc7ceeba787bd05620bbde81de648d1f68a5c6"
+    },
+    {
+      "file": "publication/standards/contracts.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "8a961c10c9757dd94cf4ea625d1db4947d4084d4bd2848214bde6e87cd9f9b69"
+    },
+    {
+      "file": "publication/standards/model.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "23c7141bdff04c0134ff5472a2c4da1dc628c7c26dfa321346c2682f1c53a5b2"
+    },
+    {
+      "file": "publication/standards/contracts-model.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "b14bd97c2ece7a40a419116b3ab38bf517ea5a26c0b252efbeae3a72bc672255"
+    },
+    {
+      "file": "publication/standards/preface.md",
+      "source": "https://www.omg.org/spec/DPROD/1.0/Beta1/PDF#page=8",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "60ea93715435bdeb68989f873028d66fbe6d645881d1effa6c3990a5ddf16351",
+      "checked_against": "https://www.omg.org/spec/DPROD/1.0/Beta2/PDF"
+    },
+    {
+      "file": "publication/standards/references.md",
+      "source": "https://www.omg.org/spec/DPROD/1.0/Beta1/PDF#page=10",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "73965594f88f32eaf85880634f80839341c510b9720d337d1c01018322c02f13",
+      "checked_against": "https://www.omg.org/spec/DPROD/1.0/Beta2/PDF"
+    },
+    {
+      "file": "publication/standards/reference.md",
+      "source": "https://github.com/EKGF/dprod/blob/04b6a6036bf1007f4c40b486dbbb9399e5f47080/respec/template.html",
+      "source_commit": "04b6a6036bf1007f4c40b486dbbb9399e5f47080",
+      "imported_fragment_sha256": "186641130931d6923bcd252d49781cb1263f2a14a50729b1de26b99a47ddf892"
+    }
+  ],
+  "initial_reference_pdf": "https://www.omg.org/spec/DPROD/1.0/Beta1/PDF",
+  "reference_pdf": "https://www.omg.org/spec/DPROD/1.0/Beta2/PDF",
+  "reference_document_number": "ptc/26-05-40",
+  "community_publication": "https://ekgf.org/dprod/spec/develop/"
+}

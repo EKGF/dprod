@@ -35,7 +35,7 @@ A minimal data use policy:
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
 
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:target ex:customerData ;
 
     odrl:permission [
@@ -450,7 +450,7 @@ A `LogicalConstraint` must have exactly one of `odrl:and`, `odrl:or`, or `dprod:
 
 ```turtle
 ex:policy a odrl:Set ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:target ex:data ;
 
     odrl:permission [
@@ -536,7 +536,7 @@ odrl:obligation [
 
 ## 10. Policy Review Checklist
 
-1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/>`
+1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/>`
 2. Conflict strategy defaults to `odrl:conflict odrl:prohibit`, inherited from the profile; declare `odrl:conflict` on a policy only to override that default
 3. A policy-level `odrl:target` is optional; when present it supplies the inherited target for rules that omit one
 4. Each permission and prohibition has exactly one `odrl:action` and at most one rule-level `odrl:target`; a rule with neither its own nor an inherited target applies to any asset

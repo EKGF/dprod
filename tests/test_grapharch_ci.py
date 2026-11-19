@@ -1,0 +1,111 @@
+"""CI compiles a pinned generator and documents the exact DPROD revision."""
+import importlib.util
+import json
+import re
+from pathlib import Path
+import tempfile
+import unittest
+from rdflib import Graph, Namespace, URIRef
+
+ROOT = Path(__file__).resolve().parents[1]
+WORKFLOWS = ROOT / '.github/workflows'
+PAGES = WORKFLOWS / 'grapharch-pages.yml'
+BUILD = WORKFLOWS / 'grapharch-publication-build.yml'
+PIN = r'uses: (EKGF/grapharch@[0-9a-f]{40} # v\d+\.\d+\.\d+)'
+
+
+class GrapharchCITests(unittest.TestCase):
+    def test_engine_pin_is_the_dependabot_managed_action_step(self):
+        text = PAGES.read_text()
+        pins = re.findall(r'uses: EKGF/grapharch@([0-9a-f]{40}) # v(\d+\.\d+\.\d+)', text)
+        # Dependabot moves the pin; the test fixes its shape, not its value.
+        self.assertEqual(len(pins), 1, pins)
+        config = json.loads((ROOT / 'publication/publications.json').read_text())
+        self.assertFalse({'generator_version', 'generator_revision'} & set(config))
+        dependabot = (ROOT / '.github/dependabot.yml').read_text()
+        self.assertIn('package-ecosystem: "github-actions"', dependabot)
+        self.assertIn('interval: "daily"', dependabot)
+        # GraphArch releases several times a day; Dependabot's default cooldown
+        # would hold every bump back, so the action is exempt from it.
+        self.assertRegex(dependabot, r'(?s)cooldown:.*exclude:\s*- "EKGF/grapharch"')
+
+    def test_every_publication_is_defined_by_controlling_definitions(self):
+        config = json.loads((ROOT / 'publication/publications.json').read_text())
+        definitions = {p['branch']: p['definitions'] for p in config['publications']}
+        self.assertEqual(definitions, {'main': 'publication/definitions/main.ttl',
+                                       'develop': 'publication/definitions/develop.ttl'})
+        self.assertEqual(config['pull_requests']['definitions'], 'publication/definitions/develop.ttl')
+        for path in set(definitions.values()):
+            self.assertTrue((ROOT / path).is_file(), path)
+
+    def test_github_pages_is_the_only_grapharch_deployment(self):
+        # GraphArch never deploys to the production host or its preview
+        # platform; those keep their own workflows until a verified cutover.
+        publishers = {path.name for path in WORKFLOWS.glob('*.yml')
+                      if 'scripts/central_publications.py' in path.read_text()}
+        # The pull request gate builds with the same script but never deploys.
+        self.assertEqual(publishers, {'grapharch-pages.yml', 'grapharch-publication-build.yml'})
+        self.assertNotIn('deploy-pages', BUILD.read_text())
+        text = PAGES.read_text()
+        self.assertIn('--hosting-profile publication/github-pages.json', text)
+        self.assertIn('actions/deploy-pages@', text)
+        self.assertNotRegex(text, r'(?i)vercel')
+        self.assertNotIn('secrets.', text)
+        self.assertNotIn('npx', text)
+
+    def test_publication_runs_queue_and_never_cancel_a_deploy(self):
+        workflow = PAGES.read_text(encoding='utf-8')
+        self.assertRegex(workflow, r"(?m)^concurrency:\n(?:  .*\n)*?  group: grapharch-pages-.*'publication'")
+        self.assertRegex(workflow, r'(?m)^  cancel-in-progress: false$')
+        self.assertNotIn('cancel-in-progress: true', workflow)
+
+    def test_deployed_site_checks_establish_public_reader_access(self):
+        text = PAGES.read_text()
+        smoke = text.split('- name: Verify the public specifications and provenance', 1)[1]
+        self.assertNotIn('token', smoke.lower())
+        self.assertIn('https://ekgf.github.io/dprod/publication-build.json', smoke)
+        self.assertIn('r["config_commit"] == sys.argv[1]', smoke)
+        self.assertIn('scripts/verify_publication_site.py --base-url https://ekgf.github.io', smoke)
+        verifier = (ROOT / 'scripts/verify_publication_site.py').read_text()
+        self.assertIn('response.status != 200', verifier)
+        self.assertIn("provenance['content']['commit']", verifier)
+        self.assertIn("provenance['definitions']['commit'] != record['config_commit']", verifier)
+
+    def test_workflow_rebuilds_with_the_pinned_generator_and_retains_evidence(self):
+        text = PAGES.read_text()
+        self.assertIn("python-version: '3.13'", text)
+        build = text.split('  deploy:')[0]
+        for evidence in ('output/grapharch-pages/publications/', 'output/grapharch-pages/website/',
+                         'output/grapharch-pages/publication-build.json'):
+            self.assertIn(evidence, build)
+        self.assertNotIn('pages: write', build)
+        self.assertNotIn('id-token: write', build)
+        self.assertNotIn('pull_request:', text)
+        self.assertNotIn('set -e', text)
+
+    def test_pull_request_gate_builds_with_the_pin_of_its_own_head(self):
+        text = BUILD.read_text()
+        self.assertRegex(text, r'(?m)^  pull_request:$')
+        self.assertNotIn('pull_request_target', text)
+        self.assertRegex(text, r'(?m)^  publication-build:$')
+        self.assertRegex(text, r'(?m)^    name: publication-build$')
+        self.assertIn('ref: ${{ github.event.pull_request.head.sha }}', text)
+        self.assertIn('--skip-pull-request-previews', text)
+        # Same pin line as the deploy workflow, so the PR is judged by the
+        # GraphArch version that will deploy it.
+        self.assertEqual(re.findall(PIN, text), re.findall(PIN, PAGES.read_text()))
+        self.assertEqual(len(re.findall(PIN, text)), 1)
+
+    def test_pull_request_gate_is_read_only_and_secretless(self):
+        text = BUILD.read_text()
+        self.assertRegex(text, r'(?ms)^permissions:\n  contents: read\n(?!  )')
+        self.assertNotRegex(text, r'(?m):\s*write\b')
+        self.assertNotIn('secrets.', text)
+        self.assertNotIn('pages:', text)
+        self.assertNotIn('id-token', text)
+        self.assertNotIn('persist-credentials: true', text)
+        self.assertIn('persist-credentials: false', text)
+        self.assertNotIn('set -e', text)
+
+if __name__ == '__main__':
+    unittest.main()

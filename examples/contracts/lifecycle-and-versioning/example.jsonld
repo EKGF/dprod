@@ -5,7 +5,7 @@
   ],
   "id": "ex:analyticsCustomerData2026",
   "type": "DataContract",
-  "profile": "https://ekgf.org/dprod/spec/develop/",
+  "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
   "assigner": "ex:dataPlatformTeam",
   "assignee": "ex:analyticsTeam",
   "contractLifecycleStatus": "Active",
@@ -14,7 +14,7 @@
   "acceptsOffer": {
     "id": "ex:customerApiV2",
     "type": "DataOffer",
-    "profile": "https://ekgf.org/dprod/spec/develop/",
+    "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
     "assigner": "ex:dataPlatformTeam",
     "target": "ex:customerData",
     "offerLifecycleStatus": "Active",
@@ -34,7 +34,7 @@
     "wasRevisionOf": {
       "id": "ex:customerApiV1",
       "type": "DataOffer",
-      "profile": "https://ekgf.org/dprod/spec/develop/",
+      "profile": "https://ekgf.org/dprod/spec/develop/contracts/profile/",
       "assigner": "ex:dataPlatformTeam",
       "target": "ex:customerData",
       "offerLifecycleStatus": "Fulfilled",

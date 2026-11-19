@@ -4,4 +4,10 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly" # Check for updates to GitHub Actions every week
+      interval: "daily" # Check for updates to GitHub Actions, including the pinned GraphArch release, every day
+    # Dependabot waits 3 days after a release by default. GraphArch is our own
+    # action and releases several times a day, so it is exempt from the wait.
+    cooldown:
+      default-days: 3
+      exclude:
+        - "EKGF/grapharch"

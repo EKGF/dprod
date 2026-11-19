@@ -75,3 +75,6 @@ __pycache__/
 # Playwright MCP scratch output
 .playwright-mcp/
 /.idea/LNKD.tech Editor.xml
+
+# GraphArch generated publication and deployment artifacts
+/output/

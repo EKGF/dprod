@@ -1,5 +1,9 @@
 # DPROD Data Contracts: Deterministic Policy Language for Data Governance
 
+The contracts profile identifier is [`https://ekgf.org/dprod/spec/develop/contracts/profile/`](https://ekgf.org/dprod/spec/develop/contracts/profile/).
+Policies declare this IRI with `odrl:profile`. It identifies the contracts profile;
+the DPROD ontology and term namespace remain `https://ekgf.org/dprod/spec/develop/`.
+
 **An ODRL 2.2 profile with deterministic evaluation semantics for data governance.**
 
 ---

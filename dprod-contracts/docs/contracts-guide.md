@@ -95,7 +95,7 @@ ex:daily-0600-london a dprod:Schedule ;
     dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T060000\nRRULE:FREQ=DAILY" .
 
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices ;
     dprod:offerLifecycleStatus dprod:Active .
@@ -174,7 +174,7 @@ When a consumer accepts the offer, create a DataContract (Agreement) referencing
 
 ```turtle
 ex:subscription a dprod:DataContract ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     dprod:acceptsOffer ex:contract ;
     odrl:assigner ex:dataTeam ;
     odrl:assignee ex:analyticsTeam ;
@@ -320,7 +320,7 @@ Read-only access, no schedule, no consumer duties. Target inherited from policy.
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:referenceData ;
     odrl:permission [
@@ -344,7 +344,7 @@ ex:daily-0700-london a dprod:Schedule ;
     dprod:scheduleExpression "DTSTART;TZID=Europe/London:20260101T070000\nRRULE:FREQ=DAILY" .
 
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:customerData ;
     odrl:obligation [
@@ -392,7 +392,7 @@ ex:every-minute-london a dprod:Schedule ;
     dprod:scheduleExpression "* * * * *" .
 
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:riskMetrics ;
     odrl:obligation [
@@ -437,7 +437,7 @@ A single contract covering multiple targets. A rule without its own target appli
 
 ```turtle
 ex:contract a dprod:DataOffer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner ex:dataTeam ;
     odrl:target ex:marketPrices , ex:referenceData , ex:riskMetrics ;
     odrl:permission [
@@ -595,7 +595,7 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 
 ## Validation Checklist
 
-1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/>`
+1. Every policy declares `odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/>`
 2. Conflict strategy defaults to `odrl:conflict odrl:prohibit`, inherited from the profile; declare `odrl:conflict` on a policy only to override that default
 3. DataOffer has `odrl:assigner` (provider)
 4. DataContract has both `odrl:assigner` and `odrl:assignee`

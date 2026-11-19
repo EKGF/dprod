@@ -61,7 +61,7 @@ VALID_DUTIES = PREFIXES + """
     dprod:scheduleExpression "0 6 * * *" .
 
 <urn:dprod:test:offer> a odrl:Offer ;
-    odrl:profile <https://ekgf.org/dprod/spec/develop/> ;
+    odrl:profile <https://ekgf.org/dprod/spec/develop/contracts/profile/> ;
     odrl:assigner <urn:dprod:test:party> ;
     odrl:obligation <urn:dprod:test:namedDuty> ;
     odrl:obligation [
