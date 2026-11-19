@@ -35,7 +35,7 @@ jobs:
       # asserts it); Dependabot bumps both lines in one PR.
       - name: Install the pinned GraphArch release
         id: grapharch
-        uses: EKGF/grapharch@6681134e73dfb27cfe057af261d8cd2424f5791e # v0.2.29
+        uses: EKGF/grapharch@0134ff2256227fb9dc76af802a2330e150503862 # v0.2.30
         with:
           mode: install
       - uses: actions/setup-python@v7
