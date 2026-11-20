@@ -137,7 +137,7 @@ class ScheduleOntologyTest(unittest.TestCase):
         self.assertIn("EvaluationError = Set<ResolutionError | ScheduleError>", semantics)
         self.assertIn("occurrences(d, Σ) = Error(e) }", semantics)
         self.assertIn("return Failure(E₃ ∪ E₄ ∪ E₅)", semantics)
-        self.assertIn("expand(duty.schedule, Σ.processors, Σ.clock)", semantics)
+        self.assertIn("expand(duty.schedule, Σ.processors, Σ.activatedAt(duty), Σ.clock)", semantics)
 
 
 class ScheduleValidationTest(unittest.TestCase):
