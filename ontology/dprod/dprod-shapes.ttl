@@ -17,6 +17,7 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 dprod-shapes:
@@ -38,6 +39,8 @@ dprod-shapes:
   owl:imports sh: ;
   owl:imports dprod: ;
   owl:versionIRI <https://ekgf.org/dprod/spec/develop/20260601/shapes/> ;
+  vann:preferredNamespacePrefix "dprod-shapes" ;
+  vann:preferredNamespaceUri "https://ekgf.org/dprod/spec/develop/shapes/" ;
   sh:declare [
     sh:prefix "dprod" ;
     sh:namespace "https://ekgf.org/dprod/spec/develop/" ;
