@@ -51,7 +51,7 @@ ex:contract a dprod:DataOffer ;
 
 ### Minimal Data Contract
 
-A `dprod:DataContract` activates an offer, binding both parties:
+A `dprod:DataContract` accepts an offer and binds both parties to the rules it states:
 
 ```turtle
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
@@ -163,7 +163,7 @@ Pending ──────────────> Active
 
 ### DataOffer and DataContract
 
-A `dprod:DataOffer` (subclass of `odrl:Offer`) is a provider's offer specifying SLAs, permissions, and restrictions. A `dprod:DataContract` (subclass of `odrl:Agreement`) is an activated offer binding both parties.
+A `dprod:DataOffer` (subclass of `odrl:Offer`) is a provider's offer specifying SLAs, permissions, and restrictions. A `dprod:DataContract` (subclass of `odrl:Agreement`) is an agreement that accepts an offer and binds both parties to the rules it states.
 
 ### Schedule
 

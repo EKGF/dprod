@@ -254,27 +254,29 @@ odrl:obligation [
 ### Quality SLA
 
 **Business term:** `quality guarantee`, `accuracy SLA`, `data quality commitment`
-**DPROD pattern:** `odrl:Duty` with `ex:conformTo` + `odrl:constraint`
+**DPROD pattern:** `odrl:Duty` with `ex:conformTo`, refined by the required level (`odrl:refinement`)
 **Example:**
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
-    odrl:action ex:conformTo ;
-    odrl:target ex:riskMetricsSchema ;
-    odrl:constraint [
-        a odrl:Constraint ;
-        odrl:leftOperand ex:timeliness ;
-        odrl:operator odrl:eq ;
-        odrl:rightOperand ex:realtime
-    ]
+    odrl:action [
+        rdf:value ex:conformTo ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:timeliness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:realtime
+        ]
+    ] ;
+    odrl:target ex:riskMetricsSchema
 ] .
 ```
 
 ### Change Notification
 
 **Business term:** `notification`, `advance notice`, `change alert`
-**DPROD pattern:** `odrl:Duty` with `ex:notify` + `dprod:deadline`
+**DPROD pattern:** `odrl:Duty` with `ex:notify`, with the notice period recorded as an agreed term such as `ex:noticePeriod`.[^notice]
 **Example:**
 ```turtle
 odrl:obligation [
@@ -282,7 +284,7 @@ odrl:obligation [
     dprod:subjectOfDuty ex:dataTeam ;
     odrl:action ex:notify ;
     odrl:target ex:schemaChanges ;
-    dprod:deadline "P14D"^^xsd:duration
+    ex:noticePeriod "P14D"^^xsd:duration
 ] .
 ```
 
@@ -384,8 +386,8 @@ odrl:permission [
 | State (duty) | `dprod:dutyState` (`skos:Concept`) | DPROD |
 | Delivery SLA | Duty + `deliver` + `schedule` + `deadline` | DPROD |
 | Schema guarantee | Duty + `conformTo` | DPROD |
-| Quality SLA | Duty + `conformTo` + constraint | DPROD |
-| Change notice | Duty + `notify` + `deadline` | DPROD |
+| Quality SLA | Duty + `conformTo` + refinement | DPROD |
+| Change notice | Duty + `notify` + agreed notice period[^notice] | DPROD |
 | Usage report | Duty + `report` + `deadline` | DPROD |
 | View rights | Permission + `display` | ODRL |
 | Algo use | Permission + `nonDisplay` | DPROD |
@@ -397,6 +399,8 @@ odrl:permission [
 | Schedule | `dprod:schedule` → identified `dprod:Schedule` | DPROD |
 | Deadline | `dprod:deadline` | DPROD |
 | Contract link | `dprod:acceptsOffer` | DPROD |
+
+[^notice]: DPROD does not yet evaluate a notice period. A `dprod:deadline` runs forward from when a duty becomes active, not back from a later action, so an evaluator cannot tell a timely notice from a late one. The property records what the parties agreed, and checking it is left to the change process.
 
 ---
 

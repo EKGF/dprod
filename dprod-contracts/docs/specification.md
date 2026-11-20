@@ -115,7 +115,7 @@ ex:contract a dprod:DataOffer ;
 | **Type** | `owl:Class` |
 | **Superclass** | `odrl:Agreement` |
 | **Label** | Data Contract |
-| **Definition** | Activated data offer binding provider and consumer |
+| **Definition** | Agreement that accepts a data offer and binds provider and consumer to the rules it states |
 
 **Required properties**:
 
@@ -288,6 +288,14 @@ missing context are errors, not empty schedules. Bare frequency vocabulary
 entries such as `dct:accrualPeriodicity` remain descriptive catalog metadata and
 are not executable schedules.
 
+On a duty, the schedule's occurrences from the duty's activation up to the
+evaluation time are the duty's instances (formal semantics §5.5). The schedule
+sets the times (for RFC 5545, from `DTSTART` and `TZID`); activation only
+limits the range. Each instance follows the standard duty lifecycle
+independently (Pending -> Active -> Fulfilled/Violated). The `deadline`
+property defines the per-instance fulfillment window, and only an action at or
+after the instance's occurrence fulfills it.
+
 ### 4.4 dprod:acceptsOffer
 
 | Property | Value |
@@ -296,7 +304,10 @@ are not executable schedules.
 | **Domain** | `dprod:DataContract` |
 | **Range** | `dprod:DataOffer` |
 | **Cardinality** | 1 |
-| **Definition** | The offer this contract activates. |
+| **Definition** | The offer this contract accepts. The link records lineage; the contract inherits no rules from the offer. |
+
+Like any `odrl:Agreement`, a contract is complete in itself. It restates the
+offer's rules it takes over, and may narrow them or add to them.
 
 ### 4.5 dprod:effectiveDate
 
@@ -427,9 +438,10 @@ Shapes are defined in `dprod-contracts-shapes.ttl`. Key constraints:
 
 | Shape | Target | Key Constraints |
 |-------|--------|-----------------|
-| `dprod-contracts-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
-| `dprod-contracts-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-contracts-shapes:PermissionShape` | `odrl:Permission` | Exactly one `odrl:action`, without `odrl:refinement`; at most one `odrl:target` (inherited from policy if absent) |
+| `dprod-contracts-shapes:ProhibitionShape` | `odrl:Prohibition` | Exactly one `odrl:action`, without `odrl:refinement`; at most one `odrl:target` (inherited from policy if absent) |
 | `dprod-contracts-shapes:DutyShape` | `odrl:Duty` | Exactly one `odrl:action`; `dprod:subjectOfDuty` 0..1; `dprod:objectOfDuty` 0..1; `deadline` 0..1 (dateTime/duration); `schedule` 0..1 (identified `dprod:Schedule`); `state` 0..1 |
+| `dprod-contracts-shapes:ActionShape` | Objects of `odrl:action` | An IRI, or a refined action: exactly one `rdf:value` IRI naming the action, and refinements that are `odrl:Constraint` or `odrl:LogicalConstraint` |
 
 ### Schedule shapes
 
@@ -535,6 +547,7 @@ DPROD Contracts restricts certain ODRL features:
 | `odrl:Ticket` | Not used | Not applicable to data governance |
 | `odrl:Request` | Rejected (support deferred) | Offer-Request-Agreement semantics are undefined; accepting it would imply unsupported semantics. |
 | `odrl:assignee` (on Duty) | Replaced by `dprod:subjectOfDuty` | `dprod:subjectOfDuty rdfs:subPropertyOf odrl:function` -- avoids role overloading on duties |
+| `odrl:refinement` (on an action) | Supported on duty actions as an agreed term; rejected on permissions and prohibitions | A duty's refinement states what it requires (ODRL 2.2 §2.6.3), while its `odrl:constraint` says when it applies. Evaluators match the action alone, so an unevaluated refinement would change what a permission grants or a prohibition forbids |
 | `odrl:AssetCollection` | Supported with explicit membership | Assets and nested asset collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
 | `odrl:PartyCollection` | Supported with explicit membership | Parties and nested party collections use `odrl:partOf`; `odrl:source` and collection refinement are rejected |
 

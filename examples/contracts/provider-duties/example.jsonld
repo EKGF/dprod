@@ -31,26 +31,28 @@
     },
     {
       "type": "Duty",
-      "label": "Change notification: 14 days notice",
+      "label": "Change notification",
       "subjectOfDuty": "ex:dataPlatformTeam",
       "action": "ex:notify",
       "target": "ex:schemaChanges",
-      "deadline": { "@value": "P14D", "type": "xsd:duration" }
+      "ex:noticePeriod": { "@value": "P14D", "type": "xsd:duration" }
     },
     {
       "type": "Duty",
       "label": "Quality: data must be real-time",
       "subjectOfDuty": "ex:dataPlatformTeam",
-      "action": "ex:conformTo",
-      "constraint": {
-        "type": "Constraint",
-        "leftOperand": {
-          "id": "ex:timeliness",
-          "operandSource": "requestSource",
-          "operandProperty": "ex:timeliness"
-        },
-        "operator": "eq",
-        "rightOperand": { "id": "ex:realtime" }
+      "action": {
+        "rdf:value": { "id": "ex:conformTo" },
+        "refinement": {
+          "type": "Constraint",
+          "leftOperand": {
+            "id": "ex:timeliness",
+            "operandSource": "stateSource",
+            "operandProperty": "ex:timeliness"
+          },
+          "operator": "eq",
+          "rightOperand": { "id": "ex:realtime" }
+        }
       }
     }
   ]

@@ -8,7 +8,7 @@
 #   - Recurring delivery with deadline
 #   - Schema conformance
 #   - Quality SLA (conformTo + constraint)
-#   - Change notification with lead time
+#   - Change notification, with the notice period as an agreed term
 #   - Consumer reporting duty
 #   - Display / non-display / derivation permissions
 #   - Purpose, classification, environment constraints
@@ -19,6 +19,7 @@
 
 @prefix odrl:     <http://www.w3.org/ns/odrl/2/> .
 @prefix dprod:    <https://ekgf.org/dprod/spec/develop/> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dct:      <http://purl.org/dc/terms/> .
 @prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
@@ -102,6 +103,13 @@ ex:report
   odrl:includedIn odrl:inform ;
 .
 
+ex:noticePeriod
+  a rdf:Property ;
+  rdfs:isDefinedBy ex: ;
+  rdfs:label "notice period" ;
+  dct:description "Agreed notice period before the change a notification announces. Recorded for the parties; DPROD does not evaluate it."@en ;
+.
+
 ex:notify
   a odrl:Action, skos:Concept ;
   rdfs:isDefinedBy ex: ;
@@ -158,8 +166,8 @@ ex:timeliness
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "timeliness" ;
-  dct:description "Required data freshness category."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "Freshness category of the data."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:timeliness ;
 .
 
@@ -167,8 +175,8 @@ ex:retentionPeriod
   a odrl:LeftOperand, skos:Concept ;
   rdfs:isDefinedBy ex: ;
   rdfs:label "retention period" ;
-  dct:description "Maximum time data may be retained."@en ;
-  dprod:operandSource dprod:requestSource ;
+  dct:description "How long the data has been retained."@en ;
+  dprod:operandSource dprod:stateSource ;
   dprod:operandProperty ex:retentionPeriod ;
 .
 
@@ -506,11 +514,11 @@ ex:compliance
 
     odrl:obligation [
         a odrl:Duty ;
-        rdfs:label "Schema change notification (90 days)" ;
+        rdfs:label "Schema change notification" ;
         dprod:subjectOfDuty <https://example.org/agents/hr> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P90D"^^xsd:duration
+        ex:noticePeriod "P90D"^^xsd:duration
     ] ;
 
     odrl:permission [
@@ -564,14 +572,16 @@ ex:compliance
         a odrl:Duty ;
         rdfs:label "Quality SLA: real-time conformance" ;
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
-        odrl:action ex:conformTo ;
-        odrl:target <https://example.org/assets/risk-metrics-schema> ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:timeliness ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand ex:realtime
-        ]
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:timeliness ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand ex:realtime
+            ]
+        ] ;
+        odrl:target <https://example.org/assets/risk-metrics-schema>
     ] ;
 
     odrl:obligation [
@@ -580,7 +590,7 @@ ex:compliance
         dprod:subjectOfDuty <https://example.org/agents/data-platform> ;
         odrl:action ex:notify ;
         odrl:target <https://example.org/assets/schema-changes> ;
-        dprod:deadline "P14D"^^xsd:duration
+        ex:noticePeriod "P14D"^^xsd:duration
     ] ;
 
     odrl:permission [

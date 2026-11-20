@@ -79,9 +79,9 @@ dprod:DataOffer
 
 dprod:DataContract
   a owl:Class ;
-  dct:description "Activated data offer binding provider and consumer."@en ;
+  dct:description "Agreement that accepts a data offer and binds provider and consumer to the rules it states."@en ;
   rdfs:comment
-    """A DataContract is an activated DataOffer.
+    """A DataContract is an odrl:Agreement, complete in itself; dprod:acceptsOffer records the offer it accepts.
     - assigner: data provider (from offer)
     - assignee: data consumer
     Bilateral: both parties may have active duties."""@en ;
@@ -322,7 +322,10 @@ dprod:schedule
     """Links any DPROD or ODRL resource to an identified dprod:Schedule.
     This property deliberately has no domain: duties, permissions, maintenance
     arrangements, backup obligations, and other resources may all refer to a
-    schedule. The referring resource determines what the occurrences mean."""@en ;
+    schedule. The referring resource determines what the occurrences mean.
+    On an odrl:Duty, each occurrence from the duty's activation up to the
+    evaluation time is an instance of the duty, with its own fulfilment window;
+    only an action at or after the occurrence fulfils it."""@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:range dprod:Schedule ;
   rdfs:label "schedule" ;
@@ -367,7 +370,7 @@ dprod:carriesTimeZone
 
 dprod:acceptsOffer
   a owl:ObjectProperty ;
-  dct:description "The offer this contract activates."@en ;
+  dct:description "The offer this contract accepts. The link records lineage; the contract inherits no rules from the offer."@en ;
   rdfs:isDefinedBy dprod: ;
   rdfs:domain dprod:DataContract ;
   rdfs:range dprod:DataOffer ;

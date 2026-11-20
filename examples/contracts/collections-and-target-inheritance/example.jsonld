@@ -11,11 +11,26 @@
       "assigner": "ex:dataPlatformTeam",
       "assignee": "ex:tradingDivision",
       "target": ["ex:marketPrices", "ex:referenceData", "ex:riskMetrics"],
-      "permission": {
-        "type": "Permission",
-        "label": "Every team in the Trading Division may read",
+      "permission": [
+        {
+          "type": "Permission",
+          "label": "Every team in the Trading Division may read",
+          "assignee": "ex:tradingDivision",
+          "action": "read"
+        },
+        {
+          "type": "Permission",
+          "label": "Every team in the Trading Division may aggregate the bundle",
+          "assignee": "ex:tradingDivision",
+          "action": "aggregate",
+          "target": "ex:marketDataBundleAsset"
+        }
+      ],
+      "prohibition": {
+        "type": "Prohibition",
+        "label": "No team in the Trading Division may redistribute",
         "assignee": "ex:tradingDivision",
-        "action": "read"
+        "action": "distribute"
       },
       "acceptsOffer": {
         "id": "ex:marketDataBundle",

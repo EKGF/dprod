@@ -6,7 +6,7 @@ A guide for data platform teams using DPROD for data contracts and subscriptions
 
 ## Overview
 
-DPROD models internal data sharing agreements as ODRL 2.2 policies. A **DataOffer** is an offer from a data provider. A **DataContract** is an activated offer binding provider and consumer.
+DPROD models internal data sharing agreements as ODRL 2.2 policies. A **DataOffer** is an offer from a data provider. A **DataContract** is an agreement that accepts an offer and binds provider and consumer to the rules it states.
 
 ```
 DataOffer (Offer)          DataContract (Agreement)
@@ -218,7 +218,7 @@ odrl:obligation [
 
 ### Notification Pattern (Change Notification)
 
-Provider must notify consumers before making changes, with a lead time expressed as a duration deadline. Use `dprod:objectOfDuty` to identify who is notified.
+Provider must notify consumers of changes. Use `dprod:objectOfDuty` to identify who is notified. Record the agreed notice period with your own property, such as `ex:noticePeriod`.[^notice]
 
 ```turtle
 odrl:obligation [
@@ -227,30 +227,32 @@ odrl:obligation [
     dprod:objectOfDuty ex:consumer ;
     odrl:action ex:notify ;
     odrl:target ex:schemaChanges ;
-    dprod:deadline "P14D"^^xsd:duration
+    ex:noticePeriod "P14D"^^xsd:duration
 ] .
 ```
 
 ### Quality SLA Pattern
 
-Provider guarantees data quality via `conformTo` with a constraint.
+Provider guarantees data quality via `conformTo`, refined by the level it must reach. The refinement narrows the action, so it states what the duty requires (ODRL 2.2 §2.6.3). A constraint on the duty would say when the duty applies instead.
 
 ```turtle
 odrl:obligation [
     a odrl:Duty ;
     dprod:subjectOfDuty ex:dataTeam ;
-    odrl:action ex:conformTo ;
-    odrl:target ex:riskMetricsSchema ;
-    odrl:constraint [
-        a odrl:Constraint ;
-        odrl:leftOperand ex:timeliness ;
-        odrl:operator odrl:eq ;
-        odrl:rightOperand ex:realtime
-    ]
+    odrl:action [
+        rdf:value ex:conformTo ;
+        odrl:refinement [
+            a odrl:Constraint ;
+            odrl:leftOperand ex:timeliness ;
+            odrl:operator odrl:eq ;
+            odrl:rightOperand ex:realtime
+        ]
+    ] ;
+    odrl:target ex:riskMetricsSchema
 ] .
 ```
 
-The constraint can check any DPROD operand -- timeliness, classification, environment, etc.
+The refinement can use any DPROD operand -- timeliness, completeness, volume, etc.
 
 ---
 
@@ -405,21 +407,23 @@ ex:contract a dprod:DataOffer ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
-        odrl:action ex:conformTo ;
-        odrl:target ex:riskSchema ;
-        odrl:constraint [
-            a odrl:Constraint ;
-            odrl:leftOperand ex:timeliness ;
-            odrl:operator odrl:eq ;
-            odrl:rightOperand ex:realtime
-        ]
+        odrl:action [
+            rdf:value ex:conformTo ;
+            odrl:refinement [
+                a odrl:Constraint ;
+                odrl:leftOperand ex:timeliness ;
+                odrl:operator odrl:eq ;
+                odrl:rightOperand ex:realtime
+            ]
+        ] ;
+        odrl:target ex:riskSchema
     ] ;
     odrl:obligation [
         a odrl:Duty ;
         dprod:subjectOfDuty ex:dataTeam ;
         odrl:action ex:notify ;
         odrl:target ex:schemaChanges ;
-        dprod:deadline "P14D"^^xsd:duration
+        ex:noticePeriod "P14D"^^xsd:duration
     ] ;
     odrl:permission [
         a odrl:Permission ;
@@ -530,7 +534,7 @@ ex:contract-v3 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v2 .
 ```
 
-DataContracts reference the specific offer version they activate:
+DataContracts reference the specific offer version they accept:
 
 ```turtle
 ex:subscription dprod:acceptsOffer ex:contract-v2 .
@@ -577,7 +581,7 @@ ex:contract-v2 a dprod:DataOffer ;
     prov:wasRevisionOf ex:contract-v1 .
 ```
 
-DataContracts reference the offer they activate via `dprod:acceptsOffer`:
+DataContracts reference the offer they accept via `dprod:acceptsOffer`. The link records lineage only: like any `odrl:Agreement`, a contract inherits no rules from the offer, so it restates the rules it binds the parties to.
 
 ```turtle
 ex:subscription dprod:acceptsOffer ex:contract-v2 .
@@ -613,3 +617,5 @@ For comprehensive test data covering all patterns, see [examples/baseline.ttl](.
 ```bash
 shacl validate --shapes dprod-contracts-shapes.ttl --data my-contract.ttl
 ```
+
+[^notice]: DPROD does not yet evaluate a notice period. A `dprod:deadline` runs forward from when a duty becomes active, not back from a later action, so an evaluator cannot tell a timely notice from a late one. The property records what the parties agreed, and checking it is left to the change process.

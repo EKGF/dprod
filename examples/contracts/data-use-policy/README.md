@@ -1,4 +1,4 @@
-Not every rule about data is a contract between two parties. An organisation also has standing rules: who may read employee data and for what purpose, what must be logged, what may never be done. These are expressed as an `odrl:Set`, an ODRL policy with no assigner or assignee, and evaluated by the same DPROD evaluator as a contract. The profile's fixed conflict rule applies: a prohibition always wins over a permission.
+Not every rule about data is a contract between two parties. An organisation also has standing rules: who may read employee data and for what purpose, what must be logged, what may never be done. These are expressed as an `odrl:Set`, an ODRL policy with no assigner or assignee, and evaluated by the same DPROD evaluator as a contract. The profile's default conflict rule applies: a prohibition wins over a permission that matches the same request.
 
 The HR data access policy shows the constraint patterns a policy writer typically needs:
 
@@ -10,3 +10,5 @@ The HR data access policy shows the constraint patterns a policy writer typicall
 - **Retention**, as a duty to delete once the retention period is exceeded.
 
 Every operand a policy reads must say where its value comes from. Each is declared the first time it is used, with one `dprod:operandSource` and one `dprod:operandProperty`; later uses just name it.
+
+Which source an operand uses follows from who knows the fact. Only the requester can say why and where it is reading, so `odrl:purpose`, `ex:environment` and `ex:processingMode` come from the request. The platform already holds the data's classification and how long it has been kept, so `ex:classification` and `ex:retentionPeriod` come from the state snapshot. The calling system assembles both before it calls the evaluator. A request that leaves out a fact a matching rule needs gets an evaluation failure, never a quiet permit.
